@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="application-name" content="AI会議室 v0">
+  <meta name="theme-color" content="#100b08">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon.png?v=2">
+  <title>AI会議室 v0 | 火種ユイ</title>
+  <style>
+    :root {
+      --bg: #080706;
+      --panel: #17110d;
+      --panel-soft: #211712;
+      --gold: #f5c762;
+      --ember: #ff7b30;
+      --text: #f8efe2;
+      --muted: #c9bba4;
+      --line: rgba(245, 199, 98, 0.26);
+      --danger: #ff8467;
+      --success: #b7dd7a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+        "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      line-height: 1.7;
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255, 123, 48, 0.2), transparent 28%),
+        radial-gradient(circle at 12% 64%, rgba(245, 199, 98, 0.09), transparent 26%),
+        linear-gradient(180deg, #100b08 0%, #080706 48%, #040403 100%);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 26px 26px;
+      opacity: 0.38;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    a {
+      touch-action: manipulation;
+    }
+
+    .meeting-app {
+      position: relative;
+      width: min(100%, 720px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 8px 12px;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 850;
+      text-decoration: none;
+      background: rgba(245, 199, 98, 0.06);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 8px;
+    }
+
+    .meeting-header {
+      padding: 28px 0 22px;
+      text-align: center;
+    }
+
+    .meeting-mark {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 16px;
+      border: 1px solid rgba(245, 199, 98, 0.38);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, #ffe69d 0 5%, #ff9a3e 18%, #71270e 42%, #140d09 68%);
+      box-shadow:
+        0 0 28px rgba(255, 123, 48, 0.34),
+        0 0 64px rgba(245, 199, 98, 0.14);
+      animation: meetingPulse 3.6s ease-in-out infinite;
+    }
+
+    .meeting-mark::before,
+    .meeting-mark::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(245, 199, 98, 0.42);
+      border-radius: 50%;
+    }
+
+    .meeting-mark::before {
+      inset: 10px;
+    }
+
+    .meeting-mark::after {
+      inset: 23px;
+      background: var(--gold);
+      box-shadow: 0 0 14px rgba(245, 199, 98, 0.76);
+    }
+
+    @keyframes meetingPulse {
+      0%, 100% {
+        transform: scale(0.97);
+      }
+
+      50% {
+        transform: scale(1.03);
+      }
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(28px, 8vw, 42px);
+      font-weight: 950;
+      line-height: 1.2;
+      text-shadow: 0 0 18px rgba(245, 199, 98, 0.25);
+    }
+
+    .version {
+      display: inline-block;
+      margin-left: 5px;
+      color: var(--ember);
+      font-size: 0.48em;
+      vertical-align: middle;
+      letter-spacing: 0.08em;
+    }
+
+    .tagline {
+      max-width: 30em;
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .panel {
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(245, 199, 98, 0.07), transparent 40%),
+        rgba(23, 17, 13, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+    }
+
+    .section-heading {
+      margin: 0;
+      color: var(--gold);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .section-note {
+      margin: 4px 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .input-group + .input-group {
+      margin-top: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .required {
+      margin-left: 5px;
+      color: var(--ember);
+      font-size: 12px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      color: var(--text);
+      background: rgba(8, 6, 5, 0.82);
+      border: 1px solid rgba(245, 199, 98, 0.26);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    input {
+      min-height: 50px;
+      padding: 11px 13px;
+    }
+
+    textarea {
+      min-height: 104px;
+      padding: 11px 13px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #8f8270;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: rgba(255, 213, 111, 0.82);
+      box-shadow: 0 0 0 3px rgba(245, 199, 98, 0.12);
+    }
+
+    .start-button {
+      width: 100%;
+      min-height: 58px;
+      margin-top: 18px;
+      padding: 13px 16px;
+      color: #1b1008;
+      font-size: 17px;
+      font-weight: 950;
+      background: linear-gradient(180deg, #ffe69a, #f3aa35);
+      border: 0;
+      border-radius: 8px;
+      box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.48);
+      cursor: pointer;
+    }
+
+    .start-button:active {
+      transform: translateY(1px);
+    }
+
+    .start-button:disabled {
+      color: #6a5132;
+      background: linear-gradient(180deg, #c9a85f, #9b6d2c);
+      cursor: wait;
+    }
+
+    .members {
+      margin-top: 18px;
+    }
+
+    .member-list {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .member {
+      min-width: 0;
+      padding: 10px 5px;
+      text-align: center;
+      background: rgba(8, 6, 5, 0.58);
+      border: 1px solid rgba(245, 199, 98, 0.14);
+      border-radius: 8px;
+    }
+
+    .member-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 7px;
+      color: #160e08;
+      font-size: 13px;
+      font-weight: 950;
+      background: var(--member-color);
+      border-radius: 50%;
+      box-shadow: 0 0 14px color-mix(in srgb, var(--member-color) 42%, transparent);
+    }
+
+    .member-name {
+      display: block;
+      overflow: hidden;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 850;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meeting-room {
+      margin-top: 18px;
+    }
+
+    .room-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .room-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .status-light {
+      width: 8px;
+      height: 8px;
+      background: #695d4e;
+      border-radius: 50%;
+    }
+
+    .room-status.is-live {
+      color: #ffd883;
+    }
+
+    .room-status.is-live .status-light {
+      background: var(--ember);
+      box-shadow: 0 0 10px rgba(255, 123, 48, 0.9);
+      animation: statusBlink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes statusBlink {
+      50% {
+        opacity: 0.46;
+      }
+    }
+
+    .empty-state {
+      padding: 30px 16px;
+      color: var(--muted);
+      text-align: center;
+      background: rgba(8, 6, 5, 0.52);
+      border: 1px dashed rgba(245, 199, 98, 0.2);
+      border-radius: 8px;
+    }
+
+    .empty-state strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .log-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .speech {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 11px;
+      padding: 14px;
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--speaker-color) 9%, transparent), transparent 54%),
+        rgba(8, 6, 5, 0.66);
+      border: 1px solid rgba(245, 199, 98, 0.15);
+      border-left: 3px solid var(--speaker-color);
+      border-radius: 8px;
+      animation: speechIn 300ms ease both;
+    }
+
+    @keyframes speechIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .speaker-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      color: #160e08;
+      font-size: 14px;
+      font-weight: 950;
+      background: var(--speaker-color);
+      border-radius: 50%;
+    }
+
+    .speaker-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 9px;
+      margin-bottom: 5px;
+    }
+
+    .speaker-name {
+      color: var(--speaker-color);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .speaker-role {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .speech-text {
+      margin: 0;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .decision-panel {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 123, 48, 0.12), transparent 40%),
+        rgba(23, 17, 13, 0.96);
+      border: 1px solid rgba(245, 199, 98, 0.4);
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(255, 123, 48, 0.1);
+    }
+
+    .decision-panel.is-visible {
+      display: block;
+      animation: speechIn 360ms ease both;
+    }
+
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .decision-card {
+      padding: 14px;
+      background: rgba(8, 6, 5, 0.62);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+    }
+
+    .decision-card h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .decision-card p {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .decision-card[data-type="adopt"] h3 {
+      color: var(--success);
+    }
+
+    .decision-card[data-type="hold"] h3 {
+      color: var(--gold);
+    }
+
+    .decision-card[data-type="danger"] h3 {
+      color: var(--danger);
+    }
+
+    .decision-card[data-type="next"] {
+      background:
+        linear-gradient(180deg, rgba(245, 199, 98, 0.12), transparent),
+        rgba(8, 6, 5, 0.72);
+      border-color: rgba(245, 199, 98, 0.38);
+    }
+
+    .decision-card[data-type="next"] h3 {
+      color: #ffd879;
+    }
+
+    .footer-note {
+      margin: 18px 0 0;
+      color: #8f8270;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 560px) {
+      .meeting-app {
+        padding-right: 12px;
+        padding-left: 12px;
+      }
+
+      .panel,
+      .decision-panel {
+        padding: 16px;
+      }
+
+      .member-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .member-name {
+        white-space: normal;
+      }
+
+      .decision-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="meeting-app">
+    <a class="back-link" href="index.html">火種ユイに戻る</a>
+
+    <header class="meeting-header">
+      <div class="meeting-mark" aria-hidden="true"></div>
+      <h1>AI会議室<span class="version">v0</span></h1>
+      <p class="tagline">ひとつの目標を、5つの視点で囲む。答えを急がず、次の一手まで火を運ぶ。</p>
+    </header>
+
+    <section class="panel" aria-labelledby="setup-title">
+      <h2 class="section-heading" id="setup-title">会議を招集する</h2>
+      <p class="section-note">今回は固定テンプレートで議論します。入力内容が各人格の発言に反映されます。</p>
+
+      <form id="meetingForm">
+        <div class="input-group">
+          <label for="themeInput">テーマ<span class="required">必須</span></label>
+          <input
+            id="themeInput"
+            name="theme"
+            type="text"
+            maxlength="80"
+            placeholder="例：個人向け学習サービスの新企画"
+            autocomplete="off"
+            required
+          >
+        </div>
+
+        <div class="input-group">
+          <label for="goalInput">目標<span class="required">必須</span></label>
+          <textarea
+            id="goalInput"
+            name="goal"
+            maxlength="240"
+            placeholder="例：30日以内に小さく公開し、最初の利用者10人から反応を得る"
+            required
+          ></textarea>
+        </div>
+
+        <button class="start-button" id="startButton" type="submit">会議開始</button>
+      </form>
+    </section>
+
+    <section class="panel members" aria-labelledby="members-title">
+      <h2 class="section-heading" id="members-title">参加人格</h2>
+      <div class="member-list" id="memberList"></div>
+    </section>
+
+    <section class="panel meeting-room" aria-labelledby="room-title">
+      <div class="room-top">
+        <h2 class="section-heading" id="room-title">会議ログ</h2>
+        <div class="room-status" id="roomStatus">
+          <span class="status-light" aria-hidden="true"></span>
+          <span id="statusText">待機中</span>
+        </div>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <strong>まだ会議は始まっていません</strong>
+        テーマと目標を入れると、5人格が順番に発言します。
+      </div>
+      <ol class="log-list hidden" id="meetingLog" aria-live="polite"></ol>
+    </section>
+
+    <section class="decision-panel" id="decisionPanel" aria-labelledby="decision-title">
+      <h2 class="section-heading" id="decision-title">会議結果</h2>
+      <p class="section-note">5つの視点を、動ける形に整理しました。</p>
+      <div class="decision-grid" id="decisionGrid"></div>
+    </section>
+
+    <p class="footer-note">このページはAPIキーを使わず、外部通信なしで動作します。</p>
+  </main>
+
+  <script>
+    "use strict";
+
+    /*
+      1. 人格定義と固定テンプレート
+      将来API連携するときは、下の createStatement をプロンプト定義として
+      利用し、MeetingEngine.generateStatements() をAPI呼び出しに差し替えます。
+    */
+    var PERSONAS = [
+      {
+        id: "second-brain",
+        name: "第二脳ユイ",
+        mark: "脳",
+        role: "目的整理・構造化",
+        color: "#f5c762",
+        createStatement: function (context) {
+          return "テーマは「" + context.theme + "」、目標は「" + context.goal
+            + "」ですね。まず成功条件を「誰に」「何を届け」「何が変われば達成か」の3点に分けましょう。最初の会議では、完成形より検証できる最小単位を決めるのが先です。";
+        }
+      },
+      {
+        id: "counter",
+        name: "反証ユイ",
+        mark: "反",
+        role: "弱点・リスク・盲点",
+        color: "#ff8467",
+        createStatement: function (context) {
+          return "「" + context.goal
+            + "」を急ぐほど、対象者の思い込み、評価指標の曖昧さ、作り込み過ぎが盲点になります。「" + context.theme
+            + "」が本当に必要とされるかを、小さな反応で確かめる撤退条件も先に置くべきです。";
+        }
+      },
+      {
+        id: "vice-president",
+        name: "副社長ユイ",
+        mark: "副",
+        role: "収益性・事業性・継続性",
+        color: "#80c7a7",
+        createStatement: function (context) {
+          return "「" + context.theme
+            + "」を続く事業にするなら、価値を感じる相手と、対価を払う相手が同じかを確認したいです。目標の「" + context.goal
+            + "」へ進む前に、無料反応だけでなく、予約・相談・購入意向のどれを事業性の合図にするか決めましょう。";
+        }
+      },
+      {
+        id: "mio",
+        name: "澪",
+        mark: "澪",
+        role: "伝え方・広報・入口設計",
+        color: "#91bdeb",
+        createStatement: function (context) {
+          return "入口では「" + context.theme
+            + "」の機能説明より、相手が抱える場面を一言で見せる方が届きます。「" + context.goal
+            + "」を目指すなら、誰のどんな困りごとを軽くするのかが伝わる短い紹介文と、試せる入口をひとつ用意しましょう。";
+        }
+      },
+      {
+        id: "field",
+        name: "現場ユイ",
+        mark: "現",
+        role: "実行手順・現実性",
+        color: "#e8a769",
+        createStatement: function (context) {
+          return "実行は3段階にします。今日、「" + context.theme
+            + "」の仮説を1枚に書く。次に1人へ見せる。その反応から1か所だけ直す。「" + context.goal
+            + "」全部を一度に背負わず、24時間以内に終わる作業へ落とせば動けます。";
+        }
+      }
+    ];
+
+    /*
+      2. 会議データ生成
+      UIから独立させているため、後からこのオブジェクトだけを
+      OpenAI API対応の実装へ置き換えられます。
+    */
+    var MeetingEngine = {
+      createContext: function (theme, goal) {
+        return {
+          theme: theme.trim(),
+          goal: goal.trim()
+        };
+      },
+
+      generateStatements: function (context) {
+        return Promise.resolve(PERSONAS.map(function (persona) {
+          return {
+            persona: persona,
+            text: persona.createStatement(context)
+          };
+        }));
+      },
+
+      generateDecisions: function (context) {
+        return [
+          {
+            type: "adopt",
+            label: "採用案",
+            text: "「" + context.theme + "」を、目標「" + context.goal
+              + "」につながる最小検証へ縮め、まず1人の具体的な反応を得る。"
+          },
+          {
+            type: "hold",
+            label: "保留案",
+            text: "大規模な制作、一斉公開、細かな機能追加は、最初の反応が得られるまで保留する。"
+          },
+          {
+            type: "danger",
+            label: "危険案",
+            text: "対象者と判断基準を決めないまま、「" + context.goal
+              + "」だけを追って作り込み続ける。"
+          },
+          {
+            type: "next",
+            label: "次の一手",
+            text: "今日中に「" + context.theme
+              + "」の対象者、困りごと、試作品を各1行で書き、1人へ見せる。"
+          }
+        ];
+      }
+    };
+
+    /*
+      3. 画面描画
+      ユーザー入力は innerHTML に入れず、すべて textContent で表示します。
+    */
+    var memberList = document.getElementById("memberList");
+    var meetingForm = document.getElementById("meetingForm");
+    var themeInput = document.getElementById("themeInput");
+    var goalInput = document.getElementById("goalInput");
+    var startButton = document.getElementById("startButton");
+    var emptyState = document.getElementById("emptyState");
+    var meetingLog = document.getElementById("meetingLog");
+    var roomStatus = document.getElementById("roomStatus");
+    var statusText = document.getElementById("statusText");
+    var decisionPanel = document.getElementById("decisionPanel");
+    var decisionGrid = document.getElementById("decisionGrid");
+    var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function renderMembers() {
+      PERSONAS.forEach(function (persona) {
+        var member = document.createElement("div");
+        var mark = document.createElement("span");
+        var name = document.createElement("span");
+
+        member.className = "member";
+        member.style.setProperty("--member-color", persona.color);
+        mark.className = "member-mark";
+        mark.textContent = persona.mark;
+        name.className = "member-name";
+        name.textContent = persona.name;
+
+        member.appendChild(mark);
+        member.appendChild(name);
+        memberList.appendChild(member);
+      });
+    }
+
+    function createSpeechItem(statement) {
+      var item = document.createElement("li");
+      var mark = document.createElement("div");
+      var body = document.createElement("div");
+      var head = document.createElement("div");
+      var name = document.createElement("span");
+      var role = document.createElement("span");
+      var text = document.createElement("p");
+
+      item.className = "speech";
+      item.style.setProperty("--speaker-color", statement.persona.color);
+      mark.className = "speaker-mark";
+      mark.textContent = statement.persona.mark;
+      body.className = "speech-body";
+      head.className = "speaker-head";
+      name.className = "speaker-name";
+      name.textContent = statement.persona.name;
+      role.className = "speaker-role";
+      role.textContent = statement.persona.role;
+      text.className = "speech-text";
+      text.textContent = statement.text;
+
+      head.appendChild(name);
+      head.appendChild(role);
+      body.appendChild(head);
+      body.appendChild(text);
+      item.appendChild(mark);
+      item.appendChild(body);
+
+      return item;
+    }
+
+    function renderDecisions(decisions) {
+      decisionGrid.replaceChildren();
+
+      decisions.forEach(function (decision) {
+        var card = document.createElement("article");
+        var heading = document.createElement("h3");
+        var text = document.createElement("p");
+
+        card.className = "decision-card";
+        card.dataset.type = decision.type;
+        heading.textContent = decision.label;
+        text.textContent = decision.text;
+        card.appendChild(heading);
+        card.appendChild(text);
+        decisionGrid.appendChild(card);
+      });
+
+      decisionPanel.classList.add("is-visible");
+    }
+
+    function wait(milliseconds) {
+      return new Promise(function (resolve) {
+        window.setTimeout(resolve, milliseconds);
+      });
+    }
+
+    /*
+      4. 会議進行
+      発言データを受け取り、順番にログへ追加します。
+    */
+    async function runMeeting(context) {
+      startButton.disabled = true;
+      startButton.textContent = "会議中...";
+      emptyState.classList.add("hidden");
+      meetingLog.classList.remove("hidden");
+      meetingLog.replaceChildren();
+      decisionGrid.replaceChildren();
+      decisionPanel.classList.remove("is-visible");
+      roomStatus.classList.add("is-live");
+      statusText.textContent = "会議中 0 / " + PERSONAS.length;
+
+      try {
+        var statements = await MeetingEngine.generateStatements(context);
+
+        for (var i = 0; i < statements.length; i++) {
+          if (!prefersReducedMotion) {
+            await wait(i === 0 ? 280 : 720);
+          }
+
+          meetingLog.appendChild(createSpeechItem(statements[i]));
+          statusText.textContent = "会議中 " + (i + 1) + " / " + statements.length;
+        }
+
+        if (!prefersReducedMotion) {
+          await wait(620);
+        }
+
+        renderDecisions(MeetingEngine.generateDecisions(context));
+        roomStatus.classList.remove("is-live");
+        statusText.textContent = "会議終了";
+        decisionPanel.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+      } finally {
+        startButton.disabled = false;
+        startButton.textContent = "もう一度会議する";
+      }
+    }
+
+    meetingForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      if (!meetingForm.reportValidity()) {
+        return;
+      }
+
+      var context = MeetingEngine.createContext(themeInput.value, goalInput.value);
+      runMeeting(context);
+    });
+
+    renderMembers();
+  </script>
+</body>
+</html>
