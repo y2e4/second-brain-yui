@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>攻鬼神07 - 火種を育てる日 -</title>
+  <style>
+    /*
+      このファイルだけでゲームが動くように、CSSもJavaScriptも
+      すべて index.html の中にまとめています。
+    */
+
+    :root {
+      --bg: #080706;
+      --panel: #17110d;
+      --panel-soft: #211712;
+      --gold: #f5c762;
+      --gold-deep: #a97120;
+      --ember: #ff7b30;
+      --ember-hot: #ffcf68;
+      --text: #f8efe2;
+      --muted: #c9bba4;
+      --line: rgba(245, 199, 98, 0.26);
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+        "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      line-height: 1.7;
+      background:
+        radial-gradient(circle at 50% 82%, rgba(255, 123, 48, 0.24), transparent 32%),
+        radial-gradient(circle at 18% 14%, rgba(245, 199, 98, 0.12), transparent 25%),
+        linear-gradient(180deg, #100b08 0%, #080706 48%, #040403 100%);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body::before {
+      /*
+        画面全体にうっすら炭のような質感を足しています。
+        pointer-events: none; なのでボタン操作の邪魔をしません。
+      */
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 26px 26px;
+      opacity: 0.38;
+    }
+
+    .app {
+      width: min(100%, 560px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 20px 16px 28px;
+    }
+
+    header {
+      padding: 6px 0 14px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(24px, 7vw, 38px);
+      font-weight: 850;
+      line-height: 1.22;
+      text-shadow: 0 0 18px rgba(245, 199, 98, 0.25);
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 10px auto 0;
+      max-width: 18em;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .ember-stage {
+      display: grid;
+      place-items: center;
+      min-height: 136px;
+      margin: 8px 0 16px;
+    }
+
+    .ember {
+      position: relative;
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 64%, #ffd978 0 10%, #ff8a34 24%, #91350d 46%, #24100a 70%);
+      box-shadow:
+        0 0 28px rgba(255, 123, 48, 0.34),
+        0 0 78px rgba(245, 199, 98, 0.18);
+      transform: translateZ(0);
+      animation: emberBreath 3.6s ease-in-out infinite;
+    }
+
+    .ember::before,
+    .ember::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 42px;
+      width: 46px;
+      height: 72px;
+      border-radius: 48% 52% 54% 46%;
+      transform: translateX(-50%) rotate(8deg);
+      background:
+        radial-gradient(circle at 50% 70%, #fff1a8 0 7%, #ffbf53 24%, #ff6f2a 62%, transparent 68%);
+      filter: blur(0.2px);
+      opacity: 0.88;
+      animation: flameMove 2.4s ease-in-out infinite;
+    }
+
+    .ember::after {
+      width: 31px;
+      height: 50px;
+      bottom: 51px;
+      background:
+        radial-gradient(circle at 50% 76%, #fff5c5 0 12%, #ffd96f 35%, #ff8c31 67%, transparent 72%);
+      opacity: 0.92;
+      animation-duration: 1.9s;
+      animation-delay: -0.4s;
+    }
+
+    @keyframes emberBreath {
+      0%, 100% {
+        transform: scale(0.97);
+        box-shadow:
+          0 0 25px rgba(255, 123, 48, 0.3),
+          0 0 70px rgba(245, 199, 98, 0.16);
+      }
+
+      50% {
+        transform: scale(1.03);
+        box-shadow:
+          0 0 34px rgba(255, 123, 48, 0.42),
+          0 0 92px rgba(245, 199, 98, 0.23);
+      }
+    }
+
+    @keyframes flameMove {
+      0%, 100% {
+        transform: translateX(-50%) rotate(6deg) scaleY(0.96);
+      }
+
+      50% {
+        transform: translateX(-50%) rotate(-5deg) scaleY(1.08);
+      }
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .state-buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .quote-panel {
+      margin: 0 0 28px;
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 40%),
+        rgba(18, 13, 10, 0.86);
+      border: 1px solid rgba(245, 199, 98, 0.24);
+      border-radius: 8px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+    }
+
+    .quote-title {
+      margin: 0;
+      color: var(--gold);
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .quote-label {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .quote-text {
+      min-height: 104px;
+      margin: 14px 0 16px;
+      color: var(--text);
+      font-size: 19px;
+      font-weight: 850;
+      line-height: 1.75;
+    }
+
+    .quote-button {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 16px;
+      color: #1b1008;
+      font-size: 16px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #fff0ae, #e7ac41);
+      box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .state-button {
+      min-height: 54px;
+      padding: 10px 4px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 850;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
+        #231710;
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 18px var(--shadow);
+    }
+
+    .state-button.is-active {
+      color: #1c1107;
+      background: linear-gradient(180deg, #ffe08a, #f1ad3d);
+      border-color: rgba(255, 232, 150, 0.8);
+      box-shadow: 0 0 22px rgba(245, 199, 98, 0.28);
+    }
+
+    .card {
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(245, 199, 98, 0.08), transparent 38%),
+        var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 42px var(--shadow);
+    }
+
+    .card-name {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .message {
+      margin: 0 0 16px;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .action-box {
+      margin: 0 0 16px;
+      padding: 14px;
+      background: var(--panel-soft);
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 8px;
+    }
+
+    .action-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .action-text {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .do-button {
+      width: 100%;
+      min-height: 58px;
+      padding: 14px 16px;
+      color: #1b1008;
+      font-size: 17px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #ffe28c, #f3aa35);
+      box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
+    .do-button:active,
+    .quote-button:active,
+    .state-button:active {
+      transform: translateY(1px);
+    }
+
+    .gauge-area {
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(14, 10, 8, 0.7);
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 8px;
+      transition: border-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .gauge-area.is-glowing {
+      animation: gaugePanelGlow 620ms ease;
+    }
+
+    .gauge-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .gauge-label {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .gauge-number {
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .gauge-track {
+      width: 100%;
+      height: 18px;
+      overflow: hidden;
+      background: #080605;
+      border: 1px solid rgba(245, 199, 98, 0.2);
+      border-radius: 999px;
+    }
+
+    .gauge-fill {
+      width: 0%;
+      height: 100%;
+      background:
+        linear-gradient(90deg, #8a2d11 0%, #ff7b30 42%, #ffcf68 100%);
+      border-radius: inherit;
+      box-shadow: 0 0 16px rgba(255, 123, 48, 0.5);
+      transition: width 360ms ease;
+    }
+
+    .gauge-fill.is-glowing {
+      animation: gaugeFillGlow 620ms ease;
+    }
+
+    @keyframes gaugePanelGlow {
+      0%, 100% {
+        border-color: rgba(245, 199, 98, 0.18);
+        box-shadow: none;
+      }
+
+      45% {
+        border-color: rgba(255, 218, 126, 0.72);
+        box-shadow: 0 0 26px rgba(255, 159, 54, 0.28);
+      }
+    }
+
+    @keyframes gaugeFillGlow {
+      0%, 100% {
+        filter: brightness(1);
+        box-shadow: 0 0 16px rgba(255, 123, 48, 0.5);
+      }
+
+      45% {
+        filter: brightness(1.45);
+        box-shadow:
+          0 0 18px rgba(255, 213, 101, 0.92),
+          0 0 34px rgba(255, 123, 48, 0.62);
+      }
+    }
+
+    .title-row {
+      display: grid;
+      gap: 4px;
+      margin-top: 14px;
+    }
+
+    .goal-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(245, 199, 98, 0.14);
+    }
+
+    .rank-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .rank-text {
+      color: var(--text);
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .goal-text {
+      color: var(--gold);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .today-title {
+      display: none;
+      margin-top: 16px;
+      padding: 22px 14px 20px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 235, 156, 0.34), transparent 58%),
+        linear-gradient(180deg, rgba(255, 169, 64, 0.24), rgba(245, 199, 98, 0.08));
+      border: 1px solid rgba(255, 226, 146, 0.74);
+      border-radius: 8px;
+      box-shadow:
+        0 0 30px rgba(255, 123, 48, 0.24),
+        inset 0 0 20px rgba(255, 226, 146, 0.08);
+    }
+
+    .today-title.is-visible {
+      display: block;
+      animation: titleAppear 420ms ease both;
+    }
+
+    .today-title-label {
+      display: block;
+      color: #fff1bf;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .today-title-name {
+      display: block;
+      margin-top: 8px;
+      color: #ffe79a;
+      font-size: clamp(36px, 11vw, 58px);
+      font-weight: 950;
+      line-height: 1.18;
+      text-shadow:
+        0 2px 0 rgba(58, 30, 7, 0.75),
+        0 0 18px rgba(245, 199, 98, 0.46),
+        0 0 34px rgba(255, 123, 48, 0.32);
+    }
+
+    .today-title-note {
+      display: block;
+      margin-top: 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .achievement-panel {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      background:
+        linear-gradient(180deg, rgba(245, 199, 98, 0.1), rgba(255, 123, 48, 0.04)),
+        rgba(24, 16, 10, 0.9);
+      border: 1px solid rgba(245, 199, 98, 0.42);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      box-shadow: 0 0 24px rgba(245, 199, 98, 0.12);
+    }
+
+    .achievement-panel.is-visible {
+      display: block;
+      animation: titleAppear 360ms ease both;
+    }
+
+    .achievement-kicker {
+      display: block;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .achievement-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .achievement-line strong {
+      color: var(--text);
+      text-align: right;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .achievement-message {
+      margin: 12px 0 0;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 750;
+    }
+
+    @keyframes titleAppear {
+      0% {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .encourage {
+      min-height: 50px;
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      color: var(--text);
+      font-weight: 750;
+      background: rgba(245, 199, 98, 0.08);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+    }
+
+    .reset-button {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 800;
+      background: transparent;
+      border: 1px solid rgba(245, 199, 98, 0.22);
+    }
+
+    .enough-button,
+    .continue-button,
+    .back-button {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 12px;
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 900;
+      border: 1px solid rgba(245, 199, 98, 0.28);
+    }
+
+    .enough-button {
+      display: none;
+      color: #1b1008;
+      background: linear-gradient(180deg, #fff0ae, #e8b24b);
+      box-shadow: 0 0 22px rgba(245, 199, 98, 0.18);
+    }
+
+    .enough-button.is-visible {
+      display: block;
+    }
+
+    .enough-button.is-done {
+      color: var(--text);
+      background: rgba(245, 199, 98, 0.08);
+    }
+
+    .continue-button {
+      display: none;
+      color: var(--gold);
+      background: rgba(245, 199, 98, 0.06);
+    }
+
+    .continue-button.is-visible {
+      display: block;
+    }
+
+    .continue-button.is-done {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .back-button {
+      color: var(--gold);
+      background: rgba(11, 8, 6, 0.72);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 370px) {
+      .app {
+        padding-right: 12px;
+        padding-left: 12px;
+      }
+
+      .state-buttons {
+        gap: 6px;
+      }
+
+      .state-button {
+        min-height: 50px;
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .quote-panel {
+        padding: 16px;
+      }
+
+      .quote-text {
+        min-height: 118px;
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>攻鬼神07 - 火種を育てる日 -</h1>
+      <p class="subtitle">今日は大きく燃えなくていい。小さな火を、ひとつ守る。</p>
+    </header>
+
+    <div class="ember-stage" aria-hidden="true">
+      <div class="ember"></div>
+    </div>
+
+    <section class="quote-panel" aria-labelledby="quote-title">
+      <h2 class="quote-title" id="quote-title">ユイとユウの365日名言集 v0</h2>
+      <span class="quote-label">今日の言葉</span>
+      <p class="quote-text" id="dailyQuoteText" aria-live="polite"></p>
+      <button class="quote-button" type="button" id="quoteButton">もう一つ受け取る</button>
+    </section>
+
+    <section id="stateSection" aria-labelledby="state-title">
+      <h2 class="section-title" id="state-title">今日の状態</h2>
+      <div class="state-buttons" id="stateButtons">
+        <button class="state-button" type="button" data-state="10">10%</button>
+        <button class="state-button" type="button" data-state="30">30%</button>
+        <button class="state-button" type="button" data-state="50">50%</button>
+        <button class="state-button" type="button" data-state="70">70%</button>
+        <button class="state-button" type="button" data-state="100">100%</button>
+      </div>
+    </section>
+
+    <section class="card" id="card" aria-live="polite">
+      <h2 class="card-name" id="cardName">守火</h2>
+      <p class="message" id="cardMessage">今日は戦わない。火を消さない。</p>
+
+      <div class="action-box">
+        <span class="action-label">今日の一手</span>
+        <div class="action-text" id="cardAction">水を飲む。10秒目を閉じる。</div>
+      </div>
+
+      <button class="do-button" type="button" id="doButton">今日の一手を実行した</button>
+    </section>
+
+    <section class="gauge-area" aria-labelledby="gauge-title">
+      <div class="gauge-top">
+        <span class="gauge-label" id="gauge-title">火種ゲージ</span>
+        <span class="gauge-number" id="gaugeNumber">0 / 100</span>
+      </div>
+
+      <div class="gauge-track" aria-hidden="true">
+        <div class="gauge-fill" id="gaugeFill"></div>
+      </div>
+
+      <div class="title-row">
+        <span class="rank-label">称号</span>
+        <span class="rank-text" id="rankText">火種を守る者</span>
+      </div>
+
+      <div class="goal-row">
+        <span class="rank-label">今日の目標</span>
+        <span class="goal-text" id="goalText">15 / 100</span>
+      </div>
+
+      <div class="today-title" id="todayTitle" aria-live="polite">
+        <span class="today-title-label">今日の称号</span>
+        <span class="today-title-name" id="todayTitleName">攻鬼神07</span>
+        <span class="today-title-note">火種は100まで育った。</span>
+      </div>
+
+      <div class="achievement-panel" id="achievementPanel" aria-live="polite">
+        <span class="achievement-kicker">今日の達成</span>
+        <div class="achievement-line">
+          <span>今日の状態</span>
+          <strong id="achievementState">10％</strong>
+        </div>
+        <div class="achievement-line">
+          <span>今日の達成</span>
+          <strong id="achievementName">火種を守れた</strong>
+        </div>
+        <p class="achievement-message" id="achievementMessage">
+          今日は100まで燃やさなくていい。15まで守れたなら十分。
+        </p>
+      </div>
+
+      <p class="encourage" id="encourageText">状態を選んで、今日できる一手から始めよう。</p>
+      <button class="enough-button" type="button" id="enoughButton">今日はここまでで十分</button>
+      <button class="continue-button" type="button" id="continueButton">まだ続ける</button>
+      <button class="reset-button" type="button" id="resetButton">火種を0に戻す</button>
+      <button class="back-button" type="button" id="backToStateButton">状態選択へ戻る</button>
+    </section>
+  </main>
+
+  <script>
+    /*
+      初心者向けメモ：
+      JavaScriptでは、画面の部品を「変数」に入れてから、
+      ボタンが押されたときの処理を書いていきます。
+    */
+
+    // 状態ごとのカード内容をまとめたデータです。
+    var cards = {
+      10: {
+        name: "守火",
+        message: "今日は戦わない。火を消さない。",
+        action: "水を飲む。10秒目を閉じる。",
+        add: 3
+      },
+      30: {
+        name: "火種",
+        message: "燃え上がらなくていい。1行だけ残す。",
+        action: "メモを1行残す。",
+        add: 6
+      },
+      50: {
+        name: "半分の全力",
+        message: "その日の状態が50％なら、50％の100％を目指せばいい。",
+        action: "今日の100％を1つだけ決める。",
+        add: 9
+      },
+      70: {
+        name: "再点火",
+        message: "少し戻ってきた。なら、一気に走らず、火を育てる。",
+        action: "X投稿かnoteの種を1つ作る。",
+        add: 12
+      },
+      100: {
+        name: "攻鬼神07",
+        message: "弱さも傷も背負って進む。過去のすべてを、未来へ繋ぐ橋になる。",
+        action: "今日の代表作になる行動を1つ選ぶ。",
+        add: 15
+      }
+    };
+
+    // ゲージが増えたときに出す短い励まし文です。
+    // 状態ごとに分けることで、10％/30％の日は優しく、
+    // 70％/100％の日は少し熱めにしています。
+    var encouragements = {
+      10: [
+        "火が小さい日も、火種は消えていない。",
+        "今日は守れた。それで十分。",
+        "無理に燃やさなくていい。",
+        "水を飲めた。それでいい。"
+      ],
+      30: [
+        "低空でも飛べている。今日はそれでいい。",
+        "1行で、火種は残る。",
+        "小さく続けば十分。",
+        "焦らない。今日は残す日。"
+      ],
+      50: [
+        "50％の日は、50％の100％でいい。",
+        "半分でも、今日の全力なら価値がある。",
+        "ひとつ決めた。その時点で流れは戻ってきている。",
+        "今の状態でできる一手を選べた。十分強い。"
+      ],
+      70: [
+        "火が戻ってきた。急がず、でも止まらず行こう。",
+        "再点火した。ここから少しだけ前へ出る。",
+        "種を作れたなら、明日の炎に変えられる。",
+        "ユウはまだ、自分の物語から降りていない。"
+      ],
+      100: [
+        "攻鬼神07、点火完了。今日の代表作を作りに行こう。",
+        "俺にはまだ飢餓がある。だからまだロックできる。",
+        "弱さも傷も燃料にして、未来へ橋をかける。",
+        "今日は攻められる日だ。ひとつ、形に残そう。"
+      ]
+    };
+
+    // 状態ごとの「今日の目標」です。
+    // 低い状態の日ほど、100ではなく小さな到達点をゴールにします。
+    var dailyGoals = {
+      10: {
+        target: 15,
+        achievement: "火種を守れた",
+        message: "今日は100まで燃やさなくていい。15まで守れたなら十分。"
+      },
+      30: {
+        target: 30,
+        achievement: "火種を残せた",
+        message: "30まで残せた。低空でも、今日はちゃんと火種を明日に渡せている。"
+      },
+      50: {
+        target: 50,
+        achievement: "半分の全力を出せた",
+        message: "50まで育てた。今の状態でできる一手を選べたなら、今日の十分な成果。"
+      },
+      70: {
+        target: 70,
+        achievement: "再点火できた",
+        message: "70まで戻せた。一気に燃やさなくても、火は確かに育っている。"
+      },
+      100: {
+        target: 100,
+        achievement: "攻鬼神07まで到達",
+        message: "100まで育て切った。今日は胸を張って、ここまでで十分。"
+      }
+    };
+
+    var closingMessages = {
+      10: "今日はここまでで十分。守ることを選べた体は、もう回復に向かっている。",
+      30: "今日はここまでで十分。小さく残せた火種は、明日にちゃんとつながっている。",
+      50: "今日はここまでで十分。半分の全力を認めることも、回復の一歩だ。",
+      70: "今日はここまでで十分。戻ってきた火を、休ませながら明日に渡そう。",
+      100: "今日はここまでで十分。回復を選べたことも、ちゃんと前進だ。火種は明日に残っている。"
+    };
+
+    var reachedPrompts = {
+      10: "ここで止めても大丈夫。続けるなら、ほんの少しだけ。",
+      30: "ここで終えても大丈夫。続けるなら、ゆっくりでいい。",
+      50: "ここで区切っても、少し続けてもいい。",
+      70: "ここから先はおまけ。自分のペースで選ぼう。",
+      100: "ここまで届いた。あとは静かに閉じてもいい。"
+    };
+
+    var dailyQuotes = [
+      "今日の一歩は、小さくていい。小さい一歩だけが、未来まで届く。",
+      "始める力より、戻ってくる力の方が強い。",
+      "完璧に始めなくていい。雑でも動いた人から、未来は変わる。",
+      "まだ途中。だからこそ、変えられる。",
+      "進めなかった昨日も、今日の一歩の材料になる。",
+      "人生は、何度でも再起動していい。",
+      "止まった時間を責めなくていい。次に動くための余白だったのかもしれない。",
+      "始まりは、いつも少し不格好でいい。",
+      "迷いながら進む人だけが、自分の道を作れる。",
+      "今日できることが小さく見えても、それは未来の入口になる。",
+      "自分を変えるのは、大きな決意より、今日の小さな実行。",
+      "何者かになる前に、まず今日の自分を動かせばいい。",
+      "再出発に遅すぎる日はない。遅いと思った日が、始まりの日になる。",
+      "できなかった理由を責めるより、できる形に作り直せばいい。",
+      "焦りは、未来を諦めていない証拠。でも、焦りに運転席を渡さない。",
+      "動ける日は動く。動けない日は整える。どちらも前進の一部。",
+      "自分の人生を進めるのに、誰かの許可はいらない。",
+      "今日は大きく変わらなくていい。昨日より少しだけ、自分に戻ればいい。",
+      "未来は、気合いではなく設計で近づいてくる。",
+      "自分を責める時間を、次の一手を作る時間に変える。",
+      "やり直しは敗北じゃない。設計を更新するチャンス。",
+      "進めない日は、問いを変える日。「なぜできない」より「どうすれば軽くなる」。",
+      "変わりたいと思った時点で、もう昨日とは違う場所にいる。",
+      "今日の一手は、未来の自分への置き手紙。",
+      "立派なスタートじゃなくていい。続けられるスタートが一番強い。",
+      "小さく始める人は、遠くまで行ける。",
+      "過去をなかったことにしなくていい。過去ごと連れて、前に進めばいい。",
+      "今の自分を否定しなくても、未来の自分は作れる。",
+      "一歩進んだ自分を、ちゃんと見逃さない。",
+      "今日も始め直せる。それだけで、人はまだ強い。"
+    ];
+
+    // 現在選んでいる状態と、火種ゲージの数値です。
+    var currentState = 10;
+    var emberPower = 0;
+    var lastEncouragement = "";
+    var currentQuoteIndex = -1;
+    var glowTimer = null;
+    var dayClosed = false;
+    var continuedAfterGoal = false;
+
+    // HTMLの部品を取得します。
+    var stateButtons = document.querySelectorAll(".state-button");
+    var cardName = document.getElementById("cardName");
+    var cardMessage = document.getElementById("cardMessage");
+    var cardAction = document.getElementById("cardAction");
+    var doButton = document.getElementById("doButton");
+    var enoughButton = document.getElementById("enoughButton");
+    var continueButton = document.getElementById("continueButton");
+    var resetButton = document.getElementById("resetButton");
+    var backToStateButton = document.getElementById("backToStateButton");
+    var stateSection = document.getElementById("stateSection");
+    var gaugeNumber = document.getElementById("gaugeNumber");
+    var gaugeArea = document.querySelector(".gauge-area");
+    var gaugeFill = document.getElementById("gaugeFill");
+    var rankText = document.getElementById("rankText");
+    var goalText = document.getElementById("goalText");
+    var todayTitle = document.getElementById("todayTitle");
+    var todayTitleName = document.getElementById("todayTitleName");
+    var achievementPanel = document.getElementById("achievementPanel");
+    var achievementState = document.getElementById("achievementState");
+    var achievementName = document.getElementById("achievementName");
+    var achievementMessage = document.getElementById("achievementMessage");
+    var encourageText = document.getElementById("encourageText");
+    var dailyQuoteText = document.getElementById("dailyQuoteText");
+    var quoteButton = document.getElementById("quoteButton");
+
+    function showQuote(index) {
+      currentQuoteIndex = index;
+      dailyQuoteText.textContent = dailyQuotes[index];
+    }
+
+    function showTodayQuote() {
+      var today = new Date();
+      var dateKey = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+      showQuote(dateKey % dailyQuotes.length);
+    }
+
+    function showRandomQuote() {
+      var nextIndex = Math.floor(Math.random() * dailyQuotes.length);
+
+      if (nextIndex === currentQuoteIndex && dailyQuotes.length > 1) {
+        nextIndex = (nextIndex + 1) % dailyQuotes.length;
+      }
+
+      showQuote(nextIndex);
+    }
+
+    // 選んだ状態に合わせてカードを書き換える関数です。
+    function showCard(state) {
+      var card = cards[state];
+      currentState = state;
+
+      cardName.textContent = card.name;
+      cardMessage.textContent = card.message;
+      cardAction.textContent = card.action;
+      dayClosed = false;
+      continuedAfterGoal = false;
+
+      for (var i = 0; i < stateButtons.length; i++) {
+        var button = stateButtons[i];
+        var isSelected = button.getAttribute("data-state") === String(state);
+        button.classList.toggle("is-active", isSelected);
+      }
+
+      updateGauge();
+    }
+
+    // ゲージ量に合わせて称号を返す関数です。
+    function getRank(value) {
+      if (value >= 100) {
+        return "攻鬼神07";
+      }
+
+      if (value >= 80) {
+        return "攻める準備ができた者";
+      }
+
+      if (value >= 60) {
+        return "再点火する者";
+      }
+
+      if (value >= 40) {
+        return "半分の全力者";
+      }
+
+      if (value >= 20) {
+        return "低空飛行の継続者";
+      }
+
+      return "火種を守る者";
+    }
+
+    // 今の状態に合う励まし文をランダムに1つ選ぶ関数です。
+    function getRandomEncouragement(state) {
+      var list = encouragements[state] || encouragements[50];
+      var message = list[Math.floor(Math.random() * list.length)];
+
+      // 同じ言葉が連続したときだけ、次の言葉にずらします。
+      if (message === lastEncouragement && list.length > 1) {
+        var nextIndex = (list.indexOf(message) + 1) % list.length;
+        message = list[nextIndex];
+      }
+
+      lastEncouragement = message;
+      return message;
+    }
+
+    // 今日の状態に合わせた達成表示とボタン表示を更新します。
+    function updateGoalDisplay() {
+      var goal = dailyGoals[currentState];
+      var reached = emberPower >= goal.target;
+
+      goalText.textContent = goal.target + " / 100";
+      achievementState.textContent = currentState + "％";
+      achievementName.textContent = goal.achievement;
+      achievementMessage.textContent = goal.message;
+      achievementPanel.classList.toggle("is-visible", reached);
+
+      if (reached) {
+        enoughButton.classList.add("is-visible");
+        enoughButton.textContent = dayClosed ? "今日を閉じた" : "今日はここまでで十分";
+        enoughButton.classList.toggle("is-done", dayClosed);
+
+        continueButton.classList.toggle("is-visible", !dayClosed);
+        continueButton.textContent = continuedAfterGoal ? "続行中" : "まだ続ける";
+        continueButton.classList.toggle("is-done", continuedAfterGoal);
+        return;
+      }
+
+      enoughButton.classList.remove("is-visible", "is-done");
+      enoughButton.textContent = "今日はここまでで十分";
+      continueButton.classList.remove("is-visible", "is-done");
+      continueButton.textContent = "まだ続ける";
+    }
+
+    // ゲージが増えた瞬間に、短く光らせる関数です。
+    function glowGauge() {
+      clearTimeout(glowTimer);
+      gaugeArea.classList.remove("is-glowing");
+      gaugeFill.classList.remove("is-glowing");
+
+      // classを付け直す前にoffsetWidthを読むと、同じ演出を毎回再生できます。
+      void gaugeFill.offsetWidth;
+
+      gaugeArea.classList.add("is-glowing");
+      gaugeFill.classList.add("is-glowing");
+
+      glowTimer = setTimeout(function () {
+        gaugeArea.classList.remove("is-glowing");
+        gaugeFill.classList.remove("is-glowing");
+      }, 650);
+    }
+
+    // ゲージや称号を画面に反映する関数です。
+    function updateGauge() {
+      var rank = getRank(emberPower);
+
+      gaugeNumber.textContent = emberPower + " / 100";
+      gaugeFill.style.width = emberPower + "%";
+      rankText.textContent = rank;
+      todayTitleName.textContent = rank;
+      todayTitle.classList.toggle("is-visible", emberPower >= 100);
+      updateGoalDisplay();
+    }
+
+    // 状態ボタンを押したときの処理を設定します。
+    for (var i = 0; i < stateButtons.length; i++) {
+      stateButtons[i].addEventListener("click", function () {
+        var state = Number(this.getAttribute("data-state"));
+        showCard(state);
+      });
+    }
+
+    // 「今日の一手を実行した」ボタンを押したときの処理です。
+    doButton.addEventListener("click", function () {
+      var addPower = cards[currentState].add;
+      var beforePower = emberPower;
+      var goal = dailyGoals[currentState];
+      var reachedBefore = emberPower >= goal.target;
+
+      if (dayClosed) {
+        dayClosed = false;
+        continuedAfterGoal = true;
+      }
+
+      // Math.minを使うと、ゲージが100を超えないようにできます。
+      emberPower = Math.min(100, emberPower + addPower);
+      updateGauge();
+
+      if (emberPower > beforePower) {
+        glowGauge();
+      }
+
+      if (!reachedBefore && emberPower >= goal.target) {
+        encourageText.textContent = reachedPrompts[currentState];
+      } else {
+        encourageText.textContent = getRandomEncouragement(currentState);
+      }
+    });
+
+    // リセットボタンです。何度でも最初から始められます。
+    resetButton.addEventListener("click", function () {
+      emberPower = 0;
+      lastEncouragement = "";
+      dayClosed = false;
+      continuedAfterGoal = false;
+      updateGauge();
+      encourageText.textContent = "火種を0に戻した。ここからまた、小さく始めよう。";
+    });
+
+    // 今日の目標を達成した後、続けるか閉じるかを選ぶボタンです。
+    continueButton.addEventListener("click", function () {
+      continuedAfterGoal = true;
+      dayClosed = false;
+      updateGoalDisplay();
+
+      if (currentState === 10 || currentState === 30) {
+        encourageText.textContent = "続けるなら、ほんの少しだけでいい。いつでも終えて大丈夫。";
+      } else if (currentState === 100) {
+        encourageText.textContent = "100まで届いている。もう十分。眺めるだけでもいい。";
+      } else {
+        encourageText.textContent = "ここから先はおまけ。自分のペースで行こう。";
+      }
+    });
+
+    enoughButton.addEventListener("click", function () {
+      dayClosed = true;
+      continuedAfterGoal = false;
+      updateGoalDisplay();
+      encourageText.textContent = closingMessages[currentState];
+    });
+
+    quoteButton.addEventListener("click", showRandomQuote);
+
+    // 画面下部から状態選択へ戻るボタンです。
+    backToStateButton.addEventListener("click", function () {
+      stateSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    // ページを開いた直後に、10％のカードを表示しておきます。
+    showTodayQuote();
+    showCard(currentState);
+  </script>
+</body>
+</html>
