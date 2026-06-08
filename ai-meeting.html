@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="application-name" content="AI会議室 v0">
+  <meta name="application-name" content="AI会議室 v1">
   <meta name="theme-color" content="#100b08">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=2">
   <link rel="icon" type="image/png" sizes="512x512" href="icon.png?v=2">
-  <title>AI会議室 v0 | 火種ユイ</title>
+  <title>AI会議室 v1 | 火種ユイ</title>
   <style>
     :root {
       --bg: #080706;
@@ -20,6 +20,8 @@
       --line: rgba(245, 199, 98, 0.26);
       --danger: #ff8467;
       --success: #b7dd7a;
+      --sky: #91bdeb;
+      --violet: #c7a3ff;
     }
 
     * {
@@ -37,7 +39,7 @@
       color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans",
         "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
-      line-height: 1.7;
+      line-height: 1.75;
       background:
         radial-gradient(circle at 50% 12%, rgba(255, 123, 48, 0.2), transparent 28%),
         radial-gradient(circle at 12% 64%, rgba(245, 199, 98, 0.09), transparent 26%),
@@ -69,19 +71,30 @@
       touch-action: manipulation;
     }
 
+    button {
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.54;
+    }
+
     .meeting-app {
       position: relative;
       width: min(100%, 720px);
       min-height: 100vh;
       margin: 0 auto;
-      padding: 18px 16px 40px;
+      padding: 18px 16px 44px;
     }
 
     .back-link {
       display: inline-flex;
       align-items: center;
-      min-height: 44px;
-      padding: 8px 12px;
+      min-height: 46px;
+      padding: 9px 13px;
       color: var(--gold);
       font-size: 14px;
       font-weight: 850;
@@ -92,14 +105,14 @@
     }
 
     .meeting-header {
-      padding: 28px 0 22px;
+      padding: 28px 0 24px;
       text-align: center;
     }
 
     .meeting-mark {
       position: relative;
-      width: 74px;
-      height: 74px;
+      width: 76px;
+      height: 76px;
       margin: 0 auto 16px;
       border: 1px solid rgba(245, 199, 98, 0.38);
       border-radius: 50%;
@@ -142,7 +155,7 @@
     h1 {
       margin: 0;
       color: var(--gold);
-      font-size: clamp(28px, 8vw, 42px);
+      font-size: clamp(30px, 8vw, 44px);
       font-weight: 950;
       line-height: 1.2;
       text-shadow: 0 0 18px rgba(245, 199, 98, 0.25);
@@ -158,45 +171,51 @@
     }
 
     .tagline {
-      max-width: 30em;
-      margin: 10px auto 0;
+      max-width: 31em;
+      margin: 12px auto 0;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 750;
     }
 
     .panel {
-      padding: 18px;
+      padding: 20px;
       background:
         linear-gradient(180deg, rgba(245, 199, 98, 0.07), transparent 40%),
         rgba(23, 17, 13, 0.94);
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 12px;
       box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+    }
+
+    .panel + .panel,
+    .conclusion-panel {
+      margin-top: 18px;
     }
 
     .section-heading {
       margin: 0;
       color: var(--gold);
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 900;
+      line-height: 1.35;
     }
 
     .section-note {
-      margin: 4px 0 16px;
+      margin: 6px 0 18px;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .input-group + .input-group {
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
     label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
       color: var(--text);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 850;
     }
 
@@ -211,20 +230,20 @@
       width: 100%;
       color: var(--text);
       background: rgba(8, 6, 5, 0.82);
-      border: 1px solid rgba(245, 199, 98, 0.26);
-      border-radius: 8px;
+      border: 1px solid rgba(245, 199, 98, 0.28);
+      border-radius: 10px;
       outline: none;
       transition: border-color 160ms ease, box-shadow 160ms ease;
     }
 
     input {
-      min-height: 50px;
-      padding: 11px 13px;
+      min-height: 54px;
+      padding: 12px 14px;
     }
 
     textarea {
-      min-height: 104px;
-      padding: 11px 13px;
+      min-height: 118px;
+      padding: 12px 14px;
       resize: vertical;
     }
 
@@ -239,31 +258,55 @@
       box-shadow: 0 0 0 3px rgba(245, 199, 98, 0.12);
     }
 
-    .start-button {
+    .button-row,
+    .control-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .control-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .primary-button,
+    .secondary-button,
+    .danger-button {
       width: 100%;
-      min-height: 58px;
-      margin-top: 18px;
+      min-height: 56px;
       padding: 13px 16px;
-      color: #1b1008;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 950;
-      background: linear-gradient(180deg, #ffe69a, #f3aa35);
-      border: 0;
-      border-radius: 8px;
       box-shadow:
-        0 12px 26px rgba(0, 0, 0, 0.32),
-        inset 0 1px 0 rgba(255, 255, 255, 0.48);
-      cursor: pointer;
+        0 12px 26px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
     }
 
-    .start-button:active {
+    .primary-button {
+      color: #1b1008;
+      background: linear-gradient(180deg, #ffe69a, #f3aa35);
+    }
+
+    .secondary-button {
+      color: var(--gold);
+      background:
+        linear-gradient(180deg, rgba(255, 123, 48, 0.1), transparent),
+        rgba(8, 6, 5, 0.72);
+      border: 1px solid rgba(245, 199, 98, 0.28);
+    }
+
+    .danger-button {
+      color: #fff0e9;
+      background:
+        linear-gradient(180deg, rgba(255, 132, 103, 0.18), transparent),
+        rgba(72, 24, 16, 0.78);
+      border: 1px solid rgba(255, 132, 103, 0.38);
+    }
+
+    .primary-button:active,
+    .secondary-button:active,
+    .danger-button:active,
+    .back-link:active {
       transform: translateY(1px);
-    }
-
-    .start-button:disabled {
-      color: #6a5132;
-      background: linear-gradient(180deg, #c9a85f, #9b6d2c);
-      cursor: wait;
     }
 
     .members {
@@ -272,7 +315,7 @@
 
     .member-list {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 8px;
       margin-top: 12px;
     }
@@ -297,7 +340,7 @@
       font-weight: 950;
       background: var(--member-color);
       border-radius: 50%;
-      box-shadow: 0 0 14px color-mix(in srgb, var(--member-color) 42%, transparent);
+      box-shadow: 0 0 14px rgba(245, 199, 98, 0.2);
     }
 
     .member-name {
@@ -330,9 +373,11 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 850;
+      text-align: right;
     }
 
     .status-light {
+      flex: 0 0 auto;
       width: 8px;
       height: 8px;
       background: #695d4e;
@@ -356,44 +401,72 @@
     }
 
     .empty-state {
-      padding: 30px 16px;
+      padding: 34px 18px;
       color: var(--muted);
       text-align: center;
       background: rgba(8, 6, 5, 0.52);
       border: 1px dashed rgba(245, 199, 98, 0.2);
-      border-radius: 8px;
+      border-radius: 10px;
     }
 
     .empty-state strong {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       color: var(--text);
       font-size: 16px;
     }
 
     .log-list {
       display: grid;
-      gap: 12px;
+      gap: 14px;
       margin: 0;
       padding: 0;
       list-style: none;
     }
 
-    .speech {
+    .log-card {
       display: grid;
-      grid-template-columns: 42px 1fr;
-      gap: 11px;
-      padding: 14px;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 12px;
+      padding: 16px;
       background:
-        linear-gradient(90deg, color-mix(in srgb, var(--speaker-color) 9%, transparent), transparent 54%),
-        rgba(8, 6, 5, 0.66);
-      border: 1px solid rgba(245, 199, 98, 0.15);
-      border-left: 3px solid var(--speaker-color);
-      border-radius: 8px;
-      animation: speechIn 300ms ease both;
+        linear-gradient(90deg, rgba(245, 199, 98, 0.07), transparent 54%),
+        rgba(8, 6, 5, 0.68);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-left: 4px solid var(--speaker-color, var(--gold));
+      border-radius: 10px;
+      animation: cardIn 260ms ease both;
     }
 
-    @keyframes speechIn {
+    .log-card.is-user {
+      background:
+        radial-gradient(circle at 10% 8%, rgba(255, 211, 106, 0.16), transparent 32%),
+        rgba(31, 22, 13, 0.92);
+      border-color: rgba(255, 221, 133, 0.5);
+      border-left-color: #ffdf8a;
+      box-shadow: 0 0 22px rgba(255, 123, 48, 0.12);
+    }
+
+    .log-card.is-system {
+      border-left-color: var(--sky);
+    }
+
+    .log-card.is-judgement {
+      border-left-color: var(--success);
+    }
+
+    .log-card.is-final {
+      border-left-color: var(--violet);
+    }
+
+    .log-card.is-round {
+      background:
+        radial-gradient(circle at 12% 0%, rgba(245, 199, 98, 0.14), transparent 36%),
+        rgba(8, 6, 5, 0.72);
+      border-color: rgba(245, 199, 98, 0.32);
+    }
+
+    @keyframes cardIn {
       from {
         opacity: 0;
         transform: translateY(8px);
@@ -408,13 +481,17 @@
     .speaker-mark {
       display: grid;
       place-items: center;
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       color: #160e08;
       font-size: 14px;
       font-weight: 950;
-      background: var(--speaker-color);
+      background: var(--speaker-color, var(--gold));
       border-radius: 50%;
+    }
+
+    .log-card.is-user .speaker-mark {
+      background: #ffdf8a;
     }
 
     .speaker-head {
@@ -426,89 +503,125 @@
     }
 
     .speaker-name {
-      color: var(--speaker-color);
-      font-size: 15px;
+      color: var(--speaker-color, var(--gold));
+      font-size: 16px;
       font-weight: 950;
+    }
+
+    .log-card.is-user .speaker-name {
+      color: #ffdf8a;
     }
 
     .speaker-role {
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 750;
     }
 
-    .speech-text {
+    .speech-text,
+    .note-text {
       margin: 0;
       color: var(--text);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
+      line-height: 1.85;
     }
 
-    .decision-panel {
+    .note-text {
+      color: #fff3ce;
+    }
+
+    .status-text {
+      min-height: 1.7em;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .round-meter {
+      margin: 0 0 14px;
+      padding: 14px;
+      background: rgba(8, 6, 5, 0.62);
+      border: 1px solid rgba(245, 199, 98, 0.2);
+      border-radius: 10px;
+    }
+
+    .round-label {
+      display: block;
+      color: var(--gold);
+      font-size: 18px;
+      font-weight: 950;
+      line-height: 1.4;
+    }
+
+    .round-focus {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .conclusion-panel {
       display: none;
-      margin-top: 18px;
-      padding: 18px;
+      padding: 20px;
       background:
         radial-gradient(circle at 50% 0%, rgba(255, 123, 48, 0.12), transparent 40%),
         rgba(23, 17, 13, 0.96);
       border: 1px solid rgba(245, 199, 98, 0.4);
-      border-radius: 10px;
+      border-radius: 12px;
       box-shadow: 0 0 30px rgba(255, 123, 48, 0.1);
     }
 
-    .decision-panel.is-visible {
+    .conclusion-panel.is-visible {
       display: block;
-      animation: speechIn 360ms ease both;
+      animation: cardIn 320ms ease both;
     }
 
-    .decision-grid {
+    .conclusion-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 14px;
+      gap: 12px;
+      margin-top: 16px;
     }
 
-    .decision-card {
-      padding: 14px;
+    .conclusion-card {
+      padding: 15px;
       background: rgba(8, 6, 5, 0.62);
-      border: 1px solid rgba(245, 199, 98, 0.16);
-      border-radius: 8px;
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 10px;
     }
 
-    .decision-card h3 {
-      margin: 0 0 6px;
-      font-size: 14px;
+    .conclusion-card.is-judgement {
+      background:
+        linear-gradient(180deg, rgba(245, 199, 98, 0.13), transparent),
+        rgba(8, 6, 5, 0.74);
+      border-color: rgba(245, 199, 98, 0.42);
+    }
+
+    .conclusion-card h3 {
+      margin: 0 0 7px;
+      color: var(--gold);
+      font-size: 15px;
       font-weight: 950;
     }
 
-    .decision-card p {
+    .conclusion-card p,
+    .conclusion-card ol {
       margin: 0;
       color: var(--text);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
+      line-height: 1.8;
     }
 
-    .decision-card[data-type="adopt"] h3 {
-      color: var(--success);
+    .conclusion-card ol {
+      padding-left: 20px;
     }
 
-    .decision-card[data-type="hold"] h3 {
-      color: var(--gold);
-    }
-
-    .decision-card[data-type="danger"] h3 {
-      color: var(--danger);
-    }
-
-    .decision-card[data-type="next"] {
-      background:
-        linear-gradient(180deg, rgba(245, 199, 98, 0.12), transparent),
-        rgba(8, 6, 5, 0.72);
-      border-color: rgba(245, 199, 98, 0.38);
-    }
-
-    .decision-card[data-type="next"] h3 {
-      color: #ffd879;
+    .conclusion-card li + li {
+      margin-top: 6px;
     }
 
     .footer-note {
@@ -524,25 +637,236 @@
 
     @media (max-width: 560px) {
       .meeting-app {
-        padding-right: 12px;
-        padding-left: 12px;
+        padding: 18px 14px 50px;
+      }
+
+      .back-link {
+        min-height: 48px;
+        padding: 9px 14px;
+        font-size: 15px;
+      }
+
+      .meeting-header {
+        padding: 32px 4px 28px;
+      }
+
+      .meeting-mark {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .tagline {
+        margin-top: 14px;
+        font-size: 16px;
+        line-height: 1.8;
       }
 
       .panel,
-      .decision-panel {
-        padding: 16px;
+      .conclusion-panel {
+        padding: 20px 18px;
+        border-radius: 12px;
+      }
+
+      .panel + .panel,
+      .conclusion-panel {
+        margin-top: 22px;
+      }
+
+      .section-heading {
+        font-size: 20px;
+      }
+
+      .section-note {
+        margin: 8px 0 20px;
+        font-size: 15px;
+        line-height: 1.85;
+      }
+
+      .input-group + .input-group {
+        margin-top: 18px;
+      }
+
+      label {
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      .required {
+        font-size: 13px;
+      }
+
+      input,
+      textarea {
+        padding: 14px 15px;
+        font-size: 16px;
+        line-height: 1.7;
+        border-width: 2px;
+        border-radius: 10px;
+      }
+
+      input {
+        min-height: 58px;
+      }
+
+      textarea {
+        min-height: 132px;
+      }
+
+      .primary-button,
+      .secondary-button,
+      .danger-button {
+        min-height: 62px;
+        padding: 15px 16px;
+        font-size: 17px;
+      }
+
+      .control-grid {
+        grid-template-columns: 1fr;
+        gap: 11px;
       }
 
       .member-list {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .member {
+        min-height: 92px;
+        padding: 14px 6px 12px;
+      }
+
+      .member-mark {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 9px;
+        font-size: 15px;
       }
 
       .member-name {
+        font-size: 13px;
+        line-height: 1.45;
         white-space: normal;
       }
 
-      .decision-grid {
+      .room-top {
+        align-items: flex-start;
+        margin-bottom: 18px;
+      }
+
+      .room-status {
+        max-width: 44%;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .empty-state {
+        padding: 36px 20px;
+        font-size: 15px;
+        line-height: 1.85;
+      }
+
+      .empty-state strong {
+        margin-bottom: 8px;
+        font-size: 17px;
+      }
+
+      .log-list {
+        gap: 16px;
+      }
+
+      .log-card {
+        grid-template-columns: 46px minmax(0, 1fr);
+        gap: 13px;
+        padding: 18px 16px;
+        border-left-width: 4px;
+        border-radius: 10px;
+      }
+
+      .speaker-mark {
+        width: 46px;
+        height: 46px;
+        font-size: 15px;
+      }
+
+      .speech-body {
+        display: contents;
+      }
+
+      .speaker-head {
+        align-self: center;
+        margin-bottom: 0;
+        gap: 3px 8px;
+      }
+
+      .speaker-name {
+        font-size: 17px;
+      }
+
+      .speaker-role {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .speech-text,
+      .note-text {
+        grid-column: 1 / -1;
+        margin-top: 3px;
+        font-size: 16px;
+        font-weight: 650;
+        line-height: 1.9;
+      }
+
+      .status-text {
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .round-meter {
+        padding: 16px;
+      }
+
+      .round-label {
+        font-size: 19px;
+      }
+
+      .round-focus {
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .conclusion-grid {
         grid-template-columns: 1fr;
+        gap: 13px;
+        margin-top: 18px;
+      }
+
+      .conclusion-card {
+        padding: 17px 16px;
+        border-radius: 10px;
+      }
+
+      .conclusion-card h3 {
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      .conclusion-card p,
+      .conclusion-card ol {
+        font-size: 15px;
+        line-height: 1.85;
+      }
+
+      .footer-note {
+        margin-top: 22px;
+        padding: 0 8px;
+        font-size: 12px;
+        line-height: 1.7;
       }
     }
 
@@ -563,13 +887,13 @@
 
     <header class="meeting-header">
       <div class="meeting-mark" aria-hidden="true"></div>
-      <h1>AI会議室<span class="version">v0</span></h1>
-      <p class="tagline">ひとつの目標を、5つの視点で囲む。答えを急がず、次の一手まで火を運ぶ。</p>
+      <h1>AI会議室<span class="version">v1</span></h1>
+      <p class="tagline">複数ラウンドで論点を深め、ユウが判断する前の合意点・対立点・問いを整える会議室。</p>
     </header>
 
     <section class="panel" aria-labelledby="setup-title">
       <h2 class="section-heading" id="setup-title">会議を招集する</h2>
-      <p class="section-note">今回は固定テンプレートで議論します。入力内容が各人格の発言に反映されます。</p>
+      <p class="section-note">固定テンプレートの疑似会議です。APIキーは使わず、外部通信なしで動きます。</p>
 
       <form id="meetingForm">
         <div class="input-group">
@@ -591,18 +915,50 @@
             id="goalInput"
             name="goal"
             maxlength="240"
-            placeholder="例：30日以内に小さく公開し、最初の利用者10人から反応を得る"
+            placeholder="例：30日以内に試作版を公開し、利用者10人の反応を集める"
             required
           ></textarea>
         </div>
 
-        <button class="start-button" id="startButton" type="submit">会議開始</button>
+        <button class="primary-button" id="startButton" type="submit">会議開始</button>
       </form>
     </section>
 
     <section class="panel members" aria-labelledby="members-title">
-      <h2 class="section-heading" id="members-title">参加人格</h2>
+      <h2 class="section-heading" id="members-title">会議参加者</h2>
+      <p class="section-note">ユーザー補足は、次の発言から全員に共有された前提として扱います。</p>
       <div class="member-list" id="memberList"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="user-note-title">
+      <h2 class="section-heading" id="user-note-title">途中発言を差し込む</h2>
+      <p class="section-note">補足・質問・前提修正を入れると、会議ログに目立つカードで残り、以降の発言に反映されます。</p>
+      <div class="input-group">
+        <label for="userNoteInput">ユウからの補足</label>
+        <textarea
+          id="userNoteInput"
+          maxlength="260"
+          placeholder="例：専門職Aが言った市場性の意味がわからない。全員、この言葉をわかりやすく言い換えてほしい。"
+          disabled
+        ></textarea>
+      </div>
+      <button class="secondary-button" id="shareNoteButton" type="button" disabled>この発言を全員に共有</button>
+      <p class="status-text" id="noteStatus">会議開始後に、途中発言を共有できます。</p>
+    </section>
+
+    <section class="panel" aria-labelledby="control-title">
+      <h2 class="section-heading" id="control-title">ラウンド進行</h2>
+      <p class="section-note">最大5ラウンドまで進行します。会議結果のまとめは、最低3ラウンド後から選べます。</p>
+      <div class="round-meter" aria-live="polite">
+        <span class="round-label" id="roundLabel">会議開始前</span>
+        <span class="round-focus" id="roundFocus">テーマと目標を入力してください。</span>
+      </div>
+      <div class="control-grid">
+        <button class="secondary-button" id="nextRoundButton" type="button" disabled>次のラウンドへ進む</button>
+        <button class="primary-button" id="summarizeButton" type="button" disabled>ここで会議結果をまとめる</button>
+        <button class="secondary-button" id="deepenButton" type="button" disabled>さらに深掘りする</button>
+        <button class="danger-button" id="resetButton" type="button" disabled>会議をリセット</button>
+      </div>
     </section>
 
     <section class="panel meeting-room" aria-labelledby="room-title">
@@ -616,170 +972,538 @@
 
       <div class="empty-state" id="emptyState">
         <strong>まだ会議は始まっていません</strong>
-        テーマと目標を入れると、5人格が順番に発言します。
+        テーマと目標を入れて会議を開始してください。
       </div>
       <ol class="log-list hidden" id="meetingLog" aria-live="polite"></ol>
     </section>
 
-    <section class="decision-panel" id="decisionPanel" aria-labelledby="decision-title">
-      <h2 class="section-heading" id="decision-title">会議結果</h2>
-      <p class="section-note">5つの視点を、動ける形に整理しました。</p>
-      <div class="decision-grid" id="decisionGrid"></div>
+    <section class="conclusion-panel" id="conclusionPanel" aria-labelledby="conclusion-title">
+      <h2 class="section-heading" id="conclusion-title">会議結果</h2>
+      <p class="section-note">結論、主要論点、反論・リスク、実行案、次の一手、保留することへ統合します。</p>
+      <div class="conclusion-grid" id="conclusionGrid"></div>
     </section>
 
-    <p class="footer-note">このページはAPIキーを使わず、外部通信なしで動作します。</p>
+    <p class="footer-note">静的HTML/CSS/JavaScriptだけで動作します。API連携はまだ行いません。</p>
   </main>
 
   <script>
     "use strict";
 
     /*
-      1. 人格定義と固定テンプレート
-      将来API連携するときは、下の createStatement をプロンプト定義として
-      利用し、MeetingEngine.generateStatements() をAPI呼び出しに差し替えます。
+      v1の中心データです。
+      後からOpenAI APIへ発展させる場合は、MeetingEngine内の
+      createRoundSpeech/createConclusion をAPI呼び出しに差し替え、
+      stateのtheme/goal/userNotes/completedRoundsをプロンプトへ渡します。
     */
-    var PERSONAS = [
+    var MAX_ROUNDS = 5;
+    var MIN_ROUNDS_BEFORE_SUMMARY = 3;
+
+    var PARTICIPANTS = [
       {
-        id: "second-brain",
-        name: "第二脳ユイ",
-        mark: "脳",
-        role: "目的整理・構造化",
+        id: "principled",
+        name: "正論者",
+        mark: "正",
+        role: "筋・理念・あるべき論",
         color: "#f5c762",
-        createStatement: function (context) {
-          return "テーマは「" + context.theme + "」、目標は「" + context.goal
-            + "」ですね。まず成功条件を「誰に」「何を届け」「何が変われば達成か」の3点に分けましょう。最初の会議では、完成形より検証できる最小単位を決めるのが先です。";
-        }
+        stance: "誰の何を良くするのか、目的の筋を外さない",
+        respondsTo: "counter"
       },
       {
         id: "counter",
-        name: "反証ユイ",
+        name: "反論者",
         mark: "反",
         role: "弱点・リスク・盲点",
         color: "#ff8467",
-        createStatement: function (context) {
-          return "「" + context.goal
-            + "」を急ぐほど、対象者の思い込み、評価指標の曖昧さ、作り込み過ぎが盲点になります。「" + context.theme
-            + "」が本当に必要とされるかを、小さな反応で確かめる撤退条件も先に置くべきです。";
-        }
+        stance: "前提の抜け、過信、撤退条件の曖昧さを止める",
+        respondsTo: "principled"
       },
       {
-        id: "vice-president",
-        name: "副社長ユイ",
-        mark: "副",
-        role: "収益性・事業性・継続性",
+        id: "expert-a",
+        name: "専門職A",
+        mark: "A",
+        role: "テーマに応じた専門視点",
         color: "#80c7a7",
-        createStatement: function (context) {
-          return "「" + context.theme
-            + "」を続く事業にするなら、価値を感じる相手と、対価を払う相手が同じかを確認したいです。目標の「" + context.goal
-            + "」へ進む前に、無料反応だけでなく、予約・相談・購入意向のどれを事業性の合図にするか決めましょう。";
-        }
+        stance: "専門語を日常語に直し、価値が生まれる場面を絞る",
+        respondsTo: "publicist"
       },
       {
-        id: "mio",
-        name: "澪",
-        mark: "澪",
-        role: "伝え方・広報・入口設計",
-        color: "#91bdeb",
-        createStatement: function (context) {
-          return "入口では「" + context.theme
-            + "」の機能説明より、相手が抱える場面を一言で見せる方が届きます。「" + context.goal
-            + "」を目指すなら、誰のどんな困りごとを軽くするのかが伝わる短い紹介文と、試せる入口をひとつ用意しましょう。";
-        }
-      },
-      {
-        id: "field",
-        name: "現場ユイ",
-        mark: "現",
-        role: "実行手順・現実性",
+        id: "expert-b",
+        name: "専門職B",
+        mark: "B",
+        role: "別領域の専門視点",
         color: "#e8a769",
-        createStatement: function (context) {
-          return "実行は3段階にします。今日、「" + context.theme
-            + "」の仮説を1枚に書く。次に1人へ見せる。その反応から1か所だけ直す。「" + context.goal
-            + "」全部を一度に背負わず、24時間以内に終わる作業へ落とせば動けます。";
-        }
+        stance: "運用負荷、継続性、現場で本当に回る手順を見る",
+        respondsTo: "expert-a"
+      },
+      {
+        id: "organizer",
+        name: "まとめ役",
+        mark: "整",
+        role: "議論整理・判断軸",
+        color: "#c7a3ff",
+        stance: "論点を整理し、判断軸と優先順位に戻す",
+        respondsTo: "counter"
+      },
+      {
+        id: "publicist",
+        name: "広報",
+        mark: "広",
+        role: "伝わり方・誤解防止",
+        color: "#91bdeb",
+        stance: "外に伝わる言葉か、誤解されない入口かを見る",
+        respondsTo: "organizer"
+      },
+      {
+        id: "final-counter",
+        name: "最終反論者",
+        mark: "終",
+        role: "結論の甘さ・偏り・見落とし",
+        color: "#ff9a86",
+        stance: "最後に、結論の甘さや見落としをもう一度疑う",
+        respondsTo: "organizer"
       }
     ];
 
-    /*
-      2. 会議データ生成
-      UIから独立させているため、後からこのオブジェクトだけを
-      OpenAI API対応の実装へ置き換えられます。
-    */
-    var MeetingEngine = {
-      createContext: function (theme, goal) {
-        return {
-          theme: theme.trim(),
-          goal: goal.trim()
-        };
+    var ROUND_MESSAGES = {
+      first: {
+        "principled": {
+          point: "対象者と約束する変化を先に定める",
+          text: "初期意見は、価値を届ける相手を1種類に定め、その人に起きる変化を成功の中心に置くべきです。"
+        },
+        "counter": {
+          point: "必要性を確かめず作り始めることが最大の弱点",
+          text: "最初に疑うべきは、必要性を検証せず作り始めることです。好意的な反応だけでなく、使わない理由も集める必要があります。"
+        },
+        "expert-a": {
+          point: "価値が発生する具体的な利用場面を1つに絞る",
+          text: "専門視点では、利用者が困る瞬間を1場面に絞ると検証しやすくなります。広い市場より、切実な場面の強さを先に見ます。"
+        },
+        "expert-b": {
+          point: "継続できる運用負荷を先に測る",
+          text: "別領域からは、作ることより続ける負荷を確認します。毎回必要な時間、手間、費用が現実的かを初期段階で測るべきです。"
+        },
+        "organizer": {
+          point: "必要性・実行可能性・伝達性の3軸で判断する",
+          text: "初期の判断軸を、必要性、実行可能性、伝わりやすさの3つに置きます。以降の意見は、この軸のどれを強めるかで整理します。"
+        },
+        "publicist": {
+          point: "機能ではなく困りごとから入口を作る",
+          text: "外への入口は機能説明ではなく、誰のどんな困りごとを軽くするかから始めます。最初の一文で誤解されないことが重要です。"
+        },
+        "final-counter": {
+          point: "成功条件だけでなく撤退条件も必要",
+          text: "初期案に欠けやすいのは撤退条件です。何を確認できなければ止めるのかを、期待が膨らむ前に決める必要があります。"
+        }
       },
-
-      generateStatements: function (context) {
-        return Promise.resolve(PERSONAS.map(function (persona) {
-          return {
-            persona: persona,
-            text: persona.createStatement(context)
-          };
-        }));
+      response: {
+        "principled": {
+          point: "リスクを避けるだけでなく守る価値を明確にする",
+          text: "リスクを減らすだけでは目的が痩せます。検証で守るべき価値を一文に固定し、慎重さと前進を両立させます。"
+        },
+        "counter": {
+          point: "理念を検証可能な基準へ変える",
+          text: "理念が正しくても、反応を測れなければ自己満足になります。約束する変化を、観察できる行動や数値へ変えるべきです。"
+        },
+        "expert-a": {
+          point: "伝わりやすさと実際の必要性を分けて検証する",
+          text: "わかりやすい説明が好評でも、必要性が証明されたとは限りません。説明への反応と、実際に使う意思を分けて確認します。"
+        },
+        "expert-b": {
+          point: "専門的に正しい案を現場で回る手順へ変える",
+          text: "専門性が高くても、毎回の運用が複雑なら続きません。担当者、所要時間、失敗時の戻し方まで設計に含めます。"
+        },
+        "organizer": {
+          point: "速度と検証の対立を小さな実験で解く",
+          text: "対立は、早く出すか慎重に考えるかではありません。小さく出して学ぶ範囲を決めれば、速度と検証を同時に満たせます。"
+        },
+        "publicist": {
+          point: "内部の判断軸を利用者の言葉へ翻訳する",
+          text: "内部で通じる必要性や実行可能性という言葉は、そのままでは届きません。利用者が自分事にできる場面と言葉へ翻訳します。"
+        },
+        "final-counter": {
+          point: "小さく試す方針自体の甘さを疑う",
+          text: "全員が小さく試す方向に寄りすぎています。小さすぎて本当の負荷や価値が見えない実験にならないかも確認すべきです。"
+        }
       },
-
-      generateDecisions: function (context) {
-        return [
-          {
-            type: "adopt",
-            label: "採用案",
-            text: "「" + context.theme + "」を、目標「" + context.goal
-              + "」につながる最小検証へ縮め、まず1人の具体的な反応を得る。"
-          },
-          {
-            type: "hold",
-            label: "保留案",
-            text: "大規模な制作、一斉公開、細かな機能追加は、最初の反応が得られるまで保留する。"
-          },
-          {
-            type: "danger",
-            label: "危険案",
-            text: "対象者と判断基準を決めないまま、「" + context.goal
-              + "」だけを追って作り込み続ける。"
-          },
-          {
-            type: "next",
-            label: "次の一手",
-            text: "今日中に「" + context.theme
-              + "」の対象者、困りごと、試作品を各1行で書き、1人へ見せる。"
-          }
-        ];
+      focus: {
+        "principled": {
+          point: "主要論点1を対象者と約束する変化に定める",
+          text: "主要論点1は「最初の対象者と、約束する変化」です。未解決なのは対象者の範囲で、最初に誰へ届けるかを決める必要があります。"
+        },
+        "counter": {
+          point: "主要論点2を成功基準と撤退条件に定める",
+          text: "主要論点2は「成功基準と撤退条件」です。未解決なのは続行判断の境界で、成功と失敗の観察条件を決める必要があります。"
+        },
+        "expert-a": {
+          point: "論点1の利用場面を一場面まで狭める",
+          text: "対象者の論点は、属性だけでなく困る瞬間まで絞るべきです。誰が、いつ、何に困るのかを一場面に決めます。"
+        },
+        "expert-b": {
+          point: "主要論点3を最小実行と運用負荷に定める",
+          text: "主要論点3は「最小実行と運用負荷」です。未解決なのは継続可能な手順で、担当、時間、費用の上限を決める必要があります。"
+        },
+        "organizer": {
+          point: "議論を3つの主要論点へ絞る",
+          text: "論点を3つに絞ります。1つ目は対象者と価値、2つ目は成功・撤退基準、3つ目は最小実行と伝え方です。これ以外は一度保留します。"
+        },
+        "publicist": {
+          point: "論点3に伝え方の検証を組み込む",
+          text: "最小実行では、試作品だけでなく入口文も検証対象にします。何を作るかと、どう伝えるかを同時に決める必要があります。"
+        },
+        "final-counter": {
+          point: "3論点に欠ける法令・安全・倫理条件を確認する",
+          text: "3論点で進められますが、法令、安全、倫理の前提がある場合は別枠で確認が必要です。該当するかを未解決の問いとして残します。"
+        }
+      },
+      action: {
+        "principled": {
+          point: "今日、価値の約束を一文にする",
+          text: "今日できる行動は「誰の、どんな状態を、どう変えるか」を一文にすることです。次に本人へ見せ、曖昧な言葉を修正します。"
+        },
+        "counter": {
+          point: "今日、成功条件と停止条件を各1つ書く",
+          text: "今日、成功条件と停止条件を各1つ書きます。次に第三者へ判断可能か確認し、主観だけの基準を修正します。"
+        },
+        "expert-a": {
+          point: "今日、対象者1人へ利用場面を聞く",
+          text: "今日、候補者1人へ困る場面と現在の対処法を聞きます。次に支払う時間や手間を確認し、想定していた利用場面を修正します。"
+        },
+        "expert-b": {
+          point: "今日、30分で最小手順を試す",
+          text: "今日、30分以内で最小手順を一度通します。次に詰まった工程を記録し、担当や手順を減らす修正を行います。"
+        },
+        "organizer": {
+          point: "今日、5項目の実行シートを作る",
+          text: "今日、対象者、困りごと、試すもの、成功条件、停止条件の5項目を一枚にします。次に抜けを確認し、優先順位を修正します。"
+        },
+        "publicist": {
+          point: "今日、入口文を2案作って反応を比べる",
+          text: "今日、困りごと起点と変化起点の入口文を2案作ります。次に1人へ見せ、誤解された表現を修正します。"
+        },
+        "final-counter": {
+          point: "今日、失敗の予兆を1つ決める",
+          text: "今日、最も起きそうな失敗と早期の予兆を1つ決めます。次に対処できるか確認し、止める判断が遅れる設計を修正します。"
+        }
+      },
+      final: {
+        "principled": {
+          point: "結論は対象者への約束を小さく検証すること",
+          text: "結論は、対象者への約束を一文にし、小さく検証することです。保留するのは対象者を広げる判断で、次の一手は候補者1人への確認です。"
+        },
+        "counter": {
+          point: "結論には成功条件と停止条件をセットで置く",
+          text: "結論には成功条件と停止条件をセットで置きます。保留するのは本格投資で、次の一手は判断基準を第三者が読める形にすることです。"
+        },
+        "expert-a": {
+          point: "結論は一場面の必要性を実地確認すること",
+          text: "結論は、一場面の必要性を本人へ確認することです。保留するのは市場全体の評価で、次の一手は困り方と現在の代替手段を聞くことです。"
+        },
+        "expert-b": {
+          point: "結論は最小手順が継続可能か試すこと",
+          text: "結論は、最小手順が現場で回るか試すことです。保留するのは機能追加で、次の一手は30分の試行から負荷を記録することです。"
+        },
+        "organizer": {
+          point: "結論を3論点と1つの実験に統合する",
+          text: "結論を、対象者と価値、判断基準、最小実行の3論点と、1人への検証に統合します。その他の論点は保留します。"
+        },
+        "publicist": {
+          point: "結論は入口文も試作品の一部として検証すること",
+          text: "結論は、入口文も試作品の一部として検証することです。保留するのは一斉公開で、次の一手は2案を1人に見せることです。"
+        },
+        "final-counter": {
+          point: "結論の実行前に見落とし確認を一度入れる",
+          text: "最終的に進められますが、法令、安全、倫理、運用負荷の見落とし確認を条件にします。確認できない項目は保留します。"
+        }
       }
     };
 
-    /*
-      3. 画面描画
-      ユーザー入力は innerHTML に入れず、すべて textContent で表示します。
-    */
+    var INITIAL_ROUNDS = [
+      {
+        type: "first",
+        title: "各AIが最初の意見を出す",
+        focus: "まずは立場ごとの初期意見を出し、論点の入口を広げます。"
+      },
+      {
+        type: "response",
+        title: "他のAIの意見に対して反論・補足を行う",
+        focus: "第1ラウンドの意見を受け、反論・補足・言い換えを行います。"
+      },
+      {
+        type: "focus",
+        title: "論点を3つ以内に絞り込む",
+        focus: "何が未解決か、次に何を決めるべきかを3論点以内に整理します。",
+        progress: "散らばっていた意見を、対象者と価値、判断基準、最小実行の3論点へ絞ります。"
+      },
+      {
+        type: "action",
+        title: "具体的な実行案に落とし込む",
+        focus: "今日できる行動、次に確認すること、修正すべき点を具体化します。",
+        progress: "3つの主要論点を、今日の行動・次の確認・修正点へ変換します。"
+      },
+      {
+        type: "final",
+        title: "最終整理を行う",
+        focus: "結論、保留点、次の一手を参加者ごとに最終確認します。",
+        progress: "具体的な実行案を、結論・保留点・次の一手へ統合します。"
+      }
+    ];
+
+    var state = {
+      started: false,
+      theme: "",
+      goal: "",
+      userNotes: [],
+      roundPlan: [],
+      completedRounds: [],
+      completedRoundCount: 0,
+      deepDiveCount: 0,
+      finalDone: false
+    };
+
     var memberList = document.getElementById("memberList");
     var meetingForm = document.getElementById("meetingForm");
     var themeInput = document.getElementById("themeInput");
     var goalInput = document.getElementById("goalInput");
     var startButton = document.getElementById("startButton");
+    var userNoteInput = document.getElementById("userNoteInput");
+    var shareNoteButton = document.getElementById("shareNoteButton");
+    var noteStatus = document.getElementById("noteStatus");
+    var nextRoundButton = document.getElementById("nextRoundButton");
+    var summarizeButton = document.getElementById("summarizeButton");
+    var deepenButton = document.getElementById("deepenButton");
+    var resetButton = document.getElementById("resetButton");
+    var roundLabel = document.getElementById("roundLabel");
+    var roundFocus = document.getElementById("roundFocus");
     var emptyState = document.getElementById("emptyState");
     var meetingLog = document.getElementById("meetingLog");
     var roomStatus = document.getElementById("roomStatus");
     var statusText = document.getElementById("statusText");
-    var decisionPanel = document.getElementById("decisionPanel");
-    var decisionGrid = document.getElementById("decisionGrid");
+    var conclusionPanel = document.getElementById("conclusionPanel");
+    var conclusionGrid = document.getElementById("conclusionGrid");
     var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    function findParticipant(id) {
+      for (var i = 0; i < PARTICIPANTS.length; i++) {
+        if (PARTICIPANTS[i].id === id) {
+          return PARTICIPANTS[i];
+        }
+      }
+
+      return null;
+    }
+
+    function cloneInitialRounds() {
+      return INITIAL_ROUNDS.slice(0, MAX_ROUNDS).map(function (round) {
+        return {
+          type: round.type,
+          title: round.title,
+          focus: round.focus,
+          progress: round.progress || "",
+          isDeepDive: false
+        };
+      });
+    }
+
+    function latestUserNote() {
+      if (state.userNotes.length === 0) {
+        return "";
+      }
+
+      return state.userNotes[state.userNotes.length - 1].text;
+    }
+
+    function createContext() {
+      var latestNote = latestUserNote();
+      var lastRound = state.completedRounds.length > 0
+        ? state.completedRounds[state.completedRounds.length - 1]
+        : null;
+
+      return {
+        theme: state.theme,
+        goal: state.goal,
+        userNotes: state.userNotes.slice(),
+        completedRounds: state.completedRounds.slice(),
+        latestNote: latestNote,
+        lastRound: lastRound
+      };
+    }
+
+    function findPreviousSpeech(participant, context) {
+      if (!context.lastRound) {
+        return null;
+      }
+
+      var target = findParticipant(participant.respondsTo);
+      var speeches = context.lastRound.speeches;
+
+      for (var i = 0; i < speeches.length; i++) {
+        if (target && speeches[i].speaker === target.name) {
+          return speeches[i];
+        }
+      }
+
+      return speeches.length > 0 ? speeches[0] : null;
+    }
+
+    function createPreviousRoundReference(participant, context) {
+      var previousSpeech = findPreviousSpeech(participant, context);
+
+      if (!previousSpeech) {
+        return "";
+      }
+
+      var leads = {
+        "principled": "前ラウンドの" + previousSpeech.speaker + "の指摘を受けて",
+        "counter": "前ラウンドの" + previousSpeech.speaker + "の主張に反論すると",
+        "expert-a": previousSpeech.speaker + "の意見を専門視点で受け直すと",
+        "expert-b": previousSpeech.speaker + "の提案を運用面から見ると",
+        "organizer": previousSpeech.speaker + "の指摘を判断軸に戻すと",
+        "publicist": previousSpeech.speaker + "の整理から伝わり方を見ると",
+        "final-counter": previousSpeech.speaker + "の結論を最後に疑い直すと"
+      };
+
+      return (leads[participant.id] || "前ラウンドの意見を受けて")
+        + "、「" + previousSpeech.point + "」が次の論点になります。 ";
+    }
+
+    function createUserNoteResponse(participant, context) {
+      if (!context.latestNote) {
+        return "";
+      }
+
+      var responses = {
+        "principled": "目的との整合を確認します。",
+        "counter": "新しい前提として弱点の確認に加えます。",
+        "expert-a": "専門語を避けて検証方法へ反映します。",
+        "expert-b": "実行負荷と手順へ反映します。",
+        "organizer": "判断軸と未解決事項へ組み込みます。",
+        "publicist": "誤解されない表現へ言い換えます。",
+        "final-counter": "結論の見落とし確認へ加えます。"
+      };
+
+      return " ユウの補足「" + context.latestNote + "」は、"
+        + (responses[participant.id] || "この発言へ反映します。");
+    }
+
+    var MeetingEngine = {
+      createOpening: function (context) {
+        return "テーマは「" + context.theme + "」。目標は「" + context.goal
+          + "」。最大" + MAX_ROUNDS + "ラウンドで進行し、最低" + MIN_ROUNDS_BEFORE_SUMMARY
+          + "ラウンドは結論を急がず議論を続けます。ユウの補足は、次のラウンドから全員共有の前提として扱います。";
+      },
+
+      createRoundIntro: function (round, roundNumber) {
+        var context = createContext();
+        var intro;
+
+        if (roundNumber === 1) {
+          intro = "参加者ごとの初期意見を出し、議論の入口を広げます。";
+        } else if (roundNumber === 2) {
+          intro = "第1ラウンドの意見を相互に受け、反論・補足・リスク指摘へ進みます。";
+        } else {
+          intro = "前ラウンドから進んだ点：" + round.progress + " " + round.focus;
+        }
+
+        if (context.latestNote) {
+          intro += " ユウの補足「" + context.latestNote + "」も全員の前提に加えます。";
+        }
+
+        return intro;
+      },
+
+      createRoundSpeech: function (participant, round, roundNumber) {
+        var context = createContext();
+        var messageSet = ROUND_MESSAGES[round.type] || ROUND_MESSAGES.focus;
+        var message = messageSet[participant.id];
+        var previousReference = roundNumber > 1
+          ? createPreviousRoundReference(participant, context)
+          : "";
+
+        return previousReference + message.text + createUserNoteResponse(participant, context);
+      },
+
+      createRoundSpeeches: function (round, roundNumber) {
+        return PARTICIPANTS.map(function (participant) {
+          var messageSet = ROUND_MESSAGES[round.type] || ROUND_MESSAGES.focus;
+
+          return {
+            participant: participant,
+            point: messageSet[participant.id].point,
+            text: MeetingEngine.createRoundSpeech(participant, round, roundNumber)
+          };
+        });
+      },
+
+      createDeepDiveRound: function (baseRound) {
+        state.deepDiveCount += 1;
+
+        return {
+          type: baseRound.type,
+          title: baseRound.title + "（深掘り " + state.deepDiveCount + "）",
+          focus: baseRound.focus + " 前ラウンドで曖昧だった点を優先して掘ります。",
+          progress: baseRound.progress,
+          isDeepDive: true
+        };
+      },
+
+      createConclusion: function () {
+        var context = createContext();
+        var notesText = context.userNotes.length === 0
+          ? "途中補足はまだありません。"
+          : context.userNotes.map(function (note, index) {
+              return (index + 1) + ". " + note.text;
+            }).join(" / ");
+        var noteCondition = context.userNotes.length === 0
+          ? ""
+          : " ユウの補足「" + notesText + "」も前提に含めます。";
+
+        return [
+          {
+            type: "conclusion",
+            label: "結論",
+            text: "対象者を1種類、利用場面を1つに絞り、小さな検証を行う方針で進めます。成功条件と停止条件を同時に置くことが実行の条件です。"
+          },
+          {
+            type: "issues",
+            label: "主要論点",
+            text: "1. 対象者と約束する変化。2. 成功基準と撤退条件。3. 最小実行と伝え方。この3点に絞りました。"
+          },
+          {
+            type: "risk",
+            label: "反論・リスク",
+            text: "好意的な反応を必要性と誤認すること、小さすぎて本当の負荷が見えない実験になること、法令・安全・倫理条件を見落とすことが主なリスクです。" + noteCondition
+          },
+          {
+            type: "plan",
+            label: "実行案",
+            text: "価値の約束を一文にし、成功条件と停止条件を各1つ書き、対象者1人へ利用場面を確認します。入口文は2案用意し、30分の最小手順も試します。"
+          },
+          {
+            type: "next",
+            label: "次の一手",
+            text: "今日中に「誰の、どんな状態を、どう変えるか」を一文にし、候補者1人へ見せる予定を入れます。"
+          },
+          {
+            type: "hold",
+            label: "保留すること",
+            text: "対象者の拡大、本格投資、機能追加、一斉公開、市場全体の評価は、最初の検証結果が出るまで保留します。"
+          }
+        ];
+      }
+    };
+
     function renderMembers() {
-      PERSONAS.forEach(function (persona) {
+      PARTICIPANTS.forEach(function (participant) {
         var member = document.createElement("div");
         var mark = document.createElement("span");
         var name = document.createElement("span");
 
         member.className = "member";
-        member.style.setProperty("--member-color", persona.color);
+        member.style.setProperty("--member-color", participant.color);
         mark.className = "member-mark";
-        mark.textContent = persona.mark;
+        mark.textContent = participant.mark;
         name.className = "member-name";
-        name.textContent = persona.name;
+        name.textContent = participant.name;
 
         member.appendChild(mark);
         member.appendChild(name);
@@ -787,7 +1511,7 @@
       });
     }
 
-    function createSpeechItem(statement) {
+    function appendLogCard(options) {
       var item = document.createElement("li");
       var mark = document.createElement("div");
       var body = document.createElement("div");
@@ -796,18 +1520,18 @@
       var role = document.createElement("span");
       var text = document.createElement("p");
 
-      item.className = "speech";
-      item.style.setProperty("--speaker-color", statement.persona.color);
+      item.className = "log-card " + (options.extraClass || "");
+      item.style.setProperty("--speaker-color", options.color || "#f5c762");
       mark.className = "speaker-mark";
-      mark.textContent = statement.persona.mark;
+      mark.textContent = options.mark;
       body.className = "speech-body";
       head.className = "speaker-head";
       name.className = "speaker-name";
-      name.textContent = statement.persona.name;
+      name.textContent = options.name;
       role.className = "speaker-role";
-      role.textContent = statement.persona.role;
-      text.className = "speech-text";
-      text.textContent = statement.text;
+      role.textContent = options.role;
+      text.className = options.extraClass === "is-user" ? "note-text" : "speech-text";
+      text.textContent = options.text;
 
       head.appendChild(name);
       head.appendChild(role);
@@ -815,75 +1539,301 @@
       body.appendChild(text);
       item.appendChild(mark);
       item.appendChild(body);
+      meetingLog.appendChild(item);
 
-      return item;
+      if (!prefersReducedMotion) {
+        item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
     }
 
-    function renderDecisions(decisions) {
-      decisionGrid.replaceChildren();
+    function updateStatus() {
+      if (!state.started) {
+        roomStatus.classList.remove("is-live");
+        statusText.textContent = "待機中";
+        return;
+      }
 
-      decisions.forEach(function (decision) {
-        var card = document.createElement("article");
-        var heading = document.createElement("h3");
-        var text = document.createElement("p");
+      roomStatus.classList.add("is-live");
 
-        card.className = "decision-card";
-        card.dataset.type = decision.type;
-        heading.textContent = decision.label;
-        text.textContent = decision.text;
-        card.appendChild(heading);
-        card.appendChild(text);
-        decisionGrid.appendChild(card);
-      });
-
-      decisionPanel.classList.add("is-visible");
+      if (state.finalDone) {
+        roomStatus.classList.remove("is-live");
+        statusText.textContent = "会議結果を表示済み";
+      } else if (state.completedRoundCount === 0) {
+        statusText.textContent = "第1ラウンド待ち";
+      } else if (state.completedRoundCount >= MAX_ROUNDS) {
+        statusText.textContent = "第" + MAX_ROUNDS + "ラウンド終了";
+      } else {
+        statusText.textContent = "第" + state.completedRoundCount + "ラウンド終了";
+      }
     }
 
-    function wait(milliseconds) {
-      return new Promise(function (resolve) {
-        window.setTimeout(resolve, milliseconds);
-      });
+    function updateRoundDisplay() {
+      if (!state.started) {
+        roundLabel.textContent = "会議開始前";
+        roundFocus.textContent = "テーマと目標を入力してください。";
+        return;
+      }
+
+      if (state.completedRoundCount === 0) {
+        roundLabel.textContent = "現在：第1ラウンド / " + MAX_ROUNDS;
+        roundFocus.textContent = state.roundPlan[0].focus;
+        return;
+      }
+
+      var latestRound = state.completedRounds[state.completedRounds.length - 1];
+      roundLabel.textContent =
+        "現在：第" + state.completedRoundCount + "ラウンド / " + MAX_ROUNDS;
+      roundFocus.textContent = state.finalDone
+        ? "会議結果を表示しました。"
+        : latestRound.title + " が終了しました。次の進め方を選べます。";
     }
 
-    /*
-      4. 会議進行
-      発言データを受け取り、順番にログへ追加します。
-    */
-    async function runMeeting(context) {
-      startButton.disabled = true;
-      startButton.textContent = "会議中...";
+    function updateButtons() {
+      var hasStarted = state.started;
+      var hasAnyRound = hasStarted && state.completedRoundCount > 0;
+      var canRunNextRound = hasStarted && !state.finalDone && state.completedRoundCount < MAX_ROUNDS;
+      var canSummarize = hasStarted && !state.finalDone
+        && state.completedRoundCount >= MIN_ROUNDS_BEFORE_SUMMARY;
+      var canDeepen = hasStarted && !state.finalDone
+        && state.completedRoundCount > 0
+        && state.completedRoundCount < MAX_ROUNDS;
+
+      themeInput.disabled = hasStarted;
+      goalInput.disabled = hasStarted;
+      userNoteInput.disabled = !hasStarted || state.finalDone;
+      shareNoteButton.disabled = !hasStarted || state.finalDone;
+      nextRoundButton.disabled = !canRunNextRound;
+      summarizeButton.disabled = !canSummarize;
+      deepenButton.disabled = !canDeepen;
+      resetButton.disabled = !hasStarted && meetingLog.children.length === 0;
+      startButton.disabled = hasStarted;
+      updateRoundDisplay();
+    }
+
+    function updateNoteStatus(message) {
+      if (message) {
+        noteStatus.textContent = message;
+        return;
+      }
+
+      if (!state.started) {
+        noteStatus.textContent = "会議開始後に、途中発言を共有できます。";
+      } else if (state.userNotes.length === 0) {
+        noteStatus.textContent = "まだ補足は共有されていません。必要ならいつでも差し込めます。";
+      } else {
+        noteStatus.textContent = state.userNotes.length + "件の補足を全員に共有済みです。次以降の発言に反映されます。";
+      }
+    }
+
+    function resetConclusion() {
+      conclusionGrid.replaceChildren();
+      conclusionPanel.classList.remove("is-visible");
+    }
+
+    function startMeeting() {
+      state.started = true;
+      state.theme = themeInput.value.trim();
+      state.goal = goalInput.value.trim();
+      state.userNotes = [];
+      state.roundPlan = cloneInitialRounds();
+      state.completedRounds = [];
+      state.completedRoundCount = 0;
+      state.deepDiveCount = 0;
+      state.finalDone = false;
+
       emptyState.classList.add("hidden");
       meetingLog.classList.remove("hidden");
       meetingLog.replaceChildren();
-      decisionGrid.replaceChildren();
-      decisionPanel.classList.remove("is-visible");
-      roomStatus.classList.add("is-live");
-      statusText.textContent = "会議中 0 / " + PERSONAS.length;
+      resetConclusion();
+      startButton.textContent = "会議中";
 
-      try {
-        var statements = await MeetingEngine.generateStatements(context);
+      appendLogCard({
+        mark: "始",
+        name: "会議開始",
+        role: "テーマと目標の確認",
+        color: "#91bdeb",
+        extraClass: "is-system",
+        text: MeetingEngine.createOpening(createContext())
+      });
 
-        for (var i = 0; i < statements.length; i++) {
-          if (!prefersReducedMotion) {
-            await wait(i === 0 ? 280 : 720);
-          }
+      updateNoteStatus();
+      updateStatus();
+      updateButtons();
+      runNextRound();
+    }
 
-          meetingLog.appendChild(createSpeechItem(statements[i]));
-          statusText.textContent = "会議中 " + (i + 1) + " / " + statements.length;
-        }
-
-        if (!prefersReducedMotion) {
-          await wait(620);
-        }
-
-        renderDecisions(MeetingEngine.generateDecisions(context));
-        roomStatus.classList.remove("is-live");
-        statusText.textContent = "会議終了";
-        decisionPanel.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
-      } finally {
-        startButton.disabled = false;
-        startButton.textContent = "もう一度会議する";
+    function shareUserNote() {
+      if (!state.started || state.finalDone) {
+        return;
       }
+
+      var noteText = userNoteInput.value.trim();
+
+      if (!noteText) {
+        updateNoteStatus("共有する補足を入力してください。");
+        userNoteInput.focus();
+        return;
+      }
+
+      var note = {
+        text: noteText,
+        insertedAfterRound: state.completedRoundCount
+      };
+
+      state.userNotes.push(note);
+      userNoteInput.value = "";
+
+      appendLogCard({
+        mark: "ユ",
+        name: "ユウからの補足",
+        role: "全員に共有された前提",
+        color: "#ffdf8a",
+        extraClass: "is-user",
+        text: "「" + note.text + "」"
+      });
+
+      updateNoteStatus();
+      updateButtons();
+    }
+
+    function appendRoundIntro(round, roundNumber) {
+      appendLogCard({
+        mark: "R",
+        name: "第" + roundNumber + "ラウンド",
+        role: round.title,
+        color: "#f5c762",
+        extraClass: "is-round",
+        text: MeetingEngine.createRoundIntro(round, roundNumber)
+      });
+    }
+
+    function runNextRound() {
+      if (!state.started || state.finalDone || state.completedRoundCount >= MAX_ROUNDS) {
+        return;
+      }
+
+      var round = state.roundPlan[state.completedRoundCount];
+      var roundNumber = state.completedRoundCount + 1;
+      var statements = MeetingEngine.createRoundSpeeches(round, roundNumber);
+      var roundRecord = {
+        number: roundNumber,
+        type: round.type,
+        title: round.title,
+        speeches: []
+      };
+
+      appendRoundIntro(round, roundNumber);
+
+      statements.forEach(function (statement) {
+        appendLogCard({
+          mark: statement.participant.mark,
+          name: statement.participant.name,
+          role: statement.participant.role,
+          color: statement.participant.color,
+          text: statement.text
+        });
+
+        roundRecord.speeches.push({
+          speaker: statement.participant.name,
+          point: statement.point,
+          text: statement.text
+        });
+      });
+
+      state.completedRounds.push(roundRecord);
+      state.completedRoundCount += 1;
+
+      if (state.completedRoundCount >= MAX_ROUNDS) {
+        renderMeetingResult();
+        return;
+      }
+
+      updateStatus();
+      updateButtons();
+    }
+
+    function deepenCurrentMeeting() {
+      if (!state.started || state.finalDone || state.completedRoundCount === 0) {
+        return;
+      }
+
+      var deepRound = MeetingEngine.createDeepDiveRound(
+        state.roundPlan[state.completedRoundCount]
+      );
+      state.roundPlan[state.completedRoundCount] = deepRound;
+      runNextRound();
+    }
+
+    function renderMeetingResult() {
+      if (!state.started || state.completedRoundCount === 0 || state.finalDone) {
+        return;
+      }
+
+      if (state.completedRoundCount < MIN_ROUNDS_BEFORE_SUMMARY) {
+        updateNoteStatus("最低" + MIN_ROUNDS_BEFORE_SUMMARY + "ラウンドは続けてから会議結果をまとめます。");
+        return;
+      }
+
+      var conclusion = MeetingEngine.createConclusion();
+      state.finalDone = true;
+      conclusionGrid.replaceChildren();
+
+      conclusion.forEach(function (item) {
+        var card = document.createElement("article");
+        var heading = document.createElement("h3");
+        var paragraph = document.createElement("p");
+
+        card.className = "conclusion-card" + (item.type === "conclusion" ? " is-judgement" : "");
+        heading.textContent = item.label;
+        paragraph.textContent = item.text;
+        card.appendChild(heading);
+        card.appendChild(paragraph);
+        conclusionGrid.appendChild(card);
+      });
+
+      conclusionPanel.classList.add("is-visible");
+      appendLogCard({
+        mark: "結",
+        name: "会議結果",
+        role: "結論・主要論点・反論・実行・次の一手・保留",
+        color: "#c7a3ff",
+        extraClass: "is-final",
+        text: "会議結果を作成しました。結論、主要論点、反論・リスク、実行案、次の一手、保留することを下に整理しています。"
+      });
+
+      if (!prefersReducedMotion) {
+        conclusionPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      updateNoteStatus("会議結果まで完了しました。必要なら会議をリセットして始め直せます。");
+      updateStatus();
+      updateButtons();
+    }
+
+    function resetMeeting() {
+      state.started = false;
+      state.theme = "";
+      state.goal = "";
+      state.userNotes = [];
+      state.roundPlan = [];
+      state.completedRounds = [];
+      state.completedRoundCount = 0;
+      state.deepDiveCount = 0;
+      state.finalDone = false;
+
+      themeInput.disabled = false;
+      goalInput.disabled = false;
+      themeInput.value = "";
+      goalInput.value = "";
+      userNoteInput.value = "";
+      meetingLog.replaceChildren();
+      meetingLog.classList.add("hidden");
+      emptyState.classList.remove("hidden");
+      resetConclusion();
+      startButton.textContent = "会議開始";
+      updateNoteStatus();
+      updateStatus();
+      updateButtons();
     }
 
     meetingForm.addEventListener("submit", function (event) {
@@ -893,11 +1843,17 @@
         return;
       }
 
-      var context = MeetingEngine.createContext(themeInput.value, goalInput.value);
-      runMeeting(context);
+      startMeeting();
     });
 
+    shareNoteButton.addEventListener("click", shareUserNote);
+    nextRoundButton.addEventListener("click", runNextRound);
+    summarizeButton.addEventListener("click", renderMeetingResult);
+    deepenButton.addEventListener("click", deepenCurrentMeeting);
+    resetButton.addEventListener("click", resetMeeting);
+
     renderMembers();
+    updateButtons();
   </script>
 </body>
 </html>
