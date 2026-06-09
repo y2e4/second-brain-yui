@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#100b08">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=2">
   <link rel="icon" type="image/png" sizes="512x512" href="icon.png?v=2">
-  <title>衛生管理者3分クイズ v0</title>
+  <title>衛生管理者クイズ | 火種ユイ</title>
   <style>
     :root {
       --bg: #080706;
@@ -17,6 +17,8 @@
       --text: #f8efe2;
       --muted: #c9bba4;
       --line: rgba(245, 199, 98, 0.26);
+      --good: #a9d86e;
+      --bad: #ff8257;
     }
 
     * {
@@ -36,8 +38,8 @@
         "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
       line-height: 1.7;
       background:
-        radial-gradient(circle at 50% 18%, rgba(255, 123, 48, 0.22), transparent 30%),
-        radial-gradient(circle at 18% 68%, rgba(245, 199, 98, 0.1), transparent 26%),
+        radial-gradient(circle at 50% 16%, rgba(255, 123, 48, 0.22), transparent 30%),
+        radial-gradient(circle at 16% 72%, rgba(245, 199, 98, 0.1), transparent 26%),
         linear-gradient(180deg, #100b08 0%, #080706 52%, #040403 100%);
       -webkit-tap-highlight-color: transparent;
     }
@@ -54,15 +56,29 @@
       opacity: 0.38;
     }
 
-    .quiz-app {
-      position: relative;
-      width: min(100%, 560px);
-      min-height: 100vh;
-      margin: 0 auto;
-      padding: 20px 16px 28px;
+    button,
+    textarea,
+    select {
+      font: inherit;
     }
 
-    .back-link {
+    button {
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .quiz-app {
+      position: relative;
+      width: min(100%, 620px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 20px 16px 30px;
+    }
+
+    .back-link,
+    .bottom-back-link {
       display: inline-flex;
       align-items: center;
       min-height: 44px;
@@ -77,7 +93,7 @@
     }
 
     header {
-      padding: 28px 0 22px;
+      padding: 26px 0 18px;
       text-align: center;
     }
 
@@ -104,23 +120,30 @@
       }
     }
 
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
     h1 {
-      margin: 0;
+      margin-bottom: 8px;
       color: var(--gold);
-      font-size: clamp(25px, 7vw, 36px);
-      font-weight: 900;
-      line-height: 1.3;
+      font-size: clamp(27px, 7vw, 38px);
+      font-weight: 950;
+      line-height: 1.25;
       text-shadow: 0 0 18px rgba(245, 199, 98, 0.22);
     }
 
     .tagline {
-      margin: 10px 0 0;
+      margin-bottom: 0;
       color: var(--muted);
       font-size: 15px;
       font-weight: 800;
     }
 
-    .quiz-card {
+    .panel {
+      margin-top: 16px;
       padding: 18px;
       background:
         linear-gradient(180deg, rgba(255, 123, 48, 0.08), transparent 42%),
@@ -130,37 +153,237 @@
       box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
     }
 
-    .description {
+    .panel-title {
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .panel-note {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .today-mission {
+      padding: 22px 20px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(255, 207, 104, 0.18), transparent 34%),
+        linear-gradient(145deg, rgba(255, 123, 48, 0.2), rgba(23, 17, 13, 0.98) 58%);
+      border-color: rgba(255, 199, 98, 0.52);
+      box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.42),
+        0 0 28px rgba(255, 123, 48, 0.12);
+    }
+
+    .mission-kicker {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ember);
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+    }
+
+    .mission-title {
+      margin-bottom: 14px;
+      color: var(--gold);
+      font-size: clamp(24px, 7vw, 34px);
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .mission-lines {
+      display: grid;
+      gap: 6px;
       margin: 0;
-      font-size: 16px;
+      color: var(--text);
+      font-size: 15px;
       font-weight: 800;
     }
 
-    .sample-note {
-      margin: 8px 0 18px;
-      color: var(--muted);
-      font-size: 13px;
+    .mission-lines strong {
+      color: var(--gold);
     }
 
-    button {
-      border: 0;
+    .progress-summary {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .today-progress {
+      grid-column: 1 / -1;
+      padding: 14px;
+      background: rgba(255, 123, 48, 0.09);
+      border: 1px solid rgba(255, 123, 48, 0.28);
       border-radius: 8px;
-      font: inherit;
-      cursor: pointer;
-      touch-action: manipulation;
     }
 
-    .primary-button {
+    .today-progress .stat-value {
+      font-size: 26px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .stat-box {
+      padding: 12px;
+      background: rgba(245, 199, 98, 0.06);
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 8px;
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .stat-value {
+      display: block;
+      color: var(--gold);
+      font-size: 24px;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .main-mode-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .main-mode-button {
       width: 100%;
-      min-height: 56px;
-      padding: 12px 16px;
+      min-height: 64px;
+      padding: 16px;
       color: #1b1008;
-      font-size: 17px;
-      font-weight: 900;
+      font-size: 18px;
+      font-weight: 950;
       background: linear-gradient(180deg, #ffe28c, #f3aa35);
       box-shadow:
         0 10px 22px rgba(0, 0, 0, 0.28),
         inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+
+    .main-mode-button.is-review {
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent),
+        #342016;
+      border: 1px solid rgba(245, 199, 98, 0.38);
+    }
+
+    .mode-button,
+    .primary-button,
+    .secondary-button,
+    .choice-button {
+      min-height: 52px;
+      padding: 12px 14px;
+      font-weight: 900;
+    }
+
+    .mode-button,
+    .choice-button,
+    .secondary-button {
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
+        #231710;
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+    }
+
+    .primary-button {
+      width: 100%;
+      color: #1b1008;
+      background: linear-gradient(180deg, #ffe28c, #f3aa35);
+      box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+
+    .secondary-button {
+      width: 100%;
+      color: var(--gold);
+      background: rgba(245, 199, 98, 0.06);
+    }
+
+    .mode-button:disabled,
+    .primary-button:disabled,
+    .secondary-button:disabled,
+    .choice-button:disabled {
+      cursor: default;
+      opacity: 0.62;
+    }
+
+    .filter-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    select,
+    textarea {
+      width: 100%;
+      color: var(--text);
+      background: #100b08;
+      border: 1px solid rgba(245, 199, 98, 0.28);
+      border-radius: 8px;
+    }
+
+    select {
+      min-height: 48px;
+      padding: 8px 10px;
+    }
+
+    textarea {
+      min-height: 170px;
+      padding: 12px;
+      resize: vertical;
+    }
+
+    .status-message {
+      min-height: 24px;
+      margin: 12px 0 0;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .question-meta {
+      margin-bottom: 10px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .question-text {
+      min-height: 86px;
+      margin-bottom: 16px;
+      font-size: 20px;
+      font-weight: 850;
+      line-height: 1.65;
     }
 
     .progress-row {
@@ -192,51 +415,33 @@
     }
 
     .progress-fill {
-      width: 20%;
+      width: 0%;
       height: 100%;
       background: linear-gradient(90deg, var(--ember), #ffcf68);
       border-radius: inherit;
       transition: width 220ms ease;
     }
 
-    .question {
-      min-height: 112px;
-      margin: 22px 0;
-      font-size: 20px;
-      font-weight: 850;
-      line-height: 1.7;
-    }
-
-    .answers {
+    .choice-list {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 10px;
+      margin-top: 18px;
     }
 
-    .answer-button {
-      min-height: 70px;
-      color: var(--text);
-      font-size: 28px;
-      font-weight: 950;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
-        #231710;
-      border: 1px solid var(--line);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+    .choice-button {
+      width: 100%;
+      min-height: 58px;
+      text-align: left;
+      line-height: 1.55;
     }
 
-    .answer-button:disabled {
-      cursor: default;
-      opacity: 1;
-    }
-
-    .answer-button.is-correct {
+    .choice-button.is-correct {
       color: #f4ffe8;
       background: #375121;
       border-color: rgba(181, 226, 113, 0.7);
     }
 
-    .answer-button.is-wrong {
+    .choice-button.is-wrong {
       color: #fff1e9;
       background: #6b291c;
       border-color: rgba(255, 144, 104, 0.72);
@@ -251,123 +456,190 @@
     }
 
     .feedback.is-correct {
-      border-left-color: #a9d86e;
+      border-left-color: var(--good);
     }
 
     .feedback.is-wrong {
-      border-left-color: #ff8257;
+      border-left-color: var(--bad);
     }
 
     .feedback-title {
       display: block;
       color: var(--gold);
-      font-size: 17px;
+      font-size: 22px;
       font-weight: 900;
     }
 
-    .feedback-text {
-      margin: 5px 0 0;
+    .feedback-subtext {
+      margin: 6px 0 0;
       font-size: 14px;
     }
 
-    .next-button {
+    .feedback-subtext {
+      color: var(--muted);
+      white-space: pre-line;
+    }
+
+    .feedback-section {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(245, 199, 98, 0.16);
+    }
+
+    .feedback-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .feedback-value {
+      margin: 0;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .action-row {
+      display: grid;
+      gap: 10px;
       margin-top: 14px;
     }
 
-    .result-label {
-      margin: 0;
+    .result-score {
+      margin-bottom: 16px;
       color: var(--gold);
-      font-size: 14px;
-      font-weight: 900;
-    }
-
-    .score {
-      margin: 5px 0 18px;
       font-size: clamp(30px, 9vw, 42px);
       font-weight: 950;
       line-height: 1.35;
     }
 
-    .review {
-      margin-bottom: 16px;
-      padding: 14px;
-      background: var(--panel-soft);
-      border: 1px solid rgba(245, 199, 98, 0.18);
+    .mini-list {
+      margin: 0;
+      padding-left: 22px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .mini-list li + li {
+      margin-top: 10px;
+    }
+
+    .mini-list small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .empty-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .json-example {
+      max-height: 260px;
+      overflow: auto;
+      padding: 12px;
+      color: #ffe5ad;
+      background: #080605;
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    details {
+      margin-top: 12px;
+    }
+
+    summary {
+      color: var(--gold);
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .detail-menu {
+      margin-top: 18px;
+      padding: 0;
+      overflow: hidden;
+      background: rgba(23, 17, 13, 0.82);
+      border: 1px solid rgba(245, 199, 98, 0.2);
       border-radius: 8px;
     }
 
-    .review-title {
-      margin: 0 0 10px;
+    .detail-menu > summary {
+      min-height: 56px;
+      padding: 15px 18px;
+      list-style-position: inside;
+      background: rgba(245, 199, 98, 0.06);
+    }
+
+    .detail-menu-content {
+      padding: 4px 18px 18px;
+    }
+
+    .detail-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(245, 199, 98, 0.14);
+    }
+
+    .detail-section-title {
+      margin-bottom: 10px;
       color: var(--gold);
       font-size: 16px;
       font-weight: 900;
     }
 
-    .review-list {
-      margin: 0;
-      padding-left: 22px;
-      font-size: 14px;
-    }
-
-    .review-list li + li {
-      margin-top: 14px;
-    }
-
-    .review-list p {
-      margin: 0;
-      font-weight: 800;
-    }
-
-    .review-list small {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .review-empty {
-      color: var(--muted);
-      list-style: none;
-      transform: translateX(-22px);
-    }
-
     .bottom-back-link {
-      display: grid;
-      place-items: center;
-      min-height: 50px;
+      width: 100%;
+      justify-content: center;
       margin-top: 18px;
-      color: var(--gold);
-      font-size: 15px;
-      font-weight: 850;
-      text-decoration: none;
-      background: rgba(245, 199, 98, 0.06);
-      border: 1px solid rgba(245, 199, 98, 0.22);
-      border-radius: 8px;
-    }
-
-    .primary-button:active,
-    .answer-button:active,
-    .back-link:active,
-    .bottom-back-link:active {
-      transform: translateY(1px);
     }
 
     [hidden] {
-      display: none;
+      display: none !important;
     }
 
-    @media (max-width: 370px) {
+    @media (max-width: 430px) {
       .quiz-app {
-        padding-right: 12px;
-        padding-left: 12px;
+        padding: 16px 12px 26px;
       }
 
-      .quiz-card {
-        padding: 16px;
+      .panel {
+        padding: 18px 16px;
+        margin-top: 18px;
       }
 
-      .question {
-        min-height: 126px;
+      .mode-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main-mode-grid {
+        gap: 14px;
+      }
+
+      .main-mode-button,
+      .choice-button {
+        min-height: 64px;
+      }
+
+      .action-row {
+        gap: 12px;
+      }
+
+      .primary-button,
+      .secondary-button {
+        min-height: 58px;
+      }
+
+      .question-text {
         font-size: 18px;
       }
     }
@@ -379,154 +651,883 @@
 
     <header>
       <div class="ember-mark" aria-hidden="true"></div>
-      <h1>衛生管理者3分クイズ v0</h1>
-      <p class="tagline">今日は5問だけ。間違いは火種になる。</p>
+      <h1>衛生管理者クイズ</h1>
+      <p class="tagline">参考書を開かず、毎日3分だけ火をつなぐ。</p>
     </header>
 
-    <section class="quiz-card" aria-label="衛生管理者クイズ">
-      <div id="startView">
-        <p class="description">〇 / ×で答える、1回5問のミニクイズです。</p>
-        <p class="sample-note">現在は動作確認用の仮問題です。正式な教材ベースの内容へ後で差し替えます。</p>
-        <button class="primary-button" type="button" id="startButton">クイズを始める</button>
+    <section class="panel today-mission" aria-label="今日やること">
+      <span class="mission-kicker">今日やること</span>
+      <h2 class="mission-title">今日の学習：3問だけ解く</h2>
+      <p class="mission-lines">
+        <span><strong>所要時間：</strong>約3分</span>
+        <span><strong>目的：</strong>昨日より1問覚える</span>
+      </p>
+    </section>
+
+    <section class="panel" aria-label="学習進捗">
+      <h2 class="panel-title">今日の進捗</h2>
+      <div class="progress-summary">
+        <div class="today-progress">
+          <span class="stat-label">今日</span>
+          <span class="stat-value" id="todayProgressText">3問中0問完了</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">累計</span>
+          <span class="stat-value" id="cumulativeAnswered">0問</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">正答率</span>
+          <span class="stat-value" id="accuracyValue">0%</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">苦手</span>
+          <span class="stat-value" id="weakCount">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">最終学習日</span>
+          <span class="stat-value" id="lastStudyDate">未学習</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="modePanel" aria-label="出題モード">
+      <h2 class="panel-title">学習を始める</h2>
+      <p class="panel-note">迷ったら一番上だけ。今日は3問で十分です。</p>
+      <div class="main-mode-grid">
+        <button class="main-mode-button" type="button" data-mode="today">今日の3問</button>
+        <button class="main-mode-button is-review" type="button" data-mode="wrong">間違えた問題</button>
+        <button class="main-mode-button is-review" type="button" data-mode="weak">苦手克服</button>
+      </div>
+      <p class="status-message" id="modeStatus" aria-live="polite"></p>
+
+      <details class="detail-menu">
+        <summary>詳細メニュー</summary>
+        <div class="detail-menu-content">
+          <section class="detail-section" aria-label="その他の出題モード">
+            <h3 class="detail-section-title">その他の出題モード</h3>
+            <button class="secondary-button" type="button" data-mode="all">全問ランダム</button>
+
+            <div class="filter-grid">
+              <label>
+                分野別学習
+                <select id="fieldSelect"></select>
+              </label>
+              <button class="secondary-button" type="button" id="fieldStartButton">分野別で出題</button>
+
+              <label>
+                年度別
+                <select id="yearSelect"></select>
+              </label>
+              <button class="secondary-button" type="button" id="yearStartButton">年度別で出題</button>
+            </div>
+          </section>
+
+          <section class="detail-section" aria-label="問題データ">
+            <h3 class="detail-section-title">問題データ</h3>
+            <p class="panel-note" id="dataStatus">問題データを読み込み中です。</p>
+            <div class="stats-grid">
+              <div class="stat-box">
+                <span class="stat-label">登録問題</span>
+                <span class="stat-value" id="totalCount">0</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">間違えた問題</span>
+                <span class="stat-value" id="wrongCount">0</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">分野</span>
+                <span class="stat-value" id="fieldCount">0</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="detail-section" aria-label="問題データ追加">
+            <h3 class="detail-section-title">JSON追加・管理</h3>
+            <p class="panel-note">JSON配列または1問分のJSONを貼り付けて追加できます。同じidは上書きされます。</p>
+            <textarea id="jsonInput" spellcheck="false" placeholder="ここにJSONを貼り付けます"></textarea>
+            <div class="action-row">
+              <button class="primary-button" type="button" id="importButton">JSONを追加する</button>
+              <button class="secondary-button" type="button" id="exportButton">登録済みJSONをコピー</button>
+              <button class="secondary-button" type="button" id="resetImportedButton">追加データをリセット</button>
+              <button class="secondary-button" type="button" id="resetStatsButton">学習履歴をリセット</button>
+            </div>
+            <p class="status-message" id="importStatus" aria-live="polite"></p>
+
+            <details>
+              <summary>JSON形式を見る</summary>
+              <pre class="json-example" id="jsonExample"></pre>
+            </details>
+          </section>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel" id="questionView" aria-live="polite" hidden>
+      <div class="progress-row">
+        <span class="progress-label" id="progressLabel">問題 1 / 3</span>
+        <span class="progress-note" id="modeLabel">今日の3問</span>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" id="progressFill"></div>
       </div>
 
-      <div id="questionView" hidden>
-        <div class="progress-row">
-          <span class="progress-label" id="progressLabel">問題 1 / 5</span>
-          <span class="progress-note">直感で、ひとつずつ。</span>
-        </div>
-        <div class="progress-track" aria-hidden="true">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
+      <p class="question-meta" id="questionMeta"></p>
+      <p class="question-text" id="questionText"></p>
+      <div class="choice-list" id="choiceList"></div>
 
-        <p class="question" id="questionText" aria-live="polite"></p>
-
-        <div class="answers">
-          <button class="answer-button" type="button" data-answer="true" aria-label="まる">〇</button>
-          <button class="answer-button" type="button" data-answer="false" aria-label="ばつ">×</button>
+      <div class="feedback" id="feedback" hidden>
+        <strong class="feedback-title" id="feedbackTitle"></strong>
+        <div class="feedback-section">
+          <span class="feedback-label">正解の理由</span>
+          <p class="feedback-value" id="reasonText"></p>
         </div>
-
-        <div class="feedback" id="feedback" aria-live="polite" hidden>
-          <strong class="feedback-title" id="feedbackTitle"></strong>
-          <p class="feedback-text" id="feedbackText"></p>
+        <div class="feedback-section">
+          <span class="feedback-label">ひっかけポイント</span>
+          <p class="feedback-value" id="trapText"></p>
         </div>
-
-        <button class="primary-button next-button" type="button" id="nextButton" hidden>次の問題</button>
+        <div class="feedback-section">
+          <span class="feedback-label">覚え方</span>
+          <p class="feedback-value" id="memoryText"></p>
+        </div>
+        <div class="feedback-section">
+          <span class="feedback-label">回答記録</span>
+          <p class="feedback-value feedback-subtext" id="feedbackSubtext"></p>
+        </div>
       </div>
 
-      <div id="resultView" aria-live="polite" hidden>
-        <p class="result-label">今回の結果</p>
-        <p class="score" id="scoreText"></p>
+      <div class="action-row">
+        <button class="secondary-button" type="button" id="weakToggleButton" hidden>苦手にする</button>
+        <button class="secondary-button" type="button" id="retryQuestionButton" hidden>もう一度解く</button>
+        <button class="primary-button" type="button" id="nextButton" hidden>次の問題</button>
+      </div>
+    </section>
 
-        <div class="review">
-          <h2 class="review-title">復習リスト：間違えた問題</h2>
-          <ol class="review-list" id="reviewList"></ol>
-        </div>
-
+    <section class="panel" id="resultView" aria-live="polite" hidden>
+      <h2 class="panel-title">今回の結果</h2>
+      <p class="result-score" id="scoreText"></p>
+      <div id="resultMistakeBlock">
+        <p class="panel-note">今回間違えた問題</p>
+        <ol class="mini-list" id="resultMistakeList"></ol>
+      </div>
+      <div class="action-row">
         <button class="primary-button" type="button" id="retryButton">もう一度挑戦</button>
+        <button class="secondary-button" type="button" id="backToModesButton">出題モードへ戻る</button>
       </div>
+    </section>
+
+    <section class="panel" aria-label="間違えた問題">
+      <h2 class="panel-title">間違えた問題</h2>
+      <p class="panel-note">不正解だった問題は自動で残り、2回連続で正解すると外れます。</p>
+      <ol class="mini-list" id="wrongList"></ol>
+      <p class="empty-text" id="wrongEmpty">まだ間違えた問題はありません。</p>
+    </section>
+
+    <section class="panel" aria-label="苦手克服">
+      <h2 class="panel-title">苦手克服</h2>
+      <p class="panel-note">苦手フラグが付いた問題だけをあとで集中的に出せます。</p>
+      <ol class="mini-list" id="weakList"></ol>
+      <p class="empty-text" id="weakEmpty">苦手フラグ付きの問題はありません。</p>
     </section>
 
     <a class="bottom-back-link" href="index.html">火種ユイに戻る</a>
   </main>
 
   <script>
-    // 動作確認用の仮問題です。正式な教材ベースの内容へ後で差し替えます。
-    var quizQuestions = [
+    var BASE_QUESTIONS_URL = "hygiene-questions.json";
+    var IMPORTED_QUESTIONS_KEY = "hygieneManagerSecondTypeImportedQuestionsV1";
+    var QUESTION_STATS_KEY = "hygieneManagerSecondTypeQuestionStatsV1";
+    var LEARNING_HISTORY_KEY = "hygieneManagerSecondTypeLearningHistoryV1";
+    var TODAY_LIMIT = 3;
+    var WEAK_CLEAR_STREAK = 2;
+
+    var fallbackQuestions = [
       {
-        question: "衛生管理者は、職場の安全衛生を支える役割を持つ。",
-        answer: true,
-        explanation: "衛生管理者は、労働者の健康障害防止や衛生管理に関わる役割を担います。"
+        "id": "hm2-sample-law-001",
+        "年度": 2026,
+        "月": 4,
+        "分野": "関係法令",
+        "テーマ": "衛生管理者の選任",
+        "問題文": "常時50人以上の労働者を使用する事業場では、業種にかかわらず衛生管理者の選任が必要である。",
+        "選択肢": [
+          { "id": "A", "text": "正しい" },
+          { "id": "B", "text": "誤り" }
+        ],
+        "正解": "A",
+        "解説": "この問題は動作確認用の仮問題です。常時50人以上の事業場では衛生管理者の選任が関係します。",
+        "ひっかけポイント": "衛生管理者と衛生推進者の人数基準を混同しないこと。",
+        "覚え方": "10人から推進者、50人から衛生管理者。",
+        "間違えた回数": 0,
+        "正解した回数": 0,
+        "最終回答日": "",
+        "苦手フラグ": false
       },
       {
-        question: "労働衛生では、作業環境・作業方法・健康管理の視点が重要になる。",
-        answer: true,
-        explanation: "労働衛生では、環境・作業・健康の3つの視点で考えると理解しやすくなります。"
+        "id": "hm2-sample-health-001",
+        "年度": 2026,
+        "月": 4,
+        "分野": "労働衛生",
+        "テーマ": "作業環境管理",
+        "問題文": "作業環境・作業方法・健康管理の視点は、労働衛生を考えるうえで重要である。",
+        "選択肢": [
+          { "id": "A", "text": "正しい" },
+          { "id": "B", "text": "誤り" }
+        ],
+        "正解": "A",
+        "解説": "この問題は動作確認用の仮問題です。環境・作業・健康の視点で整理すると学習しやすくなります。",
+        "ひっかけポイント": "健康管理だけで十分だと思わないこと。",
+        "覚え方": "環境・作業・健康の3本柱。",
+        "間違えた回数": 0,
+        "正解した回数": 0,
+        "最終回答日": "",
+        "苦手フラグ": false
       },
       {
-        question: "疲労や睡眠不足は、作業中の集中力や判断力に影響しない。",
-        answer: false,
-        explanation: "疲労や睡眠不足は、集中力や判断力の低下につながる可能性があります。"
+        "id": "hm2-sample-body-001",
+        "年度": 2026,
+        "月": 4,
+        "分野": "労働生理",
+        "テーマ": "疲労",
+        "問題文": "疲労や睡眠不足は、作業中の集中力や判断力に影響しない。",
+        "選択肢": [
+          { "id": "A", "text": "正しい" },
+          { "id": "B", "text": "誤り" }
+        ],
+        "正解": "B",
+        "解説": "この問題は動作確認用の仮問題です。疲労や睡眠不足は、集中力や判断力の低下につながる可能性があります。",
+        "ひっかけポイント": "「影響しない」という強い否定表現に注意。",
+        "覚え方": "眠れない日は、判断も鈍る。",
+        "間違えた回数": 0,
+        "正解した回数": 0,
+        "最終回答日": "",
+        "苦手フラグ": false
       },
       {
-        question: "職場の衛生管理では、病気になってから対応すれば十分である。",
-        answer: false,
-        explanation: "衛生管理では、病気や健康障害を未然に防ぐ予防の視点が重要です。"
-      },
-      {
-        question: "換気・温度・照明などの作業環境は、働きやすさや健康に関係する。",
-        answer: true,
-        explanation: "作業環境は、労働者の健康や作業効率に影響するため、衛生管理上の重要な要素です。"
+        "id": "eisei_2024_10_q01",
+        "year": 2024,
+        "month": 10,
+        "category": "関係法令",
+        "theme": "衛生管理者",
+        "question": "衛生管理者又は衛生推進者の選任について、法令に違反しているものはどれか。",
+        "choices": [
+          "常時40人の労働者を使用する金融業の事業場において、衛生管理者は選任していないが、衛生推進者を1人選任している。",
+          "常時200人の労働者を使用する水産業の事業場において、衛生工学衛生管理者免許を有する者のうちから衛生管理者を1人選任している。",
+          "常時300人の労働者を使用する電気業の事業場において、第二種衛生管理者免許を有する者のうちから衛生管理者を2人選任している。",
+          "常時600人の労働者を使用する各種商品小売業の事業場において、3人の衛生管理者のうち2人を事業場に専属で第一種衛生管理者免許を有する者のうちから選任し、他の1人を事業場に専属でない労働衛生コンサルタントから選任している。",
+          "常時1,200人の労働者を使用する各種商品卸売業の事業場において、第二種衛生管理者免許を有する者のうちから、衛生管理者を4人選任し、そのうち1人を専任の衛生管理者としているが、他の3人には他の業務を兼務させている。"
+        ],
+        "answer": 3,
+        "explanation": "電気業では、第二種衛生管理者免許を有する者から衛生管理者を選任することができないため、違反となる。",
+        "trap": "選任人数の2人ではなく、電気業で第二種免許を使っている点が違反。",
+        "memory": "電気業は第二種では選任できない。",
+        "wrongCount": 0,
+        "correctCount": 0,
+        "lastAnsweredAt": null,
+        "weak": false
       }
     ];
 
-    var quizRound = [];
+    var questionBank = [];
+    var questionStats = {};
+    var learningHistory = {};
+    var currentRound = [];
     var currentQuestionIndex = 0;
+    var currentMode = "today";
     var correctCount = 0;
-    var mistakes = [];
+    var roundMistakes = [];
     var answered = false;
+    var currentQuestionScored = false;
 
-    var startView = document.getElementById("startView");
+    var todayProgressText = document.getElementById("todayProgressText");
+    var cumulativeAnswered = document.getElementById("cumulativeAnswered");
+    var accuracyValue = document.getElementById("accuracyValue");
+    var lastStudyDate = document.getElementById("lastStudyDate");
+    var totalCount = document.getElementById("totalCount");
+    var wrongCount = document.getElementById("wrongCount");
+    var weakCount = document.getElementById("weakCount");
+    var fieldCount = document.getElementById("fieldCount");
+    var dataStatus = document.getElementById("dataStatus");
+    var modePanel = document.getElementById("modePanel");
+    var modeStatus = document.getElementById("modeStatus");
+    var fieldSelect = document.getElementById("fieldSelect");
+    var yearSelect = document.getElementById("yearSelect");
+    var fieldStartButton = document.getElementById("fieldStartButton");
+    var yearStartButton = document.getElementById("yearStartButton");
     var questionView = document.getElementById("questionView");
     var resultView = document.getElementById("resultView");
-    var startButton = document.getElementById("startButton");
-    var retryButton = document.getElementById("retryButton");
-    var nextButton = document.getElementById("nextButton");
     var progressLabel = document.getElementById("progressLabel");
+    var modeLabel = document.getElementById("modeLabel");
     var progressFill = document.getElementById("progressFill");
+    var questionMeta = document.getElementById("questionMeta");
     var questionText = document.getElementById("questionText");
-    var answerButtons = document.querySelectorAll(".answer-button");
+    var choiceList = document.getElementById("choiceList");
     var feedback = document.getElementById("feedback");
     var feedbackTitle = document.getElementById("feedbackTitle");
-    var feedbackText = document.getElementById("feedbackText");
+    var reasonText = document.getElementById("reasonText");
+    var trapText = document.getElementById("trapText");
+    var memoryText = document.getElementById("memoryText");
+    var feedbackSubtext = document.getElementById("feedbackSubtext");
+    var weakToggleButton = document.getElementById("weakToggleButton");
+    var retryQuestionButton = document.getElementById("retryQuestionButton");
+    var nextButton = document.getElementById("nextButton");
     var scoreText = document.getElementById("scoreText");
-    var reviewList = document.getElementById("reviewList");
+    var resultMistakeBlock = document.getElementById("resultMistakeBlock");
+    var resultMistakeList = document.getElementById("resultMistakeList");
+    var retryButton = document.getElementById("retryButton");
+    var backToModesButton = document.getElementById("backToModesButton");
+    var wrongList = document.getElementById("wrongList");
+    var wrongEmpty = document.getElementById("wrongEmpty");
+    var weakList = document.getElementById("weakList");
+    var weakEmpty = document.getElementById("weakEmpty");
+    var jsonInput = document.getElementById("jsonInput");
+    var importButton = document.getElementById("importButton");
+    var exportButton = document.getElementById("exportButton");
+    var resetImportedButton = document.getElementById("resetImportedButton");
+    var resetStatsButton = document.getElementById("resetStatsButton");
+    var importStatus = document.getElementById("importStatus");
+    var jsonExample = document.getElementById("jsonExample");
 
-    function makeQuizRound() {
-      var questions = quizQuestions.slice();
+    function getStoredJson(key, fallback) {
+      try {
+        var raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    }
 
-      for (var i = questions.length - 1; i > 0; i--) {
+    function setStoredJson(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function getLocalDateKey() {
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = String(now.getMonth() + 1).padStart(2, "0");
+      var day = String(now.getDate()).padStart(2, "0");
+      return year + "-" + month + "-" + day;
+    }
+
+    function makeDefaultLearningHistory() {
+      return {
+        totalAnswered: 0,
+        totalCorrect: 0,
+        lastStudyDate: "",
+        dailyDate: getLocalDateKey(),
+        dailyAnsweredIds: [],
+        wrongQuestionIds: [],
+        weakQuestionIds: []
+      };
+    }
+
+    function loadLearningHistory() {
+      var saved = getStoredJson(LEARNING_HISTORY_KEY, null);
+      var history = Object.assign(makeDefaultLearningHistory(), saved || {});
+
+      if (!saved) {
+        var statIds = Object.keys(questionStats);
+
+        for (var i = 0; i < statIds.length; i++) {
+          var stats = questionStats[statIds[i]];
+          history.totalAnswered += Number(stats.correctCount || 0) + Number(stats.wrongCount || 0);
+          history.totalCorrect += Number(stats.correctCount || 0);
+
+          if (stats.lastAnsweredAt && stats.lastAnsweredAt > history.lastStudyDate) {
+            history.lastStudyDate = stats.lastAnsweredAt;
+          }
+        }
+      }
+
+      if (history.dailyDate !== getLocalDateKey()) {
+        history.dailyDate = getLocalDateKey();
+        history.dailyAnsweredIds = [];
+      }
+
+      if (!Array.isArray(history.dailyAnsweredIds)) {
+        history.dailyAnsweredIds = [];
+      }
+
+      return history;
+    }
+
+    function saveLearningHistory() {
+      setStoredJson(LEARNING_HISTORY_KEY, learningHistory);
+    }
+
+    function normalizeChoice(choice, index) {
+      var fallbackId = String.fromCharCode(65 + index);
+
+      if (typeof choice === "string") {
+        return {
+          id: fallbackId,
+          text: choice
+        };
+      }
+
+      return {
+        id: String(choice.id || choice.value || choice["id"] || fallbackId),
+        text: String(choice.text || choice.label || choice["text"] || choice["選択肢"] || "")
+      };
+    }
+
+    function normalizeQuestion(raw, index) {
+      var choicesSource = raw["選択肢"] || raw.choices || [];
+      var choices = [];
+      var rawCorrectAnswer = raw["正解"] !== undefined
+        ? raw["正解"]
+        : (raw.correctAnswer !== undefined ? raw.correctAnswer : raw.answer);
+      var correctAnswer = rawCorrectAnswer === undefined || rawCorrectAnswer === null
+        ? ""
+        : String(rawCorrectAnswer);
+      var i;
+
+      if (!Array.isArray(choicesSource)) {
+        throw new Error("選択肢は配列で指定してください。");
+      }
+
+      for (i = 0; i < choicesSource.length; i++) {
+        choices.push(normalizeChoice(choicesSource[i], i));
+      }
+
+      for (i = 0; i < choices.length; i++) {
+        if (choices[i].text === correctAnswer) {
+          correctAnswer = choices[i].id;
+          break;
+        }
+      }
+
+      if (/^[1-9]\d*$/.test(correctAnswer)) {
+        var answerIndex = Number(correctAnswer) - 1;
+
+        if (choices[answerIndex]) {
+          correctAnswer = choices[answerIndex].id;
+        }
+      }
+
+      if (!raw.id) {
+        throw new Error("idが必要です。");
+      }
+
+      if (!raw["問題文"] && !raw.question) {
+        throw new Error("問題文が必要です。");
+      }
+
+      if (!choices.length) {
+        throw new Error("選択肢が必要です。");
+      }
+
+      if (!correctAnswer) {
+        throw new Error("正解が必要です。");
+      }
+
+      var hasCorrectChoice = false;
+      for (i = 0; i < choices.length; i++) {
+        if (choices[i].id === correctAnswer) {
+          hasCorrectChoice = true;
+          break;
+        }
+      }
+
+      if (!hasCorrectChoice) {
+        throw new Error("正解は選択肢のid、または選択肢の文面と一致させてください。");
+      }
+
+      return {
+        "id": String(raw.id),
+        "年度": Number(raw["年度"] || raw.year || 0),
+        "月": Number(raw["月"] || raw.month || 0),
+        "分野": String(raw["分野"] || raw.field || raw.category || "未分類"),
+        "テーマ": String(raw["テーマ"] || raw.theme || "未設定"),
+        "問題文": String(raw["問題文"] || raw.question),
+        "選択肢": choices,
+        "正解": correctAnswer,
+        "解説": String(raw["解説"] || raw.explanation || ""),
+        "ひっかけポイント": String(raw["ひっかけポイント"] || raw.trap || "選択肢の条件や数字の違いに注意します。"),
+        "覚え方": String(raw["覚え方"] || raw.memory || "正解の理由を一言に縮めて覚えます。"),
+        "間違えた回数": Number(raw["間違えた回数"] || raw.wrongCount || 0),
+        "正解した回数": Number(raw["正解した回数"] || raw.correctCount || 0),
+        "最終回答日": String(raw["最終回答日"] || raw.lastAnsweredAt || ""),
+        "苦手フラグ": Boolean(raw["苦手フラグ"] || raw.weakFlag || raw.weak || false)
+      };
+    }
+
+    function normalizeQuestions(rawList) {
+      var normalized = [];
+      var list;
+
+      if (Array.isArray(rawList)) {
+        list = rawList;
+      } else if (rawList && rawList.id) {
+        list = [rawList];
+      } else {
+        list = rawList.questions || rawList["問題"] || [];
+      }
+
+      if (!Array.isArray(list)) {
+        throw new Error("JSONは配列、または questions を持つオブジェクトにしてください。");
+      }
+
+      for (var i = 0; i < list.length; i++) {
+        normalized.push(normalizeQuestion(list[i], i));
+      }
+
+      return normalized;
+    }
+
+    function combineQuestions(baseQuestions, importedQuestions) {
+      var combined = [];
+      var positions = {};
+      var i;
+
+      for (i = 0; i < baseQuestions.length; i++) {
+        positions[baseQuestions[i].id] = combined.length;
+        combined.push(baseQuestions[i]);
+      }
+
+      for (i = 0; i < importedQuestions.length; i++) {
+        var imported = importedQuestions[i];
+
+        if (positions[imported.id] === undefined) {
+          positions[imported.id] = combined.length;
+          combined.push(imported);
+        } else {
+          combined[positions[imported.id]] = imported;
+        }
+      }
+
+      return combined;
+    }
+
+    function getQuestionWithStats(question) {
+      var stats = questionStats[question.id] || {};
+
+      return Object.assign({}, question, {
+        "間違えた回数": Number(stats.wrongCount !== undefined ? stats.wrongCount : question["間違えた回数"]),
+        "正解した回数": Number(stats.correctCount !== undefined ? stats.correctCount : question["正解した回数"]),
+        "最終回答日": String(stats.lastAnsweredAt !== undefined ? stats.lastAnsweredAt : question["最終回答日"]),
+        "苦手フラグ": Boolean(stats.weakFlag !== undefined ? stats.weakFlag : question["苦手フラグ"]),
+        "連続正解数": Number(stats.correctStreak || 0),
+        "間違い対象": Boolean(
+          stats.wrongActive !== undefined
+            ? stats.wrongActive
+            : Number(stats.wrongCount !== undefined ? stats.wrongCount : question["間違えた回数"]) > 0 &&
+              Number(stats.correctStreak || 0) < WEAK_CLEAR_STREAK
+        )
+      });
+    }
+
+    function getBankWithStats() {
+      return questionBank.map(getQuestionWithStats);
+    }
+
+    function getStatsForQuestion(question) {
+      if (!questionStats[question.id]) {
+        questionStats[question.id] = {
+          wrongCount: Number(question["間違えた回数"] || 0),
+          correctCount: Number(question["正解した回数"] || 0),
+          lastAnsweredAt: question["最終回答日"] || "",
+          weakFlag: Boolean(question["苦手フラグ"]),
+          correctStreak: 0,
+          wrongActive: Number(question["間違えた回数"] || 0) > 0
+        };
+      }
+
+      if (questionStats[question.id].wrongActive === undefined) {
+        questionStats[question.id].wrongActive =
+          Number(questionStats[question.id].wrongCount || 0) > 0 &&
+          Number(questionStats[question.id].correctStreak || 0) < WEAK_CLEAR_STREAK;
+      }
+
+      if (questionStats[question.id].weakFlag === undefined) {
+        questionStats[question.id].weakFlag = Boolean(question["苦手フラグ"]);
+      }
+
+      return questionStats[question.id];
+    }
+
+    function shuffle(list) {
+      var shuffled = list.slice();
+
+      for (var i = shuffled.length - 1; i > 0; i--) {
         var randomIndex = Math.floor(Math.random() * (i + 1));
-        var temporaryQuestion = questions[i];
-        questions[i] = questions[randomIndex];
-        questions[randomIndex] = temporaryQuestion;
+        var temporary = shuffled[i];
+        shuffled[i] = shuffled[randomIndex];
+        shuffled[randomIndex] = temporary;
       }
 
-      return questions.slice(0, 5);
+      return shuffled;
     }
 
-    function formatAnswer(answer) {
-      return answer ? "〇" : "×";
+    function uniqueSortedValues(list, key) {
+      var values = {};
+      var result = [];
+
+      for (var i = 0; i < list.length; i++) {
+        var value = list[i][key];
+
+        if (value && !values[value]) {
+          values[value] = true;
+          result.push(value);
+        }
+      }
+
+      return result.sort();
     }
 
-    function renderQuestion() {
-      var question = quizRound[currentQuestionIndex];
+    function fillSelect(selectElement, values, emptyLabel) {
+      selectElement.replaceChildren();
 
-      answered = false;
-      progressLabel.textContent =
-        "問題 " + (currentQuestionIndex + 1) + " / " + quizRound.length;
-      progressFill.style.width =
-        ((currentQuestionIndex + 1) / quizRound.length * 100) + "%";
-      questionText.textContent = question.question;
-      feedback.hidden = true;
-      feedback.className = "feedback";
-      nextButton.hidden = true;
+      var emptyOption = document.createElement("option");
+      emptyOption.value = "";
+      emptyOption.textContent = emptyLabel;
+      selectElement.appendChild(emptyOption);
 
-      for (var i = 0; i < answerButtons.length; i++) {
-        answerButtons[i].disabled = false;
-        answerButtons[i].classList.remove("is-correct", "is-wrong");
+      for (var i = 0; i < values.length; i++) {
+        var option = document.createElement("option");
+        option.value = values[i];
+        option.textContent = values[i];
+        selectElement.appendChild(option);
       }
     }
 
-    function startQuiz() {
-      quizRound = makeQuizRound();
+    function getModeName(mode) {
+      var names = {
+        today: "今日の3問",
+        all: "全問ランダム",
+        wrong: "間違えた問題",
+        weak: "苦手克服",
+        field: "分野別学習",
+        year: "年度別"
+      };
+
+      return names[mode] || "クイズ";
+    }
+
+    function formatMeta(question) {
+      return question["年度"] + "年度 " + question["月"] + "月 / " +
+        question["分野"] + " / " + question["テーマ"];
+    }
+
+    function formatAnswer(question, answerId) {
+      for (var i = 0; i < question["選択肢"].length; i++) {
+        if (question["選択肢"][i].id === answerId) {
+          return question["選択肢"][i].id + ". " + question["選択肢"][i].text;
+        }
+      }
+
+      return answerId;
+    }
+
+    function renderLists() {
+      var bank = getBankWithStats();
+      var wrongQuestions = bank.filter(function (question) {
+        return question["間違い対象"];
+      });
+      var weakQuestions = bank.filter(function (question) {
+        return question["苦手フラグ"];
+      });
+
+      renderMiniList(wrongList, wrongEmpty, wrongQuestions, "間違えた回数");
+      renderMiniList(weakList, weakEmpty, weakQuestions, "連続正解数");
+    }
+
+    function renderMiniList(listElement, emptyElement, questions, detailKey) {
+      listElement.replaceChildren();
+      emptyElement.hidden = questions.length !== 0;
+
+      for (var i = 0; i < questions.length; i++) {
+        var question = questions[i];
+        var item = document.createElement("li");
+        var title = document.createElement("span");
+        var detail = document.createElement("small");
+
+        title.textContent = question["問題文"];
+        detail.textContent =
+          formatMeta(question) +
+          "\n間違えた回数：" + question["間違えた回数"] +
+          " / 正解した回数：" + question["正解した回数"] +
+          "\n最終回答日：" + (question["最終回答日"] || "未回答") +
+          "\n連続正解数：" + question["連続正解数"] +
+          (detailKey === "連続正解数" ? "\n苦手フラグ：あり" : "");
+        item.appendChild(title);
+        item.appendChild(detail);
+        listElement.appendChild(item);
+      }
+    }
+
+    function syncLearningHistoryLists(bank) {
+      learningHistory.wrongQuestionIds = bank.filter(function (question) {
+        return question["間違い対象"];
+      }).map(function (question) {
+        return question.id;
+      });
+      learningHistory.weakQuestionIds = bank.filter(function (question) {
+        return question["苦手フラグ"];
+      }).map(function (question) {
+        return question.id;
+      });
+      saveLearningHistory();
+    }
+
+    function renderLearningProgress() {
+      var dailyCompleted = Math.min(
+        TODAY_LIMIT,
+        Array.isArray(learningHistory.dailyAnsweredIds)
+          ? learningHistory.dailyAnsweredIds.length
+          : 0
+      );
+      var totalAnswered = Number(learningHistory.totalAnswered || 0);
+      var totalCorrect = Number(learningHistory.totalCorrect || 0);
+      var accuracy = totalAnswered > 0
+        ? Math.round(totalCorrect / totalAnswered * 100)
+        : 0;
+
+      todayProgressText.textContent = TODAY_LIMIT + "問中" + dailyCompleted + "問完了";
+      cumulativeAnswered.textContent = totalAnswered + "問";
+      accuracyValue.textContent = accuracy + "%";
+      lastStudyDate.textContent = learningHistory.lastStudyDate || "未学習";
+    }
+
+    function renderDashboard() {
+      var bank = getBankWithStats();
+      var wrongQuestions = bank.filter(function (question) {
+        return question["間違い対象"];
+      });
+      var weakQuestions = bank.filter(function (question) {
+        return question["苦手フラグ"];
+      });
+      var fields = uniqueSortedValues(bank, "分野");
+      var years = uniqueSortedValues(bank, "年度");
+
+      totalCount.textContent = bank.length;
+      wrongCount.textContent = wrongQuestions.length;
+      weakCount.textContent = weakQuestions.length;
+      fieldCount.textContent = fields.length;
+      dataStatus.textContent = bank.length + "問を登録中。JSONを追加すると、ここに反映されます。";
+      fillSelect(fieldSelect, fields, "分野を選ぶ");
+      fillSelect(yearSelect, years, "年度を選ぶ");
+      syncLearningHistoryLists(bank);
+      renderLearningProgress();
+      renderLists();
+    }
+
+    function getQuestionsForMode(mode) {
+      var bank = getBankWithStats();
+
+      if (mode === "wrong") {
+        return bank.filter(function (question) {
+          return question["間違い対象"];
+        });
+      }
+
+      if (mode === "weak") {
+        return bank.filter(function (question) {
+          return question["苦手フラグ"];
+        });
+      }
+
+      if (mode === "field") {
+        return bank.filter(function (question) {
+          return question["分野"] === fieldSelect.value;
+        });
+      }
+
+      if (mode === "year") {
+        return bank.filter(function (question) {
+          return String(question["年度"]) === String(yearSelect.value);
+        });
+      }
+
+      return bank;
+    }
+
+    function startMode(mode) {
+      var questions = getQuestionsForMode(mode);
+      var limit = mode === "today" ? TODAY_LIMIT : questions.length;
+
+      if ((mode === "field" && !fieldSelect.value) || (mode === "year" && !yearSelect.value)) {
+        modeStatus.textContent = "先に出題条件を選んでください。";
+        return;
+      }
+
+      if (!questions.length) {
+        modeStatus.textContent = getModeName(mode) + "に出せる問題がまだありません。";
+        return;
+      }
+
+      currentMode = mode;
+      currentRound = shuffle(questions).slice(0, limit);
       currentQuestionIndex = 0;
       correctCount = 0;
-      mistakes = [];
-      startView.hidden = true;
+      roundMistakes = [];
+      currentQuestionScored = false;
+      modeStatus.textContent = "";
+      modePanel.hidden = true;
       resultView.hidden = true;
       questionView.hidden = false;
-      renderQuestion();
+      renderQuestion(false);
+      questionView.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderQuestion(isRetry) {
+      var question = currentRound[currentQuestionIndex];
+      var choices = question["選択肢"];
+
+      answered = false;
+
+      if (!isRetry) {
+        currentQuestionScored = false;
+      }
+
+      progressLabel.textContent = "問題 " + (currentQuestionIndex + 1) + " / " + currentRound.length;
+      modeLabel.textContent = getModeName(currentMode);
+      progressFill.style.width = ((currentQuestionIndex + 1) / currentRound.length * 100) + "%";
+      questionMeta.textContent = formatMeta(question);
+      questionText.textContent = question["問題文"];
+      choiceList.replaceChildren();
+      feedback.hidden = true;
+      feedback.className = "feedback";
+      reasonText.textContent = "";
+      trapText.textContent = "";
+      memoryText.textContent = "";
+      feedbackSubtext.textContent = "";
+      weakToggleButton.hidden = true;
+      retryQuestionButton.hidden = true;
+      nextButton.hidden = true;
+      nextButton.textContent = currentQuestionIndex === currentRound.length - 1 ? "結果を見る" : "次の問題";
+
+      for (var i = 0; i < choices.length; i++) {
+        var button = document.createElement("button");
+        button.className = "choice-button";
+        button.type = "button";
+        button.setAttribute("data-answer", choices[i].id);
+        button.textContent = choices[i].id + ". " + choices[i].text;
+        button.addEventListener("click", function () {
+          answerQuestion(this.getAttribute("data-answer"));
+        });
+        choiceList.appendChild(button);
+      }
+    }
+
+    function recordLearningAnswer(question, isCorrect) {
+      var today = getLocalDateKey();
+
+      if (learningHistory.dailyDate !== today) {
+        learningHistory.dailyDate = today;
+        learningHistory.dailyAnsweredIds = [];
+      }
+
+      learningHistory.totalAnswered = Number(learningHistory.totalAnswered || 0) + 1;
+
+      if (isCorrect) {
+        learningHistory.totalCorrect = Number(learningHistory.totalCorrect || 0) + 1;
+      }
+
+      if (learningHistory.dailyAnsweredIds.indexOf(question.id) === -1) {
+        learningHistory.dailyAnsweredIds.push(question.id);
+      }
+
+      learningHistory.lastStudyDate = today;
+      saveLearningHistory();
     }
 
     function answerQuestion(selectedAnswer) {
@@ -534,83 +1535,273 @@
         return;
       }
 
+      var question = currentRound[currentQuestionIndex];
+      var stats = getStatsForQuestion(question);
+      var isCorrect = selectedAnswer === question["正解"];
+      var today = getLocalDateKey();
+      var choiceButtons = choiceList.querySelectorAll(".choice-button");
+      var wrongCleared = false;
+      var isFirstRoundAnswer = !currentQuestionScored;
+
       answered = true;
-      var question = quizRound[currentQuestionIndex];
-      var isCorrect = selectedAnswer === question.answer;
 
       if (isCorrect) {
-        correctCount += 1;
+        if (isFirstRoundAnswer) {
+          correctCount += 1;
+        }
+
+        stats.correctCount = Number(stats.correctCount || 0) + 1;
+        stats.correctStreak = Number(stats.correctStreak || 0) + 1;
+
+        if (stats.wrongActive && stats.correctStreak >= WEAK_CLEAR_STREAK) {
+          stats.wrongActive = false;
+          wrongCleared = true;
+        }
       } else {
-        mistakes.push(question);
+        stats.wrongCount = Number(stats.wrongCount || 0) + 1;
+        stats.correctStreak = 0;
+        stats.wrongActive = true;
+
+        if (isFirstRoundAnswer) {
+          roundMistakes.push({
+            question: question,
+            selectedAnswer: selectedAnswer
+          });
+        }
       }
 
-      for (var i = 0; i < answerButtons.length; i++) {
-        var buttonAnswer = answerButtons[i].getAttribute("data-answer") === "true";
-        answerButtons[i].disabled = true;
+      currentQuestionScored = true;
+      stats.lastAnsweredAt = today;
+      setStoredJson(QUESTION_STATS_KEY, questionStats);
+      recordLearningAnswer(question, isCorrect);
 
-        if (buttonAnswer === question.answer) {
-          answerButtons[i].classList.add("is-correct");
+      for (var i = 0; i < choiceButtons.length; i++) {
+        var buttonAnswer = choiceButtons[i].getAttribute("data-answer");
+        choiceButtons[i].disabled = true;
+
+        if (buttonAnswer === question["正解"]) {
+          choiceButtons[i].classList.add("is-correct");
         } else if (buttonAnswer === selectedAnswer) {
-          answerButtons[i].classList.add("is-wrong");
+          choiceButtons[i].classList.add("is-wrong");
         }
       }
 
       feedbackTitle.textContent = isCorrect ? "正解" : "不正解";
-      feedbackText.textContent = question.explanation;
+      reasonText.textContent = question["解説"] || "解説はまだ登録されていません。";
+      trapText.textContent = question["ひっかけポイント"];
+      memoryText.textContent = question["覚え方"];
+      feedbackSubtext.textContent =
+        "自分の回答：" + formatAnswer(question, selectedAnswer) +
+        "\n正解：" + formatAnswer(question, question["正解"]) +
+        "\n間違えた回数：" + getQuestionWithStats(question)["間違えた回数"] +
+        " / 正解した回数：" + getQuestionWithStats(question)["正解した回数"] +
+        (wrongCleared ? "\n2回連続正解したので、間違えた問題から外しました。" : "");
       feedback.classList.add(isCorrect ? "is-correct" : "is-wrong");
       feedback.hidden = false;
-      nextButton.textContent =
-        currentQuestionIndex === quizRound.length - 1 ? "結果を見る" : "次の問題";
+      updateWeakToggleButton();
+      weakToggleButton.hidden = false;
+      retryQuestionButton.hidden = false;
       nextButton.hidden = false;
+      renderDashboard();
+    }
+
+    function updateWeakToggleButton() {
+      var question = currentRound[currentQuestionIndex];
+      var stats = getStatsForQuestion(question);
+      weakToggleButton.textContent = stats.weakFlag ? "苦手から外す" : "苦手にする";
+    }
+
+    function toggleWeakFlagForCurrentQuestion() {
+      var question = currentRound[currentQuestionIndex];
+      var stats = getStatsForQuestion(question);
+      stats.weakFlag = !stats.weakFlag;
+      setStoredJson(QUESTION_STATS_KEY, questionStats);
+      updateWeakToggleButton();
+      feedbackSubtext.textContent += stats.weakFlag
+        ? "\n苦手フラグを付けました。"
+        : "\n苦手フラグを外しました。";
+      renderDashboard();
     }
 
     function showResult() {
       questionView.hidden = true;
       resultView.hidden = false;
-      scoreText.textContent = quizRound.length + "問中" + correctCount + "問正解";
-      reviewList.replaceChildren();
+      scoreText.textContent = currentRound.length + "問中" + correctCount + "問正解";
+      resultMistakeList.replaceChildren();
+      resultMistakeBlock.hidden = roundMistakes.length === 0;
 
-      if (mistakes.length === 0) {
-        var emptyMessage = document.createElement("li");
-        emptyMessage.className = "review-empty";
-        emptyMessage.textContent = "間違えた問題はありません。全問正解です。";
-        reviewList.appendChild(emptyMessage);
-        return;
+      for (var i = 0; i < roundMistakes.length; i++) {
+        var mistake = roundMistakes[i];
+        var item = document.createElement("li");
+        var title = document.createElement("span");
+        var detail = document.createElement("small");
+
+        title.textContent = mistake.question["問題文"];
+        detail.textContent =
+          "自分の回答：" + formatAnswer(mistake.question, mistake.selectedAnswer) +
+          "\n正解：" + formatAnswer(mistake.question, mistake.question["正解"]) +
+          "\n解説：" + mistake.question["解説"];
+        item.appendChild(title);
+        item.appendChild(detail);
+        resultMistakeList.appendChild(item);
       }
 
-      for (var i = 0; i < mistakes.length; i++) {
-        var mistake = mistakes[i];
-        var item = document.createElement("li");
-        var mistakeQuestion = document.createElement("p");
-        var mistakeExplanation = document.createElement("small");
+      resultView.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 
-        mistakeQuestion.textContent = mistake.question;
-        mistakeExplanation.textContent =
-          "正解：" + formatAnswer(mistake.answer) + "　" + mistake.explanation;
-        item.appendChild(mistakeQuestion);
-        item.appendChild(mistakeExplanation);
-        reviewList.appendChild(item);
+    function parseImportInput() {
+      if (!jsonInput.value.trim()) {
+        throw new Error("追加するJSONを貼り付けてください。");
+      }
+
+      return normalizeQuestions(JSON.parse(jsonInput.value));
+    }
+
+    function importQuestions() {
+      try {
+        var newQuestions = parseImportInput();
+        var importedQuestions = getStoredJson(IMPORTED_QUESTIONS_KEY, []);
+        var normalizedImported = normalizeQuestions(importedQuestions);
+        var combined = combineQuestions(normalizedImported, newQuestions);
+
+        setStoredJson(IMPORTED_QUESTIONS_KEY, combined);
+        questionBank = combineQuestions(questionBank, newQuestions);
+        importStatus.textContent = newQuestions.length + "問を追加しました。";
+        jsonInput.value = "";
+        renderDashboard();
+      } catch (error) {
+        importStatus.textContent = "追加できませんでした：" + error.message;
       }
     }
 
-    startButton.addEventListener("click", startQuiz);
-    retryButton.addEventListener("click", startQuiz);
+    function makeExportData() {
+      return JSON.stringify(getBankWithStats(), null, 2);
+    }
 
-    for (var i = 0; i < answerButtons.length; i++) {
-      answerButtons[i].addEventListener("click", function () {
-        answerQuestion(this.getAttribute("data-answer") === "true");
+    function copyTextWithTextArea(text) {
+      return new Promise(function (resolve, reject) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+          var copied = document.execCommand("copy");
+          document.body.removeChild(textArea);
+          copied ? resolve() : reject(new Error("copy failed"));
+        } catch (error) {
+          document.body.removeChild(textArea);
+          reject(error);
+        }
       });
     }
+
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text).catch(function () {
+          return copyTextWithTextArea(text);
+        });
+      }
+
+      return copyTextWithTextArea(text);
+    }
+
+    function exportQuestions() {
+      copyText(makeExportData()).then(function () {
+        importStatus.textContent = "登録済みJSONをコピーしました。";
+      }).catch(function () {
+        importStatus.textContent = "コピーできませんでした。JSON欄には出力できます。";
+        jsonInput.value = makeExportData();
+      });
+    }
+
+    function resetImportedQuestions() {
+      localStorage.removeItem(IMPORTED_QUESTIONS_KEY);
+      importStatus.textContent = "追加データをリセットしました。ローカルJSONの問題だけに戻します。";
+      initializeQuestions();
+    }
+
+    function resetStats() {
+      localStorage.removeItem(QUESTION_STATS_KEY);
+      localStorage.removeItem(LEARNING_HISTORY_KEY);
+      questionStats = {};
+      learningHistory = makeDefaultLearningHistory();
+      importStatus.textContent = "学習履歴をリセットしました。";
+      renderDashboard();
+    }
+
+    function initializeQuestions() {
+      questionStats = getStoredJson(QUESTION_STATS_KEY, {});
+      learningHistory = loadLearningHistory();
+
+      fetch(BASE_QUESTIONS_URL).then(function (response) {
+        if (!response.ok) {
+          throw new Error("JSON file not found");
+        }
+
+        return response.json();
+      }).then(function (json) {
+        var baseQuestions = normalizeQuestions(json);
+        var importedQuestions = normalizeQuestions(getStoredJson(IMPORTED_QUESTIONS_KEY, []));
+        questionBank = combineQuestions(baseQuestions, importedQuestions);
+        dataStatus.textContent = "ローカルJSONから問題データを読み込みました。";
+        renderDashboard();
+      }).catch(function () {
+        var importedQuestions = normalizeQuestions(getStoredJson(IMPORTED_QUESTIONS_KEY, []));
+        questionBank = combineQuestions(fallbackQuestions, importedQuestions);
+        dataStatus.textContent = "JSONファイルを読めない環境のため、アプリ内の仮データを使っています。";
+        renderDashboard();
+      });
+    }
+
+    document.querySelectorAll("[data-mode]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        startMode(this.getAttribute("data-mode"));
+      });
+    });
+
+    fieldStartButton.addEventListener("click", function () {
+      startMode("field");
+    });
+
+    yearStartButton.addEventListener("click", function () {
+      startMode("year");
+    });
 
     nextButton.addEventListener("click", function () {
       currentQuestionIndex += 1;
 
-      if (currentQuestionIndex < quizRound.length) {
-        renderQuestion();
+      if (currentQuestionIndex < currentRound.length) {
+        renderQuestion(false);
       } else {
         showResult();
       }
     });
+
+    retryButton.addEventListener("click", function () {
+      startMode(currentMode);
+    });
+
+    backToModesButton.addEventListener("click", function () {
+      resultView.hidden = true;
+      modePanel.hidden = false;
+      modePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    weakToggleButton.addEventListener("click", toggleWeakFlagForCurrentQuestion);
+    retryQuestionButton.addEventListener("click", function () {
+      renderQuestion(true);
+    });
+    importButton.addEventListener("click", importQuestions);
+    exportButton.addEventListener("click", exportQuestions);
+    resetImportedButton.addEventListener("click", resetImportedQuestions);
+    resetStatsButton.addEventListener("click", resetStats);
+
+    jsonExample.textContent = JSON.stringify(fallbackQuestions, null, 2);
+    initializeQuestions();
   </script>
 </body>
 </html>
