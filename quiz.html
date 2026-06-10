@@ -873,6 +873,7 @@
     var questionStats = {};
     var learningHistory = {};
     var currentRound = [];
+    var currentSessionQuestionIds = [];
     var currentQuestionIndex = 0;
     var currentMode = "today";
     var correctCount = 0;
@@ -961,7 +962,8 @@
         dailyAnsweredIds: [],
         recentQuestionIds: [],
         wrongQuestionIds: [],
-        weakQuestionIds: []
+        weakQuestionIds: [],
+        currentSessionQuestionIds: []
       };
     }
 
@@ -999,6 +1001,10 @@
       history.recentQuestionIds = history.recentQuestionIds.filter(function (id) {
         return typeof id === "string" && id;
       }).slice(-RECENT_QUESTION_LIMIT);
+
+      if (!Array.isArray(history.currentSessionQuestionIds)) {
+        history.currentSessionQuestionIds = [];
+      }
 
       return history;
     }
@@ -1269,7 +1275,7 @@
       });
     }
 
-    function selectRoundQuestions(questions, mode, limit) {
+    function selectSessionQuestions(questions, mode, limit) {
       var uniqueQuestions = uniqueQuestionsById(questions);
       var desiredCount = Math.min(limit, uniqueQuestions.length);
       var recentIds = learningHistory.recentQuestionIds || [];
@@ -1298,6 +1304,39 @@
         .concat(weightedOrder(freshRemaining, mode))
         .concat(recentRemaining)
         .slice(0, desiredCount);
+    }
+
+    function buildCurrentSession(questions, mode, limit) {
+      var sessionQuestions = selectSessionQuestions(questions, mode, limit);
+      var questionsById = {};
+
+      for (var i = 0; i < questions.length; i++) {
+        questionsById[questions[i].id] = questions[i];
+      }
+
+      currentSessionQuestionIds = sessionQuestions.map(function (question) {
+        return question.id;
+      });
+      currentRound = currentSessionQuestionIds.map(function (questionId) {
+        return questionsById[questionId];
+      }).filter(Boolean);
+      learningHistory.currentSessionQuestionIds = currentSessionQuestionIds.slice();
+      saveLearningHistory();
+    }
+
+    function logQuizDebug(stage) {
+      console.log("[quiz-debug] " + stage, {
+        allQuestionCount: getBankWithStats().length,
+        todayQuestionIds: currentMode === "today"
+          ? currentSessionQuestionIds.slice()
+          : [],
+        recentQuestionIds: (learningHistory.recentQuestionIds || []).slice(),
+        wrongQuestionIds: (learningHistory.wrongQuestionIds || []).slice(),
+        currentSessionQuestionIds: currentSessionQuestionIds.slice(),
+        currentQuestionNumber: currentRound.length
+          ? currentQuestionIndex + 1
+          : 0
+      });
     }
 
     function rememberQuestionShown(questionId) {
@@ -1511,7 +1550,7 @@
       }
 
       currentMode = mode;
-      currentRound = selectRoundQuestions(questions, mode, limit);
+      buildCurrentSession(questions, mode, limit);
       currentQuestionIndex = 0;
       correctCount = 0;
       roundMistakes = [];
@@ -1529,6 +1568,7 @@
       resultView.hidden = true;
       questionView.hidden = false;
       renderQuestion(false);
+      logQuizDebug("session-start");
       questionView.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -1564,6 +1604,8 @@
       if (!isRetry) {
         rememberQuestionShown(question.id);
       }
+
+      logQuizDebug(isRetry ? "retry-question" : "show-question");
 
       for (var i = 0; i < choices.length; i++) {
         var button = document.createElement("button");
@@ -1673,6 +1715,7 @@
       retryQuestionButton.hidden = false;
       nextButton.hidden = false;
       renderDashboard();
+      logQuizDebug("answer-recorded");
     }
 
     function updateWeakToggleButton() {
