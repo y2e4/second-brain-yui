@@ -621,6 +621,12 @@
       font-weight: 900;
     }
 
+    #debugInfo {
+      display: block;
+      margin-top: 4px;
+      white-space: pre-wrap;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -851,8 +857,13 @@
 
     <a class="bottom-back-link" href="index.html">火種ユイに戻る</a>
     <div class="build-info" aria-label="クイズのビルド情報">
-      <span class="build-label">quiz build: session-queue-v2</span>
-      <span id="debugInfo">登録問題数: 0 / sessionQueue: [] / sessionIndex: 0 / question.id: -</span>
+      <span class="build-label">quiz build: session-queue-v2-data-31</span>
+      <span id="debugInfo">baseQuestions: 0
+extraQuestions: 0
+totalQuestions: 0
+sessionQueue: []
+sessionIndex: 0
+question.id: -</span>
     </div>
   </main>
 
@@ -907,6 +918,8 @@
     var questionBank = [];
     var questionStats = {};
     var learningHistory = {};
+    var baseQuestionCount = 0;
+    var extraQuestionCount = 0;
     var sessionQueue = [];
     var sessionIndex = 0;
     var currentMode = "today";
@@ -1087,6 +1100,14 @@
         ? ""
         : String(rawCorrectAnswer);
       var i;
+
+      if (typeof rawCorrectAnswer === "boolean" && choicesSource.length === 0) {
+        choicesSource = [
+          { id: "O", text: "〇" },
+          { id: "X", text: "×" }
+        ];
+        correctAnswer = rawCorrectAnswer ? "O" : "X";
+      }
 
       if (!Array.isArray(choicesSource)) {
         throw new Error("選択肢は配列で指定してください。");
@@ -1397,7 +1418,9 @@
 
     function logQuizDebug(stage) {
       var debugState = {
-        registeredQuestionCount: getBankWithStats().length,
+        baseQuestionCount: baseQuestionCount,
+        extraQuestionCount: extraQuestionCount,
+        totalQuestionCount: getBankWithStats().length,
         sessionQueue: sessionQueue.slice(),
         sessionIndex: sessionIndex,
         currentQuestionId: sessionQueue[sessionIndex] || "",
@@ -1411,10 +1434,12 @@
 
     function renderDebugInfo() {
       debugInfo.textContent =
-        "登録問題数: " + getBankWithStats().length +
-        " / sessionQueue: " + JSON.stringify(sessionQueue) +
-        " / sessionIndex: " + sessionIndex +
-        " / question.id: " + (sessionQueue[sessionIndex] || "-");
+        "baseQuestions: " + baseQuestionCount +
+        "\nextraQuestions: " + extraQuestionCount +
+        "\ntotalQuestions: " + getBankWithStats().length +
+        "\nsessionQueue: " + JSON.stringify(sessionQueue) +
+        "\nsessionIndex: " + sessionIndex +
+        "\nquestion.id: " + (sessionQueue[sessionIndex] || "-");
     }
 
     function rememberQuestionShown(questionId) {
@@ -1476,8 +1501,15 @@
     }
 
     function formatMeta(question) {
-      return question["年度"] + "年度 " + question["月"] + "月 / " +
-        question["分野"] + " / " + question["テーマ"];
+      var parts = [];
+
+      if (question["年度"]) {
+        parts.push(question["年度"] + "年度" + (question["月"] ? " " + question["月"] + "月" : ""));
+      }
+
+      parts.push(question["分野"]);
+      parts.push(question["テーマ"]);
+      return parts.join(" / ");
     }
 
     function formatAnswer(question, answerId) {
@@ -1575,7 +1607,9 @@
       wrongCount.textContent = wrongQuestions.length;
       weakCount.textContent = weakQuestions.length;
       fieldCount.textContent = fields.length;
-      dataStatus.textContent = bank.length + "問を登録中。JSONを追加すると、ここに反映されます。";
+      dataStatus.textContent =
+        "基本" + baseQuestionCount + "問＋追加" + extraQuestionCount +
+        "問、合計" + bank.length + "問を登録中です。";
       fillSelect(fieldSelect, fields, "分野を選ぶ");
       fillSelect(yearSelect, years, "年度を選ぶ");
       syncLearningHistoryLists(bank);
@@ -1863,6 +1897,7 @@
         var combined = combineQuestions(normalizedImported, newQuestions);
 
         setStoredJson(IMPORTED_QUESTIONS_KEY, combined);
+        extraQuestionCount = combined.length;
         questionBank = combineQuestions(questionBank, newQuestions);
         importStatus.textContent = newQuestions.length + "問を追加しました。";
         jsonInput.value = "";
@@ -1918,7 +1953,18 @@
 
     function resetImportedQuestions() {
       localStorage.removeItem(IMPORTED_QUESTIONS_KEY);
-      resetSessionState(false);
+      localStorage.removeItem(SESSION_QUEUE_KEY);
+      localStorage.removeItem(SESSION_INDEX_KEY);
+      localStorage.removeItem("sessionQueue");
+      localStorage.removeItem("sessionIndex");
+      localStorage.removeItem("currentSessionQuestionIds");
+      sessionQueue = [];
+      sessionIndex = 0;
+      learningHistory.currentSessionQuestionIds = [];
+      saveLearningHistory();
+      questionView.hidden = true;
+      resultView.hidden = true;
+      modePanel.hidden = false;
       importStatus.textContent = "追加データをリセットしました。ローカルJSONの問題だけに戻します。";
       initializeQuestions();
     }
@@ -1975,21 +2021,32 @@
 
       fetch(BASE_QUESTIONS_URL).then(function (response) {
         if (!response.ok) {
-          throw new Error("JSON file not found");
+          throw new Error("HTTP " + response.status + "でJSONを読み込めませんでした。");
         }
 
         return response.json();
       }).then(function (json) {
         var baseQuestions = normalizeQuestions(json);
         var importedQuestions = normalizeQuestions(getStoredJson(IMPORTED_QUESTIONS_KEY, []));
+        baseQuestionCount = baseQuestions.length;
+        extraQuestionCount = importedQuestions.length;
         questionBank = combineQuestions(baseQuestions, importedQuestions);
         dataStatus.textContent = "ローカルJSONから問題データを読み込みました。";
         renderDashboard();
-      }).catch(function () {
+        console.log("[quiz-data] loaded", {
+          path: BASE_QUESTIONS_URL,
+          baseQuestions: baseQuestionCount,
+          extraQuestions: extraQuestionCount,
+          totalQuestions: questionBank.length
+        });
+      }).catch(function (error) {
         var importedQuestions = normalizeQuestions(getStoredJson(IMPORTED_QUESTIONS_KEY, []));
+        baseQuestionCount = fallbackQuestions.length;
+        extraQuestionCount = importedQuestions.length;
         questionBank = combineQuestions(fallbackQuestions, importedQuestions);
         dataStatus.textContent = "JSONファイルを読めない環境のため、アプリ内の予備データを使っています。";
         renderDashboard();
+        console.error("[quiz-data] load failed", error);
       });
     }
 
