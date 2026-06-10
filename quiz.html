@@ -603,6 +603,24 @@
       margin-top: 18px;
     }
 
+    .build-info {
+      margin: 18px 0 0;
+      padding: 12px;
+      color: var(--muted);
+      background: rgba(23, 17, 13, 0.72);
+      border: 1px solid rgba(245, 199, 98, 0.14);
+      border-radius: 8px;
+      font-size: 11px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .build-label {
+      display: block;
+      color: var(--gold);
+      font-weight: 900;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -698,6 +716,7 @@
         <button class="main-mode-button is-review" type="button" data-mode="wrong">間違えた問題</button>
         <button class="main-mode-button is-review" type="button" data-mode="weak">苦手克服</button>
       </div>
+      <button class="secondary-button" type="button" id="resetSessionButton">出題セッションをリセット</button>
       <p class="status-message" id="modeStatus" aria-live="polite"></p>
 
       <details class="detail-menu">
@@ -831,6 +850,10 @@
     </section>
 
     <a class="bottom-back-link" href="index.html">火種ユイに戻る</a>
+    <div class="build-info" aria-label="クイズのビルド情報">
+      <span class="build-label">quiz build: session-queue-v2</span>
+      <span id="debugInfo">登録問題数: 0 / sessionQueue: [] / sessionIndex: 0 / question.id: -</span>
+    </div>
   </main>
 
   <script>
@@ -838,6 +861,18 @@
     var IMPORTED_QUESTIONS_KEY = "hygieneManagerSecondTypeImportedQuestionsV1";
     var QUESTION_STATS_KEY = "hygieneManagerSecondTypeQuestionStatsV1";
     var LEARNING_HISTORY_KEY = "hygieneManagerSecondTypeLearningHistoryV1";
+    var SESSION_QUEUE_KEY = "hygieneManagerSecondTypeSessionQueueV1";
+    var SESSION_INDEX_KEY = "hygieneManagerSecondTypeSessionIndexV1";
+    var LEGACY_SESSION_KEYS = [
+      "sessionQueue",
+      "sessionIndex",
+      "currentSessionQuestionIds",
+      "recentQuestionIds",
+      "wrongQuestionIds",
+      "questionStats",
+      "todayProgress",
+      "quizHistory"
+    ];
     var TODAY_LIMIT = 3;
     var WEAK_CLEAR_STREAK = 2;
     var RECENT_QUESTION_LIMIT = 3;
@@ -872,9 +907,8 @@
     var questionBank = [];
     var questionStats = {};
     var learningHistory = {};
-    var currentRound = [];
-    var currentSessionQuestionIds = [];
-    var currentQuestionIndex = 0;
+    var sessionQueue = [];
+    var sessionIndex = 0;
     var currentMode = "today";
     var correctCount = 0;
     var roundMistakes = [];
@@ -928,9 +962,11 @@
     var importButton = document.getElementById("importButton");
     var exportButton = document.getElementById("exportButton");
     var resetImportedButton = document.getElementById("resetImportedButton");
+    var resetSessionButton = document.getElementById("resetSessionButton");
     var resetStatsButton = document.getElementById("resetStatsButton");
     var importStatus = document.getElementById("importStatus");
     var jsonExample = document.getElementById("jsonExample");
+    var debugInfo = document.getElementById("debugInfo");
 
     function getStoredJson(key, fallback) {
       try {
@@ -1011,6 +1047,18 @@
 
     function saveLearningHistory() {
       setStoredJson(LEARNING_HISTORY_KEY, learningHistory);
+      setStoredJson("recentQuestionIds", learningHistory.recentQuestionIds || []);
+      setStoredJson("wrongQuestionIds", learningHistory.wrongQuestionIds || []);
+      setStoredJson("todayProgress", {
+        date: learningHistory.dailyDate,
+        answeredIds: learningHistory.dailyAnsweredIds || []
+      });
+      setStoredJson("quizHistory", learningHistory);
+    }
+
+    function saveQuestionStats() {
+      setStoredJson(QUESTION_STATS_KEY, questionStats);
+      setStoredJson("questionStats", questionStats);
     }
 
     function normalizeChoice(choice, index) {
@@ -1278,6 +1326,11 @@
     function selectSessionQuestions(questions, mode, limit) {
       var uniqueQuestions = uniqueQuestionsById(questions);
       var desiredCount = Math.min(limit, uniqueQuestions.length);
+
+      if (mode === "today") {
+        return shuffle(uniqueQuestions).slice(0, desiredCount);
+      }
+
       var recentIds = learningHistory.recentQuestionIds || [];
       var lastQuestionId = recentIds.length ? recentIds[recentIds.length - 1] : "";
       var firstCandidates = uniqueQuestions.filter(function (question) {
@@ -1306,37 +1359,62 @@
         .slice(0, desiredCount);
     }
 
-    function buildCurrentSession(questions, mode, limit) {
+    function saveSessionState() {
+      setStoredJson(SESSION_QUEUE_KEY, sessionQueue);
+      localStorage.setItem(SESSION_INDEX_KEY, String(sessionIndex));
+      setStoredJson("sessionQueue", sessionQueue);
+      localStorage.setItem("sessionIndex", String(sessionIndex));
+      setStoredJson("currentSessionQuestionIds", sessionQueue);
+    }
+
+    function buildSessionQueue(questions, mode, limit) {
       var sessionQuestions = selectSessionQuestions(questions, mode, limit);
-      var questionsById = {};
-
-      for (var i = 0; i < questions.length; i++) {
-        questionsById[questions[i].id] = questions[i];
-      }
-
-      currentSessionQuestionIds = sessionQuestions.map(function (question) {
+      sessionQueue = sessionQuestions.map(function (question) {
         return question.id;
       });
-      currentRound = currentSessionQuestionIds.map(function (questionId) {
-        return questionsById[questionId];
-      }).filter(Boolean);
-      learningHistory.currentSessionQuestionIds = currentSessionQuestionIds.slice();
+      sessionIndex = 0;
+      learningHistory.currentSessionQuestionIds = sessionQueue.slice();
       saveLearningHistory();
+      saveSessionState();
+      renderDebugInfo();
+    }
+
+    function getQuestionById(questionId) {
+      var bank = getBankWithStats();
+
+      for (var i = 0; i < bank.length; i++) {
+        if (bank[i].id === questionId) {
+          return bank[i];
+        }
+      }
+
+      return null;
+    }
+
+    function getCurrentSessionQuestion() {
+      return getQuestionById(sessionQueue[sessionIndex]);
     }
 
     function logQuizDebug(stage) {
-      console.log("[quiz-debug] " + stage, {
-        allQuestionCount: getBankWithStats().length,
-        todayQuestionIds: currentMode === "today"
-          ? currentSessionQuestionIds.slice()
-          : [],
-        recentQuestionIds: (learningHistory.recentQuestionIds || []).slice(),
+      var debugState = {
+        registeredQuestionCount: getBankWithStats().length,
+        sessionQueue: sessionQueue.slice(),
+        sessionIndex: sessionIndex,
+        currentQuestionId: sessionQueue[sessionIndex] || "",
         wrongQuestionIds: (learningHistory.wrongQuestionIds || []).slice(),
-        currentSessionQuestionIds: currentSessionQuestionIds.slice(),
-        currentQuestionNumber: currentRound.length
-          ? currentQuestionIndex + 1
-          : 0
-      });
+        recentQuestionIds: (learningHistory.recentQuestionIds || []).slice()
+      };
+
+      console.log("[quiz-debug] " + stage, debugState);
+      renderDebugInfo();
+    }
+
+    function renderDebugInfo() {
+      debugInfo.textContent =
+        "登録問題数: " + getBankWithStats().length +
+        " / sessionQueue: " + JSON.stringify(sessionQueue) +
+        " / sessionIndex: " + sessionIndex +
+        " / question.id: " + (sessionQueue[sessionIndex] || "-");
     }
 
     function rememberQuestionShown(questionId) {
@@ -1503,6 +1581,7 @@
       syncLearningHistoryLists(bank);
       renderLearningProgress();
       renderLists();
+      renderDebugInfo();
     }
 
     function getQuestionsForMode(mode) {
@@ -1550,8 +1629,7 @@
       }
 
       currentMode = mode;
-      buildCurrentSession(questions, mode, limit);
-      currentQuestionIndex = 0;
+      buildSessionQueue(questions, mode, limit);
       correctCount = 0;
       roundMistakes = [];
       currentQuestionScored = false;
@@ -1559,8 +1637,8 @@
 
       if (mode === "wrong" && questions.length === 1) {
         roundNotice = "復習できる問題が1問だけです。同じ問題は自動で繰り返し出題しません。";
-      } else if (mode === "today" && currentRound.length < TODAY_LIMIT) {
-        roundNotice = "重複せずに出せる問題は" + currentRound.length + "問です。";
+      } else if (mode === "today" && sessionQueue.length < TODAY_LIMIT) {
+        roundNotice = "重複せずに出せる問題は" + sessionQueue.length + "問です。";
       }
 
       modeStatus.textContent = "";
@@ -1573,7 +1651,14 @@
     }
 
     function renderQuestion(isRetry) {
-      var question = currentRound[currentQuestionIndex];
+      var question = getCurrentSessionQuestion();
+
+      if (!question) {
+        resetSessionState(false);
+        modeStatus.textContent = "出題データを確認できませんでした。もう一度モードを選んでください。";
+        return;
+      }
+
       var choices = question["選択肢"];
 
       answered = false;
@@ -1582,9 +1667,9 @@
         currentQuestionScored = false;
       }
 
-      progressLabel.textContent = "問題 " + (currentQuestionIndex + 1) + " / " + currentRound.length;
+      progressLabel.textContent = "問題 " + (sessionIndex + 1) + " / " + sessionQueue.length;
       modeLabel.textContent = getModeName(currentMode);
-      progressFill.style.width = ((currentQuestionIndex + 1) / currentRound.length * 100) + "%";
+      progressFill.style.width = ((sessionIndex + 1) / sessionQueue.length * 100) + "%";
       questionStatus.textContent = roundNotice;
       questionStatus.hidden = !roundNotice;
       questionMeta.textContent = formatMeta(question);
@@ -1599,7 +1684,7 @@
       weakToggleButton.hidden = true;
       retryQuestionButton.hidden = true;
       nextButton.hidden = true;
-      nextButton.textContent = currentQuestionIndex === currentRound.length - 1 ? "結果を見る" : "次の問題";
+      nextButton.textContent = sessionIndex === sessionQueue.length - 1 ? "結果を見る" : "次の問題";
 
       if (!isRetry) {
         rememberQuestionShown(question.id);
@@ -1647,7 +1732,7 @@
         return;
       }
 
-      var question = currentRound[currentQuestionIndex];
+      var question = getCurrentSessionQuestion();
       var stats = getStatsForQuestion(question);
       var isCorrect = selectedAnswer === question["正解"];
       var today = getLocalDateKey();
@@ -1684,7 +1769,7 @@
 
       currentQuestionScored = true;
       stats.lastAnsweredAt = today;
-      setStoredJson(QUESTION_STATS_KEY, questionStats);
+      saveQuestionStats();
       recordLearningAnswer(question, isCorrect);
 
       for (var i = 0; i < choiceButtons.length; i++) {
@@ -1719,16 +1804,16 @@
     }
 
     function updateWeakToggleButton() {
-      var question = currentRound[currentQuestionIndex];
+      var question = getCurrentSessionQuestion();
       var stats = getStatsForQuestion(question);
       weakToggleButton.textContent = stats.weakFlag ? "苦手から外す" : "苦手にする";
     }
 
     function toggleWeakFlagForCurrentQuestion() {
-      var question = currentRound[currentQuestionIndex];
+      var question = getCurrentSessionQuestion();
       var stats = getStatsForQuestion(question);
       stats.weakFlag = !stats.weakFlag;
-      setStoredJson(QUESTION_STATS_KEY, questionStats);
+      saveQuestionStats();
       updateWeakToggleButton();
       feedbackSubtext.textContent += stats.weakFlag
         ? "\n苦手フラグを付けました。"
@@ -1739,7 +1824,7 @@
     function showResult() {
       questionView.hidden = true;
       resultView.hidden = false;
-      scoreText.textContent = currentRound.length + "問中" + correctCount + "問正解";
+      scoreText.textContent = sessionQueue.length + "問中" + correctCount + "問正解";
       resultMistakeList.replaceChildren();
       resultMistakeBlock.hidden = roundMistakes.length === 0;
 
@@ -1833,17 +1918,55 @@
 
     function resetImportedQuestions() {
       localStorage.removeItem(IMPORTED_QUESTIONS_KEY);
+      resetSessionState(false);
       importStatus.textContent = "追加データをリセットしました。ローカルJSONの問題だけに戻します。";
       initializeQuestions();
     }
 
-    function resetStats() {
+    function clearLearningAndSessionStorage() {
+      for (var i = 0; i < LEGACY_SESSION_KEYS.length; i++) {
+        localStorage.removeItem(LEGACY_SESSION_KEYS[i]);
+      }
+
+      localStorage.removeItem(SESSION_QUEUE_KEY);
+      localStorage.removeItem(SESSION_INDEX_KEY);
       localStorage.removeItem(QUESTION_STATS_KEY);
       localStorage.removeItem(LEARNING_HISTORY_KEY);
+    }
+
+    function resetSessionState(showMessage) {
+      clearLearningAndSessionStorage();
       questionStats = {};
       learningHistory = makeDefaultLearningHistory();
-      importStatus.textContent = "学習履歴をリセットしました。";
+      sessionQueue = [];
+      sessionIndex = 0;
+      questionView.hidden = true;
+      resultView.hidden = true;
+      modePanel.hidden = false;
       renderDashboard();
+      clearLearningAndSessionStorage();
+      logQuizDebug("session-reset");
+
+      if (showMessage !== false) {
+        var resetMessage = "出題セッション、間違い、正答、今日の進捗をリセットしました。";
+        modeStatus.textContent = resetMessage;
+        importStatus.textContent = resetMessage;
+      }
+    }
+
+    function resetStats() {
+      clearLearningAndSessionStorage();
+      questionStats = {};
+      learningHistory = makeDefaultLearningHistory();
+      sessionQueue = [];
+      sessionIndex = 0;
+      questionView.hidden = true;
+      resultView.hidden = true;
+      modePanel.hidden = false;
+      importStatus.textContent = "学習履歴と出題セッションをすべてリセットしました。";
+      renderDashboard();
+      clearLearningAndSessionStorage();
+      logQuizDebug("learning-history-reset");
     }
 
     function initializeQuestions() {
@@ -1885,9 +2008,11 @@
     });
 
     nextButton.addEventListener("click", function () {
-      currentQuestionIndex += 1;
+      sessionIndex += 1;
+      saveSessionState();
+      logQuizDebug("next-question");
 
-      if (currentQuestionIndex < currentRound.length) {
+      if (sessionIndex < sessionQueue.length) {
         renderQuestion(false);
       } else {
         showResult();
@@ -1911,6 +2036,9 @@
     importButton.addEventListener("click", importQuestions);
     exportButton.addEventListener("click", exportQuestions);
     resetImportedButton.addEventListener("click", resetImportedQuestions);
+    resetSessionButton.addEventListener("click", function () {
+      resetSessionState(true);
+    });
     resetStatsButton.addEventListener("click", resetStats);
 
     jsonExample.textContent = JSON.stringify(fallbackQuestions, null, 2);
