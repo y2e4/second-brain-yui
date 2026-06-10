@@ -1515,11 +1515,20 @@ question.id: -</span>
     function formatAnswer(question, answerId) {
       for (var i = 0; i < question["選択肢"].length; i++) {
         if (question["選択肢"][i].id === answerId) {
-          return question["選択肢"][i].id + ". " + question["選択肢"][i].text;
+          return formatChoiceLabel(question["選択肢"][i]);
         }
       }
 
       return answerId;
+    }
+
+    function formatChoiceLabel(choice) {
+      if ((choice.id === "O" && choice.text === "〇") ||
+          (choice.id === "X" && choice.text === "×")) {
+        return choice.text;
+      }
+
+      return choice.id + ". " + choice.text;
     }
 
     function renderLists() {
@@ -1731,7 +1740,7 @@ question.id: -</span>
         button.className = "choice-button";
         button.type = "button";
         button.setAttribute("data-answer", choices[i].id);
-        button.textContent = choices[i].id + ". " + choices[i].text;
+        button.textContent = formatChoiceLabel(choices[i]);
         button.addEventListener("click", function () {
           answerQuestion(this.getAttribute("data-answer"));
         });
