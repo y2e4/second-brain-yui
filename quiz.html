@@ -226,6 +226,12 @@
       font-size: 26px;
     }
 
+    .result-actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -692,11 +698,15 @@
       <h2 class="panel-title">今日の進捗</h2>
       <div class="progress-summary">
         <div class="today-progress">
-          <span class="stat-label">今日</span>
-          <span class="stat-value" id="todayProgressText">3問中0問完了</span>
+          <span class="stat-label">今日の完了数</span>
+          <span class="stat-value" id="todayProgressText">0問</span>
         </div>
         <div class="stat-box">
-          <span class="stat-label">累計</span>
+          <span class="stat-label">今日の解答数</span>
+          <span class="stat-value" id="todayAnsweredCount">0回答</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">累計解答数</span>
           <span class="stat-value" id="cumulativeAnswered">0問</span>
         </div>
         <div class="stat-box">
@@ -704,8 +714,16 @@
           <span class="stat-value" id="accuracyValue">0%</span>
         </div>
         <div class="stat-box">
-          <span class="stat-label">苦手</span>
-          <span class="stat-value" id="weakCount">0</span>
+          <span class="stat-label">未出題問題</span>
+          <span class="stat-value" id="unattemptedCount">0問</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">間違えた問題</span>
+          <span class="stat-value" id="dashboardWrongCount">0問</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">苦手問題</span>
+          <span class="stat-value" id="weakCount">0問</span>
         </div>
         <div class="stat-box">
           <span class="stat-label">最終学習日</span>
@@ -835,10 +853,14 @@
         <p class="panel-note">今回間違えた問題</p>
         <ol class="mini-list" id="resultMistakeList"></ol>
       </div>
-      <div class="action-row">
-        <button class="primary-button" type="button" id="retryButton">もう一度挑戦</button>
-        <button class="secondary-button" type="button" id="backToModesButton">出題モードへ戻る</button>
+      <div class="result-actions">
+        <button class="primary-button" type="button" id="moreThreeButton">さらに3問解く</button>
+        <button class="secondary-button" type="button" id="challengeTenButton">10問チャレンジ</button>
+        <button class="secondary-button" type="button" id="reviewWrongButton">間違えた問題を復習</button>
+        <button class="secondary-button" type="button" id="reviewWeakButton">苦手問題を復習</button>
+        <button class="secondary-button" type="button" id="finishTodayButton">今日はここまで</button>
       </div>
+      <p class="status-message" id="resultStatus" aria-live="polite"></p>
     </section>
 
     <section class="panel" aria-label="間違えた問題">
@@ -857,11 +879,12 @@
 
     <a class="bottom-back-link" href="index.html">火種ユイに戻る</a>
     <div class="build-info" aria-label="クイズのビルド情報">
-      <span class="build-label">quiz build: unseen-first-v3-data-51</span>
+      <span class="build-label">quiz build: continuation-v1-data-51</span>
       <span id="debugInfo">baseQuestions: 0
 extraQuestions: 0
 totalQuestions: 0
 categories: []
+unattemptedCount: 0
 recentQuestionIds: []
 sessionQueue: []
 sessionIndex: 0
@@ -887,6 +910,8 @@ currentQuestionId: -</span>
       "quizHistory"
     ];
     var TODAY_LIMIT = 3;
+    var MORE_LIMIT = 3;
+    var CHALLENGE_LIMIT = 10;
     var WEAK_CLEAR_STREAK = 2;
     var RECENT_QUESTION_LIMIT = 10;
     var WRONG_QUESTION_WEIGHT = 1.5;
@@ -930,10 +955,14 @@ currentQuestionId: -</span>
     var answered = false;
     var currentQuestionScored = false;
     var roundNotice = "";
+    var sessionDisplayOffset = 0;
 
     var todayProgressText = document.getElementById("todayProgressText");
+    var todayAnsweredCount = document.getElementById("todayAnsweredCount");
     var cumulativeAnswered = document.getElementById("cumulativeAnswered");
     var accuracyValue = document.getElementById("accuracyValue");
+    var unattemptedCount = document.getElementById("unattemptedCount");
+    var dashboardWrongCount = document.getElementById("dashboardWrongCount");
     var lastStudyDate = document.getElementById("lastStudyDate");
     var totalCount = document.getElementById("totalCount");
     var wrongCount = document.getElementById("wrongCount");
@@ -967,8 +996,12 @@ currentQuestionId: -</span>
     var scoreText = document.getElementById("scoreText");
     var resultMistakeBlock = document.getElementById("resultMistakeBlock");
     var resultMistakeList = document.getElementById("resultMistakeList");
-    var retryButton = document.getElementById("retryButton");
-    var backToModesButton = document.getElementById("backToModesButton");
+    var moreThreeButton = document.getElementById("moreThreeButton");
+    var challengeTenButton = document.getElementById("challengeTenButton");
+    var reviewWrongButton = document.getElementById("reviewWrongButton");
+    var reviewWeakButton = document.getElementById("reviewWeakButton");
+    var finishTodayButton = document.getElementById("finishTodayButton");
+    var resultStatus = document.getElementById("resultStatus");
     var wrongList = document.getElementById("wrongList");
     var wrongEmpty = document.getElementById("wrongEmpty");
     var weakList = document.getElementById("weakList");
@@ -1011,6 +1044,8 @@ currentQuestionId: -</span>
         lastStudyDate: "",
         dailyDate: getLocalDateKey(),
         dailyAnsweredIds: [],
+        dailyCompletedCount: 0,
+        dailyAnswerCount: 0,
         recentQuestionIds: [],
         seenQuestionIds: [],
         questionLastShownOrder: {},
@@ -1042,11 +1077,24 @@ currentQuestionId: -</span>
       if (history.dailyDate !== getLocalDateKey()) {
         history.dailyDate = getLocalDateKey();
         history.dailyAnsweredIds = [];
+        history.dailyCompletedCount = 0;
+        history.dailyAnswerCount = 0;
       }
 
       if (!Array.isArray(history.dailyAnsweredIds)) {
         history.dailyAnsweredIds = [];
       }
+
+      history.dailyCompletedCount = Number(
+        history.dailyCompletedCount !== undefined
+          ? history.dailyCompletedCount
+          : history.dailyAnsweredIds.length
+      );
+      history.dailyAnswerCount = Number(
+        history.dailyAnswerCount !== undefined
+          ? history.dailyAnswerCount
+          : history.dailyCompletedCount
+      );
 
       if (!Array.isArray(history.recentQuestionIds)) {
         history.recentQuestionIds = [];
@@ -1321,7 +1369,8 @@ currentQuestionId: -</span>
     }
 
     function getSelectionWeight(question, mode) {
-      var normalMode = mode === "today" || mode === "all" ||
+      var normalMode = mode === "today" || mode === "more3" ||
+        mode === "challenge10" || mode === "all" ||
         mode === "field" || mode === "year";
 
       if (normalMode && question["間違い対象"]) {
@@ -1398,31 +1447,56 @@ currentQuestionId: -</span>
       });
     }
 
-    function selectSessionQuestions(questions, mode, limit) {
+    function appendPriorityQuestions(selected, questions, desiredCount) {
+      var seenIds = learningHistory.seenQuestionIds || [];
+      var recentIds = learningHistory.recentQuestionIds || [];
+      var unseenQuestions = shuffle(questions.filter(function (question) {
+        return seenIds.indexOf(question.id) === -1;
+      }));
+      var staleQuestions = orderByOldestShown(questions.filter(function (question) {
+        return seenIds.indexOf(question.id) !== -1 &&
+          recentIds.indexOf(question.id) === -1;
+      }));
+      var wrongQuestions = orderByOldestShown(questions.filter(function (question) {
+        return question["間違い対象"];
+      }));
+      var weakQuestions = orderByOldestShown(questions.filter(function (question) {
+        return question["苦手フラグ"];
+      }));
+
+      appendUniqueQuestions(selected, unseenQuestions, desiredCount);
+      appendUniqueQuestions(selected, staleQuestions, desiredCount);
+      appendUniqueQuestions(selected, wrongQuestions, desiredCount);
+      appendUniqueQuestions(selected, weakQuestions, desiredCount);
+      appendUniqueQuestions(selected, orderByOldestShown(questions), desiredCount);
+    }
+
+    function selectPrioritySessionQuestions(uniqueQuestions, desiredCount, excludedIds) {
+      var selected = [];
+      var preferredQuestions = uniqueQuestions.filter(function (question) {
+        return excludedIds.indexOf(question.id) === -1;
+      });
+
+      appendPriorityQuestions(selected, preferredQuestions, desiredCount);
+
+      if (selected.length < desiredCount) {
+        appendPriorityQuestions(selected, uniqueQuestions, desiredCount);
+      }
+
+      return selected;
+    }
+
+    function selectSessionQuestions(questions, mode, limit, excludedIds) {
       var uniqueQuestions = uniqueQuestionsById(questions);
       var desiredCount = Math.min(limit, uniqueQuestions.length);
+      var priorityMode = mode === "today" || mode === "more3" || mode === "challenge10";
 
-      if (mode === "today") {
-        var seenIds = learningHistory.seenQuestionIds || [];
-        var recentIdsForToday = learningHistory.recentQuestionIds || [];
-        var selected = [];
-        var unseenQuestions = shuffle(uniqueQuestions.filter(function (question) {
-          return seenIds.indexOf(question.id) === -1;
-        }));
-        var staleQuestions = orderByOldestShown(uniqueQuestions.filter(function (question) {
-          return seenIds.indexOf(question.id) !== -1 &&
-            recentIdsForToday.indexOf(question.id) === -1;
-        }));
-        var wrongQuestions = orderByOldestShown(uniqueQuestions.filter(function (question) {
-          return question["間違い対象"];
-        }));
-        var fallbackQuestionsForToday = orderByOldestShown(uniqueQuestions);
-
-        appendUniqueQuestions(selected, unseenQuestions, desiredCount);
-        appendUniqueQuestions(selected, staleQuestions, desiredCount);
-        appendUniqueQuestions(selected, wrongQuestions, desiredCount);
-        appendUniqueQuestions(selected, fallbackQuestionsForToday, desiredCount);
-        return selected;
+      if (priorityMode) {
+        return selectPrioritySessionQuestions(
+          uniqueQuestions,
+          desiredCount,
+          Array.isArray(excludedIds) ? excludedIds : []
+        );
       }
 
       var recentIds = learningHistory.recentQuestionIds || [];
@@ -1461,8 +1535,8 @@ currentQuestionId: -</span>
       setStoredJson("currentSessionQuestionIds", sessionQueue);
     }
 
-    function buildSessionQueue(questions, mode, limit) {
-      var sessionQuestions = selectSessionQuestions(questions, mode, limit);
+    function buildSessionQueue(questions, mode, limit, excludedIds) {
+      var sessionQuestions = selectSessionQuestions(questions, mode, limit, excludedIds);
       sessionQueue = sessionQuestions.map(function (question) {
         return question.id;
       });
@@ -1489,12 +1563,21 @@ currentQuestionId: -</span>
       return getQuestionById(sessionQueue[sessionIndex]);
     }
 
+    function getUnattemptedCount() {
+      var seenIds = learningHistory.seenQuestionIds || [];
+
+      return getBankWithStats().filter(function (question) {
+        return seenIds.indexOf(question.id) === -1;
+      }).length;
+    }
+
     function logQuizDebug(stage) {
       var debugState = {
         baseQuestionCount: baseQuestionCount,
         extraQuestionCount: extraQuestionCount,
         totalQuestionCount: getBankWithStats().length,
         categories: uniqueSortedValues(getBankWithStats(), "分野"),
+        unattemptedCount: getUnattemptedCount(),
         sessionQueue: sessionQueue.slice(),
         sessionIndex: sessionIndex,
         currentQuestionId: sessionQueue[sessionIndex] || "",
@@ -1512,6 +1595,7 @@ currentQuestionId: -</span>
         "\nextraQuestions: " + extraQuestionCount +
         "\ntotalQuestions: " + getBankWithStats().length +
         "\ncategories: " + JSON.stringify(uniqueSortedValues(getBankWithStats(), "分野")) +
+        "\nunattemptedCount: " + getUnattemptedCount() +
         "\nrecentQuestionIds: " + JSON.stringify(learningHistory.recentQuestionIds || []) +
         "\nsessionQueue: " + JSON.stringify(sessionQueue) +
         "\nsessionIndex: " + sessionIndex +
@@ -1573,6 +1657,8 @@ currentQuestionId: -</span>
     function getModeName(mode) {
       var names = {
         today: "今日の3問",
+        more3: "さらに3問",
+        challenge10: "10問チャレンジ",
         all: "全問ランダム",
         wrong: "間違えた問題",
         weak: "苦手克服",
@@ -1666,21 +1752,19 @@ currentQuestionId: -</span>
     }
 
     function renderLearningProgress() {
-      var dailyCompleted = Math.min(
-        TODAY_LIMIT,
-        Array.isArray(learningHistory.dailyAnsweredIds)
-          ? learningHistory.dailyAnsweredIds.length
-          : 0
-      );
+      var dailyCompleted = Number(learningHistory.dailyCompletedCount || 0);
+      var dailyAnswers = Number(learningHistory.dailyAnswerCount || 0);
       var totalAnswered = Number(learningHistory.totalAnswered || 0);
       var totalCorrect = Number(learningHistory.totalCorrect || 0);
       var accuracy = totalAnswered > 0
         ? Math.round(totalCorrect / totalAnswered * 100)
         : 0;
 
-      todayProgressText.textContent = TODAY_LIMIT + "問中" + dailyCompleted + "問完了";
+      todayProgressText.textContent = dailyCompleted + "問";
+      todayAnsweredCount.textContent = dailyAnswers + "回答";
       cumulativeAnswered.textContent = totalAnswered + "問";
       accuracyValue.textContent = accuracy + "%";
+      unattemptedCount.textContent = getUnattemptedCount() + "問";
       lastStudyDate.textContent = learningHistory.lastStudyDate || "未学習";
     }
 
@@ -1697,7 +1781,8 @@ currentQuestionId: -</span>
 
       totalCount.textContent = bank.length;
       wrongCount.textContent = wrongQuestions.length;
-      weakCount.textContent = weakQuestions.length;
+      dashboardWrongCount.textContent = wrongQuestions.length + "問";
+      weakCount.textContent = weakQuestions.length + "問";
       fieldCount.textContent = fields.length;
       dataStatus.textContent =
         "基本" + baseQuestionCount + "問＋追加" + extraQuestionCount +
@@ -1740,22 +1825,33 @@ currentQuestionId: -</span>
       return bank;
     }
 
-    function startMode(mode) {
+    function startMode(mode, options) {
+      options = options || {};
       var questions = getQuestionsForMode(mode);
-      var limit = mode === "today" ? TODAY_LIMIT : questions.length;
+      var limit = questions.length;
+      var statusElement = options.fromResult ? resultStatus : modeStatus;
+
+      if (mode === "today") {
+        limit = TODAY_LIMIT;
+      } else if (mode === "more3") {
+        limit = MORE_LIMIT;
+      } else if (mode === "challenge10") {
+        limit = CHALLENGE_LIMIT;
+      }
 
       if ((mode === "field" && !fieldSelect.value) || (mode === "year" && !yearSelect.value)) {
-        modeStatus.textContent = "先に出題条件を選んでください。";
+        statusElement.textContent = "先に出題条件を選んでください。";
         return;
       }
 
       if (!questions.length) {
-        modeStatus.textContent = getModeName(mode) + "に出せる問題がまだありません。";
+        statusElement.textContent = getModeName(mode) + "に出せる問題がまだありません。";
         return;
       }
 
       currentMode = mode;
-      buildSessionQueue(questions, mode, limit);
+      sessionDisplayOffset = Number(options.displayOffset || 0);
+      buildSessionQueue(questions, mode, limit, options.excludeIds || []);
       correctCount = 0;
       roundMistakes = [];
       currentQuestionScored = false;
@@ -1765,9 +1861,14 @@ currentQuestionId: -</span>
         roundNotice = "復習できる問題が1問だけです。同じ問題は自動で繰り返し出題しません。";
       } else if (mode === "today" && sessionQueue.length < TODAY_LIMIT) {
         roundNotice = "重複せずに出せる問題は" + sessionQueue.length + "問です。";
+      } else if (mode === "more3" && sessionQueue.length < MORE_LIMIT) {
+        roundNotice = "追加学習に出せる問題は" + sessionQueue.length + "問です。";
+      } else if (mode === "challenge10" && sessionQueue.length < CHALLENGE_LIMIT) {
+        roundNotice = "重複せずに出せる最大" + sessionQueue.length + "問で挑戦します。";
       }
 
       modeStatus.textContent = "";
+      resultStatus.textContent = "";
       modePanel.hidden = true;
       resultView.hidden = true;
       questionView.hidden = false;
@@ -1793,9 +1894,12 @@ currentQuestionId: -</span>
         currentQuestionScored = false;
       }
 
-      progressLabel.textContent = "問題 " + (sessionIndex + 1) + " / " + sessionQueue.length;
+      var displayQuestionNumber = sessionDisplayOffset + sessionIndex + 1;
+      var displayQuestionTotal = sessionDisplayOffset + sessionQueue.length;
+      progressLabel.textContent =
+        "問題 " + displayQuestionNumber + " / " + displayQuestionTotal;
       modeLabel.textContent = getModeName(currentMode);
-      progressFill.style.width = ((sessionIndex + 1) / sessionQueue.length * 100) + "%";
+      progressFill.style.width = (displayQuestionNumber / displayQuestionTotal * 100) + "%";
       questionStatus.textContent = roundNotice;
       questionStatus.hidden = !roundNotice;
       questionMeta.textContent = formatMeta(question);
@@ -1831,18 +1935,26 @@ currentQuestionId: -</span>
       }
     }
 
-    function recordLearningAnswer(question, isCorrect) {
+    function recordLearningAnswer(question, isCorrect, countsAsCompletedQuestion) {
       var today = getLocalDateKey();
 
       if (learningHistory.dailyDate !== today) {
         learningHistory.dailyDate = today;
         learningHistory.dailyAnsweredIds = [];
+        learningHistory.dailyCompletedCount = 0;
+        learningHistory.dailyAnswerCount = 0;
       }
 
       learningHistory.totalAnswered = Number(learningHistory.totalAnswered || 0) + 1;
+      learningHistory.dailyAnswerCount = Number(learningHistory.dailyAnswerCount || 0) + 1;
 
       if (isCorrect) {
         learningHistory.totalCorrect = Number(learningHistory.totalCorrect || 0) + 1;
+      }
+
+      if (countsAsCompletedQuestion) {
+        learningHistory.dailyCompletedCount =
+          Number(learningHistory.dailyCompletedCount || 0) + 1;
       }
 
       if (learningHistory.dailyAnsweredIds.indexOf(question.id) === -1) {
@@ -1896,7 +2008,7 @@ currentQuestionId: -</span>
       currentQuestionScored = true;
       stats.lastAnsweredAt = today;
       saveQuestionStats();
-      recordLearningAnswer(question, isCorrect);
+      recordLearningAnswer(question, isCorrect, isFirstRoundAnswer);
 
       for (var i = 0; i < choiceButtons.length; i++) {
         var buttonAnswer = choiceButtons[i].getAttribute("data-answer");
@@ -1950,6 +2062,7 @@ currentQuestionId: -</span>
     function showResult() {
       questionView.hidden = true;
       resultView.hidden = false;
+      resultStatus.textContent = "";
       scoreText.textContent = sessionQueue.length + "問中" + correctCount + "問正解";
       resultMistakeList.replaceChildren();
       resultMistakeBlock.hidden = roundMistakes.length === 0;
@@ -1971,6 +2084,32 @@ currentQuestionId: -</span>
       }
 
       resultView.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function startAdditionalQuestions(mode) {
+      var previousQueue = sessionQueue.slice();
+      var displayOffset = mode === "more3"
+        ? sessionDisplayOffset + sessionQueue.length
+        : 0;
+
+      startMode(mode, {
+        fromResult: true,
+        excludeIds: previousQueue,
+        displayOffset: displayOffset
+      });
+    }
+
+    function startReviewFromResult(mode) {
+      startMode(mode, {
+        fromResult: true
+      });
+    }
+
+    function finishToday() {
+      resultView.hidden = true;
+      modePanel.hidden = false;
+      modeStatus.textContent = "今日はここまで。学習記録を保存しました。";
+      modePanel.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function parseImportInput() {
@@ -2043,15 +2182,20 @@ currentQuestionId: -</span>
       });
     }
 
-    function resetImportedQuestions() {
-      localStorage.removeItem(IMPORTED_QUESTIONS_KEY);
+    function clearCurrentSessionStorage() {
       localStorage.removeItem(SESSION_QUEUE_KEY);
       localStorage.removeItem(SESSION_INDEX_KEY);
       localStorage.removeItem("sessionQueue");
       localStorage.removeItem("sessionIndex");
       localStorage.removeItem("currentSessionQuestionIds");
+    }
+
+    function resetImportedQuestions() {
+      localStorage.removeItem(IMPORTED_QUESTIONS_KEY);
+      clearCurrentSessionStorage();
       sessionQueue = [];
       sessionIndex = 0;
+      sessionDisplayOffset = 0;
       learningHistory.currentSessionQuestionIds = [];
       saveLearningHistory();
       questionView.hidden = true;
@@ -2073,20 +2217,20 @@ currentQuestionId: -</span>
     }
 
     function resetSessionState(showMessage) {
-      clearLearningAndSessionStorage();
-      questionStats = {};
-      learningHistory = makeDefaultLearningHistory();
+      clearCurrentSessionStorage();
       sessionQueue = [];
       sessionIndex = 0;
+      sessionDisplayOffset = 0;
+      learningHistory.currentSessionQuestionIds = [];
+      saveLearningHistory();
       questionView.hidden = true;
       resultView.hidden = true;
       modePanel.hidden = false;
       renderDashboard();
-      clearLearningAndSessionStorage();
       logQuizDebug("session-reset");
 
       if (showMessage !== false) {
-        var resetMessage = "出題セッション、間違い、正答、今日の進捗をリセットしました。";
+        var resetMessage = "現在の出題キューをリセットしました。学習履歴と基本問題は残っています。";
         modeStatus.textContent = resetMessage;
         importStatus.textContent = resetMessage;
       }
@@ -2098,12 +2242,12 @@ currentQuestionId: -</span>
       learningHistory = makeDefaultLearningHistory();
       sessionQueue = [];
       sessionIndex = 0;
+      sessionDisplayOffset = 0;
       questionView.hidden = true;
       resultView.hidden = true;
       modePanel.hidden = false;
       importStatus.textContent = "学習履歴と出題セッションをすべてリセットしました。";
       renderDashboard();
-      clearLearningAndSessionStorage();
       logQuizDebug("learning-history-reset");
     }
 
@@ -2168,15 +2312,23 @@ currentQuestionId: -</span>
       }
     });
 
-    retryButton.addEventListener("click", function () {
-      startMode(currentMode);
+    moreThreeButton.addEventListener("click", function () {
+      startAdditionalQuestions("more3");
     });
 
-    backToModesButton.addEventListener("click", function () {
-      resultView.hidden = true;
-      modePanel.hidden = false;
-      modePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    challengeTenButton.addEventListener("click", function () {
+      startAdditionalQuestions("challenge10");
     });
+
+    reviewWrongButton.addEventListener("click", function () {
+      startReviewFromResult("wrong");
+    });
+
+    reviewWeakButton.addEventListener("click", function () {
+      startReviewFromResult("weak");
+    });
+
+    finishTodayButton.addEventListener("click", finishToday);
 
     weakToggleButton.addEventListener("click", toggleWeakFlagForCurrentQuestion);
     retryQuestionButton.addEventListener("click", function () {
