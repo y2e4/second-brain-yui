@@ -857,13 +857,15 @@
 
     <a class="bottom-back-link" href="index.html">火種ユイに戻る</a>
     <div class="build-info" aria-label="クイズのビルド情報">
-      <span class="build-label">quiz build: session-queue-v2-data-31</span>
+      <span class="build-label">quiz build: unseen-first-v3-data-51</span>
       <span id="debugInfo">baseQuestions: 0
 extraQuestions: 0
 totalQuestions: 0
+categories: []
+recentQuestionIds: []
 sessionQueue: []
 sessionIndex: 0
-question.id: -</span>
+currentQuestionId: -</span>
     </div>
   </main>
 
@@ -886,7 +888,7 @@ question.id: -</span>
     ];
     var TODAY_LIMIT = 3;
     var WEAK_CLEAR_STREAK = 2;
-    var RECENT_QUESTION_LIMIT = 3;
+    var RECENT_QUESTION_LIMIT = 10;
     var WRONG_QUESTION_WEIGHT = 1.5;
 
     var fallbackQuestions = [
@@ -1010,6 +1012,9 @@ question.id: -</span>
         dailyDate: getLocalDateKey(),
         dailyAnsweredIds: [],
         recentQuestionIds: [],
+        seenQuestionIds: [],
+        questionLastShownOrder: {},
+        shownSequence: 0,
         wrongQuestionIds: [],
         weakQuestionIds: [],
         currentSessionQuestionIds: []
@@ -1050,6 +1055,35 @@ question.id: -</span>
       history.recentQuestionIds = history.recentQuestionIds.filter(function (id) {
         return typeof id === "string" && id;
       }).slice(-RECENT_QUESTION_LIMIT);
+
+      if (!Array.isArray(history.seenQuestionIds)) {
+        history.seenQuestionIds = [];
+      }
+
+      var migratedSeenIds = history.seenQuestionIds
+        .concat(history.recentQuestionIds)
+        .concat(Object.keys(questionStats).filter(function (id) {
+          var stats = questionStats[id] || {};
+          return Number(stats.correctCount || 0) + Number(stats.wrongCount || 0) > 0;
+        }));
+      history.seenQuestionIds = Array.from(new Set(migratedSeenIds));
+
+      if (!history.questionLastShownOrder ||
+          typeof history.questionLastShownOrder !== "object" ||
+          Array.isArray(history.questionLastShownOrder)) {
+        history.questionLastShownOrder = {};
+      }
+
+      history.shownSequence = Number(history.shownSequence || 0);
+
+      for (var i = 0; i < history.seenQuestionIds.length; i++) {
+        var seenId = history.seenQuestionIds[i];
+
+        if (!Number(history.questionLastShownOrder[seenId])) {
+          history.shownSequence += 1;
+          history.questionLastShownOrder[seenId] = history.shownSequence;
+        }
+      }
 
       if (!Array.isArray(history.currentSessionQuestionIds)) {
         history.currentSessionQuestionIds = [];
@@ -1344,12 +1378,51 @@ question.id: -</span>
       });
     }
 
+    function appendUniqueQuestions(target, candidates, desiredCount) {
+      for (var i = 0; i < candidates.length && target.length < desiredCount; i++) {
+        var alreadySelected = target.some(function (question) {
+          return question.id === candidates[i].id;
+        });
+
+        if (!alreadySelected) {
+          target.push(candidates[i]);
+        }
+      }
+    }
+
+    function orderByOldestShown(list) {
+      var shownOrder = learningHistory.questionLastShownOrder || {};
+
+      return shuffle(list).sort(function (left, right) {
+        return Number(shownOrder[left.id] || 0) - Number(shownOrder[right.id] || 0);
+      });
+    }
+
     function selectSessionQuestions(questions, mode, limit) {
       var uniqueQuestions = uniqueQuestionsById(questions);
       var desiredCount = Math.min(limit, uniqueQuestions.length);
 
       if (mode === "today") {
-        return shuffle(uniqueQuestions).slice(0, desiredCount);
+        var seenIds = learningHistory.seenQuestionIds || [];
+        var recentIdsForToday = learningHistory.recentQuestionIds || [];
+        var selected = [];
+        var unseenQuestions = shuffle(uniqueQuestions.filter(function (question) {
+          return seenIds.indexOf(question.id) === -1;
+        }));
+        var staleQuestions = orderByOldestShown(uniqueQuestions.filter(function (question) {
+          return seenIds.indexOf(question.id) !== -1 &&
+            recentIdsForToday.indexOf(question.id) === -1;
+        }));
+        var wrongQuestions = orderByOldestShown(uniqueQuestions.filter(function (question) {
+          return question["間違い対象"];
+        }));
+        var fallbackQuestionsForToday = orderByOldestShown(uniqueQuestions);
+
+        appendUniqueQuestions(selected, unseenQuestions, desiredCount);
+        appendUniqueQuestions(selected, staleQuestions, desiredCount);
+        appendUniqueQuestions(selected, wrongQuestions, desiredCount);
+        appendUniqueQuestions(selected, fallbackQuestionsForToday, desiredCount);
+        return selected;
       }
 
       var recentIds = learningHistory.recentQuestionIds || [];
@@ -1421,6 +1494,7 @@ question.id: -</span>
         baseQuestionCount: baseQuestionCount,
         extraQuestionCount: extraQuestionCount,
         totalQuestionCount: getBankWithStats().length,
+        categories: uniqueSortedValues(getBankWithStats(), "分野"),
         sessionQueue: sessionQueue.slice(),
         sessionIndex: sessionIndex,
         currentQuestionId: sessionQueue[sessionIndex] || "",
@@ -1437,9 +1511,11 @@ question.id: -</span>
         "baseQuestions: " + baseQuestionCount +
         "\nextraQuestions: " + extraQuestionCount +
         "\ntotalQuestions: " + getBankWithStats().length +
+        "\ncategories: " + JSON.stringify(uniqueSortedValues(getBankWithStats(), "分野")) +
+        "\nrecentQuestionIds: " + JSON.stringify(learningHistory.recentQuestionIds || []) +
         "\nsessionQueue: " + JSON.stringify(sessionQueue) +
         "\nsessionIndex: " + sessionIndex +
-        "\nquestion.id: " + (sessionQueue[sessionIndex] || "-");
+        "\ncurrentQuestionId: " + (sessionQueue[sessionIndex] || "-");
     }
 
     function rememberQuestionShown(questionId) {
@@ -1452,6 +1528,13 @@ question.id: -</span>
 
       recentIds.push(questionId);
       learningHistory.recentQuestionIds = recentIds.slice(-RECENT_QUESTION_LIMIT);
+
+      if (learningHistory.seenQuestionIds.indexOf(questionId) === -1) {
+        learningHistory.seenQuestionIds.push(questionId);
+      }
+
+      learningHistory.shownSequence = Number(learningHistory.shownSequence || 0) + 1;
+      learningHistory.questionLastShownOrder[questionId] = learningHistory.shownSequence;
       saveLearningHistory();
     }
 
