@@ -770,6 +770,7 @@
       <div class="progress-track" aria-hidden="true">
         <div class="progress-fill" id="progressFill"></div>
       </div>
+      <p class="status-message" id="questionStatus" aria-live="polite" hidden></p>
 
       <p class="question-meta" id="questionMeta"></p>
       <p class="question-text" id="questionText"></p>
@@ -839,6 +840,8 @@
     var LEARNING_HISTORY_KEY = "hygieneManagerSecondTypeLearningHistoryV1";
     var TODAY_LIMIT = 3;
     var WEAK_CLEAR_STREAK = 2;
+    var RECENT_QUESTION_LIMIT = 3;
+    var WRONG_QUESTION_WEIGHT = 1.5;
 
     var fallbackQuestions = [
       {
@@ -876,6 +879,7 @@
     var roundMistakes = [];
     var answered = false;
     var currentQuestionScored = false;
+    var roundNotice = "";
 
     var todayProgressText = document.getElementById("todayProgressText");
     var cumulativeAnswered = document.getElementById("cumulativeAnswered");
@@ -897,6 +901,7 @@
     var progressLabel = document.getElementById("progressLabel");
     var modeLabel = document.getElementById("modeLabel");
     var progressFill = document.getElementById("progressFill");
+    var questionStatus = document.getElementById("questionStatus");
     var questionMeta = document.getElementById("questionMeta");
     var questionText = document.getElementById("questionText");
     var choiceList = document.getElementById("choiceList");
@@ -954,6 +959,7 @@
         lastStudyDate: "",
         dailyDate: getLocalDateKey(),
         dailyAnsweredIds: [],
+        recentQuestionIds: [],
         wrongQuestionIds: [],
         weakQuestionIds: []
       };
@@ -985,6 +991,14 @@
       if (!Array.isArray(history.dailyAnsweredIds)) {
         history.dailyAnsweredIds = [];
       }
+
+      if (!Array.isArray(history.recentQuestionIds)) {
+        history.recentQuestionIds = [];
+      }
+
+      history.recentQuestionIds = history.recentQuestionIds.filter(function (id) {
+        return typeof id === "string" && id;
+      }).slice(-RECENT_QUESTION_LIMIT);
 
       return history;
     }
@@ -1197,6 +1211,108 @@
       return shuffled;
     }
 
+    function getSelectionWeight(question, mode) {
+      var normalMode = mode === "today" || mode === "all" ||
+        mode === "field" || mode === "year";
+
+      if (normalMode && question["間違い対象"]) {
+        return WRONG_QUESTION_WEIGHT;
+      }
+
+      return 1;
+    }
+
+    function takeWeightedQuestion(list, mode) {
+      var totalWeight = 0;
+      var i;
+
+      for (i = 0; i < list.length; i++) {
+        totalWeight += getSelectionWeight(list[i], mode);
+      }
+
+      var target = Math.random() * totalWeight;
+
+      for (i = 0; i < list.length; i++) {
+        target -= getSelectionWeight(list[i], mode);
+
+        if (target <= 0) {
+          return list[i];
+        }
+      }
+
+      return list[list.length - 1];
+    }
+
+    function weightedOrder(list, mode) {
+      var remaining = list.slice();
+      var ordered = [];
+
+      while (remaining.length) {
+        var selected = takeWeightedQuestion(remaining, mode);
+        ordered.push(selected);
+        remaining.splice(remaining.indexOf(selected), 1);
+      }
+
+      return ordered;
+    }
+
+    function uniqueQuestionsById(list) {
+      var seen = {};
+
+      return list.filter(function (question) {
+        if (seen[question.id]) {
+          return false;
+        }
+
+        seen[question.id] = true;
+        return true;
+      });
+    }
+
+    function selectRoundQuestions(questions, mode, limit) {
+      var uniqueQuestions = uniqueQuestionsById(questions);
+      var desiredCount = Math.min(limit, uniqueQuestions.length);
+      var recentIds = learningHistory.recentQuestionIds || [];
+      var lastQuestionId = recentIds.length ? recentIds[recentIds.length - 1] : "";
+      var firstCandidates = uniqueQuestions.filter(function (question) {
+        return uniqueQuestions.length === 1 || question.id !== lastQuestionId;
+      });
+      var freshFirstCandidates = firstCandidates.filter(function (question) {
+        return recentIds.indexOf(question.id) === -1;
+      });
+      var firstPool = freshFirstCandidates.length ? freshFirstCandidates : firstCandidates;
+      var firstQuestion = takeWeightedQuestion(firstPool, mode);
+      var remaining = uniqueQuestions.filter(function (question) {
+        return question.id !== firstQuestion.id;
+      });
+      var freshRemaining = remaining.filter(function (question) {
+        return recentIds.indexOf(question.id) === -1;
+      });
+      var recentRemaining = remaining.filter(function (question) {
+        return recentIds.indexOf(question.id) !== -1;
+      }).sort(function (left, right) {
+        return recentIds.indexOf(left.id) - recentIds.indexOf(right.id);
+      });
+
+      return [firstQuestion]
+        .concat(weightedOrder(freshRemaining, mode))
+        .concat(recentRemaining)
+        .slice(0, desiredCount);
+    }
+
+    function rememberQuestionShown(questionId) {
+      var recentIds = learningHistory.recentQuestionIds || [];
+      var existingIndex = recentIds.indexOf(questionId);
+
+      if (existingIndex !== -1) {
+        recentIds.splice(existingIndex, 1);
+      }
+
+      recentIds.push(questionId);
+      learningHistory.recentQuestionIds = recentIds.slice(-RECENT_QUESTION_LIMIT);
+      saveLearningHistory();
+    }
+
     function uniqueSortedValues(list, key) {
       var values = {};
       var result = [];
@@ -1395,11 +1511,19 @@
       }
 
       currentMode = mode;
-      currentRound = shuffle(questions).slice(0, limit);
+      currentRound = selectRoundQuestions(questions, mode, limit);
       currentQuestionIndex = 0;
       correctCount = 0;
       roundMistakes = [];
       currentQuestionScored = false;
+      roundNotice = "";
+
+      if (mode === "wrong" && questions.length === 1) {
+        roundNotice = "復習できる問題が1問だけです。同じ問題は自動で繰り返し出題しません。";
+      } else if (mode === "today" && currentRound.length < TODAY_LIMIT) {
+        roundNotice = "重複せずに出せる問題は" + currentRound.length + "問です。";
+      }
+
       modeStatus.textContent = "";
       modePanel.hidden = true;
       resultView.hidden = true;
@@ -1421,6 +1545,8 @@
       progressLabel.textContent = "問題 " + (currentQuestionIndex + 1) + " / " + currentRound.length;
       modeLabel.textContent = getModeName(currentMode);
       progressFill.style.width = ((currentQuestionIndex + 1) / currentRound.length * 100) + "%";
+      questionStatus.textContent = roundNotice;
+      questionStatus.hidden = !roundNotice;
       questionMeta.textContent = formatMeta(question);
       questionText.textContent = question["問題文"];
       choiceList.replaceChildren();
@@ -1434,6 +1560,10 @@
       retryQuestionButton.hidden = true;
       nextButton.hidden = true;
       nextButton.textContent = currentQuestionIndex === currentRound.length - 1 ? "結果を見る" : "次の問題";
+
+      if (!isRetry) {
+        rememberQuestionShown(question.id);
+      }
 
       for (var i = 0; i < choices.length; i++) {
         var button = document.createElement("button");
@@ -1692,7 +1822,7 @@
       }).catch(function () {
         var importedQuestions = normalizeQuestions(getStoredJson(IMPORTED_QUESTIONS_KEY, []));
         questionBank = combineQuestions(fallbackQuestions, importedQuestions);
-        dataStatus.textContent = "JSONファイルを読めない環境のため、アプリ内の仮データを使っています。";
+        dataStatus.textContent = "JSONファイルを読めない環境のため、アプリ内の予備データを使っています。";
         renderDashboard();
       });
     }
