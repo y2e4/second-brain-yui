@@ -620,6 +620,30 @@
       background: rgba(11, 8, 6, 0.72);
     }
 
+    .quiz-link {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      min-height: 56px;
+      margin-top: 18px;
+      padding: 12px 16px;
+      color: #1b1008;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+      text-decoration: none;
+      background: linear-gradient(180deg, #ffe28c, #f3aa35);
+      border: 1px solid rgba(255, 232, 150, 0.72);
+      border-radius: 8px;
+      box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
+    .quiz-link:active {
+      transform: translateY(1px);
+    }
+
     .hidden {
       display: none;
     }
@@ -742,6 +766,8 @@
       <button class="reset-button" type="button" id="resetButton">火種を0に戻す</button>
       <button class="back-button" type="button" id="backToStateButton">状態選択へ戻る</button>
     </section>
+
+    <a class="quiz-link" href="sharoshi-intro.html">社労士準備クイズを開く</a>
   </main>
 
   <script>

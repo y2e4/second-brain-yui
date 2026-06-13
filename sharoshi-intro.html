@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100b08">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon.png?v=2">
+  <title>社労士準備クイズ | 火種ユイ</title>
+  <style>
+    :root {
+      --bg: #080706;
+      --panel: #17110d;
+      --panel-soft: #211712;
+      --gold: #f5c762;
+      --ember: #ff7b30;
+      --text: #f8efe2;
+      --muted: #c9bba4;
+      --line: rgba(245, 199, 98, 0.26);
+      --good: #a9d86e;
+      --bad: #ff8257;
+      --info: #7ec8e3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-width: 0;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+        "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      line-height: 1.7;
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255, 123, 48, 0.2), transparent 30%),
+        radial-gradient(circle at 14% 74%, rgba(245, 199, 98, 0.1), transparent 25%),
+        linear-gradient(180deg, #100b08 0%, #080706 52%, #040403 100%);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 26px 26px;
+      opacity: 0.38;
+    }
+
+    button {
+      font: inherit;
+      border: 0;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+
+    a {
+      color: var(--gold);
+    }
+
+    .app {
+      position: relative;
+      width: min(100%, 680px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 14px 34px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 8px 12px;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 850;
+      text-decoration: none;
+      background: rgba(245, 199, 98, 0.06);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 8px;
+    }
+
+    header {
+      padding: 24px 0 16px;
+      text-align: center;
+    }
+
+    .ember-mark {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 62%, #ffd978 0 11%, #ff8a34 25%, #91350d 48%, #24100a 72%);
+      box-shadow:
+        0 0 24px rgba(255, 123, 48, 0.42),
+        0 0 54px rgba(245, 199, 98, 0.2);
+      animation: emberBreath 3.4s ease-in-out infinite;
+    }
+
+    @keyframes emberBreath {
+      0%, 100% {
+        transform: scale(0.96);
+      }
+
+      50% {
+        transform: scale(1.04);
+      }
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: clamp(27px, 7vw, 40px);
+      font-weight: 950;
+      line-height: 1.25;
+      text-shadow: 0 0 18px rgba(245, 199, 98, 0.22);
+    }
+
+    .tagline {
+      max-width: 26em;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .panel {
+      min-width: 0;
+      margin-top: 14px;
+      padding: 17px;
+      background:
+        linear-gradient(180deg, rgba(255, 123, 48, 0.07), transparent 40%),
+        rgba(23, 17, 13, 0.95);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.4);
+    }
+
+    .panel-title {
+      margin-bottom: 7px;
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .panel-note {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .stat {
+      min-width: 0;
+      padding: 12px 10px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+    }
+
+    .stat:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .stat-value {
+      display: block;
+      color: var(--gold);
+      font-size: 23px;
+      font-weight: 950;
+      line-height: 1.15;
+    }
+
+    .stat-label {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .mode-actions,
+    .result-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .primary-button,
+    .secondary-button,
+    .answer-button {
+      width: 100%;
+      min-height: 54px;
+      padding: 12px 15px;
+      font-weight: 900;
+      border-radius: 8px;
+    }
+
+    .primary-button {
+      color: #1c1008;
+      background: linear-gradient(180deg, #ffe7a0, #efa93c);
+      box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .secondary-button {
+      color: var(--gold);
+      background: #241811;
+      border: 1px solid rgba(245, 199, 98, 0.32);
+    }
+
+    .primary-button:active,
+    .secondary-button:active,
+    .answer-button:active {
+      transform: translateY(1px);
+    }
+
+    .status-message {
+      margin: 12px 0 0;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+      background: rgba(126, 200, 227, 0.08);
+      border: 1px solid rgba(126, 200, 227, 0.22);
+      border-radius: 8px;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .progress-row span:last-child {
+      text-align: right;
+    }
+
+    .progress-track {
+      height: 7px;
+      margin-bottom: 18px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--ember), var(--gold));
+      border-radius: inherit;
+      transition: width 180ms ease;
+    }
+
+    .category-label {
+      display: inline-flex;
+      margin-bottom: 10px;
+      padding: 4px 9px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 900;
+      background: rgba(245, 199, 98, 0.08);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 99px;
+    }
+
+    .question-text {
+      margin-bottom: 18px;
+      font-size: clamp(20px, 5.6vw, 27px);
+      font-weight: 900;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .answer-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .answer-button {
+      min-height: 72px;
+      color: var(--text);
+      font-size: 26px;
+      background: #241811;
+      border: 1px solid rgba(245, 199, 98, 0.32);
+    }
+
+    .answer-button[data-answer="true"] {
+      border-color: rgba(169, 216, 110, 0.5);
+    }
+
+    .answer-button[data-answer="false"] {
+      border-color: rgba(255, 130, 87, 0.5);
+    }
+
+    .answer-button.selected-correct {
+      color: #132008;
+      background: var(--good);
+    }
+
+    .answer-button.selected-wrong {
+      color: #2b0c04;
+      background: var(--bad);
+    }
+
+    .feedback {
+      margin-top: 16px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(245, 199, 98, 0.2);
+      border-radius: 8px;
+    }
+
+    .feedback-title {
+      margin-bottom: 8px;
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .feedback-title.good {
+      color: var(--good);
+    }
+
+    .feedback-title.bad {
+      color: var(--bad);
+    }
+
+    .feedback p {
+      margin-bottom: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .feedback strong {
+      color: var(--gold);
+    }
+
+    .source-link {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      margin: 3px 0 14px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 850;
+      text-decoration: none;
+      background: rgba(245, 199, 98, 0.06);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 7px;
+    }
+
+    .result-score {
+      margin-bottom: 16px;
+      color: var(--gold);
+      font-size: clamp(28px, 8vw, 42px);
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .term-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .term-card {
+      min-width: 0;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 8px;
+    }
+
+    .term-card summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 54px;
+      padding: 11px 13px;
+      color: var(--text);
+      font-weight: 900;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .term-card summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .term-name {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .term-category {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .term-body {
+      padding: 0 13px 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .term-body p {
+      margin-bottom: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .term-body strong {
+      color: var(--gold);
+    }
+
+    .footer-note {
+      margin: 18px 2px 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (min-width: 520px) {
+      .app {
+        padding-inline: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .stat:last-child {
+        grid-column: auto;
+      }
+
+      .mode-actions,
+      .result-actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <a class="back-link" href="index.html">火種ユイへ戻る</a>
+
+    <header>
+      <div class="ember-mark" aria-hidden="true"></div>
+      <h1>社労士準備クイズ</h1>
+      <p class="tagline">難問の前に、まず言葉に慣れる。毎日1〜3問から始めよう。</p>
+    </header>
+
+    <section class="panel" aria-labelledby="statsTitle">
+      <h2 class="panel-title" id="statsTitle">学習の記録</h2>
+      <div class="stats-grid">
+        <div class="stat">
+          <span class="stat-value" id="todayCount">0</span>
+          <span class="stat-label">今日の解答数</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="totalCount">0</span>
+          <span class="stat-label">累計解答数</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="accuracy">--</span>
+          <span class="stat-label">正答率</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="unseenCount">30</span>
+          <span class="stat-label">未出題問題数</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="wrongCount">0</span>
+          <span class="stat-label">間違えた問題数</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="homeView" aria-labelledby="homeTitle">
+      <h2 class="panel-title" id="homeTitle">準備モード</h2>
+      <p class="panel-note">細かな例外や計算は後回し。基本用語の全体像をつかみます。</p>
+      <div class="mode-actions">
+        <button class="primary-button" type="button" id="dailyButton">今日の3問</button>
+        <button class="secondary-button" type="button" id="termsButton">用語を見る</button>
+        <button class="secondary-button" type="button" id="mistakesButton">間違えた問題</button>
+      </div>
+      <p class="status-message" id="homeStatus" role="status" hidden></p>
+    </section>
+
+    <section class="panel" id="questionView" aria-live="polite" hidden>
+      <div class="progress-row">
+        <span id="progressLabel">問題 1/3</span>
+        <span id="modeLabel">今日の3問</span>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="category-label" id="questionCategory"></span>
+      <p class="question-text" id="questionText"></p>
+      <div class="answer-actions" id="answerActions">
+        <button class="answer-button" type="button" data-answer="true" aria-label="〇と答える">〇</button>
+        <button class="answer-button" type="button" data-answer="false" aria-label="×と答える">×</button>
+      </div>
+      <div class="feedback" id="feedback" hidden>
+        <h3 class="feedback-title" id="feedbackTitle"></h3>
+        <p><strong>正解：</strong><span id="correctAnswer"></span></p>
+        <p><strong>解説：</strong><span id="explanation"></span></p>
+        <p><strong>用語：</strong><span id="termDefinition"></span></p>
+        <p><strong>例：</strong><span id="termExample"></span></p>
+        <p><strong>覚え方：</strong><span id="memoryTip"></span></p>
+        <a class="source-link" id="questionSource" target="_blank" rel="noopener noreferrer">公的根拠を開く</a>
+        <button class="primary-button" type="button" id="nextButton">次の問題</button>
+      </div>
+    </section>
+
+    <section class="panel" id="resultView" aria-live="polite" hidden>
+      <h2 class="panel-title">3問終了</h2>
+      <p class="result-score" id="resultScore"></p>
+      <p class="panel-note" id="resultNote"></p>
+      <div class="result-actions">
+        <button class="primary-button" type="button" id="moreButton">さらに3問</button>
+        <button class="secondary-button" type="button" id="reviewButton">間違えた問題を復習</button>
+        <button class="secondary-button" type="button" id="finishButton">今日はここまで</button>
+      </div>
+      <p class="status-message" id="resultStatus" role="status" hidden></p>
+    </section>
+
+    <section class="panel" id="termsView" hidden>
+      <h2 class="panel-title">基本用語30</h2>
+      <p class="panel-note">用語を押すと、短い説明・例・注意点・公的根拠を確認できます。</p>
+      <div class="term-list" id="termList"></div>
+      <button class="secondary-button" type="button" id="termsBackButton">準備モードへ戻る</button>
+    </section>
+
+    <p class="footer-note">
+      公的情報を2026年6月14日に確認して初心者向けに再構成しています。
+      法改正後は根拠リンクも確認してください。
+    </p>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var DATA_URL = "sharoshi-intro-questions.json";
+      var STORAGE_KEY = "sharoshiIntroProgressV1";
+      var RECENT_LIMIT = 6;
+      var questionBank = [];
+      var terms = [];
+      var termMap = {};
+      var progress = readProgress();
+      var sessionQuestions = [];
+      var sessionIndex = 0;
+      var sessionCorrect = 0;
+      var sessionMode = "daily";
+      var answered = false;
+      var termsRendered = false;
+
+      var views = {
+        home: document.getElementById("homeView"),
+        question: document.getElementById("questionView"),
+        result: document.getElementById("resultView"),
+        terms: document.getElementById("termsView")
+      };
+
+      var todayCount = document.getElementById("todayCount");
+      var totalCount = document.getElementById("totalCount");
+      var accuracy = document.getElementById("accuracy");
+      var unseenCount = document.getElementById("unseenCount");
+      var wrongCount = document.getElementById("wrongCount");
+      var homeStatus = document.getElementById("homeStatus");
+      var dailyButton = document.getElementById("dailyButton");
+      var termsButton = document.getElementById("termsButton");
+      var mistakesButton = document.getElementById("mistakesButton");
+      var progressLabel = document.getElementById("progressLabel");
+      var modeLabel = document.getElementById("modeLabel");
+      var progressFill = document.getElementById("progressFill");
+      var questionCategory = document.getElementById("questionCategory");
+      var questionText = document.getElementById("questionText");
+      var answerActions = document.getElementById("answerActions");
+      var feedback = document.getElementById("feedback");
+      var feedbackTitle = document.getElementById("feedbackTitle");
+      var correctAnswer = document.getElementById("correctAnswer");
+      var explanation = document.getElementById("explanation");
+      var termDefinition = document.getElementById("termDefinition");
+      var termExample = document.getElementById("termExample");
+      var memoryTip = document.getElementById("memoryTip");
+      var questionSource = document.getElementById("questionSource");
+      var nextButton = document.getElementById("nextButton");
+      var resultScore = document.getElementById("resultScore");
+      var resultNote = document.getElementById("resultNote");
+      var resultStatus = document.getElementById("resultStatus");
+      var moreButton = document.getElementById("moreButton");
+      var reviewButton = document.getElementById("reviewButton");
+      var finishButton = document.getElementById("finishButton");
+      var termList = document.getElementById("termList");
+      var termsBackButton = document.getElementById("termsBackButton");
+
+      function getToday() {
+        return new Intl.DateTimeFormat("sv-SE", {
+          timeZone: "Asia/Tokyo",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }).format(new Date());
+      }
+
+      function defaultProgress() {
+        return {
+          totalAnswers: 0,
+          correctAnswers: 0,
+          wrongQuestionIds: [],
+          lastStudyDate: "",
+          lastQuestionId: "",
+          recentQuestionIds: [],
+          seenQuestionIds: [],
+          daily: {
+            date: "",
+            answers: 0
+          },
+          wrongReview: {}
+        };
+      }
+
+      function uniqueStrings(value) {
+        var seen = {};
+        return Array.isArray(value) ? value.filter(function (item) {
+          if (typeof item !== "string" || seen[item]) {
+            return false;
+          }
+          seen[item] = true;
+          return true;
+        }) : [];
+      }
+
+      function readProgress() {
+        var base = defaultProgress();
+
+        try {
+          var stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          if (!stored || typeof stored !== "object") {
+            return base;
+          }
+
+          base.totalAnswers = Math.max(0, Number(stored.totalAnswers) || 0);
+          base.correctAnswers = Math.max(0, Number(stored.correctAnswers) || 0);
+          base.wrongQuestionIds = uniqueStrings(stored.wrongQuestionIds);
+          base.lastStudyDate = typeof stored.lastStudyDate === "string" ? stored.lastStudyDate : "";
+          base.lastQuestionId = typeof stored.lastQuestionId === "string" ? stored.lastQuestionId : "";
+          base.recentQuestionIds = uniqueStrings(stored.recentQuestionIds).slice(-RECENT_LIMIT);
+          base.seenQuestionIds = uniqueStrings(stored.seenQuestionIds);
+          base.wrongReview = stored.wrongReview && typeof stored.wrongReview === "object"
+            ? stored.wrongReview
+            : {};
+
+          if (stored.daily && typeof stored.daily === "object") {
+            base.daily.date = typeof stored.daily.date === "string" ? stored.daily.date : "";
+            base.daily.answers = Math.max(0, Number(stored.daily.answers) || 0);
+          }
+        } catch (error) {
+          return base;
+        }
+
+        return base;
+      }
+
+      function saveProgress() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      }
+
+      function normalizeDailyCount() {
+        var today = getToday();
+        if (progress.daily.date !== today) {
+          progress.daily.date = today;
+          progress.daily.answers = 0;
+          saveProgress();
+        }
+      }
+
+      function updateStats() {
+        normalizeDailyCount();
+        todayCount.textContent = String(progress.daily.answers);
+        totalCount.textContent = String(progress.totalAnswers);
+        accuracy.textContent = progress.totalAnswers
+          ? Math.round((progress.correctAnswers / progress.totalAnswers) * 100) + "%"
+          : "--";
+        unseenCount.textContent = String(Math.max(0, questionBank.length - progress.seenQuestionIds.length));
+        wrongCount.textContent = String(progress.wrongQuestionIds.length);
+        mistakesButton.textContent = "間違えた問題 (" + progress.wrongQuestionIds.length + ")";
+      }
+
+      function showOnly(name) {
+        Object.keys(views).forEach(function (key) {
+          views[key].hidden = key !== name;
+        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function showStatus(element, message) {
+        element.textContent = message;
+        element.hidden = !message;
+      }
+
+      function shuffled(list) {
+        var copy = list.slice();
+        for (var i = copy.length - 1; i > 0; i -= 1) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temporary = copy[i];
+          copy[i] = copy[j];
+          copy[j] = temporary;
+        }
+        return copy;
+      }
+
+      function appendUnique(target, candidates, limit) {
+        shuffled(candidates).some(function (question) {
+          if (!target.some(function (selected) {
+            return selected.id === question.id;
+          })) {
+            target.push(question);
+          }
+          return target.length >= limit;
+        });
+      }
+
+      function selectDailyQuestions(limit) {
+        var selected = [];
+        var recent = progress.recentQuestionIds;
+        var seen = progress.seenQuestionIds;
+        var notRecent = questionBank.filter(function (question) {
+          return recent.indexOf(question.id) === -1 && question.id !== progress.lastQuestionId;
+        });
+        var unseen = notRecent.filter(function (question) {
+          return seen.indexOf(question.id) === -1;
+        });
+        var alreadySeen = notRecent.filter(function (question) {
+          return seen.indexOf(question.id) !== -1;
+        });
+
+        appendUnique(selected, unseen, limit);
+        appendUnique(selected, alreadySeen, limit);
+        appendUnique(selected, questionBank.filter(function (question) {
+          return question.id !== progress.lastQuestionId;
+        }), limit);
+        appendUnique(selected, questionBank, limit);
+        return selected.slice(0, limit);
+      }
+
+      function selectMistakeQuestions(limit) {
+        var active = questionBank.filter(function (question) {
+          return progress.wrongQuestionIds.indexOf(question.id) !== -1;
+        });
+
+        if (active.length === 1 && active[0].id === progress.lastQuestionId) {
+          return [];
+        }
+
+        var selected = [];
+        var preferred = active.filter(function (question) {
+          return progress.recentQuestionIds.indexOf(question.id) === -1 &&
+            question.id !== progress.lastQuestionId;
+        });
+        var notLast = active.filter(function (question) {
+          return question.id !== progress.lastQuestionId;
+        });
+
+        appendUnique(selected, preferred, limit);
+        appendUnique(selected, notLast, limit);
+        appendUnique(selected, active, limit);
+        return selected.slice(0, limit);
+      }
+
+      function startSession(mode) {
+        sessionMode = mode;
+        sessionQuestions = mode === "mistakes"
+          ? selectMistakeQuestions(3)
+          : selectDailyQuestions(3);
+        sessionIndex = 0;
+        sessionCorrect = 0;
+
+        if (!sessionQuestions.length) {
+          showOnly("home");
+          if (mode === "mistakes" && progress.wrongQuestionIds.length) {
+            showStatus(homeStatus, "直前の問題は連続出題しません。少し時間を空けて復習しましょう。");
+          } else if (mode === "mistakes") {
+            showStatus(homeStatus, "間違えた問題はまだありません。");
+          } else {
+            showStatus(homeStatus, "問題を読み込めませんでした。");
+          }
+          return;
+        }
+
+        showStatus(homeStatus, "");
+        showOnly("question");
+        renderQuestion();
+      }
+
+      function markQuestionShown(questionId) {
+        progress.lastQuestionId = questionId;
+        progress.recentQuestionIds = progress.recentQuestionIds.filter(function (id) {
+          return id !== questionId;
+        });
+        progress.recentQuestionIds.push(questionId);
+        progress.recentQuestionIds = progress.recentQuestionIds.slice(-RECENT_LIMIT);
+        saveProgress();
+      }
+
+      function resetAnswerButtons() {
+        var buttons = answerActions.querySelectorAll(".answer-button");
+        buttons.forEach(function (button) {
+          button.disabled = false;
+          button.classList.remove("selected-correct", "selected-wrong");
+        });
+      }
+
+      function renderQuestion() {
+        var question = sessionQuestions[sessionIndex];
+        answered = false;
+        feedback.hidden = true;
+        resetAnswerButtons();
+        progressLabel.textContent = "問題 " + (sessionIndex + 1) + "/" + sessionQuestions.length;
+        modeLabel.textContent = sessionMode === "mistakes" ? "間違えた問題" : "今日の3問";
+        progressFill.style.width = ((sessionIndex / sessionQuestions.length) * 100) + "%";
+        questionCategory.textContent = question.category;
+        questionText.textContent = question.statement;
+        nextButton.textContent = sessionIndex === sessionQuestions.length - 1 ? "結果を見る" : "次の問題";
+        markQuestionShown(question.id);
+      }
+
+      function addSeen(questionId) {
+        if (progress.seenQuestionIds.indexOf(questionId) === -1) {
+          progress.seenQuestionIds.push(questionId);
+        }
+      }
+
+      function recordWrong(questionId) {
+        if (progress.wrongQuestionIds.indexOf(questionId) === -1) {
+          progress.wrongQuestionIds.push(questionId);
+        }
+        progress.wrongReview[questionId] = {
+          consecutiveCorrectDays: 0,
+          lastCorrectDate: ""
+        };
+      }
+
+      function recordCorrectReview(questionId) {
+        if (progress.wrongQuestionIds.indexOf(questionId) === -1) {
+          return;
+        }
+
+        var today = getToday();
+        var review = progress.wrongReview[questionId] || {
+          consecutiveCorrectDays: 0,
+          lastCorrectDate: ""
+        };
+
+        if (review.lastCorrectDate !== today) {
+          review.consecutiveCorrectDays = Math.max(0, Number(review.consecutiveCorrectDays) || 0) + 1;
+          review.lastCorrectDate = today;
+        }
+
+        if (review.consecutiveCorrectDays >= 2) {
+          progress.wrongQuestionIds = progress.wrongQuestionIds.filter(function (id) {
+            return id !== questionId;
+          });
+          delete progress.wrongReview[questionId];
+        } else {
+          progress.wrongReview[questionId] = review;
+        }
+      }
+
+      function recordAnswer(question, isCorrect) {
+        normalizeDailyCount();
+        progress.totalAnswers += 1;
+        progress.daily.answers += 1;
+        progress.lastStudyDate = getToday();
+        addSeen(question.id);
+
+        if (isCorrect) {
+          progress.correctAnswers += 1;
+          recordCorrectReview(question.id);
+        } else {
+          recordWrong(question.id);
+        }
+
+        saveProgress();
+        updateStats();
+      }
+
+      function handleAnswer(selectedAnswer, selectedButton) {
+        if (answered) {
+          return;
+        }
+
+        answered = true;
+        var question = sessionQuestions[sessionIndex];
+        var term = termMap[question.termId];
+        var isCorrect = selectedAnswer === question.answer;
+        var buttons = answerActions.querySelectorAll(".answer-button");
+
+        buttons.forEach(function (button) {
+          button.disabled = true;
+        });
+
+        selectedButton.classList.add(isCorrect ? "selected-correct" : "selected-wrong");
+        feedbackTitle.textContent = isCorrect ? "正解" : "不正解";
+        feedbackTitle.className = "feedback-title " + (isCorrect ? "good" : "bad");
+        correctAnswer.textContent = question.answer ? "〇" : "×";
+        explanation.textContent = question.explanation;
+        termDefinition.textContent = term.term + "： " + term.simpleDefinition;
+        termExample.textContent = term.example;
+        memoryTip.textContent = question.memoryTip;
+        questionSource.href = term.sourceUrl;
+        questionSource.setAttribute("aria-label", term.sourceTitle + "を開く");
+        feedback.hidden = false;
+        progressFill.style.width = (((sessionIndex + 1) / sessionQuestions.length) * 100) + "%";
+
+        if (isCorrect) {
+          sessionCorrect += 1;
+        }
+        recordAnswer(question, isCorrect);
+      }
+
+      function showResult() {
+        showOnly("result");
+        resultScore.textContent = sessionCorrect + " / " + sessionQuestions.length + " 正解";
+        resultNote.textContent = sessionMode === "mistakes"
+          ? "別の日にも正解できると、理解が定着してきた合図です。"
+          : "今日の小さな積み重ねが、本格学習の土台になります。";
+        reviewButton.disabled = progress.wrongQuestionIds.length === 0;
+        showStatus(resultStatus, progress.wrongQuestionIds.length === 0
+          ? "現在、復習待ちの問題はありません。"
+          : "");
+      }
+
+      function renderTerms() {
+        if (termsRendered) {
+          return;
+        }
+
+        terms.forEach(function (term) {
+          var details = document.createElement("details");
+          var summary = document.createElement("summary");
+          var name = document.createElement("span");
+          var category = document.createElement("span");
+          var body = document.createElement("div");
+          var definition = document.createElement("p");
+          var example = document.createElement("p");
+          var trap = document.createElement("p");
+          var law = document.createElement("p");
+          var source = document.createElement("a");
+
+          details.className = "term-card";
+          name.className = "term-name";
+          name.textContent = term.term;
+          category.className = "term-category";
+          category.textContent = term.category;
+          summary.appendChild(name);
+          summary.appendChild(category);
+
+          body.className = "term-body";
+          definition.innerHTML = "<strong>意味：</strong>";
+          definition.appendChild(document.createTextNode(term.simpleDefinition));
+          example.innerHTML = "<strong>例：</strong>";
+          example.appendChild(document.createTextNode(term.example));
+          trap.innerHTML = "<strong>注意：</strong>";
+          trap.appendChild(document.createTextNode(term.trap));
+          law.innerHTML = "<strong>関連法令：</strong>";
+          law.appendChild(document.createTextNode(term.relatedLaw));
+          source.className = "source-link";
+          source.href = term.sourceUrl;
+          source.target = "_blank";
+          source.rel = "noopener noreferrer";
+          source.textContent = term.sourceTitle + "（確認日 " + term.verifiedAt + "）";
+
+          body.appendChild(definition);
+          body.appendChild(example);
+          body.appendChild(trap);
+          body.appendChild(law);
+          body.appendChild(source);
+          details.appendChild(summary);
+          details.appendChild(body);
+          termList.appendChild(details);
+        });
+
+        termsRendered = true;
+      }
+
+      function validateData(data) {
+        if (!data || !Array.isArray(data.terms) || !Array.isArray(data.questions)) {
+          throw new Error("用語または問題のデータ形式が正しくありません。");
+        }
+        if (data.terms.length !== 30 || data.questions.length !== 30) {
+          throw new Error("用語と問題はそれぞれ30件必要です。");
+        }
+
+        var termIds = {};
+        data.terms.forEach(function (term) {
+          [
+            "id", "category", "term", "simpleDefinition", "example", "trap",
+            "relatedLaw", "sourceType", "sourceTitle", "sourceUrl", "verifiedAt"
+          ].forEach(function (key) {
+            if (!term[key]) {
+              throw new Error("用語データの必須項目が不足しています。");
+            }
+          });
+          if (termIds[term.id]) {
+            throw new Error("用語IDが重複しています。");
+          }
+          termIds[term.id] = true;
+        });
+
+        var questionIds = {};
+        data.questions.forEach(function (question) {
+          if (!question.id || !question.termId || !question.statement ||
+              typeof question.answer !== "boolean" || !question.explanation || !question.memoryTip) {
+            throw new Error("問題データの必須項目が不足しています。");
+          }
+          if (!termIds[question.termId] || questionIds[question.id]) {
+            throw new Error("問題IDまたは用語との対応が正しくありません。");
+          }
+          questionIds[question.id] = true;
+        });
+      }
+
+      answerActions.addEventListener("click", function (event) {
+        var button = event.target.closest(".answer-button");
+        if (!button) {
+          return;
+        }
+        handleAnswer(button.getAttribute("data-answer") === "true", button);
+      });
+
+      nextButton.addEventListener("click", function () {
+        if (!answered) {
+          return;
+        }
+        sessionIndex += 1;
+        if (sessionIndex >= sessionQuestions.length) {
+          showResult();
+        } else {
+          renderQuestion();
+        }
+      });
+
+      dailyButton.addEventListener("click", function () {
+        startSession("daily");
+      });
+
+      mistakesButton.addEventListener("click", function () {
+        startSession("mistakes");
+      });
+
+      termsButton.addEventListener("click", function () {
+        renderTerms();
+        showOnly("terms");
+      });
+
+      termsBackButton.addEventListener("click", function () {
+        showOnly("home");
+      });
+
+      moreButton.addEventListener("click", function () {
+        startSession("daily");
+      });
+
+      reviewButton.addEventListener("click", function () {
+        startSession("mistakes");
+      });
+
+      finishButton.addEventListener("click", function () {
+        showOnly("home");
+        showStatus(homeStatus, "今日はここまで。次の1問は、また気軽に始められます。");
+      });
+
+      fetch(DATA_URL, { cache: "no-store" })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("問題データを読み込めませんでした。");
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          validateData(data);
+          terms = data.terms;
+          questionBank = data.questions;
+          terms.forEach(function (term) {
+            termMap[term.id] = term;
+          });
+          updateStats();
+          dailyButton.disabled = false;
+          termsButton.disabled = false;
+          mistakesButton.disabled = false;
+        })
+        .catch(function (error) {
+          dailyButton.disabled = true;
+          termsButton.disabled = true;
+          mistakesButton.disabled = true;
+          showStatus(homeStatus, error.message);
+          console.error(error);
+        });
+
+      dailyButton.disabled = true;
+      termsButton.disabled = true;
+      mistakesButton.disabled = true;
+      updateStats();
+    }());
+  </script>
+</body>
+</html>
