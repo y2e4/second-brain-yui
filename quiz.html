@@ -879,16 +879,20 @@
 
     <a class="bottom-back-link" href="index.html">火種ユイに戻る</a>
     <div class="build-info" aria-label="クイズのビルド情報">
-      <span class="build-label">quiz build: continuation-v1-data-51</span>
+      <span class="build-label">quiz build: question-expansion-v1</span>
       <span id="debugInfo">baseQuestions: 0
 extraQuestions: 0
-totalQuestions: 0
+registeredQuestions: 0
+addedQuestions: 0
 categories: []
 unattemptedCount: 0
+currentStage: 第1段階
+nextUnlockCondition: 第1段階を一巡し、正答率80%以上
 recentQuestionIds: []
 sessionQueue: []
 sessionIndex: 0
-currentQuestionId: -</span>
+currentQuestionId: -
+build: question-expansion-v1</span>
     </div>
   </main>
 
@@ -914,7 +918,10 @@ currentQuestionId: -</span>
     var CHALLENGE_LIMIT = 10;
     var WEAK_CLEAR_STREAK = 2;
     var RECENT_QUESTION_LIMIT = 10;
-    var WRONG_QUESTION_WEIGHT = 1.5;
+    var STAGE_ONE = 1;
+    var STAGE_TWO = 2;
+    var STAGE_UNLOCK_ACCURACY = 80;
+    var QUIZ_BUILD = "question-expansion-v1";
 
     var fallbackQuestions = [
       {
@@ -946,6 +953,7 @@ currentQuestionId: -</span>
     var questionStats = {};
     var learningHistory = {};
     var baseQuestionCount = 0;
+    var baseQuestionIds = [];
     var extraQuestionCount = 0;
     var sessionQueue = [];
     var sessionIndex = 0;
@@ -1050,6 +1058,7 @@ currentQuestionId: -</span>
         seenQuestionIds: [],
         questionLastShownOrder: {},
         shownSequence: 0,
+        unlockedStage: STAGE_ONE,
         wrongQuestionIds: [],
         weakQuestionIds: [],
         currentSessionQuestionIds: []
@@ -1123,6 +1132,10 @@ currentQuestionId: -</span>
       }
 
       history.shownSequence = Number(history.shownSequence || 0);
+      history.unlockedStage = Math.max(
+        STAGE_ONE,
+        Number(history.unlockedStage || STAGE_ONE)
+      );
 
       for (var i = 0; i < history.seenQuestionIds.length; i++) {
         var seenId = history.seenQuestionIds[i];
@@ -1248,6 +1261,7 @@ currentQuestionId: -</span>
         "月": Number(raw["月"] || raw.month || 0),
         "分野": String(raw["分野"] || raw.field || raw.category || "未分類"),
         "テーマ": String(raw["テーマ"] || raw.theme || "未設定"),
+        "ステージ": Math.max(STAGE_ONE, Number(raw["ステージ"] || raw.stage || STAGE_ONE)),
         "問題文": String(raw["問題文"] || raw.question),
         "選択肢": choices,
         "正解": correctAnswer,
@@ -1330,6 +1344,64 @@ currentQuestionId: -</span>
       return questionBank.map(getQuestionWithStats);
     }
 
+    function getAccuracyPercent() {
+      var totalAnswered = Number(learningHistory.totalAnswered || 0);
+      var totalCorrect = Number(learningHistory.totalCorrect || 0);
+
+      return totalAnswered > 0
+        ? Math.round(totalCorrect / totalAnswered * 100)
+        : 0;
+    }
+
+    function getStageInfo() {
+      var bank = getBankWithStats();
+      var seenIds = learningHistory.seenQuestionIds || [];
+      var stageOneQuestions = bank.filter(function (question) {
+        return baseQuestionIds.indexOf(question.id) !== -1 &&
+          Number(question["ステージ"] || STAGE_ONE) <= STAGE_ONE;
+      });
+      var stageTwoQuestions = bank.filter(function (question) {
+        return baseQuestionIds.indexOf(question.id) !== -1 &&
+          Number(question["ステージ"] || STAGE_ONE) === STAGE_TWO;
+      });
+      var stageOneComplete = stageOneQuestions.length > 0 && stageOneQuestions.every(function (question) {
+        return seenIds.indexOf(question.id) !== -1;
+      });
+      var qualifiesForStageTwo =
+        stageOneComplete && getAccuracyPercent() >= STAGE_UNLOCK_ACCURACY;
+
+      if (qualifiesForStageTwo) {
+        learningHistory.unlockedStage = Math.max(
+          Number(learningHistory.unlockedStage || STAGE_ONE),
+          STAGE_TWO
+        );
+      }
+
+      var currentStage = stageTwoQuestions.length > 0
+        ? Math.min(Number(learningHistory.unlockedStage || STAGE_ONE), STAGE_TWO)
+        : STAGE_ONE;
+      var nextUnlockCondition = currentStage >= STAGE_TWO
+        ? "第2段階を一巡し、正答率80%以上（第3段階追加時）"
+        : "第1段階を一巡し、正答率80%以上";
+
+      return {
+        currentStage: currentStage,
+        currentStageLabel: "第" + currentStage + "段階",
+        nextUnlockCondition: nextUnlockCondition,
+        stageOneComplete: stageOneComplete,
+        qualifiesForStageTwo: qualifiesForStageTwo,
+        addedQuestionCount: stageTwoQuestions.length
+      };
+    }
+
+    function getAvailableBankWithStats() {
+      var stageInfo = getStageInfo();
+
+      return getBankWithStats().filter(function (question) {
+        return Number(question["ステージ"] || STAGE_ONE) <= stageInfo.currentStage;
+      });
+    }
+
     function getStatsForQuestion(question) {
       if (!questionStats[question.id]) {
         questionStats[question.id] = {
@@ -1369,14 +1441,6 @@ currentQuestionId: -</span>
     }
 
     function getSelectionWeight(question, mode) {
-      var normalMode = mode === "today" || mode === "more3" ||
-        mode === "challenge10" || mode === "all" ||
-        mode === "field" || mode === "year";
-
-      if (normalMode && question["間違い対象"]) {
-        return WRONG_QUESTION_WEIGHT;
-      }
-
       return 1;
     }
 
@@ -1457,17 +1521,9 @@ currentQuestionId: -</span>
         return seenIds.indexOf(question.id) !== -1 &&
           recentIds.indexOf(question.id) === -1;
       }));
-      var wrongQuestions = orderByOldestShown(questions.filter(function (question) {
-        return question["間違い対象"];
-      }));
-      var weakQuestions = orderByOldestShown(questions.filter(function (question) {
-        return question["苦手フラグ"];
-      }));
 
       appendUniqueQuestions(selected, unseenQuestions, desiredCount);
       appendUniqueQuestions(selected, staleQuestions, desiredCount);
-      appendUniqueQuestions(selected, wrongQuestions, desiredCount);
-      appendUniqueQuestions(selected, weakQuestions, desiredCount);
       appendUniqueQuestions(selected, orderByOldestShown(questions), desiredCount);
     }
 
@@ -1566,18 +1622,23 @@ currentQuestionId: -</span>
     function getUnattemptedCount() {
       var seenIds = learningHistory.seenQuestionIds || [];
 
-      return getBankWithStats().filter(function (question) {
+      return getAvailableBankWithStats().filter(function (question) {
         return seenIds.indexOf(question.id) === -1;
       }).length;
     }
 
     function logQuizDebug(stage) {
+      var stageInfo = getStageInfo();
       var debugState = {
         baseQuestionCount: baseQuestionCount,
         extraQuestionCount: extraQuestionCount,
-        totalQuestionCount: getBankWithStats().length,
+        registeredQuestionCount: getBankWithStats().length,
+        addedQuestionCount: stageInfo.addedQuestionCount,
         categories: uniqueSortedValues(getBankWithStats(), "分野"),
         unattemptedCount: getUnattemptedCount(),
+        currentStage: stageInfo.currentStageLabel,
+        nextUnlockCondition: stageInfo.nextUnlockCondition,
+        build: QUIZ_BUILD,
         sessionQueue: sessionQueue.slice(),
         sessionIndex: sessionIndex,
         currentQuestionId: sessionQueue[sessionIndex] || "",
@@ -1590,16 +1651,22 @@ currentQuestionId: -</span>
     }
 
     function renderDebugInfo() {
+      var stageInfo = getStageInfo();
+
       debugInfo.textContent =
         "baseQuestions: " + baseQuestionCount +
         "\nextraQuestions: " + extraQuestionCount +
-        "\ntotalQuestions: " + getBankWithStats().length +
+        "\nregisteredQuestions: " + getBankWithStats().length +
+        "\naddedQuestions: " + stageInfo.addedQuestionCount +
         "\ncategories: " + JSON.stringify(uniqueSortedValues(getBankWithStats(), "分野")) +
         "\nunattemptedCount: " + getUnattemptedCount() +
+        "\ncurrentStage: " + stageInfo.currentStageLabel +
+        "\nnextUnlockCondition: " + stageInfo.nextUnlockCondition +
         "\nrecentQuestionIds: " + JSON.stringify(learningHistory.recentQuestionIds || []) +
         "\nsessionQueue: " + JSON.stringify(sessionQueue) +
         "\nsessionIndex: " + sessionIndex +
-        "\ncurrentQuestionId: " + (sessionQueue[sessionIndex] || "-");
+        "\ncurrentQuestionId: " + (sessionQueue[sessionIndex] || "-") +
+        "\nbuild: " + QUIZ_BUILD;
     }
 
     function rememberQuestionShown(questionId) {
@@ -1755,10 +1822,7 @@ currentQuestionId: -</span>
       var dailyCompleted = Number(learningHistory.dailyCompletedCount || 0);
       var dailyAnswers = Number(learningHistory.dailyAnswerCount || 0);
       var totalAnswered = Number(learningHistory.totalAnswered || 0);
-      var totalCorrect = Number(learningHistory.totalCorrect || 0);
-      var accuracy = totalAnswered > 0
-        ? Math.round(totalCorrect / totalAnswered * 100)
-        : 0;
+      var accuracy = getAccuracyPercent();
 
       todayProgressText.textContent = dailyCompleted + "問";
       todayAnsweredCount.textContent = dailyAnswers + "回答";
@@ -1770,14 +1834,16 @@ currentQuestionId: -</span>
 
     function renderDashboard() {
       var bank = getBankWithStats();
+      var availableBank = getAvailableBankWithStats();
+      var stageInfo = getStageInfo();
       var wrongQuestions = bank.filter(function (question) {
         return question["間違い対象"];
       });
       var weakQuestions = bank.filter(function (question) {
         return question["苦手フラグ"];
       });
-      var fields = uniqueSortedValues(bank, "分野");
-      var years = uniqueSortedValues(bank, "年度");
+      var fields = uniqueSortedValues(availableBank, "分野");
+      var years = uniqueSortedValues(availableBank, "年度");
 
       totalCount.textContent = bank.length;
       wrongCount.textContent = wrongQuestions.length;
@@ -1786,7 +1852,8 @@ currentQuestionId: -</span>
       fieldCount.textContent = fields.length;
       dataStatus.textContent =
         "基本" + baseQuestionCount + "問＋追加" + extraQuestionCount +
-        "問、合計" + bank.length + "問を登録中です。";
+        "問、合計" + bank.length + "問を登録中です。" +
+        stageInfo.currentStageLabel + "として" + availableBank.length + "問を利用できます。";
       fillSelect(fieldSelect, fields, "分野を選ぶ");
       fillSelect(yearSelect, years, "年度を選ぶ");
       syncLearningHistoryLists(bank);
@@ -1796,7 +1863,7 @@ currentQuestionId: -</span>
     }
 
     function getQuestionsForMode(mode) {
-      var bank = getBankWithStats();
+      var bank = getAvailableBankWithStats();
 
       if (mode === "wrong") {
         return bank.filter(function (question) {
@@ -2265,6 +2332,9 @@ currentQuestionId: -</span>
         var baseQuestions = normalizeQuestions(json);
         var importedQuestions = normalizeQuestions(getStoredJson(IMPORTED_QUESTIONS_KEY, []));
         baseQuestionCount = baseQuestions.length;
+        baseQuestionIds = baseQuestions.map(function (question) {
+          return question.id;
+        });
         extraQuestionCount = importedQuestions.length;
         questionBank = combineQuestions(baseQuestions, importedQuestions);
         dataStatus.textContent = "ローカルJSONから問題データを読み込みました。";
@@ -2278,6 +2348,9 @@ currentQuestionId: -</span>
       }).catch(function (error) {
         var importedQuestions = normalizeQuestions(getStoredJson(IMPORTED_QUESTIONS_KEY, []));
         baseQuestionCount = fallbackQuestions.length;
+        baseQuestionIds = fallbackQuestions.map(function (question) {
+          return question.id;
+        });
         extraQuestionCount = importedQuestions.length;
         questionBank = combineQuestions(fallbackQuestions, importedQuestions);
         dataStatus.textContent = "JSONファイルを読めない環境のため、アプリ内の予備データを使っています。";
