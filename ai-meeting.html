@@ -766,7 +766,7 @@
           },
           {
             participant: PARTICIPANTS[2],
-            text: "次にやることは1つです。目標「" + context.goal + "」へ近づく最小の作業を今日の予定に入れます。"
+            text: "次にやることは1つです。目標「" + context.goal + "」へ近づく、15分以内の具体行動にします。"
           }
         ]
       ];
@@ -791,6 +791,36 @@
       return "入力テーマ・目標に直接関係しない話は検出されませんでした。";
     }
 
+    /*
+      次の一手は必ず1つ、15分以内で完了できる書く・決める行動にします。
+      入力にない事業論点は追加せず、テーマ内の語だけで行動を選びます。
+    */
+    function createNextAction(context) {
+      var input = [context.theme, context.goal, context.memo].join(" ");
+
+      if (/このアプリ|アプリ|会議室|UI|機能/.test(input)) {
+        return "15分で、このアプリで最初に解く悩みを1つ書く。";
+      }
+
+      if (/対象者|利用者|ユーザー|顧客/.test(input)) {
+        return "15分で、最初に助けたい1人の人物像を3行で書く。";
+      }
+
+      if (/価値|約束/.test(input)) {
+        return "15分で、相手に約束する価値を1文で書く。";
+      }
+
+      if (/学習|勉強|資格|試験|復習/.test(input)) {
+        return "15分で、次に覚える要点を3つ書く。";
+      }
+
+      if (/文章|伝える|発信|説明/.test(input)) {
+        return "15分で、最初に伝える結論を1文で書く。";
+      }
+
+      return "15分で、「" + context.theme + "」について最初に決めることを1文で書く。";
+    }
+
     function createMeetingResult(context, allSpeeches) {
       return [
         {
@@ -800,7 +830,7 @@
         },
         {
           label: "決まったこと",
-          text: "今回は入力されたテーマと目標に直接関係することだけを扱い、次の行動を1つに絞ります。"
+          text: "今回は入力されたテーマと目標に直接関係することだけを扱い、次の行動を15分以内の1つに絞ります。"
         },
         {
           label: "まだ決めないこと",
@@ -812,8 +842,7 @@
         },
         {
           label: "次にユウがやること1つ",
-          text: "「" + context.theme + "」について、目標「" + context.goal
-            + "」へ近づく最小の作業を1つ、今日の予定に入れる。"
+          text: createNextAction(context)
         }
       ];
     }
@@ -894,7 +923,7 @@
 
       resultPanel.classList.add("is-visible");
       progressLabel.textContent = "第3ラウンド / 3　会議終了";
-      progressText.textContent = "整理結果と、次にユウがやること1つを表示しました。";
+      progressText.textContent = "整理結果と、15分以内でできる次の行動1つを表示しました。";
 
       if (!prefersReducedMotion) {
         resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
