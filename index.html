@@ -71,6 +71,61 @@
       padding: 20px 16px 28px;
     }
 
+    .os-switcher {
+      position: relative;
+      margin-bottom: 14px;
+      padding: 10px;
+      background: rgba(23, 17, 13, 0.88);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .os-switcher-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+    }
+
+    .os-switcher-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .os-switcher-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 46px;
+      padding: 8px 10px;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.35;
+      text-align: center;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+      background: rgba(245, 199, 98, 0.06);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 8px;
+    }
+
+    .os-switcher-link:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .os-switcher-link.is-current {
+      color: #1b1008;
+      background: linear-gradient(180deg, #ffe28c, #f3aa35);
+      border-color: rgba(255, 232, 150, 0.72);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
     header {
       padding: 6px 0 14px;
       text-align: center;
@@ -676,10 +731,28 @@
         font-size: 17px;
       }
     }
+    @media (min-width: 520px) {
+      .os-switcher-links {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .os-switcher-link:last-child {
+        grid-column: auto;
+      }
+    }
   </style>
 </head>
 <body>
   <main class="app">
+    <nav class="os-switcher" aria-label="OS切替メニュー">
+      <span class="os-switcher-label">OSを切り替える</span>
+      <div class="os-switcher-links">
+        <span class="os-switcher-link is-current" aria-current="page">火種ユイ</span>
+        <a class="os-switcher-link" href="quiz.html">衛生管理者クイズ</a>
+        <a class="os-switcher-link" href="sharoshi-intro.html">社労士準備クイズ</a>
+      </div>
+    </nav>
+
     <header>
       <h1>攻鬼神07 - 火種を育てる日 -</h1>
       <p class="subtitle">今日は大きく燃えなくていい。小さな火を、ひとつ守る。</p>
@@ -767,7 +840,6 @@
       <button class="back-button" type="button" id="backToStateButton">状態選択へ戻る</button>
     </section>
 
-    <a class="quiz-link" href="sharoshi-intro.html">社労士準備クイズを開く</a>
   </main>
 
   <script>
