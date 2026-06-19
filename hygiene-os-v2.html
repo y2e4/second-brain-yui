@@ -171,6 +171,92 @@
       gap: 10px;
     }
 
+    .location-card {
+      border-color: #8d5b32;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(243, 122, 56, 0.15), transparent 16rem),
+        rgba(32, 23, 19, 0.97);
+    }
+
+    .location-kicker {
+      display: block;
+      color: var(--ember-light);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .location-title {
+      margin: 6px 0 2px;
+      font-size: clamp(24px, 7vw, 36px);
+      line-height: 1.25;
+    }
+
+    .location-subtitle {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .location-box {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .location-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .location-value {
+      display: block;
+      margin-top: 4px;
+      font-size: 17px;
+      font-weight: 850;
+      white-space: pre-line;
+    }
+
+    .locked-stage-details {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.14);
+      overflow: hidden;
+    }
+
+    .locked-stage-details > summary {
+      padding: 12px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .locked-stage-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0 12px 12px;
+      list-style: none;
+    }
+
+    .locked-stage-list li {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+    }
+
     .stat {
       min-width: 0;
       padding: 12px;
@@ -277,6 +363,26 @@
     .condition-text {
       margin: 10px 0 0;
       font-size: 13px;
+    }
+
+    .locked-stage-detail {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
+
+    .locked-stage-detail > summary {
+      padding: 10px 12px;
+      cursor: pointer;
+      color: var(--ember-light);
+      font-weight: 850;
+    }
+
+    .locked-stage-detail .condition-text {
+      margin: 0;
+      padding: 0 12px 12px;
     }
 
     .button-grid {
@@ -525,6 +631,10 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
+      .location-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .dashboard-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
@@ -586,6 +696,36 @@
       <h1>第二種衛生管理者 資格OS v2</h1>
       <p class="tagline">全問を一巡し、理解度を積み上げて、自分の判断で次の鍵を使う。</p>
     </header>
+
+    <section class="panel location-card" aria-labelledby="currentLocationTitle">
+      <span class="location-kicker">CURRENT LOCATION</span>
+      <h2 class="location-title" id="currentLocationTitle">現在：ステージ1 / 5</h2>
+      <p class="location-subtitle" id="currentLocationName">基礎</p>
+      <div class="location-grid">
+        <div class="location-box">
+          <span class="location-label">解放済み</span>
+          <span class="location-value" id="locationUnlockedValue">ステージ1</span>
+        </div>
+        <div class="location-box">
+          <span class="location-label">現在のステージ進捗</span>
+          <span class="location-value" id="locationProgressValue">0 / 30問回答
+正答率 0%</span>
+        </div>
+        <div class="location-box">
+          <span class="location-label">次の鍵</span>
+          <span class="location-value" id="locationNextKeyValue">全問題を1回以上解答
+ステージ正答率80%以上</span>
+        </div>
+        <div class="location-box">
+          <span class="location-label">最終ステージ</span>
+          <span class="location-value">ステージ5は、到達時点の最新公式情報を確認して作成する最終ステージ</span>
+        </div>
+      </div>
+      <details class="locked-stage-details" id="lockedStagesDetails">
+        <summary id="lockedStagesSummary">未解放：ステージ2「比較・混同対策」</summary>
+        <ul class="locked-stage-list" id="lockedStagesList"></ul>
+      </details>
+    </section>
 
     <section class="panel" aria-labelledby="dashboardTitle">
       <h2 class="panel-title" id="dashboardTitle">学習ダッシュボード</h2>
@@ -749,6 +889,13 @@
       var currentStageValue = document.getElementById("currentStageValue");
       var unlockedStagesValue = document.getElementById("unlockedStagesValue");
       var nextKeyValue = document.getElementById("nextKeyValue");
+      var currentLocationTitle = document.getElementById("currentLocationTitle");
+      var currentLocationName = document.getElementById("currentLocationName");
+      var locationUnlockedValue = document.getElementById("locationUnlockedValue");
+      var locationProgressValue = document.getElementById("locationProgressValue");
+      var locationNextKeyValue = document.getElementById("locationNextKeyValue");
+      var lockedStagesSummary = document.getElementById("lockedStagesSummary");
+      var lockedStagesList = document.getElementById("lockedStagesList");
       var totalAnsweredValue = document.getElementById("totalAnsweredValue");
       var unattemptedValue = document.getElementById("unattemptedValue");
       var wrongValue = document.getElementById("wrongValue");
@@ -1030,6 +1177,85 @@
         return "ステージ" + stageId + "：" + stage.name;
       }
 
+      function formatStagePlainName(stageId) {
+        var stage = getStage(stageId);
+        return "ステージ" + stageId + "「" + stage.name + "」";
+      }
+
+      function getUnlockedStageText() {
+        return state.unlockedStages.map(function (stageId) {
+          return "ステージ" + stageId;
+        }).join("、");
+      }
+
+      function getNextKeyText() {
+        var currentStage = getStage(state.currentStage);
+
+        if (state.currentStage <= 3) {
+          var nextStageId = state.currentStage + 1;
+
+          if (state.unlockedStages.indexOf(nextStageId) !== -1) {
+            return "ステージ" + nextStageId + "は解放済み";
+          }
+
+          if (state.earnedKeys[state.currentStage]) {
+            return "新しい鍵を獲得しました\n鍵を使ってステージ" + nextStageId + "を解放する";
+          }
+
+          return "全問題を1回以上解答\nステージ正答率" + currentStage.unlockAccuracy + "%以上";
+        }
+
+        if (state.stage5Ready) {
+          return "最終ステージ作成条件を達成\n最新公式情報を確認してステージ5を作成できます";
+        }
+
+        return "全問題を1回以上解答\nステージ正答率" + currentStage.unlockAccuracy + "%以上";
+      }
+
+      function renderLockedStageList() {
+        var lockedStages = data.stages.filter(function (stage) {
+          return stage.id >= 2 && stage.id <= 4 &&
+            state.unlockedStages.indexOf(stage.id) === -1;
+        });
+
+        lockedStagesList.replaceChildren();
+
+        if (!lockedStages.length) {
+          lockedStagesSummary.textContent = state.stage5Ready
+            ? "未解放：通常ステージはすべて解放済み"
+            : "未解放：ステージ5は最新公式情報確認後に作成";
+        } else {
+          lockedStagesSummary.textContent =
+            "未解放：🔒 " + formatStagePlainName(lockedStages[0].id);
+        }
+
+        lockedStages.forEach(function (stage) {
+          var item = document.createElement("li");
+          item.textContent = "🔒 ステージ" + stage.id + "「" + stage.name + "」";
+          lockedStagesList.appendChild(item);
+        });
+
+        var finalItem = document.createElement("li");
+        finalItem.textContent = state.stage5Ready
+          ? "ステージ5：作成条件達成。最新公式情報を確認して作成する最終ステージ"
+          : "ステージ5：到達時点の最新公式情報を確認して作成する最終ステージ";
+        lockedStagesList.appendChild(finalItem);
+      }
+
+      function renderCurrentLocation() {
+        var currentStage = getStage(state.currentStage);
+        var currentStats = getStageStats(state.currentStage);
+
+        currentLocationTitle.textContent = "現在：ステージ" + state.currentStage + " / 5";
+        currentLocationName.textContent = currentStage.name;
+        locationUnlockedValue.textContent = getUnlockedStageText();
+        locationProgressValue.textContent =
+          currentStats.answered + " / " + currentStats.total + "問回答\n" +
+          "正答率 " + currentStats.accuracy + "%";
+        locationNextKeyValue.textContent = getNextKeyText();
+        renderLockedStageList();
+      }
+
       function renderDashboard() {
         var currentStats = getStageStats(state.currentStage);
         var currentStage = getStage(state.currentStage);
@@ -1145,7 +1371,15 @@
                 "の全問に1回以上解答し、正答率" + previous.unlockAccuracy +
                 "%以上で鍵を獲得後、自分で鍵を使う。";
             }
-            card.appendChild(condition);
+            var lockedDetail = document.createElement("details");
+            lockedDetail.className = "locked-stage-detail";
+            var lockedSummary = document.createElement("summary");
+            lockedSummary.textContent = stage.id === 5
+              ? "最終ステージの作成条件"
+              : "解放条件を見る";
+            lockedDetail.appendChild(lockedSummary);
+            lockedDetail.appendChild(condition);
+            card.appendChild(lockedDetail);
           }
 
           stageList.appendChild(card);
@@ -1161,12 +1395,17 @@
           state.earnedKeys[state.currentStage] &&
           state.unlockedStages.indexOf(state.currentStage + 1) === -1
         );
+        if (!keyPanel.hidden) {
+          unlockButton.textContent =
+            "鍵を使ってステージ" + (state.currentStage + 1) + "を解放する";
+        }
         finalReadyPanel.hidden = !state.stage5Ready;
       }
 
       function renderAll() {
         refreshEarnedKeys();
         saveState();
+        renderCurrentLocation();
         renderDashboard();
         renderStages();
         renderStudyPanel();
