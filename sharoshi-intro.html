@@ -216,6 +216,148 @@
       font-size: 14px;
     }
 
+    .location-card {
+      border-color: rgba(255, 197, 98, 0.46);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(255, 123, 48, 0.16), transparent 18rem),
+        rgba(23, 17, 13, 0.97);
+    }
+
+    .location-kicker {
+      display: block;
+      color: var(--ember);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+    }
+
+    .location-title {
+      margin: 5px 0 3px;
+      color: var(--gold);
+      font-size: clamp(24px, 7vw, 34px);
+      font-weight: 950;
+      line-height: 1.25;
+    }
+
+    .location-subtitle {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .location-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    .location-box {
+      min-width: 0;
+      padding: 12px 11px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+    }
+
+    .location-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .location-value {
+      display: block;
+      margin-top: 4px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.55;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .stage-key-status {
+      margin: 12px 0 0;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      background: rgba(126, 200, 227, 0.08);
+      border: 1px solid rgba(126, 200, 227, 0.22);
+      border-radius: 8px;
+    }
+
+    .stage-key-status.is-earned {
+      color: #1d1207;
+      background: linear-gradient(180deg, #ffe7a0, #efa93c);
+      border-color: rgba(255, 232, 150, 0.72);
+    }
+
+    .stage-next-action {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(245, 199, 98, 0.07);
+      border: 1px solid rgba(245, 199, 98, 0.2);
+      border-radius: 8px;
+    }
+
+    .stage-next-action p {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .stage-copy-status {
+      margin: 10px 0 0;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 850;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .locked-stage-details {
+      margin-top: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+    }
+
+    .locked-stage-details > summary {
+      min-height: 48px;
+      padding: 11px 12px;
+      color: var(--gold);
+      font-weight: 900;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .locked-stage-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0 12px 12px;
+      list-style: none;
+    }
+
+    .locked-stage-list li {
+      min-width: 0;
+      padding: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(0, 0, 0, 0.16);
+      border-radius: 8px;
+    }
+
+    .locked-stage-list strong {
+      display: block;
+      color: var(--text);
+      font-size: 14px;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -510,6 +652,10 @@
         grid-template-columns: repeat(5, minmax(0, 1fr));
       }
 
+      .location-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
       .stat:last-child {
         grid-column: auto;
       }
@@ -558,6 +704,41 @@
       <h1>社労士準備クイズ</h1>
       <p class="tagline">難問の前に、まず言葉に慣れる。毎日1〜3問から始めよう。</p>
     </header>
+
+    <section class="panel location-card" aria-labelledby="currentLocationTitle">
+      <span class="location-kicker">現在地</span>
+      <h2 class="location-title" id="currentLocationTitle">現在：ステージ1 / 5</h2>
+      <p class="location-subtitle" id="currentLocationName">基礎用語・制度の入口</p>
+      <div class="location-grid">
+        <div class="location-box">
+          <span class="location-label">解放済み</span>
+          <span class="location-value" id="locationUnlockedValue">ステージ1</span>
+        </div>
+        <div class="location-box">
+          <span class="location-label">現在のステージ進捗</span>
+          <span class="location-value" id="locationProgressValue">0 / 30問回答
+正答率 0%</span>
+        </div>
+        <div class="location-box">
+          <span class="location-label">次の鍵</span>
+          <span class="location-value" id="locationKeyValue">全30問を1回以上解答
+ステージ正答率80%以上</span>
+        </div>
+      </div>
+      <p class="stage-key-status" id="stageKeyStatus">条件達成までは、ステージ1の言葉に慣れていきます。</p>
+      <div class="stage-next-action" id="stageNextAction" hidden>
+        <p>次のステージを作成できます</p>
+        <button class="primary-button" type="button" id="stageConsultButton">ユイへステージ2作成を相談する</button>
+        <p class="stage-copy-status" id="stageCopyStatus" role="status" hidden></p>
+      </div>
+      <details class="locked-stage-details" id="lockedStagesDetails">
+        <summary id="lockedStagesSummary">未解放：🔒 ステージ2「比較・混同対策」</summary>
+        <ul class="locked-stage-list" id="lockedStagesList"></ul>
+      </details>
+      <p class="panel-note">
+        ステージ5：到達時点の最新公式情報を確認して作成する最終ステージ
+      </p>
+    </section>
 
     <section class="panel" aria-labelledby="statsTitle">
       <h2 class="panel-title" id="statsTitle">学習の記録</h2>
@@ -654,9 +835,47 @@
       var DATA_URL = "sharoshi-intro-questions.json";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var RECENT_LIMIT = 6;
+      var STAGE_ONE_ID = 1;
+      var STAGE_TOTAL = 5;
+      var FALLBACK_STAGES = [
+        {
+          id: 1,
+          name: "基礎用語・制度の入口",
+          objective: "社労士試験の本格学習前に、基本用語と制度の全体像へ慣れる。",
+          unlocked: true,
+          questionCount: 30,
+          unlockAccuracy: 80
+        },
+        {
+          id: 2,
+          name: "比較・混同対策",
+          objective: "似た制度、用語、給付、被保険者区分を区別する。",
+          unlocked: false
+        },
+        {
+          id: 3,
+          name: "条件・例外・数字",
+          objective: "適用条件、期間、年齢、日数、例外規定を学ぶ。",
+          unlocked: false
+        },
+        {
+          id: 4,
+          name: "事例・科目横断",
+          objective: "短い事例から、どの法律・制度が関係するか判断する。",
+          unlocked: false
+        },
+        {
+          id: 5,
+          name: "最新公式・本番準備",
+          objective: "到達時点の最新法改正、試験要項、公表情報、苦手履歴を確認して後から作成する。",
+          unlocked: false
+        }
+      ];
       var questionBank = [];
+      var questionById = {};
       var terms = [];
       var termMap = {};
+      var stages = FALLBACK_STAGES.slice();
       var progress = readProgress();
       var sessionQuestions = [];
       var sessionIndex = 0;
@@ -677,6 +896,17 @@
       var accuracy = document.getElementById("accuracy");
       var unseenCount = document.getElementById("unseenCount");
       var wrongCount = document.getElementById("wrongCount");
+      var currentLocationTitle = document.getElementById("currentLocationTitle");
+      var currentLocationName = document.getElementById("currentLocationName");
+      var locationUnlockedValue = document.getElementById("locationUnlockedValue");
+      var locationProgressValue = document.getElementById("locationProgressValue");
+      var locationKeyValue = document.getElementById("locationKeyValue");
+      var stageKeyStatus = document.getElementById("stageKeyStatus");
+      var stageNextAction = document.getElementById("stageNextAction");
+      var stageConsultButton = document.getElementById("stageConsultButton");
+      var stageCopyStatus = document.getElementById("stageCopyStatus");
+      var lockedStagesSummary = document.getElementById("lockedStagesSummary");
+      var lockedStagesList = document.getElementById("lockedStagesList");
       var homeStatus = document.getElementById("homeStatus");
       var dailyButton = document.getElementById("dailyButton");
       var termsButton = document.getElementById("termsButton");
@@ -727,7 +957,14 @@
             date: "",
             answers: 0
           },
-          wrongReview: {}
+          wrongReview: {},
+          stageProgress: {
+            "1": {
+              answerCount: 0,
+              correctCount: 0,
+              answeredQuestionIds: []
+            }
+          }
         };
       }
 
@@ -740,6 +977,48 @@
           seen[item] = true;
           return true;
         }) : [];
+      }
+
+      function normalizeStageStats(raw, fallbackAnswers, fallbackCorrect, fallbackIds) {
+        var hasRaw = raw && typeof raw === "object" && !Array.isArray(raw);
+        var hasAnswerCount = hasRaw && Object.prototype.hasOwnProperty.call(raw, "answerCount");
+        var hasCorrectCount = hasRaw && Object.prototype.hasOwnProperty.call(raw, "correctCount");
+        var hasAnsweredIds = hasRaw && Object.prototype.hasOwnProperty.call(raw, "answeredQuestionIds");
+        var answerCount = hasAnswerCount
+          ? Math.max(0, Number(raw.answerCount) || 0)
+          : Math.max(0, Number(fallbackAnswers) || 0);
+        var correctCount = hasCorrectCount
+          ? Math.max(0, Number(raw.correctCount) || 0)
+          : Math.max(0, Number(fallbackCorrect) || 0);
+
+        return {
+          answerCount: answerCount,
+          correctCount: Math.min(correctCount, answerCount),
+          answeredQuestionIds: hasAnsweredIds
+            ? uniqueStrings(raw.answeredQuestionIds)
+            : uniqueStrings(fallbackIds)
+        };
+      }
+
+      function normalizeStoredStageProgress(raw, base) {
+        var output = {};
+
+        if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+          Object.keys(raw).forEach(function (stageId) {
+            if (/^[1-5]$/.test(stageId)) {
+              output[stageId] = normalizeStageStats(raw[stageId], 0, 0, []);
+            }
+          });
+        }
+
+        output[String(STAGE_ONE_ID)] = normalizeStageStats(
+          raw && raw[String(STAGE_ONE_ID)],
+          base.totalAnswers,
+          base.correctAnswers,
+          base.seenQuestionIds
+        );
+
+        return output;
       }
 
       function readProgress() {
@@ -766,6 +1045,8 @@
             base.daily.date = typeof stored.daily.date === "string" ? stored.daily.date : "";
             base.daily.answers = Math.max(0, Number(stored.daily.answers) || 0);
           }
+
+          base.stageProgress = normalizeStoredStageProgress(stored.stageProgress, base);
         } catch (error) {
           return base;
         }
@@ -786,23 +1067,147 @@
         }
       }
 
+      function getStage(stageId) {
+        return stages.find(function (stage) {
+          return stage.id === stageId;
+        }) || FALLBACK_STAGES[stageId - 1];
+      }
+
+      function getQuestionStage(question) {
+        return Math.max(1, Math.min(STAGE_TOTAL, Number(question.stage) || STAGE_ONE_ID));
+      }
+
+      function getStageQuestions(stageId) {
+        return questionBank.filter(function (question) {
+          return getQuestionStage(question) === stageId;
+        });
+      }
+
+      function getPlayableQuestions() {
+        return getStageQuestions(STAGE_ONE_ID);
+      }
+
+      function normalizeStageProgress() {
+        progress.stageProgress = normalizeStoredStageProgress(progress.stageProgress, progress);
+      }
+
+      function getStageStats(stageId) {
+        var stage = getStage(stageId);
+        var stageQuestions = getStageQuestions(stageId);
+        var questionTotal = stageQuestions.length || (Number(stage.questionCount) || 0);
+        var stageQuestionIds = {};
+        var stored = progress.stageProgress && progress.stageProgress[String(stageId)];
+        var stats = normalizeStageStats(stored, 0, 0, []);
+        var answeredQuestionIds;
+
+        stageQuestions.forEach(function (question) {
+          stageQuestionIds[question.id] = true;
+        });
+
+        answeredQuestionIds = stats.answeredQuestionIds.filter(function (questionId) {
+          return Boolean(stageQuestionIds[questionId]);
+        });
+
+        return {
+          total: questionTotal,
+          answered: answeredQuestionIds.length,
+          answerCount: stats.answerCount,
+          correctCount: stats.correctCount,
+          accuracy: stats.answerCount
+            ? Math.round((stats.correctCount / stats.answerCount) * 100)
+            : 0,
+          unattempted: Math.max(0, questionTotal - answeredQuestionIds.length),
+          answeredQuestionIds: answeredQuestionIds
+        };
+      }
+
+      function getStageOneKeyEarned() {
+        var stage = getStage(STAGE_ONE_ID);
+        var stats = getStageStats(STAGE_ONE_ID);
+        var unlockAccuracy = Number(stage.unlockAccuracy) || 80;
+        return stats.total > 0 &&
+          stats.answered >= stats.total &&
+          stats.accuracy >= unlockAccuracy;
+      }
+
+      function renderLockedStages() {
+        var lockedStages = stages.filter(function (stage) {
+          return stage.id >= 2 && stage.id <= STAGE_TOTAL;
+        });
+
+        lockedStagesList.textContent = "";
+        lockedStagesSummary.textContent = "未解放：🔒 ステージ2「比較・混同対策」";
+
+        lockedStages.forEach(function (stage) {
+          var item = document.createElement("li");
+          var title = document.createElement("strong");
+          var detail = document.createElement("span");
+
+          title.textContent = "🔒 ステージ" + stage.id + "「" + stage.name + "」";
+          detail.textContent = stage.objective;
+          item.appendChild(title);
+          item.appendChild(detail);
+          lockedStagesList.appendChild(item);
+        });
+      }
+
+      function updateStageCard() {
+        var stage = getStage(STAGE_ONE_ID);
+        var stats = getStageStats(STAGE_ONE_ID);
+        var unlockAccuracy = Number(stage.unlockAccuracy) || 80;
+        var earned = getStageOneKeyEarned();
+
+        currentLocationTitle.textContent = "現在：ステージ1 / " + STAGE_TOTAL;
+        currentLocationName.textContent = stage.name;
+        locationUnlockedValue.textContent = "ステージ1";
+        locationProgressValue.textContent =
+          stats.answered + " / " + stats.total + "問回答\n" +
+          "正答率 " + stats.accuracy + "%";
+        locationKeyValue.textContent =
+          "全" + stats.total + "問を1回以上解答\n" +
+          "ステージ正答率" + unlockAccuracy + "%以上";
+
+        stageKeyStatus.textContent = earned
+          ? "ステージ2の鍵を獲得しました"
+          : "条件達成までは、ステージ1の言葉に慣れていきます。";
+        stageKeyStatus.classList.toggle("is-earned", earned);
+        stageNextAction.hidden = !earned;
+        renderLockedStages();
+      }
+
       function updateStats() {
+        var playableQuestions = getPlayableQuestions();
+        var playableQuestionIds = {};
+        var seenPlayableCount = 0;
+
         normalizeDailyCount();
+        playableQuestions.forEach(function (question) {
+          playableQuestionIds[question.id] = true;
+        });
+        seenPlayableCount = progress.seenQuestionIds.filter(function (questionId) {
+          return Boolean(playableQuestionIds[questionId]);
+        }).length;
+
         todayCount.textContent = String(progress.daily.answers);
         totalCount.textContent = String(progress.totalAnswers);
         accuracy.textContent = progress.totalAnswers
           ? Math.round((progress.correctAnswers / progress.totalAnswers) * 100) + "%"
           : "--";
-        unseenCount.textContent = String(Math.max(0, questionBank.length - progress.seenQuestionIds.length));
+        unseenCount.textContent = String(Math.max(0, playableQuestions.length - seenPlayableCount));
         wrongCount.textContent = String(progress.wrongQuestionIds.length);
         mistakesButton.textContent = "間違えた問題 (" + progress.wrongQuestionIds.length + ")";
+        updateStageCard();
       }
 
       function showOnly(name) {
         Object.keys(views).forEach(function (key) {
           views[key].hidden = key !== name;
         });
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (name === "home") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          views[name].scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
 
       function showStatus(element, message) {
@@ -834,9 +1239,10 @@
 
       function selectDailyQuestions(limit) {
         var selected = [];
+        var pool = getPlayableQuestions();
         var recent = progress.recentQuestionIds;
         var seen = progress.seenQuestionIds;
-        var notRecent = questionBank.filter(function (question) {
+        var notRecent = pool.filter(function (question) {
           return recent.indexOf(question.id) === -1 && question.id !== progress.lastQuestionId;
         });
         var unseen = notRecent.filter(function (question) {
@@ -848,15 +1254,15 @@
 
         appendUnique(selected, unseen, limit);
         appendUnique(selected, alreadySeen, limit);
-        appendUnique(selected, questionBank.filter(function (question) {
+        appendUnique(selected, pool.filter(function (question) {
           return question.id !== progress.lastQuestionId;
         }), limit);
-        appendUnique(selected, questionBank, limit);
+        appendUnique(selected, pool, limit);
         return selected.slice(0, limit);
       }
 
       function selectMistakeQuestions(limit) {
-        var active = questionBank.filter(function (question) {
+        var active = getPlayableQuestions().filter(function (question) {
           return progress.wrongQuestionIds.indexOf(question.id) !== -1;
         });
 
@@ -978,12 +1384,32 @@
         }
       }
 
+      function recordStageAnswer(question, isCorrect) {
+        var stageKey = String(getQuestionStage(question));
+        var stats;
+
+        if (!progress.stageProgress || typeof progress.stageProgress !== "object") {
+          progress.stageProgress = {};
+        }
+
+        stats = normalizeStageStats(progress.stageProgress[stageKey], 0, 0, []);
+        stats.answerCount += 1;
+        if (isCorrect) {
+          stats.correctCount += 1;
+        }
+        if (stats.answeredQuestionIds.indexOf(question.id) === -1) {
+          stats.answeredQuestionIds.push(question.id);
+        }
+        progress.stageProgress[stageKey] = stats;
+      }
+
       function recordAnswer(question, isCorrect) {
         normalizeDailyCount();
         progress.totalAnswers += 1;
         progress.daily.answers += 1;
         progress.lastStudyDate = getToday();
         addSeen(question.id);
+        recordStageAnswer(question, isCorrect);
 
         if (isCorrect) {
           progress.correctAnswers += 1;
@@ -994,6 +1420,93 @@
 
         saveProgress();
         updateStats();
+      }
+
+      function getWeakCategories() {
+        var counts = {};
+        var labels = [];
+
+        progress.wrongQuestionIds.forEach(function (questionId) {
+          var question = questionById[questionId];
+          if (!question) {
+            return;
+          }
+          counts[question.category] = (counts[question.category] || 0) + 1;
+        });
+
+        labels = Object.keys(counts).sort(function (left, right) {
+          return counts[right] - counts[left] || left.localeCompare(right, "ja");
+        }).map(function (category) {
+          return category + " " + counts[category] + "問";
+        });
+
+        return labels.length ? labels.join("、") : "なし";
+      }
+
+      function buildStageConsultPayload() {
+        var stats = getStageStats(STAGE_ONE_ID);
+        var wrongIds = progress.wrongQuestionIds.slice();
+        var reviewIds = progress.wrongQuestionIds.slice();
+
+        return [
+          "社労士準備OSのステージ2・比較混同対策を作成してください",
+          "",
+          "ステージ1の回答数: " + stats.answerCount,
+          "ステージ1の正答率: " + stats.accuracy + "%",
+          "間違えた問題ID: " + (wrongIds.length ? wrongIds.join(", ") : "なし"),
+          "復習待ち問題ID: " + (reviewIds.length ? reviewIds.join(", ") : "なし"),
+          "苦手分野: " + getWeakCategories(),
+          "最終学習日: " + (progress.lastStudyDate || "未記録")
+        ].join("\n");
+      }
+
+      function copyTextToClipboard(text) {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+          return navigator.clipboard.writeText(text).catch(function () {
+            return fallbackCopyText(text);
+          });
+        }
+
+        return fallbackCopyText(text);
+      }
+
+      function fallbackCopyText(text) {
+        return new Promise(function (resolve, reject) {
+          var textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "fixed";
+          textarea.style.top = "-9999px";
+          document.body.appendChild(textarea);
+          textarea.focus();
+          textarea.select();
+          textarea.setSelectionRange(0, textarea.value.length);
+
+          try {
+            if (document.execCommand("copy")) {
+              resolve();
+            } else {
+              reject(new Error("コピーに失敗しました。"));
+            }
+          } catch (error) {
+            reject(error);
+          } finally {
+            document.body.removeChild(textarea);
+          }
+        });
+      }
+
+      function copyStageConsultRequest() {
+        var payload = buildStageConsultPayload();
+
+        stageCopyStatus.hidden = false;
+        copyTextToClipboard(payload)
+          .then(function () {
+            stageCopyStatus.textContent = "ステージ2作成相談用の情報をコピーしました。";
+          })
+          .catch(function () {
+            stageCopyStatus.textContent = payload;
+          });
       }
 
       function handleAnswer(selectedAnswer, selectedButton) {
@@ -1096,12 +1609,29 @@
       }
 
       function validateData(data) {
-        if (!data || !Array.isArray(data.terms) || !Array.isArray(data.questions)) {
-          throw new Error("用語または問題のデータ形式が正しくありません。");
+        if (!data || !Array.isArray(data.terms) || !Array.isArray(data.questions) ||
+            !Array.isArray(data.stages)) {
+          throw new Error("用語、問題、ステージのデータ形式が正しくありません。");
         }
         if (data.terms.length !== 30 || data.questions.length !== 30) {
           throw new Error("用語と問題はそれぞれ30件必要です。");
         }
+        if (data.stages.length !== STAGE_TOTAL) {
+          throw new Error("ステージ定義は5件必要です。");
+        }
+
+        data.stages.forEach(function (stage) {
+          if (typeof stage.id !== "number" || stage.id < 1 || stage.id > STAGE_TOTAL ||
+              !stage.name || !stage.objective) {
+            throw new Error("ステージデータの必須項目が不足しています。");
+          }
+          if (stage.id === STAGE_ONE_ID && stage.unlocked !== true) {
+            throw new Error("ステージ1は最初から解放済みにしてください。");
+          }
+          if (stage.id >= 2 && stage.unlocked === true) {
+            throw new Error("ステージ2以降は現時点では未解放にしてください。");
+          }
+        });
 
         var termIds = {};
         data.terms.forEach(function (term) {
@@ -1124,6 +1654,9 @@
           if (!question.id || !question.termId || !question.statement ||
               typeof question.answer !== "boolean" || !question.explanation || !question.memoryTip) {
             throw new Error("問題データの必須項目が不足しています。");
+          }
+          if ((Number(question.stage) || STAGE_ONE_ID) !== STAGE_ONE_ID) {
+            throw new Error("現時点の問題はステージ1だけにしてください。");
           }
           if (!termIds[question.termId] || questionIds[question.id]) {
             throw new Error("問題IDまたは用語との対応が正しくありません。");
@@ -1169,6 +1702,10 @@
         showOnly("home");
       });
 
+      stageConsultButton.addEventListener("click", function () {
+        copyStageConsultRequest();
+      });
+
       moreButton.addEventListener("click", function () {
         startSession("daily");
       });
@@ -1191,11 +1728,30 @@
         })
         .then(function (data) {
           validateData(data);
+          stages = data.stages.map(function (stage) {
+            return {
+              id: Number(stage.id),
+              name: String(stage.name),
+              objective: String(stage.objective),
+              unlocked: stage.unlocked === true,
+              questionCount: Math.max(0, Number(stage.questionCount) || 0),
+              unlockAccuracy: Math.max(0, Number(stage.unlockAccuracy) || 80)
+            };
+          });
           terms = data.terms;
-          questionBank = data.questions;
+          questionBank = data.questions.map(function (question) {
+            question.stage = Number(question.stage) || STAGE_ONE_ID;
+            return question;
+          });
+          questionById = {};
           terms.forEach(function (term) {
             termMap[term.id] = term;
           });
+          questionBank.forEach(function (question) {
+            questionById[question.id] = question;
+          });
+          normalizeStageProgress();
+          saveProgress();
           updateStats();
           dailyButton.disabled = false;
           termsButton.disabled = false;

@@ -2,6 +2,44 @@
   "version": 1,
   "title": "社労士準備クイズ",
   "verifiedAt": "2026-06-14",
+  "stages": [
+    {
+      "id": 1,
+      "name": "基礎用語・制度の入口",
+      "objective": "社労士試験の本格学習前に、基本用語と制度の全体像へ慣れる。",
+      "unlocked": true,
+      "questionCount": 30,
+      "unlockAccuracy": 80
+    },
+    {
+      "id": 2,
+      "name": "比較・混同対策",
+      "objective": "似た制度、用語、給付、被保険者区分を区別する。",
+      "unlocked": false,
+      "questionCount": 0
+    },
+    {
+      "id": 3,
+      "name": "条件・例外・数字",
+      "objective": "適用条件、期間、年齢、日数、例外規定を学ぶ。",
+      "unlocked": false,
+      "questionCount": 0
+    },
+    {
+      "id": 4,
+      "name": "事例・科目横断",
+      "objective": "短い事例から、どの法律・制度が関係するか判断する。",
+      "unlocked": false,
+      "questionCount": 0
+    },
+    {
+      "id": 5,
+      "name": "最新公式・本番準備",
+      "objective": "到達時点の最新法改正、試験要項、公表情報、苦手履歴を確認して後から作成する。",
+      "unlocked": false,
+      "questionCount": 0
+    }
+  ],
   "terms": [
     {
       "id": "term-001",
@@ -398,6 +436,7 @@
     {
       "id": "question-001",
       "termId": "term-001",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "労働基準法の「労働者」は、正社員だけを指す。",
       "answer": false,
@@ -407,6 +446,7 @@
     {
       "id": "question-002",
       "termId": "term-002",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "労働基準法の「使用者」は、会社の代表者だけを指す。",
       "answer": false,
@@ -416,6 +456,7 @@
     {
       "id": "question-003",
       "termId": "term-003",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "労働契約は、働くことと賃金を支払うことについての約束である。",
       "answer": true,
@@ -425,6 +466,7 @@
     {
       "id": "question-004",
       "termId": "term-004",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "就業規則には、勤務時間や休日など職場の共通ルールが定められる。",
       "answer": true,
@@ -434,6 +476,7 @@
     {
       "id": "question-005",
       "termId": "term-005",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "労働基準法の「賃金」は、基本給だけを指す。",
       "answer": false,
@@ -443,6 +486,7 @@
     {
       "id": "question-006",
       "termId": "term-006",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "法定労働時間は、原則として1日8時間、1週40時間である。",
       "answer": true,
@@ -452,6 +496,7 @@
     {
       "id": "question-007",
       "termId": "term-007",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "所定労働時間と法定労働時間は、必ず同じ長さである。",
       "answer": false,
@@ -461,6 +506,7 @@
     {
       "id": "question-008",
       "termId": "term-008",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "1日の労働時間が8時間を超えるときは、原則として少なくとも60分の休憩が必要である。",
       "answer": true,
@@ -470,6 +516,7 @@
     {
       "id": "question-009",
       "termId": "term-009",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "休日は、原則として毎週少なくとも1日与える。",
       "answer": true,
@@ -479,6 +526,7 @@
     {
       "id": "question-010",
       "termId": "term-010",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "時間外労働とは、法定労働時間を超えて働くことをいう。",
       "answer": true,
@@ -488,6 +536,7 @@
     {
       "id": "question-011",
       "termId": "term-011",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "会社が命令すれば、36協定がなくても法定時間外労働をさせられる。",
       "answer": false,
@@ -497,6 +546,7 @@
     {
       "id": "question-012",
       "termId": "term-012",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "年次有給休暇は、休んだ日の賃金が必ずゼロになる休暇である。",
       "answer": false,
@@ -506,6 +556,7 @@
     {
       "id": "question-013",
       "termId": "term-013",
+      "stage": 1,
       "category": "労働基準法",
       "statement": "解雇とは、使用者の側から一方的に労働契約を終わらせることである。",
       "answer": true,
@@ -515,6 +566,7 @@
     {
       "id": "question-014",
       "termId": "term-014",
+      "stage": 1,
       "category": "労働安全衛生法",
       "statement": "労働災害には、仕事が原因のけがだけでなく、病気や死亡も含まれる。",
       "answer": true,
@@ -524,6 +576,7 @@
     {
       "id": "question-015",
       "termId": "term-015",
+      "stage": 1,
       "category": "労災保険",
       "statement": "労災保険は、仕事や通勤が原因のけがや病気などを補償する制度である。",
       "answer": true,
@@ -533,6 +586,7 @@
     {
       "id": "question-016",
       "termId": "term-016",
+      "stage": 1,
       "category": "労災保険",
       "statement": "業務災害は、仕事が原因となって起きた労働者の災害である。",
       "answer": true,
@@ -542,6 +596,7 @@
     {
       "id": "question-017",
       "termId": "term-017",
+      "stage": 1,
       "category": "労災保険",
       "statement": "通勤災害は、就業に関する合理的な経路・方法の移動中に起きた災害をいう。",
       "answer": true,
@@ -551,6 +606,7 @@
     {
       "id": "question-018",
       "termId": "term-018",
+      "stage": 1,
       "category": "雇用保険",
       "statement": "雇用保険は、失業中の生活や再就職などを支える制度である。",
       "answer": true,
@@ -560,6 +616,7 @@
     {
       "id": "question-019",
       "termId": "term-019",
+      "stage": 1,
       "category": "雇用保険",
       "statement": "雇用保険の被保険者になるかは、本人が好みだけで自由に選べる。",
       "answer": false,
@@ -569,6 +626,7 @@
     {
       "id": "question-020",
       "termId": "term-020",
+      "stage": 1,
       "category": "雇用保険",
       "statement": "資格取得とは、雇用保険の被保険者として扱われ始めることである。",
       "answer": true,
@@ -578,6 +636,7 @@
     {
       "id": "question-021",
       "termId": "term-021",
+      "stage": 1,
       "category": "雇用保険",
       "statement": "資格喪失とは、離職などで雇用保険の被保険者でなくなることである。",
       "answer": true,
@@ -587,6 +646,7 @@
     {
       "id": "question-022",
       "termId": "term-022",
+      "stage": 1,
       "category": "雇用保険",
       "statement": "基本手当は、退職時に会社が支払う退職金のことである。",
       "answer": false,
@@ -596,6 +656,7 @@
     {
       "id": "question-023",
       "termId": "term-023",
+      "stage": 1,
       "category": "健康保険",
       "statement": "健康保険の「保険者」と「被保険者」は同じ意味である。",
       "answer": false,
@@ -605,6 +666,7 @@
     {
       "id": "question-024",
       "termId": "term-024",
+      "stage": 1,
       "category": "健康保険",
       "statement": "傷病手当金は、業務外の病気やけがで働けず、十分な給与がないときの生活を支える。",
       "answer": true,
@@ -614,6 +676,7 @@
     {
       "id": "question-025",
       "termId": "term-025",
+      "stage": 1,
       "category": "健康保険",
       "statement": "標準報酬月額は、保険料や給付額などを計算するときの基礎になる。",
       "answer": true,
@@ -623,6 +686,7 @@
     {
       "id": "question-026",
       "termId": "term-026",
+      "stage": 1,
       "category": "国民年金・厚生年金",
       "statement": "厚生年金に入る会社員は、国民年金とは無関係である。",
       "answer": false,
@@ -632,6 +696,7 @@
     {
       "id": "question-027",
       "termId": "term-027",
+      "stage": 1,
       "category": "国民年金・厚生年金",
       "statement": "厚生年金は、会社員や公務員などが国民年金に上乗せして加入する制度である。",
       "answer": true,
@@ -641,6 +706,7 @@
     {
       "id": "question-028",
       "termId": "term-028",
+      "stage": 1,
       "category": "国民年金・厚生年金",
       "statement": "老齢年金は、老後の生活を支える公的年金の給付である。",
       "answer": true,
@@ -650,6 +716,7 @@
     {
       "id": "question-029",
       "termId": "term-029",
+      "stage": 1,
       "category": "国民年金・厚生年金",
       "statement": "障害年金は、病気やけがで一定の障害状態になった現役世代も対象になり得る。",
       "answer": true,
@@ -659,6 +726,7 @@
     {
       "id": "question-030",
       "termId": "term-030",
+      "stage": 1,
       "category": "国民年金・厚生年金",
       "statement": "遺族年金は、加入者などが亡くなったとき、要件を満たす遺族の生活を支える。",
       "answer": true,
