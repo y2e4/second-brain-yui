@@ -116,7 +116,7 @@
     }
 
     .os-switcher-link:last-child {
-      grid-column: auto;
+      grid-column: 1 / -1;
     }
 
     .os-switcher-link.is-current {
@@ -731,9 +731,13 @@
         font-size: 17px;
       }
     }
-    @media (min-width: 680px) {
+    @media (min-width: 520px) {
       .os-switcher-links {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .os-switcher-link:last-child {
+        grid-column: auto;
       }
     }
   </style>
@@ -746,7 +750,6 @@
         <span class="os-switcher-link is-current" aria-current="page">火種ユイ</span>
         <a class="os-switcher-link" href="hygiene-os-v2.html">第二種衛生管理者 資格OS v2</a>
         <a class="os-switcher-link" href="sharoshi-intro.html">社労士準備クイズ</a>
-        <a class="os-switcher-link" href="quiz.html">衛生管理者クイズ旧版</a>
       </div>
     </nav>
 
