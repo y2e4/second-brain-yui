@@ -286,6 +286,30 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
 
+    .protect-line {
+      margin-top: 14px;
+      padding: 12px 13px;
+      background: rgba(245, 199, 98, 0.06);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-left: 3px solid rgba(245, 199, 98, 0.46);
+      border-radius: 8px;
+    }
+
+    .protect-line-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .protect-line-text {
+      margin: 6px 0 0;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.75;
+    }
+
     button {
       border: 0;
       border-radius: 8px;
@@ -730,6 +754,14 @@
         min-height: 118px;
         font-size: 17px;
       }
+
+      .protect-line {
+        padding: 11px 12px;
+      }
+
+      .protect-line-text {
+        font-size: 13px;
+      }
     }
     @media (min-width: 520px) {
       .os-switcher-links {
@@ -767,6 +799,10 @@
       <span class="quote-label">今日の言葉</span>
       <p class="quote-text" id="dailyQuoteText" aria-live="polite"></p>
       <button class="quote-button" type="button" id="quoteButton">もう一つ受け取る</button>
+      <div class="protect-line" aria-labelledby="protect-line-label">
+        <span class="protect-line-label" id="protect-line-label">今日の守る一行</span>
+        <p class="protect-line-text" id="protectLineText" aria-live="polite"></p>
+      </div>
     </section>
 
     <section id="stateSection" aria-labelledby="state-title">
@@ -998,6 +1034,16 @@
       "今日も始め直せる。それだけで、人はまだ強い。"
     ];
 
+    var protectMessages = {
+      0: "日曜日：今日は整える日。休むことも、振り返ることも、来週の自分を守る準備になる。",
+      1: "月曜日：月曜日は、大きく勝たなくていい。判断力を守るために、目の前のことだけ進める。それ以外は今日は無視していい。",
+      2: "火曜日：今日は、少し挑戦する日。完璧に進めなくてもいい。昨日より一歩だけ、自分の可能性を広げる。",
+      3: "水曜日：週の真ん中は、整えながら進む日。焦らず、崩れず、目の前の判断を一つずつ積み上げる。",
+      4: "木曜日：疲れが見え始める日は、余力を守る日。全部を背負わず、必要なことから順番に進める。",
+      5: "金曜日：今週の自分を責めすぎない。できたことを確認し、来週へつながる小さな火種を残す。",
+      6: "土曜日：今日は副業に挑戦する日。大きく完成させなくていい。未来の選択肢を増やすために、少しだけ形にする。"
+    };
+
     // 現在選んでいる状態と、火種ゲージの数値です。
     var currentState = 10;
     var emberPower = 0;
@@ -1032,6 +1078,7 @@
     var encourageText = document.getElementById("encourageText");
     var dailyQuoteText = document.getElementById("dailyQuoteText");
     var quoteButton = document.getElementById("quoteButton");
+    var protectLineText = document.getElementById("protectLineText");
 
     function showQuote(index) {
       currentQuoteIndex = index;
@@ -1052,6 +1099,14 @@
       }
 
       showQuote(nextIndex);
+    }
+
+    function getProtectMessage(date) {
+      return protectMessages[date.getDay()];
+    }
+
+    function showProtectMessage() {
+      protectLineText.textContent = getProtectMessage(new Date());
     }
 
     // 選んだ状態に合わせてカードを書き換える関数です。
@@ -1248,6 +1303,7 @@
 
     // ページを開いた直後に、10％のカードを表示しておきます。
     showTodayQuote();
+    showProtectMessage();
     showCard(currentState);
   </script>
 </body>
