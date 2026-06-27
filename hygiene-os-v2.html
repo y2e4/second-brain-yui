@@ -573,6 +573,36 @@
       font-weight: 900;
     }
 
+    .stage5-performance {
+      margin: 14px 0;
+      padding: 14px;
+      border: 1px solid #76513a;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.14);
+    }
+
+    .stage5-performance h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+    }
+
+    .stage5-performance-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stage5-performance-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      white-space: pre-line;
+    }
+
+    .stage5-ready-message {
+      color: var(--good);
+      font-weight: 900;
+    }
+
     .glossary-list {
       display: grid;
       gap: 10px;
@@ -725,7 +755,7 @@
         </div>
         <div class="location-box">
           <span class="location-label">最終ステージ</span>
-          <span class="location-value">ステージ5は、到達時点の最新公式情報を確認して作成する最終ステージ</span>
+          <span class="location-value" id="finalStageSummary">到達時点の最新公式情報を確認して作成する最終ステージ</span>
         </div>
       </div>
       <details class="locked-stage-details" id="lockedStagesDetails">
@@ -756,13 +786,33 @@
     <section class="panel" id="studyPanel" aria-labelledby="studyTitle">
       <h2 class="panel-title" id="studyTitle">ステージ1：基礎</h2>
       <p class="panel-note" id="studyObjective"></p>
-      <div class="button-grid">
+      <div class="button-grid" id="regularStudyModes">
         <button class="primary-button" type="button" data-mode="today">今日の3問</button>
         <button class="secondary-button" type="button" data-mode="more3">さらに3問</button>
         <button class="secondary-button" type="button" data-mode="challenge10">10問チャレンジ</button>
         <button class="secondary-button" type="button" data-mode="wrong">間違えた問題</button>
         <button class="secondary-button" type="button" data-mode="weak">苦手克服</button>
         <button class="secondary-button" type="button" id="glossaryButton">用語・解説を見る</button>
+      </div>
+      <div id="stage5StudyModes" hidden>
+        <div class="button-grid">
+          <button class="primary-button" type="button" data-mode="final30">本番30問を開始</button>
+          <button class="secondary-button" type="button" data-mode="weak">復習待ちを解く</button>
+          <button class="secondary-button" type="button" id="stage5GlossaryButton">用語・解説を見る</button>
+        </div>
+        <div class="stage5-performance" aria-labelledby="stage5PerformanceTitle">
+          <h3 id="stage5PerformanceTitle">ステージ5 成績</h3>
+          <div class="stage5-performance-grid">
+            <span class="stage-metric"><strong id="stage5OverallValue">0%</strong><small>全体正答率</small></span>
+            <span class="stage-metric"><strong id="stage5LawValue">0%</strong><small>関係法令</small></span>
+            <span class="stage-metric"><strong id="stage5HygieneValue">0%</strong><small>労働衛生</small></span>
+            <span class="stage-metric"><strong id="stage5PhysiologyValue">0%</strong><small>労働生理</small></span>
+          </div>
+          <p class="stage5-performance-note" id="stage5ReadinessText"></p>
+          <button class="secondary-button" type="button" id="copyStage5WeeklyButton">ユイへステージ5週次更新を相談する</button>
+          <p class="status" id="stage5CopyStatus" aria-live="polite"></p>
+          <textarea class="copy-fallback" id="stage5CopyFallback" readonly hidden aria-label="ステージ5週次更新依頼文"></textarea>
+        </div>
       </div>
       <p class="status" id="modeStatus" aria-live="polite"></p>
       <div class="key-panel" id="keyPanel" hidden>
@@ -783,11 +833,12 @@
       <div class="choice-list" id="choiceList"></div>
 
       <div class="confidence-panel" id="confidencePanel" hidden>
-        <h3>正解です。理解度を記録してください</h3>
+        <h3 id="confidenceTitle">正解です。理解度を記録してください</h3>
         <div class="confidence-list">
           <button class="confidence-button" type="button" data-outcome="understood">理解して正解</button>
           <button class="confidence-button" type="button" data-outcome="unsure">迷ったが正解</button>
           <button class="confidence-button" type="button" data-outcome="guess">勘で正解</button>
+          <button class="confidence-button" type="button" data-outcome="incorrect" hidden>不正解</button>
         </div>
       </div>
 
@@ -814,8 +865,8 @@
       <p class="result-score" id="resultScore"></p>
       <p class="panel-note" id="resultNote"></p>
       <div class="button-grid">
-        <button class="primary-button" type="button" data-result-mode="more3">さらに3問</button>
-        <button class="secondary-button" type="button" data-result-mode="challenge10">10問チャレンジ</button>
+        <button class="primary-button regular-result-mode" type="button" data-result-mode="more3">さらに3問</button>
+        <button class="secondary-button regular-result-mode" type="button" data-result-mode="challenge10">10問チャレンジ</button>
         <button class="secondary-button" type="button" id="backToStudyButton">ステージ画面へ戻る</button>
       </div>
     </section>
@@ -835,18 +886,17 @@
     </section>
 
     <section class="panel final-ready" id="finalReadyPanel" hidden>
-      <h2 class="panel-title">ステージ5：最新公式・最終調整</h2>
+      <h2 class="panel-title">ステージ5：最新公式・本番仕上げ</h2>
       <p class="final-message">最終ステージ作成条件を達成しました。
-最新の公式情報、法改正、公表問題、あなたの苦手履歴を確認して、ステージ5を作成できます。</p>
-      <button class="primary-button" type="button" id="copyFinalRequestButton">ユイへ最終ステージ作成を相談する</button>
-      <p class="status" id="copyStatus" aria-live="polite"></p>
-      <textarea class="copy-fallback" id="finalRequestFallback" readonly hidden aria-label="ステージ5作成依頼文"></textarea>
+最新の公式情報、法改正、公表問題、苦手履歴を確認した本番形式30問を追加しました。</p>
+      <button class="primary-button" type="button" id="unlockStage5Button">ステージ5を開く</button>
+      <p class="status" id="stage5UnlockStatus" aria-live="polite"></p>
     </section>
 
     <section class="panel audit-note" aria-labelledby="auditTitle">
       <h2 class="panel-title" id="auditTitle">問題監査メモ</h2>
       <p id="dataStatus">問題データを読み込んでいます。</p>
-      <p>ステージ5の問題は収録していません。アプリ自身が推測で生成する機能もありません。</p>
+      <p>ステージ5は、令和8年4月掲載の公式公表問題、最新の厚生労働省情報、ステージ1〜4の苦手履歴を確認して独自再構成した30問です。</p>
     </section>
   </main>
 
@@ -877,21 +927,24 @@
       var MODE_LIMITS = {
         today: 3,
         more3: 3,
-        challenge10: 10
+        challenge10: 10,
+        final30: 30
       };
       var MODE_NAMES = {
         today: "今日の3問",
         more3: "さらに3問",
         challenge10: "10問チャレンジ",
         wrong: "間違えた問題",
-        weak: "苦手克服"
+        weak: "苦手克服",
+        final30: "本番30問"
       };
+      var STAGE5_CATEGORIES = ["関係法令", "労働衛生", "労働生理"];
 
       var data = null;
       var questions = [];
       var questionById = {};
       var state = makeDefaultState();
-      var pendingCorrectAnswer = "";
+      var pendingAnswer = "";
 
       var currentStageValue = document.getElementById("currentStageValue");
       var unlockedStagesValue = document.getElementById("unlockedStagesValue");
@@ -901,6 +954,7 @@
       var locationUnlockedValue = document.getElementById("locationUnlockedValue");
       var locationProgressValue = document.getElementById("locationProgressValue");
       var locationNextKeyValue = document.getElementById("locationNextKeyValue");
+      var finalStageSummary = document.getElementById("finalStageSummary");
       var lockedStagesSummary = document.getElementById("lockedStagesSummary");
       var lockedStagesList = document.getElementById("lockedStagesList");
       var totalAnsweredValue = document.getElementById("totalAnsweredValue");
@@ -911,6 +965,8 @@
       var stageList = document.getElementById("stageList");
       var studyTitle = document.getElementById("studyTitle");
       var studyObjective = document.getElementById("studyObjective");
+      var regularStudyModes = document.getElementById("regularStudyModes");
+      var stage5StudyModes = document.getElementById("stage5StudyModes");
       var modeStatus = document.getElementById("modeStatus");
       var keyPanel = document.getElementById("keyPanel");
       var unlockButton = document.getElementById("unlockButton");
@@ -922,6 +978,7 @@
       var questionText = document.getElementById("questionText");
       var choiceList = document.getElementById("choiceList");
       var confidencePanel = document.getElementById("confidencePanel");
+      var confidenceTitle = document.getElementById("confidenceTitle");
       var feedback = document.getElementById("feedback");
       var feedbackTitle = document.getElementById("feedbackTitle");
       var explanationText = document.getElementById("explanationText");
@@ -940,8 +997,14 @@
       var migrationButton = document.getElementById("migrationButton");
       var migrationStatus = document.getElementById("migrationStatus");
       var finalReadyPanel = document.getElementById("finalReadyPanel");
-      var copyStatus = document.getElementById("copyStatus");
-      var finalRequestFallback = document.getElementById("finalRequestFallback");
+      var stage5UnlockStatus = document.getElementById("stage5UnlockStatus");
+      var stage5OverallValue = document.getElementById("stage5OverallValue");
+      var stage5LawValue = document.getElementById("stage5LawValue");
+      var stage5HygieneValue = document.getElementById("stage5HygieneValue");
+      var stage5PhysiologyValue = document.getElementById("stage5PhysiologyValue");
+      var stage5ReadinessText = document.getElementById("stage5ReadinessText");
+      var stage5CopyStatus = document.getElementById("stage5CopyStatus");
+      var stage5CopyFallback = document.getElementById("stage5CopyFallback");
       var dataStatus = document.getElementById("dataStatus");
 
       function getLocalDateKey() {
@@ -985,7 +1048,7 @@
         state = Object.assign(makeDefaultState(), saved || {});
         state.unlockedStages = Array.isArray(state.unlockedStages)
           ? state.unlockedStages.filter(function (stage) {
-            return stage >= 1 && stage <= 4;
+            return stage >= 1 && stage <= 5;
           })
           : [1];
 
@@ -1041,7 +1104,9 @@
           : [];
         var answer = raw.answer;
 
-        if (typeof answer === "boolean") {
+        if (Number.isInteger(raw.correctIndex) && choices[raw.correctIndex]) {
+          answer = choices[raw.correctIndex].id;
+        } else if (typeof answer === "boolean") {
           if (!choices.length) {
             choices = [
               { id: "O", text: "〇" },
@@ -1050,7 +1115,7 @@
           }
           answer = answer ? "O" : "X";
         } else {
-          answer = String(answer);
+          answer = answer === undefined || answer === null ? "" : String(answer);
         }
 
         if (/^[1-9]\d*$/.test(answer) && choices[Number(answer) - 1]) {
@@ -1073,7 +1138,8 @@
           sourceType: String(raw.sourceType || ""),
           sourceTitle: String(raw.sourceTitle || ""),
           sourceQuestion: String(raw.sourceQuestion || ""),
-          sourceUrl: String(raw.sourceUrl || "")
+          sourceUrl: String(raw.sourceUrl || ""),
+          correctIndex: Number.isInteger(raw.correctIndex) ? raw.correctIndex : null
         };
       }
 
@@ -1159,6 +1225,61 @@
         };
       }
 
+      function getStage5CategoryStats(category) {
+        var categoryQuestions = getStageQuestions(5).filter(function (question) {
+          return question.category === category;
+        });
+        var attempts = 0;
+        var correct = 0;
+        var answered = 0;
+
+        categoryQuestions.forEach(function (question) {
+          var stats = getQuestionStats(question.id);
+          attempts += Number(stats.attempts || 0);
+          correct += Number(stats.correct || 0);
+          answered += Number(stats.attempts || 0) > 0 ? 1 : 0;
+        });
+
+        return {
+          total: categoryQuestions.length,
+          answered: answered,
+          attempts: attempts,
+          correct: correct,
+          accuracy: attempts ? Math.round(correct / attempts * 100) : 0
+        };
+      }
+
+      function getStage5ReviewQuestions() {
+        return getStageQuestions(5).filter(function (question) {
+          var stats = getQuestionStats(question.id);
+          return stats.reviewActive || stats.wrongActive;
+        });
+      }
+
+      function getStage5Readiness() {
+        var overall = getStageStats(5);
+        var categories = {};
+
+        STAGE5_CATEGORIES.forEach(function (category) {
+          categories[category] = getStage5CategoryStats(category);
+        });
+
+        var ready = overall.total === 30 &&
+          overall.answered === overall.total &&
+          overall.accuracy >= 80 &&
+          STAGE5_CATEGORIES.every(function (category) {
+            return categories[category].accuracy >= 40;
+          }) &&
+          getStage5ReviewQuestions().length <= 5;
+
+        return {
+          ready: ready,
+          overall: overall,
+          categories: categories,
+          reviewCount: getStage5ReviewQuestions().length
+        };
+      }
+
       function stageQualifies(stageId) {
         var stage = getStage(stageId);
         var stats = getStageStats(stageId);
@@ -1212,25 +1333,31 @@
           return "全問題を1回以上解答\nステージ正答率" + currentStage.unlockAccuracy + "%以上";
         }
 
-        if (state.stage5Ready) {
-          return "最終ステージ作成条件を達成\n最新公式情報を確認してステージ5を作成できます";
+        if (state.currentStage === 4) {
+          if (state.unlockedStages.indexOf(5) !== -1) {
+            return "ステージ5は解放済み";
+          }
+          if (state.stage5Ready) {
+            return "最終ステージ作成条件を達成\nステージ5を開けます";
+          }
+          return "全問題を1回以上解答\nステージ正答率" + currentStage.unlockAccuracy + "%以上";
         }
 
-        return "全問題を1回以上解答\nステージ正答率" + currentStage.unlockAccuracy + "%以上";
+        return getStage5Readiness().ready
+          ? "本番準備完了"
+          : "全30問に解答・全体80%以上\n各分野40%以上・復習待ち5問以下";
       }
 
       function renderLockedStageList() {
         var lockedStages = data.stages.filter(function (stage) {
-          return stage.id >= 2 && stage.id <= 4 &&
+          return stage.id >= 2 && stage.id <= 5 &&
             state.unlockedStages.indexOf(stage.id) === -1;
         });
 
         lockedStagesList.replaceChildren();
 
         if (!lockedStages.length) {
-          lockedStagesSummary.textContent = state.stage5Ready
-            ? "未解放：通常ステージはすべて解放済み"
-            : "未解放：ステージ5は最新公式情報確認後に作成";
+          lockedStagesSummary.textContent = "全ステージ解放済み";
         } else {
           lockedStagesSummary.textContent =
             "未解放：🔒 " + formatStagePlainName(lockedStages[0].id);
@@ -1238,15 +1365,11 @@
 
         lockedStages.forEach(function (stage) {
           var item = document.createElement("li");
-          item.textContent = "🔒 ステージ" + stage.id + "「" + stage.name + "」";
+          item.textContent = stage.id === 5
+            ? "🔒 ステージ5「最新公式・本番仕上げ」：公式情報と苦手履歴から作成した最終ステージ"
+            : "🔒 ステージ" + stage.id + "「" + stage.name + "」";
           lockedStagesList.appendChild(item);
         });
-
-        var finalItem = document.createElement("li");
-        finalItem.textContent = state.stage5Ready
-          ? "ステージ5：作成条件達成。最新公式情報を確認して作成する最終ステージ"
-          : "ステージ5：到達時点の最新公式情報を確認して作成する最終ステージ";
-        lockedStagesList.appendChild(finalItem);
       }
 
       function renderCurrentLocation() {
@@ -1260,6 +1383,9 @@
           currentStats.answered + " / " + currentStats.total + "問回答\n" +
           "正答率 " + currentStats.accuracy + "%";
         locationNextKeyValue.textContent = getNextKeyText();
+        finalStageSummary.textContent = state.unlockedStages.indexOf(5) !== -1
+          ? "ステージ5「最新公式・本番仕上げ」を解放済み"
+          : "到達時点の最新公式情報と苦手履歴から作成した30問の最終ステージ";
         renderLockedStageList();
       }
 
@@ -1282,8 +1408,8 @@
         unlockedStagesValue.textContent = state.unlockedStages.map(function (stageId) {
           return "S" + stageId;
         }).join("・");
-        nextKeyValue.textContent = state.currentStage === 4
-          ? "全問＋" + currentStage.unlockAccuracy + "%"
+        nextKeyValue.textContent = state.currentStage === 5
+          ? (getStage5Readiness().ready ? "本番準備完了" : "30問＋80%")
           : "全問＋" + currentStage.unlockAccuracy + "%";
         totalAnsweredValue.textContent = Number(state.totalAnswered || 0) + "回答";
         unattemptedValue.textContent = currentStats.unattempted + "問";
@@ -1308,7 +1434,7 @@
         stageList.replaceChildren();
 
         data.stages.forEach(function (stage) {
-          var unlocked = stage.id <= 4 && state.unlockedStages.indexOf(stage.id) !== -1;
+          var unlocked = state.unlockedStages.indexOf(stage.id) !== -1;
           var card = document.createElement("article");
           card.className = "stage-card";
 
@@ -1328,8 +1454,10 @@
           badge.className = "stage-badge";
 
           if (stage.id === 5) {
-            badge.textContent = state.stage5Ready ? "作成可能" : "未作成";
-            if (state.stage5Ready) {
+            badge.textContent = unlocked
+              ? (stage.id === state.currentStage ? "学習中" : "解放済み")
+              : (state.stage5Ready ? "解放可能" : "ロック");
+            if (state.stage5Ready || unlocked) {
               badge.classList.add("is-ready");
             }
           } else if (unlocked) {
@@ -1351,10 +1479,20 @@
             var stats = getStageStats(stage.id);
             var metrics = document.createElement("div");
             metrics.className = "stage-metrics";
-            metrics.appendChild(createMetric(stats.accuracy + "%", "正答率"));
-            metrics.appendChild(createMetric(stats.unattempted + "問", "未出題"));
-            metrics.appendChild(createMetric(stats.wrong + "問", "間違い"));
-            metrics.appendChild(createMetric(stats.weak + "問", "苦手"));
+            if (stage.id === 5) {
+              metrics.appendChild(createMetric(stats.accuracy + "%", "全体"));
+              STAGE5_CATEGORIES.forEach(function (category) {
+                metrics.appendChild(createMetric(
+                  getStage5CategoryStats(category).accuracy + "%",
+                  category
+                ));
+              });
+            } else {
+              metrics.appendChild(createMetric(stats.accuracy + "%", "正答率"));
+              metrics.appendChild(createMetric(stats.unattempted + "問", "未出題"));
+              metrics.appendChild(createMetric(stats.wrong + "問", "間違い"));
+              metrics.appendChild(createMetric(stats.weak + "問", "苦手"));
+            }
             card.appendChild(metrics);
 
             if (stage.id !== state.currentStage) {
@@ -1371,7 +1509,9 @@
             var condition = document.createElement("p");
             condition.className = "condition-text";
             if (stage.id === 5) {
-              condition.textContent = "ステージ4の全問に解答し、正答率85%以上で作成条件を達成します。問題は到達後も自動生成されません。";
+              condition.textContent = state.stage5Ready
+                ? "作成条件を達成済みです。自分で「ステージ5を開く」を押すと解放します。"
+                : "解放条件：ステージ4の全問に1回以上解答し、正答率85%以上を達成する。";
             } else {
               var previous = getStage(stage.id - 1);
               condition.textContent = "解放条件：ステージ" + (stage.id - 1) +
@@ -1387,6 +1527,15 @@
             lockedDetail.appendChild(lockedSummary);
             lockedDetail.appendChild(condition);
             card.appendChild(lockedDetail);
+
+            if (stage.id === 5 && state.stage5Ready) {
+              var stage5UnlockButton = document.createElement("button");
+              stage5UnlockButton.className = "primary-button";
+              stage5UnlockButton.type = "button";
+              stage5UnlockButton.textContent = "ステージ5を開く";
+              stage5UnlockButton.addEventListener("click", unlockStage5);
+              card.appendChild(stage5UnlockButton);
+            }
           }
 
           stageList.appendChild(card);
@@ -1395,8 +1544,11 @@
 
       function renderStudyPanel() {
         var stage = getStage(state.currentStage);
+        var isStage5 = state.currentStage === 5;
         studyTitle.textContent = formatStageName(state.currentStage);
         studyObjective.textContent = stage.objective;
+        regularStudyModes.hidden = isStage5;
+        stage5StudyModes.hidden = !isStage5;
         keyPanel.hidden = !(
           state.currentStage <= 3 &&
           state.earnedKeys[state.currentStage] &&
@@ -1406,7 +1558,26 @@
           unlockButton.textContent =
             "鍵を使ってステージ" + (state.currentStage + 1) + "を解放する";
         }
-        finalReadyPanel.hidden = !state.stage5Ready;
+        finalReadyPanel.hidden = !state.stage5Ready ||
+          state.unlockedStages.indexOf(5) !== -1;
+
+        if (isStage5) {
+          renderStage5Performance();
+        }
+      }
+
+      function renderStage5Performance() {
+        var readiness = getStage5Readiness();
+        stage5OverallValue.textContent = readiness.overall.accuracy + "%";
+        stage5LawValue.textContent = readiness.categories["関係法令"].accuracy + "%";
+        stage5HygieneValue.textContent = readiness.categories["労働衛生"].accuracy + "%";
+        stage5PhysiologyValue.textContent = readiness.categories["労働生理"].accuracy + "%";
+        stage5ReadinessText.classList.toggle("stage5-ready-message", readiness.ready);
+        stage5ReadinessText.textContent = readiness.ready
+          ? "本番準備完了。残りは迷い・勘・不正解の圧縮です。"
+          : readiness.overall.answered + " / 30問回答\n" +
+            "復習待ち " + readiness.reviewCount + "問\n" +
+            "目安：全体80%以上・各分野40%以上・復習待ち5問以下";
       }
 
       function renderAll() {
@@ -1534,7 +1705,9 @@
           excluded.push(state.lastQuestionId);
         }
 
-        var queue = buildPriorityQueue(pool, limit, excluded);
+        var queue = mode === "final30"
+          ? pool.map(function (question) { return question.id; })
+          : buildPriorityQueue(pool, limit, excluded);
         state.currentSession = {
           stage: state.currentStage,
           mode: mode,
@@ -1545,7 +1718,7 @@
         };
         state.lastQueueByStage[state.currentStage] = queue.slice();
         saveState();
-        pendingCorrectAnswer = "";
+        pendingAnswer = "";
         hideTransientViews();
         questionView.hidden = false;
         modeStatus.textContent = "";
@@ -1597,12 +1770,13 @@
         }
 
         session.recorded = false;
-        pendingCorrectAnswer = "";
+        pendingAnswer = "";
         sessionModeLabel.textContent = MODE_NAMES[session.mode];
         questionProgressLabel.textContent = (session.index + 1) + " / " + session.queue.length;
         progressFill.style.width = ((session.index + 1) / session.queue.length * 100) + "%";
         questionMeta.textContent =
-          "ステージ" + question.stage + " / " + question.category + " / " + question.theme;
+          "ステージ" + question.stage + " / " + question.category + " / " + question.theme +
+          (question.stage === 5 ? " / 五肢択一" : "");
         questionText.textContent = question.question;
         choiceList.replaceChildren();
         confidencePanel.hidden = true;
@@ -1639,19 +1813,36 @@
       }
 
       function chooseAnswer(selectedAnswer) {
-        if (!state.currentSession || state.currentSession.recorded || pendingCorrectAnswer) {
+        if (!state.currentSession || state.currentSession.recorded || pendingAnswer) {
           return;
         }
         var question = getCurrentQuestion();
         setChoiceResult(selectedAnswer, question.answer);
 
         if (selectedAnswer === question.answer) {
-          pendingCorrectAnswer = selectedAnswer;
+          pendingAnswer = selectedAnswer;
+          setConfidenceOptions(true);
+          confidencePanel.hidden = false;
+          confidencePanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else if (question.stage === 5) {
+          pendingAnswer = selectedAnswer;
+          setConfidenceOptions(false);
           confidencePanel.hidden = false;
           confidencePanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
         } else {
           recordOutcome("incorrect", selectedAnswer);
         }
+      }
+
+      function setConfidenceOptions(isCorrect) {
+        confidenceTitle.textContent = isCorrect
+          ? "正解です。理解度を記録してください"
+          : "不正解です。理解度を記録してください";
+        confidencePanel.querySelectorAll("[data-outcome]").forEach(function (button) {
+          button.hidden = isCorrect
+            ? button.getAttribute("data-outcome") === "incorrect"
+            : button.getAttribute("data-outcome") !== "incorrect";
+        });
       }
 
       function recordOutcome(outcome, selectedAnswer) {
@@ -1708,7 +1899,7 @@
         }
 
         session.recorded = true;
-        pendingCorrectAnswer = "";
+        pendingAnswer = "";
         confidencePanel.hidden = true;
         saveState();
         showFeedback(question, outcome, selectedAnswer);
@@ -1748,7 +1939,10 @@
 
         answerStatus.textContent =
           "記録：" + outcomeLabel(outcome) +
-          (outcome === "incorrect" ? "\n選択：" + selectedAnswer + " / 正解：" + question.answer : "") +
+          (outcome === "incorrect"
+            ? "\n選択：" + formatAnswer(question, selectedAnswer) +
+              "\n正解：" + formatAnswer(question, question.answer)
+            : "") +
           (stats.understoodStreak >= 2
             ? "\n別の日の「理解して正解」が2回連続したため、間違い・要復習から外しました。"
             : "");
@@ -1761,6 +1955,13 @@
             : "次の問題";
         nextQuestionButton.hidden = false;
         feedback.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function formatAnswer(question, answerId) {
+        var choice = question.choices.find(function (item) {
+          return item.id === answerId;
+        });
+        return choice ? formatChoice(choice) : answerId;
       }
 
       function updateWeakButton() {
@@ -1805,8 +2006,19 @@
         questionView.hidden = true;
         resultView.hidden = false;
         resultScore.textContent = session.queue.length + "問中" + session.correct + "問正解";
-        resultNote.textContent =
-          "「迷ったが正解」「勘で正解」は正答率には含まれますが、理解済みにはせず復習候補へ残します。";
+        if (session.stage === 5) {
+          var readiness = getStage5Readiness();
+          resultNote.textContent = readiness.ready
+            ? "本番準備完了。残りは迷い・勘・不正解の圧縮です。"
+            : "ステージ5全体 " + readiness.overall.accuracy + "%、復習待ち " +
+              readiness.reviewCount + "問です。";
+        } else {
+          resultNote.textContent =
+            "「迷ったが正解」「勘で正解」は正答率には含まれますが、理解済みにはせず復習候補へ残します。";
+        }
+        document.querySelectorAll(".regular-result-mode").forEach(function (button) {
+          button.hidden = session.stage === 5;
+        });
         saveState();
         resultView.scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -1840,6 +2052,22 @@
         hideTransientViews();
         modeStatus.textContent = "鍵を使い、" + formatStageName(next) + "を解放しました。";
         renderAll();
+      }
+
+      function unlockStage5() {
+        if (!state.stage5Ready || state.unlockedStages.indexOf(5) !== -1) {
+          return;
+        }
+        state.unlockedStages.push(5);
+        state.unlockedStages = Array.from(new Set(state.unlockedStages)).sort();
+        state.currentStage = 5;
+        state.currentSession = null;
+        saveState();
+        hideTransientViews();
+        stage5UnlockStatus.textContent = "ステージ5を解放しました。";
+        modeStatus.textContent = "ステージ5「最新公式・本番仕上げ」を開きました。";
+        renderAll();
+        document.getElementById("studyPanel").scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
       function renderGlossary() {
@@ -2000,62 +2228,58 @@
         }
       }
 
-      function getWeakFields() {
-        var counts = {};
-        questions.forEach(function (question) {
-          var stats = getQuestionStats(question.id);
-          if (stats.reviewActive || isWeakStats(stats)) {
-            var label = question.category + " / " + question.theme;
-            counts[label] = Number(counts[label] || 0) + 1;
-          }
-        });
-        return Object.keys(counts).sort(function (left, right) {
-          return counts[right] - counts[left] || left.localeCompare(right, "ja");
-        }).map(function (label) {
-          return label + "（" + counts[label] + "問）";
-        });
-      }
-
-      function buildFinalStageRequest() {
-        var stageLines = [1, 2, 3, 4].map(function (stageId) {
-          var stats = getStageStats(stageId);
-          return "- ステージ" + stageId + "：" + stats.accuracy + "%（" +
-            stats.answered + "/" + stats.total + "問解答済み）";
-        });
-        var wrongIds = questions.filter(function (question) {
+      function buildStage5WeeklyRequest() {
+        var readiness = getStage5Readiness();
+        var stage5Questions = getStageQuestions(5);
+        var wrongIds = stage5Questions.filter(function (question) {
           return getQuestionStats(question.id).wrongActive;
         }).map(function (question) {
           return question.id;
         });
-        var uncertainIds = questions.filter(function (question) {
+        var unsureIds = stage5Questions.filter(function (question) {
           var stats = getQuestionStats(question.id);
-          return Number(stats.unsure || 0) > 0 || Number(stats.guess || 0) > 0;
+          return stats.reviewActive && Number(stats.unsure || 0) > 0;
         }).map(function (question) {
-          var stats = getQuestionStats(question.id);
-          return question.id + "（迷い" + Number(stats.unsure || 0) +
-            "・勘" + Number(stats.guess || 0) + "）";
+          return question.id;
         });
+        var guessIds = stage5Questions.filter(function (question) {
+          var stats = getQuestionStats(question.id);
+          return stats.reviewActive && Number(stats.guess || 0) > 0;
+        }).map(function (question) {
+          return question.id;
+        });
+        var weakThemes = Array.from(new Set(stage5Questions.filter(function (question) {
+          var stats = getQuestionStats(question.id);
+          return stats.reviewActive || stats.wrongActive || isWeakStats(stats);
+        }).map(function (question) {
+          return question.theme;
+        })));
 
         return [
-          "最新公式情報を確認して第二種衛生管理者ステージ5を作成してください。",
+          "第二種衛生管理者ステージ5を週次更新してください。苦手問題を別表現・別条件・事例問題に変えてください。",
           "",
-          "【ステージ別正答率】",
-          stageLines.join("\n"),
+          "【ステージ5の正答率】",
+          readiness.overall.accuracy + "%",
+          "",
+          "【分野別正答率】",
+          "- 関係法令：" + readiness.categories["関係法令"].accuracy + "%",
+          "- 労働衛生：" + readiness.categories["労働衛生"].accuracy + "%",
+          "- 労働生理：" + readiness.categories["労働生理"].accuracy + "%",
           "",
           "【間違えた問題ID】",
           wrongIds.length ? wrongIds.join(", ") : "なし",
           "",
-          "【苦手分野】",
-          getWeakFields().length ? getWeakFields().join("\n") : "なし",
+          "【迷った問題ID】",
+          unsureIds.length ? unsureIds.join(", ") : "なし",
           "",
-          "【迷った・勘で正解した問題】",
-          uncertainIds.length ? uncertainIds.join("\n") : "なし",
+          "【勘で正解した問題ID】",
+          guessIds.length ? guessIds.join(", ") : "なし",
+          "",
+          "【苦手テーマ】",
+          weakThemes.length ? weakThemes.join("、") : "なし",
           "",
           "【最終学習日】",
-          state.lastStudyDate || "未学習",
-          "",
-          "到達時点の最新の試験要項、公式公表問題、法令・法改正を確認し、",
-          "この苦手履歴を反映した本番形式30問を、公式・公的根拠だけで独自再構成してください。"
+          state.lastStudyDate || "未学習"
         ].join("\n");
       }
 
@@ -2072,37 +2296,40 @@
         return copied;
       }
 
-      function copyFinalStageRequest() {
-        var text = buildFinalStageRequest();
-        finalRequestFallback.hidden = true;
+      function copyStage5WeeklyRequest() {
+        var text = buildStage5WeeklyRequest();
+        stage5CopyFallback.hidden = true;
 
-        try {
-          if (fallbackCopy(text)) {
-            copyStatus.textContent = "ステージ5作成依頼文をクリップボードへコピーしました。";
-            return;
+        function useFallback() {
+          try {
+            if (fallbackCopy(text)) {
+              stage5CopyStatus.textContent = "ステージ5週次更新依頼をクリップボードへコピーしました。";
+              return;
+            }
+          } catch (error) {
+            // 選択可能な依頼文を表示します。
           }
-        } catch (error) {
-          // Clipboard APIへ続けます。
+          showStage5CopyFallback(text);
         }
 
         if (navigator.clipboard && window.isSecureContext) {
           navigator.clipboard.writeText(text).then(function () {
-            copyStatus.textContent = "ステージ5作成依頼文をクリップボードへコピーしました。";
+            stage5CopyStatus.textContent = "ステージ5週次更新依頼をクリップボードへコピーしました。";
           }).catch(function () {
-            showCopyFallback(text);
+            useFallback();
           });
           return;
         }
 
-        showCopyFallback(text);
+        useFallback();
       }
 
-      function showCopyFallback(text) {
-        finalRequestFallback.value = text;
-        finalRequestFallback.hidden = false;
-        finalRequestFallback.focus();
-        finalRequestFallback.select();
-        copyStatus.textContent =
+      function showStage5CopyFallback(text) {
+        stage5CopyFallback.value = text;
+        stage5CopyFallback.hidden = false;
+        stage5CopyFallback.focus();
+        stage5CopyFallback.select();
+        stage5CopyStatus.textContent =
           "自動コピーが許可されなかったため、下の依頼文を選択しました。ブラウザのコピー操作で取得できます。";
       }
 
@@ -2119,8 +2346,8 @@
         });
         document.querySelectorAll("[data-outcome]").forEach(function (button) {
           button.addEventListener("click", function () {
-            if (pendingCorrectAnswer) {
-              recordOutcome(button.getAttribute("data-outcome"), pendingCorrectAnswer);
+            if (pendingAnswer) {
+              recordOutcome(button.getAttribute("data-outcome"), pendingAnswer);
             }
           });
         });
@@ -2131,31 +2358,54 @@
           returnToStudy("学習記録を保存しました。");
         });
         document.getElementById("glossaryButton").addEventListener("click", renderGlossary);
+        document.getElementById("stage5GlossaryButton").addEventListener("click", renderGlossary);
         document.getElementById("closeGlossaryButton").addEventListener("click", function () {
           glossaryView.hidden = true;
           modeStatus.textContent = "用語・解説を閉じました。";
         });
         migrationButton.addEventListener("click", migrateOldHistory);
-        document.getElementById("copyFinalRequestButton").addEventListener("click", copyFinalStageRequest);
+        document.getElementById("unlockStage5Button").addEventListener("click", unlockStage5);
+        document.getElementById("copyStage5WeeklyButton").addEventListener("click", copyStage5WeeklyRequest);
       }
 
       function validateData(rawData) {
         if (!rawData || !Array.isArray(rawData.questions) || !Array.isArray(rawData.stages)) {
           throw new Error("問題データの形式が正しくありません。");
         }
+        if (!rawData.stage5 || !Array.isArray(rawData.stage5.questions)) {
+          throw new Error("ステージ5問題データの形式が正しくありません。");
+        }
         var ids = {};
-        rawData.questions.forEach(function (question) {
+        var allQuestions = rawData.questions.concat(rawData.stage5.questions);
+        allQuestions.forEach(function (question) {
           if (!question.id || ids[question.id]) {
             throw new Error("問題IDが未設定、または重複しています。");
           }
-          if (question.stage < 1 || question.stage > 4) {
-            throw new Error("ステージ1〜4以外の問題が含まれています。");
+          if (question.stage < 1 || question.stage > 5) {
+            throw new Error("ステージ1〜5以外の問題が含まれています。");
           }
           ids[question.id] = true;
         });
-        if (!rawData.stage5 || !Array.isArray(rawData.stage5.questions) ||
-            rawData.stage5.questions.length !== 0) {
-          throw new Error("ステージ5は空である必要があります。");
+        if (rawData.questions.some(function (question) { return question.stage === 5; }) ||
+            rawData.stage5.questions.length !== 30 ||
+            rawData.stage5.questions.some(function (question) {
+              return question.stage !== 5 ||
+                !Array.isArray(question.choices) ||
+                question.choices.length !== 5 ||
+                !Number.isInteger(question.correctIndex) ||
+                question.correctIndex < 0 ||
+                question.correctIndex > 4;
+            })) {
+          throw new Error("ステージ5は五肢択一30問である必要があります。");
+        }
+        var categoryCounts = {};
+        rawData.stage5.questions.forEach(function (question) {
+          categoryCounts[question.category] = Number(categoryCounts[question.category] || 0) + 1;
+        });
+        if (STAGE5_CATEGORIES.some(function (category) {
+          return categoryCounts[category] !== 10;
+        })) {
+          throw new Error("ステージ5の分野別問題数が正しくありません。");
         }
       }
 
@@ -2171,18 +2421,19 @@
         }).then(function (rawData) {
           validateData(rawData);
           data = rawData;
-          questions = rawData.questions.map(normalizeQuestion);
+          questions = rawData.questions.concat(rawData.stage5.questions).map(normalizeQuestion);
           questions.forEach(function (question) {
             questionById[question.id] = question;
             getQuestionStats(question.id);
           });
 
-          var counts = [1, 2, 3, 4].map(function (stageId) {
+          var counts = [1, 2, 3, 4, 5].map(function (stageId) {
             return getStageQuestions(stageId).length;
           });
           dataStatus.textContent =
             "既存81問をID維持で再分類：ステージ1から順に " +
-            counts.join("問 / ") + "問。新規追加0問、30問目標に対する不足39問です。";
+            counts.slice(0, 4).join("問 / ") + "問。ステージ5に本番形式" +
+            counts[4] + "問を追加しました。";
           renderAll();
 
           if (state.currentSession &&
@@ -2192,7 +2443,15 @@
               state.currentSession.queue.every(function (id) { return Boolean(questionById[id]); })) {
             state.currentStage = state.currentSession.stage;
             if (state.currentSession.recorded) {
-              showResult();
+              if (state.currentSession.index >= state.currentSession.queue.length - 1) {
+                showResult();
+              } else {
+                state.currentSession.index += 1;
+                state.currentSession.recorded = false;
+                saveState();
+                questionView.hidden = false;
+                renderQuestion();
+              }
             } else {
               questionView.hidden = false;
               renderQuestion();
@@ -2202,7 +2461,9 @@
           window.hygieneOSV2Test = {
             getState: function () { return JSON.parse(JSON.stringify(state)); },
             getStageStats: getStageStats,
-            buildFinalStageRequest: buildFinalStageRequest,
+            getStage5Readiness: getStage5Readiness,
+            buildStage5WeeklyRequest: buildStage5WeeklyRequest,
+            unlockStage5: unlockStage5,
             stateKey: STATE_KEY,
             migrationBackupKey: MIGRATION_BACKUP_KEY,
             migrationDoneKey: MIGRATION_DONE_KEY
