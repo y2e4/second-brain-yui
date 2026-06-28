@@ -707,12 +707,12 @@
 
     <section class="panel location-card" aria-labelledby="currentLocationTitle">
       <span class="location-kicker">現在地</span>
-      <h2 class="location-title" id="currentLocationTitle">現在：ステージ2 / 5</h2>
-      <p class="location-subtitle" id="currentLocationName">比較・混同対策</p>
+      <h2 class="location-title" id="currentLocationTitle">現在：ステージ3 / 5</h2>
+      <p class="location-subtitle" id="currentLocationName">条件・例外・数字対策</p>
       <div class="location-grid">
         <div class="location-box">
           <span class="location-label">解放済み</span>
-          <span class="location-value" id="locationUnlockedValue">ステージ1、ステージ2</span>
+          <span class="location-value" id="locationUnlockedValue">ステージ1、ステージ2、ステージ3</span>
         </div>
         <div class="location-box">
           <span class="location-label">現在のステージ進捗</span>
@@ -721,18 +721,18 @@
         </div>
         <div class="location-box">
           <span class="location-label">次の鍵</span>
-          <span class="location-value" id="locationKeyValue">ステージ2の全30問を1回以上解答
-ステージ2正答率80%以上</span>
+          <span class="location-value" id="locationKeyValue">ステージ3の全30問を1回以上解答
+ステージ3正答率80%以上</span>
         </div>
       </div>
-      <p class="stage-key-status" id="stageKeyStatus">条件達成までは、ステージ1の言葉に慣れていきます。</p>
+      <p class="stage-key-status" id="stageKeyStatus">条件達成までは、ステージ3の問題に取り組みます。</p>
       <div class="stage-next-action" id="stageNextAction" hidden>
         <p>次のステージを作成できます</p>
-        <button class="primary-button" type="button" id="stageConsultButton">ユイへステージ3作成を相談する</button>
+        <button class="primary-button" type="button" id="stageConsultButton">ユイへステージ4作成を相談する</button>
         <p class="stage-copy-status" id="stageCopyStatus" role="status" hidden></p>
       </div>
       <details class="locked-stage-details" id="lockedStagesDetails">
-        <summary id="lockedStagesSummary">未解放：🔒 ステージ3「条件・例外・数字」</summary>
+        <summary id="lockedStagesSummary">未解放：🔒 ステージ4「事例・科目横断」</summary>
         <ul class="locked-stage-list" id="lockedStagesList"></ul>
       </details>
       <p class="panel-note">
@@ -768,7 +768,7 @@
 
     <section class="panel" id="homeView" aria-labelledby="homeTitle">
       <h2 class="panel-title" id="homeTitle">準備モード</h2>
-      <p class="panel-note">細かな例外や計算は後回し。基本用語の全体像をつかみます。</p>
+      <p class="panel-note">基本用語と比較を土台に、条件・例外・数字を見分けます。</p>
       <div class="mode-actions">
         <button class="primary-button" type="button" id="dailyButton">今日の3問</button>
         <button class="secondary-button" type="button" id="challengeButton">10問チャレンジ</button>
@@ -824,7 +824,7 @@
     </section>
 
     <p class="footer-note">
-      ステージ1は2026年6月14日、ステージ2は2026年6月25日に公的情報を確認して再構成しています。
+      ステージ1は2026年6月14日、ステージ2は2026年6月25日、ステージ3は2026年6月28日に公的情報を確認して再構成しています。
       法改正後は根拠リンクも確認してください。
     </p>
   </main>
@@ -833,11 +833,12 @@
     (function () {
       "use strict";
 
-      var DATA_URL = "sharoshi-intro-questions.json";
+      var DATA_URL = "sharoshi-intro-questions.json?v=20260628-stage3";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var RECENT_LIMIT = 6;
       var STAGE_ONE_ID = 1;
       var STAGE_TWO_ID = 2;
+      var STAGE_THREE_ID = 3;
       var STAGE_TOTAL = 5;
       var FALLBACK_STAGES = [
         {
@@ -858,9 +859,11 @@
         },
         {
           id: 3,
-          name: "条件・例外・数字",
-          objective: "適用条件、期間、年齢、日数、例外規定を学ぶ。",
-          unlocked: false
+          name: "条件・例外・数字対策",
+          objective: "制度ごとの数字、条件、例外を見分け、似た数字・似た要件で迷わない力を作る。",
+          unlocked: true,
+          questionCount: 30,
+          unlockAccuracy: 80
         },
         {
           id: 4,
@@ -976,6 +979,11 @@
               answerCount: 0,
               correctCount: 0,
               answeredQuestionIds: []
+            },
+            "3": {
+              answerCount: 0,
+              correctCount: 0,
+              answeredQuestionIds: []
             }
           }
         };
@@ -1032,6 +1040,12 @@
         );
         output[String(STAGE_TWO_ID)] = normalizeStageStats(
           raw && raw[String(STAGE_TWO_ID)],
+          0,
+          0,
+          []
+        );
+        output[String(STAGE_THREE_ID)] = normalizeStageStats(
+          raw && raw[String(STAGE_THREE_ID)],
           0,
           0,
           []
@@ -1208,6 +1222,9 @@
       function getNextStageRequestText(stageId) {
         if (stageId === STAGE_TWO_ID) {
           return "社労士準備OSのステージ3・条件例外数字対策を作成してください";
+        }
+        if (stageId === STAGE_THREE_ID) {
+          return "社労士準備OSのステージ4・事例科目横断対策を作成してください";
         }
         return "社労士準備OSのステージ" + (stageId + 1) + "を作成してください";
       }
@@ -1605,7 +1622,9 @@
         feedbackTitle.className = "feedback-title " + (isCorrect ? "good" : "bad");
         correctAnswer.textContent = question.answer ? "〇" : "×";
         explanation.textContent = question.explanation;
-        termDefinitionLabel.textContent = term ? "用語：" : "比較テーマ：";
+        termDefinitionLabel.textContent = term
+          ? "用語："
+          : getQuestionStage(question) === STAGE_TWO_ID ? "比較テーマ：" : "学習テーマ：";
         termDefinition.textContent = term
           ? term.term + "： " + term.simpleDefinition
           : question.term;
@@ -1700,8 +1719,8 @@
             !Array.isArray(data.stages)) {
           throw new Error("用語、問題、ステージのデータ形式が正しくありません。");
         }
-        if (data.terms.length !== 30 || data.questions.length !== 60) {
-          throw new Error("用語30件、問題60件が必要です。");
+        if (data.terms.length !== 30 || data.questions.length !== 90) {
+          throw new Error("用語30件、問題90件が必要です。");
         }
         if (data.stages.length !== STAGE_TOTAL) {
           throw new Error("ステージ定義は5件必要です。");
@@ -1718,8 +1737,11 @@
           if (stage.id === STAGE_TWO_ID && stage.unlocked !== true) {
             throw new Error("ステージ2は解放済みにしてください。");
           }
-          if (stage.id >= 3 && stage.unlocked === true) {
-            throw new Error("ステージ3以降は現時点では未解放にしてください。");
+          if (stage.id === STAGE_THREE_ID && stage.unlocked !== true) {
+            throw new Error("ステージ3は解放済みにしてください。");
+          }
+          if (stage.id >= 4 && stage.unlocked === true) {
+            throw new Error("ステージ4以降は現時点では未解放にしてください。");
           }
         });
 
@@ -1753,13 +1775,13 @@
           if (questionStage === STAGE_ONE_ID && !question.termId) {
             throw new Error("ステージ1問題には用語IDが必要です。");
           }
-          if (questionStage === STAGE_TWO_ID &&
+          if ((questionStage === STAGE_TWO_ID || questionStage === STAGE_THREE_ID) &&
               (!question.category || !question.term || !question.trap ||
                 question.sourceType !== "official" || !question.sourceTitle || !question.sourceUrl)) {
-            throw new Error("ステージ2問題の必須項目が不足しています。");
+            throw new Error("ステージ2・3問題の必須項目が不足しています。");
           }
-          if (questionStage < STAGE_ONE_ID || questionStage > STAGE_TWO_ID) {
-            throw new Error("現時点の問題はステージ1または2だけにしてください。");
+          if (questionStage < STAGE_ONE_ID || questionStage > STAGE_THREE_ID) {
+            throw new Error("現時点の問題はステージ1から3だけにしてください。");
           }
           if ((question.termId && !termIds[question.termId]) || questionIds[question.id]) {
             throw new Error("問題IDまたは用語との対応が正しくありません。");
@@ -1768,8 +1790,9 @@
           stageCounts[questionStage] = (stageCounts[questionStage] || 0) + 1;
         });
 
-        if (stageCounts[STAGE_ONE_ID] !== 30 || stageCounts[STAGE_TWO_ID] !== 30) {
-          throw new Error("ステージ1とステージ2はそれぞれ30問必要です。");
+        if (stageCounts[STAGE_ONE_ID] !== 30 || stageCounts[STAGE_TWO_ID] !== 30 ||
+            stageCounts[STAGE_THREE_ID] !== 30) {
+          throw new Error("ステージ1から3はそれぞれ30問必要です。");
         }
       }
 
