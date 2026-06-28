@@ -268,9 +268,9 @@
       min-height: 104px;
       margin: 14px 0 16px;
       color: var(--text);
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 850;
-      line-height: 1.75;
+      line-height: 1.85;
     }
 
     .quote-button {
@@ -287,27 +287,28 @@
     }
 
     .protect-line {
-      margin-top: 14px;
-      padding: 12px 13px;
-      background: rgba(245, 199, 98, 0.06);
-      border: 1px solid rgba(245, 199, 98, 0.16);
-      border-left: 3px solid rgba(245, 199, 98, 0.46);
+      margin-top: 16px;
+      padding: 15px;
+      background: rgba(245, 199, 98, 0.09);
+      border: 1px solid rgba(245, 199, 98, 0.24);
+      border-left: 3px solid rgba(245, 199, 98, 0.58);
       border-radius: 8px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .protect-line-label {
       display: block;
-      color: var(--muted);
-      font-size: 12px;
+      color: var(--gold);
+      font-size: 13px;
       font-weight: 900;
     }
 
     .protect-line-text {
-      margin: 6px 0 0;
+      margin: 8px 0 0;
       color: var(--text);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
-      line-height: 1.75;
+      line-height: 1.8;
     }
 
     button {
@@ -339,7 +340,7 @@
     }
 
     .card {
-      padding: 18px;
+      padding: 20px;
       background:
         linear-gradient(180deg, rgba(245, 199, 98, 0.08), transparent 38%),
         var(--panel);
@@ -349,39 +350,43 @@
     }
 
     .card-name {
-      margin: 0 0 8px;
+      margin: 0 0 10px;
       color: var(--gold);
-      font-size: 26px;
+      font-size: 18px;
       font-weight: 900;
-      line-height: 1.25;
+      line-height: 1.4;
     }
 
     .message {
-      margin: 0 0 16px;
+      margin: 0 0 20px;
       color: var(--text);
-      font-size: 16px;
+      font-size: 19px;
+      font-weight: 750;
+      line-height: 1.75;
     }
 
     .action-box {
-      margin: 0 0 16px;
-      padding: 14px;
-      background: var(--panel-soft);
-      border: 1px solid rgba(245, 199, 98, 0.18);
+      margin: 0 0 18px;
+      padding: 16px;
+      background: rgba(245, 199, 98, 0.08);
+      border: 1px solid rgba(245, 199, 98, 0.28);
+      border-left: 3px solid rgba(245, 199, 98, 0.62);
       border-radius: 8px;
     }
 
     .action-label {
       display: block;
-      margin-bottom: 4px;
-      color: var(--muted);
+      margin-bottom: 7px;
+      color: var(--gold);
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .action-text {
       color: var(--text);
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 900;
+      line-height: 1.7;
     }
 
     .do-button {
@@ -752,17 +757,27 @@
 
       .quote-text {
         min-height: 118px;
-        font-size: 17px;
+        font-size: 19px;
+        line-height: 1.8;
       }
 
       .protect-line {
-        padding: 11px 12px;
+        padding: 14px;
+      }
+      .protect-line-text {
+        font-size: 15px;
       }
 
-      .protect-line-text {
-        font-size: 13px;
+      .message {
+        font-size: 18px;
       }
+
+      .action-text {
+        font-size: 17px;
+      }
+
     }
+
     @media (min-width: 520px) {
       .os-switcher-links {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -889,33 +904,102 @@
     var cards = {
       10: {
         name: "守火",
-        message: "今日は戦わない。火を消さない。",
-        action: "水を飲む。10秒目を閉じる。",
+        messages: [
+          "今日は戦わない。火を消さない。",
+          "完璧じゃなくていい。消えない火を残せばいい。",
+          "疲れている日こそ、燃え尽きない火を選ぶ。",
+          "守ることで、火は長く続く。",
+          "進めない日でも、整えたなら火は消えていない。",
+          "思考が暴れる日は、行動を小さくして火を守る。",
+          "休むことも、火を絶やさないための仕事になる。",
+          "目の前のことに戻れたなら、それだけで火は整っている。"
+        ],
+        actions: [
+          "水を飲む。10秒目を閉じる。",
+          "まず1分だけ手をつける。",
+          "今日やらないことを一つ決める。",
+          "疲れているなら、大きな判断を一つ減らす。",
+          "判断力を守るために、通知や情報を一つ閉じる。",
+          "休むなら、罪悪感ではなく整備として休む。",
+          "やることを増やす前に、減らすことを一つ選ぶ。"
+        ],
         add: 3
       },
       30: {
         name: "火種",
-        message: "燃え上がらなくていい。1行だけ残す。",
-        action: "メモを1行残す。",
+        messages: [
+          "燃え上がらなくていい。1行だけ残す。",
+          "小さくても進んだなら、それは今日の火種になる。",
+          "迷いながらでも、手を動かした事実は残る。",
+          "今日の火は小さくていい。明日の自分が受け取れる形で残す。",
+          "火種は大きな成果ではなく、今日も続けた証に宿る。",
+          "まだできることが一つあるなら、火は残っている。",
+          "今日の小さな実行が、明日の希望になる。"
+        ],
+        actions: [
+          "メモを1行残す。",
+          "目の前の作業を一つだけ終わらせる。",
+          "不安を考える前に、今できることを一つ進める。",
+          "できたことを一行だけ記録する。",
+          "今日の違和感を一行だけ残す。",
+          "ひとつ終わったら、今日はそれを成果として認める。"
+        ],
         add: 6
       },
       50: {
         name: "半分の全力",
-        message: "その日の状態が50％なら、50％の100％を目指せばいい。",
-        action: "今日の100％を1つだけ決める。",
+        messages: [
+          "その日の状態が50％なら、50％の100％を目指せばいい。",
+          "焦りは火を荒らす。目の前の一つに集中して、静かに燃やす。",
+          "できたことを小さく見ない。その一つが未来につながる。",
+          "自分を責めるより、次に進める火を探す。"
+        ],
+        actions: [
+          "今日の100％を1つだけ決める。",
+          "迷ったら、戻せる判断を一つ仮決定する。",
+          "火種ユイを見て、今日守るものを一つ決める。",
+          "誰かの期待ではなく、自分の目的に戻る。",
+          "いま抱えていることを、今決めることと後でいいことに分ける。"
+        ],
         add: 9
       },
       70: {
         name: "再点火",
-        message: "少し戻ってきた。なら、一気に走らず、火を育てる。",
-        action: "X投稿かnoteの種を1つ作る。",
+        messages: [
+          "少し戻ってきた。なら、一気に走らず、火を育てる。",
+          "不安に燃やされるより、希望に火を向ける。",
+          "今日の一歩は、未来の選択肢を守る火になる。",
+          "守る火は、挑戦を続けるための静かな力。"
+        ],
+        actions: [
+          "X投稿かnoteの種を1つ作る。",
+          "資格OSを3問だけ進める。",
+          "今日の希望負荷を小さく一つ選ぶ。"
+        ],
         add: 12
       },
       100: {
         name: "攻鬼神07",
-        message: "弱さも傷も背負って進む。過去のすべてを、未来へ繋ぐ橋になる。",
-        action: "今日の代表作になる行動を1つ選ぶ。",
+        messages: [
+          "弱さも傷も背負って進む。過去のすべてを、未来へ繋ぐ橋になる。",
+          "火は根性だけでは続かない。余力と仕組みで守る。"
+        ],
+        actions: [
+          "今日の代表作になる行動を1つ選ぶ。",
+          "未来の選択肢が増える作業を15分だけ進める。"
+        ],
         add: 15
+      }
+    };
+
+    var weekdayActions = {
+      1: {
+        state: 10,
+        text: "月曜日は、目の前のこと以外はいったん無視する。"
+      },
+      6: {
+        state: 70,
+        text: "土曜日は、未来の選択肢を増やす作業を少しだけ形にする。"
       }
     };
 
@@ -1049,9 +1133,13 @@
     var emberPower = 0;
     var lastEncouragement = "";
     var currentQuoteIndex = -1;
+    var lastCardMessage = "";
+    var lastCardAction = "";
     var glowTimer = null;
     var dayClosed = false;
     var continuedAfterGoal = false;
+    var lastCardMessageKey = "hinotaneYuiLastCardMessage";
+    var lastCardActionKey = "hinotaneYuiLastCardAction";
 
     // HTMLの部品を取得します。
     var stateButtons = document.querySelectorAll(".state-button");
@@ -1109,14 +1197,63 @@
       protectLineText.textContent = getProtectMessage(new Date());
     }
 
+    function getSavedText(key) {
+      try {
+        return localStorage.getItem(key) || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function saveText(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch (error) {
+        // 保存できない環境でも、画面内の連続表示防止は続けます。
+      }
+    }
+
+    function getNonRepeatingText(list, previousText) {
+      var index = Math.floor(Math.random() * list.length);
+
+      if (list[index] === previousText && list.length > 1) {
+        index = (index + 1) % list.length;
+      }
+
+      return list[index];
+    }
+
+    function getCardMessage(card) {
+      var previousText = getSavedText(lastCardMessageKey) || lastCardMessage;
+      var message = getNonRepeatingText(card.messages, previousText);
+      lastCardMessage = message;
+      saveText(lastCardMessageKey, message);
+      return message;
+    }
+
+    function getCardAction(card, state) {
+      var actions = card.actions.slice();
+      var weekdayAction = weekdayActions[new Date().getDay()];
+
+      if (weekdayAction && weekdayAction.state === state) {
+        actions.push(weekdayAction.text);
+      }
+
+      var previousText = getSavedText(lastCardActionKey) || lastCardAction;
+      var action = getNonRepeatingText(actions, previousText);
+      lastCardAction = action;
+      saveText(lastCardActionKey, action);
+      return action;
+    }
+
     // 選んだ状態に合わせてカードを書き換える関数です。
     function showCard(state) {
       var card = cards[state];
       currentState = state;
 
       cardName.textContent = card.name;
-      cardMessage.textContent = card.message;
-      cardAction.textContent = card.action;
+      cardMessage.textContent = getCardMessage(card);
+      cardAction.textContent = getCardAction(card, state);
       dayClosed = false;
       continuedAfterGoal = false;
 
