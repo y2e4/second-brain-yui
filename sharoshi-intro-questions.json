@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "title": "社労士準備クイズ",
+  "title": "社労士クイズOS",
   "verifiedAt": "2026-07-07",
   "stages": [
     {
@@ -42,10 +42,18 @@
     },
     {
       "id": 5,
-      "name": "最新公式・本番準備",
-      "objective": "到達時点の最新法改正、試験要項、公表情報、苦手履歴を確認して後から作成する。",
+      "name": "実戦総合演習",
+      "objective": "ステージ5では、社労士試験に向けて、公式情報確認・選択式対策・択一式対策・苦手補強・科目横断事例をまとめて演習します。これまでの基礎学習を、実戦で使える判断力に変える最終ステージです。",
       "unlocked": false,
-      "questionCount": 0
+      "questionCount": 70,
+      "unlockFromStage": 4,
+      "unlockAnswerCount": 12,
+      "unlockAccuracy": 90,
+      "completionOfficialCorrectCount": 3,
+      "completionAccuracy": 70,
+      "completionPensionAccuracy": 70,
+      "completionLaborAccuracy": 70,
+      "completionWeakAccuracy": 70
     }
   ],
   "terms": [
@@ -1705,288 +1713,3635 @@
       "id": "stage4-question-001",
       "stage": 4,
       "title": "長時間労働と健康管理",
-      "category": ["労働基準法", "労働安全衛生法"],
+      "category": [
+        "労働基準法",
+        "労働安全衛生法"
+      ],
       "type": "single_choice",
       "term": "長時間労働と健康管理",
       "question": "ある会社で、従業員Aは繁忙期に連日長時間労働をしている。会社は「本人が納得しているから問題ない」と考えている。さらに、健康状態の確認も特に行っていない。この事例で、最初に確認すべき論点として最も適切なものはどれか。",
       "choices": [
-        "本人が同意していれば、労働時間規制は問題にならない",
-        "労働時間、36協定、割増賃金、安全衛生上の健康管理を確認する",
-        "健康保険の傷病手当金だけを確認する",
-        "厚生年金の被保険者資格だけを確認する"
+        {
+          "id": "a",
+          "text": "本人が同意していれば、労働時間規制は問題にならない"
+        },
+        {
+          "id": "b",
+          "text": "労働時間、36協定、割増賃金、安全衛生上の健康管理を確認する"
+        },
+        {
+          "id": "c",
+          "text": "健康保険の傷病手当金だけを確認する"
+        },
+        {
+          "id": "d",
+          "text": "厚生年金の被保険者資格だけを確認する"
+        }
       ],
-      "answer": 1,
       "explanation": "長時間労働の事例では、まず労基法上の労働時間・時間外労働・割増賃金、さらに安衛法上の健康管理を横断して見る。本人の同意だけで労働時間規制が消えるわけではない。",
       "trap": "本人同意だけで、労働時間規制や健康管理の確認を飛ばさない。",
       "memory": "長時間労働は、労基法と安衛法をセットで見る。",
-      "tags": ["労基法", "安衛法", "長時間労働", "健康管理", "横断"],
+      "tags": [
+        "労基法",
+        "安衛法",
+        "長時間労働",
+        "健康管理",
+        "横断"
+      ],
       "sourceType": "official",
       "sourceTitle": "労働時間・休日｜厚生労働省",
       "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
-      "verifiedAt": "2026-07-07"
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "b"
     },
     {
       "id": "stage4-question-002",
       "stage": 4,
       "title": "退職と未払い残業代",
-      "category": ["労働基準法", "雇用保険"],
+      "category": [
+        "労働基準法",
+        "雇用保険"
+      ],
       "type": "single_choice",
       "term": "退職と未払い残業代",
       "question": "従業員Bは、会社都合で退職することになった。退職前には未払い残業代の疑いもある。Bは退職後の生活費も不安に感じている。この事例で分けて考えるべき組み合わせとして最も適切なものはどれか。",
       "choices": [
-        "未払い残業代は労基法、退職後の求職中の給付は雇用保険",
-        "未払い残業代も退職後の給付もすべて厚生年金",
-        "退職理由は健康保険だけで判断する",
-        "雇用保険は在職中の賃金未払いを直接支払う制度である"
+        {
+          "id": "a",
+          "text": "未払い残業代は労基法、退職後の求職中の給付は雇用保険"
+        },
+        {
+          "id": "b",
+          "text": "未払い残業代も退職後の給付もすべて厚生年金"
+        },
+        {
+          "id": "c",
+          "text": "退職理由は健康保険だけで判断する"
+        },
+        {
+          "id": "d",
+          "text": "雇用保険は在職中の賃金未払いを直接支払う制度である"
+        }
       ],
-      "answer": 0,
       "explanation": "未払い残業代は労基法の問題。退職後の求職中の生活保障は雇用保険の失業等給付の領域。ここを混ぜないこと。",
       "trap": "在職中の賃金問題と退職後の求職中の給付を同じ制度にまとめない。",
       "memory": "未払いは労基法、求職中の生活保障は雇用保険。",
-      "tags": ["労基法", "雇用保険", "退職", "未払い残業代"],
+      "tags": [
+        "労基法",
+        "雇用保険",
+        "退職",
+        "未払い残業代"
+      ],
       "sourceType": "official",
       "sourceTitle": "基本手当について｜ハローワークインターネットサービス",
       "sourceUrl": "https://www.hellowork.mhlw.go.jp/insurance/insurance_basicbenefit.html",
-      "verifiedAt": "2026-07-07"
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "a"
     },
     {
       "id": "stage4-question-003",
       "stage": 4,
       "title": "業務中のけが",
-      "category": ["労災保険", "健康保険"],
+      "category": [
+        "労災保険",
+        "健康保険"
+      ],
       "type": "single_choice",
       "term": "業務中のけが",
       "question": "従業員Cは、勤務中に機械で手を負傷した。会社の担当者は「病院に行くなら健康保険証を使えばよい」と説明した。この場合、まず検討すべき制度はどれか。",
       "choices": [
-        "健康保険",
-        "労災保険",
-        "国民年金",
-        "雇用保険"
+        {
+          "id": "a",
+          "text": "健康保険"
+        },
+        {
+          "id": "b",
+          "text": "国民年金"
+        },
+        {
+          "id": "c",
+          "text": "労災保険"
+        },
+        {
+          "id": "d",
+          "text": "雇用保険"
+        }
       ],
-      "answer": 1,
       "explanation": "業務中の負傷であれば、まず労災保険の対象になるかを検討する。健康保険は原則として業務外の疾病・負傷を扱う制度として整理する。",
       "trap": "勤務中の負傷を、すぐ健康保険だけで処理しない。",
       "memory": "業務中のけがは、まず労災を確認。",
-      "tags": ["労災保険", "健康保険", "業務上", "負傷"],
+      "tags": [
+        "労災保険",
+        "健康保険",
+        "業務上",
+        "負傷"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "労働者災害補償保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000050",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "c"
+    },
+    {
+      "id": "stage4-question-004",
+      "stage": 4,
+      "title": "入社と社会保険",
+      "category": [
+        "健康保険",
+        "厚生年金"
+      ],
+      "type": "single_choice",
+      "term": "入社と社会保険",
+      "question": "会社員Dは、正社員として入社した。会社では健康保険と厚生年金の加入手続きが必要になる。このとき、健康保険と厚生年金を横断して見るときの基本視点として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "健康保険だけ見れば厚生年金は不要"
+        },
+        {
+          "id": "b",
+          "text": "厚生年金だけ見れば医療保障は不要"
+        },
+        {
+          "id": "c",
+          "text": "どちらも労災保険の一部である"
+        },
+        {
+          "id": "d",
+          "text": "医療保障と老後・障害・遺族保障の両方を見る"
+        }
+      ],
+      "explanation": "健康保険は主に医療・傷病・出産など、厚生年金は老齢・障害・遺族などの年金給付で見る。会社員の社会保険は、この2つをセットで整理すると混乱しにくい。",
+      "trap": "会社員の社会保険を、医療か年金の片方だけで見ない。",
+      "memory": "会社員は、医療の健保と年金の厚年をセットで整理。",
+      "tags": [
+        "健康保険",
+        "厚生年金",
+        "社会保険",
+        "加入"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "厚生年金保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/329AC0000000115",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "d"
+    },
+    {
+      "id": "stage4-question-005",
+      "stage": 4,
+      "title": "会社員から自営業へ",
+      "category": [
+        "国民年金",
+        "厚生年金"
+      ],
+      "type": "single_choice",
+      "term": "会社員から自営業へ",
+      "question": "会社員Eは、会社を退職して自営業を始めることにした。退職後は厚生年金の被保険者ではなくなる。このとき、年金制度上まず確認すべきことはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労災保険の休業補償給付が必ず出るか"
+        },
+        {
+          "id": "b",
+          "text": "国民年金の種別がどう変わるか"
+        },
+        {
+          "id": "c",
+          "text": "雇用保険の育児休業給付が出るか"
+        },
+        {
+          "id": "d",
+          "text": "労基法の年次有給休暇が増えるか"
+        }
+      ],
+      "explanation": "会社員から自営業へ変わる場合、厚生年金から外れ、国民年金の被保険者種別を確認する必要がある。年金問題では、働き方が変わるとどの制度・種別に移るかを見る。",
+      "trap": "働き方が変わっても年金の種別は変わらない、と考えない。",
+      "memory": "会社員から自営業へ変わるなら、年金の種別変更を確認。",
+      "tags": [
+        "年金",
+        "国民年金",
+        "厚生年金",
+        "種別変更",
+        "重点"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "国民年金に加入するための手続き｜日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/service/kokunen/kanyu/20140710-04.html",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "b"
+    },
+    {
+      "id": "stage4-question-006",
+      "stage": 4,
+      "title": "障害年金と初診日",
+      "category": [
+        "国民年金",
+        "厚生年金"
+      ],
+      "type": "single_choice",
+      "term": "障害年金と初診日",
+      "question": "Fは会社員として勤務中に重い障害状態になった。障害に関する年金を考える場合、最初に確認すべき視点として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "退職後に旅行したか"
+        },
+        {
+          "id": "b",
+          "text": "会社の就業規則に賞与規定があるか"
+        },
+        {
+          "id": "c",
+          "text": "初診日にどの年金制度に加入していたか"
+        },
+        {
+          "id": "d",
+          "text": "健康診断を受けた回数だけで決まる"
+        }
+      ],
+      "explanation": "障害年金では、初診日や加入制度が重要な判断軸になる。会社員として厚生年金に加入していたのか、国民年金のみだったのかで整理する。",
+      "trap": "障害状態だけを見て、初診日と加入制度の確認を飛ばさない。",
+      "memory": "障害年金は、まず初診日と加入制度。",
+      "tags": [
+        "年金",
+        "障害年金",
+        "初診日",
+        "国民年金",
+        "厚生年金",
+        "重点"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "国民年金法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/334AC0000000141",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "c"
+    },
+    {
+      "id": "stage4-question-007",
+      "stage": 4,
+      "title": "私傷病と生活保障",
+      "category": [
+        "労働基準法",
+        "健康保険"
+      ],
+      "type": "single_choice",
+      "term": "私傷病と生活保障",
+      "question": "従業員Gは私傷病でしばらく働けなくなった。会社は「休んでいる間は賃金を払わない」としている。Gは生活保障を心配している。この事例で整理すべき組み合わせとして最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "私傷病なら必ず労災保険"
+        },
+        {
+          "id": "b",
+          "text": "休んだ時点で厚生年金が必ず全額支給される"
+        },
+        {
+          "id": "c",
+          "text": "雇用保険の基本手当が在職中に必ず出る"
+        },
+        {
+          "id": "d",
+          "text": "賃金支払いの有無は労働契約・労基法領域、生活保障は健康保険の傷病手当金を検討"
+        }
+      ],
+      "explanation": "私傷病で働けない場合、賃金の扱いと健康保険の給付を分けて考える。業務上の負傷ではないため、いきなり労災と判断しない。",
+      "trap": "私傷病を、すぐ労災や雇用保険だけで処理しない。",
+      "memory": "私傷病は、賃金の扱いと傷病手当金を分ける。",
+      "tags": [
+        "労基法",
+        "健康保険",
+        "私傷病",
+        "傷病手当金",
+        "重点"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "傷病手当金｜協会けんぽ",
+      "sourceUrl": "https://www.kyoukaikenpo.or.jp/benefit/injury_and_sickness_allowance/index.html",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "d"
+    },
+    {
+      "id": "stage4-question-008",
+      "stage": 4,
+      "title": "年次有給休暇",
+      "category": [
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "年次有給休暇",
+      "question": "従業員Hは「忙しい時期だから、年次有給休暇は一切認めない」と会社から言われた。この場合の基本的な考え方として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "年休は労働者の権利として発生し、会社側は一定の場合に時季変更の問題として考える"
+        },
+        {
+          "id": "b",
+          "text": "会社が忙しければ年休権は消滅する"
+        },
+        {
+          "id": "c",
+          "text": "年休は厚生年金の給付である"
+        },
+        {
+          "id": "d",
+          "text": "年休は雇用保険の基本手当である"
+        }
+      ],
+      "explanation": "年休は労基法の典型論点。会社が忙しいことと、年休権そのものが消えることは別。ここは拒否ではなく時季変更権の論点として見る。",
+      "trap": "忙しさだけで年休権そのものが消える、と考えない。",
+      "memory": "年休は権利。会社側は時季変更の論点で考える。",
+      "tags": [
+        "労基法",
+        "年次有給休暇",
+        "時季変更権",
+        "重点"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "a"
+    },
+    {
+      "id": "stage4-question-009",
+      "stage": 4,
+      "title": "育児休業と社会保険",
+      "category": [
+        "雇用保険",
+        "健康保険",
+        "厚生年金"
+      ],
+      "type": "single_choice",
+      "term": "育児休業と社会保険",
+      "question": "従業員Iは育児休業を取得する予定である。休業中の収入や社会保険料の扱いが不安だと言っている。この事例で横断して確認すべきものとして最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労災保険の障害補償年金だけ"
+        },
+        {
+          "id": "b",
+          "text": "国民年金の老齢基礎年金だけ"
+        },
+        {
+          "id": "c",
+          "text": "雇用保険の育児休業給付、健康保険・厚生年金の保険料免除等"
+        },
+        {
+          "id": "d",
+          "text": "年次有給休暇だけ"
+        }
+      ],
+      "explanation": "育児休業は雇用保険の給付だけでなく、社会保険料の扱いも関係する。単科目で見ず、雇用保険・健保・厚年を横断する。",
+      "trap": "育児休業を、雇用保険の給付だけで完結させない。",
+      "memory": "育休は給付と社会保険料を横断。",
+      "tags": [
+        "雇用保険",
+        "育児休業",
+        "健康保険",
+        "厚生年金",
+        "横断"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "雇用継続給付｜ハローワークインターネットサービス",
+      "sourceUrl": "https://www.hellowork.mhlw.go.jp/insurance/insurance_continue.html",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "c"
+    },
+    {
+      "id": "stage4-question-010",
+      "stage": 4,
+      "title": "労働保険料の手続き",
+      "category": [
+        "労働保険徴収法",
+        "労災保険",
+        "雇用保険"
+      ],
+      "type": "single_choice",
+      "term": "労働保険料の手続き",
+      "question": "会社Jは従業員を雇い始めた。労災保険と雇用保険に関する保険料の手続きが必要になる。このとき中心になる科目として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "国民年金法"
+        },
+        {
+          "id": "b",
+          "text": "健康保険法だけ"
+        },
+        {
+          "id": "c",
+          "text": "厚生年金保険法だけ"
+        },
+        {
+          "id": "d",
+          "text": "労働保険徴収法"
+        }
+      ],
+      "explanation": "労災保険・雇用保険そのものの給付ではなく、保険料の申告・納付の話なら労働保険徴収法を中心に考える。",
+      "trap": "給付の話か、保険料の手続きの話かを取り違えない。",
+      "memory": "労災と雇用保険の保険料は、徴収法を中心に見る。",
+      "tags": [
+        "労働保険徴収法",
+        "労災保険",
+        "雇用保険",
+        "保険料"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "労働保険の保険料の徴収等に関する法律｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/344AC0000000084",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "d"
+    },
+    {
+      "id": "stage4-question-011",
+      "stage": 4,
+      "title": "退職後の医療保険と年金",
+      "category": [
+        "社会保険一般",
+        "健康保険",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "退職後の医療保険と年金",
+      "question": "Kは会社員を退職後、医療保険と年金の手続きが不安になっている。退職後すぐに再就職する予定はない。この事例で必要な視点として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "退職すれば医療保険も年金も一切不要になる"
+        },
+        {
+          "id": "b",
+          "text": "医療保険の切替と年金種別の確認を分けて考える"
+        },
+        {
+          "id": "c",
+          "text": "労災保険だけ確認すればよい"
+        },
+        {
+          "id": "d",
+          "text": "年休取得日数だけで判断する"
+        }
+      ],
+      "explanation": "退職後は医療保険と年金を別々に整理する。健康保険の任意継続、国民健康保険、国民年金の種別など、制度ごとに見分ける力が必要。",
+      "trap": "退職後の医療保険と年金を、同じ手続きとして扱わない。",
+      "memory": "退職後は、医療保険の切替と年金種別を分ける。",
+      "tags": [
+        "退職後",
+        "医療保険",
+        "年金",
+        "社会保険一般",
+        "横断"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "任意継続｜協会けんぽ",
+      "sourceUrl": "https://www.kyoukaikenpo.or.jp/benefit/voluntary_continuation/",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "b"
+    },
+    {
+      "id": "stage4-question-012",
+      "stage": 4,
+      "title": "複合相談の判断順序",
+      "category": [
+        "総合横断"
+      ],
+      "type": "single_choice",
+      "term": "複合相談の判断順序",
+      "question": "ある相談者Lは、「長時間労働が続いて体調を崩し、退職も考えている。退職後のお金も心配。将来の年金も不安」と相談してきた。最初の整理順として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労働時間・安全衛生 → 私傷病か業務上か → 退職後の雇用保険 → 医療保険・年金の切替"
+        },
+        {
+          "id": "b",
+          "text": "いきなり老齢年金だけ計算する"
+        },
+        {
+          "id": "c",
+          "text": "すべて労災保険だけで処理する"
+        },
+        {
+          "id": "d",
+          "text": "すべて健康保険だけで処理する"
+        }
+      ],
+      "explanation": "複合事例では、まず現在の労働問題を整理し、体調不良が業務上か私傷病かを切り分ける。その後、退職後の雇用保険、医療保険、年金を順番に確認する。ステージ4では、この順番が重要。",
+      "trap": "複合相談で、最初から一つの制度だけに決め打ちしない。",
+      "memory": "複合事例は、労働問題から生活保障、医療保険、年金へ順番に整理。",
+      "tags": [
+        "総合横断",
+        "判断順序",
+        "長時間労働",
+        "退職",
+        "年金"
+      ],
+      "sourceType": "official",
+      "sourceTitle": "知って役立つ労働法｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/content/001707662.pdf",
+      "verifiedAt": "2026-07-07",
+      "correctAnswerId": "a"
+    },
+    {
+      "id": "stage5-question-001",
+      "stage": 5,
+      "title": "試験情報の最終確認",
+      "category": [
+        "公式確認",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "試験情報の最終確認",
+      "question": "試験日・申込期間・合格発表日を最終確認する先として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "個人ブログだけ"
+        },
+        {
+          "id": "b",
+          "text": "SNSの投稿だけ"
+        },
+        {
+          "id": "c",
+          "text": "社会保険労務士試験オフィシャルサイトなどの公式情報"
+        },
+        {
+          "id": "d",
+          "text": "数年前の参考書だけ"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "試験日程や受験案内は変更される可能性があるため、最後は公式情報で確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "最後の確認先は、公式情報。",
+      "tags": [
+        "公式確認",
+        "法改正",
+        "実戦総合演習"
+      ],
+      "stage5Section": "公式確認・法改正確認",
+      "sourceType": "official",
+      "sourceTitle": "社会保険労務士試験オフィシャルサイト",
+      "sourceUrl": "https://www.sharosi-siken.or.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-002",
+      "stage": 5,
+      "title": "法改正の確認",
+      "category": [
+        "公式確認",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "法改正の確認",
+      "question": "法改正や最新制度を確認するときの姿勢として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "古い問題集だけを常に優先する"
+        },
+        {
+          "id": "b",
+          "text": "公式情報や最新教材で確認し、古い知識だけで断定しない"
+        },
+        {
+          "id": "c",
+          "text": "SNSの短文だけで判断する"
+        },
+        {
+          "id": "d",
+          "text": "過去問と違う内容はすべて無視する"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "社労士試験では法改正対応が重要。古い知識は公式情報で上書き確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "最後の確認先は、公式情報。",
+      "tags": [
+        "公式確認",
+        "法改正",
+        "実戦総合演習"
+      ],
+      "stage5Section": "公式確認・法改正確認",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-003",
+      "stage": 5,
+      "title": "条文確認の入口",
+      "category": [
+        "公式確認",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "条文確認の入口",
+      "question": "条文や法律名を確認するとき、入口として適切な公的サイトはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "匿名掲示板"
+        },
+        {
+          "id": "b",
+          "text": "古いまとめサイト"
+        },
+        {
+          "id": "c",
+          "text": "広告だけの比較サイト"
+        },
+        {
+          "id": "d",
+          "text": "e-Gov法令検索"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "条文そのものを確認したいときは、e-Gov法令検索を入口にできる。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "最後の確認先は、公式情報。",
+      "tags": [
+        "公式確認",
+        "法改正",
+        "実戦総合演習"
+      ],
+      "stage5Section": "公式確認・法改正確認",
+      "sourceType": "official",
+      "sourceTitle": "e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-004",
+      "stage": 5,
+      "title": "年金情報の確認",
+      "category": [
+        "公式確認",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "年金情報の確認",
+      "question": "年金制度の届出・制度説明を確認するとき、優先度が高い確認先はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "日本年金機構などの公的情報"
+        },
+        {
+          "id": "b",
+          "text": "体験談だけ"
+        },
+        {
+          "id": "c",
+          "text": "求人広告だけ"
+        },
+        {
+          "id": "d",
+          "text": "社内メモだけ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "年金は制度や手続きの確認が重要なので、公的情報を優先する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "最後の確認先は、公式情報。",
+      "tags": [
+        "公式確認",
+        "法改正",
+        "実戦総合演習"
+      ],
+      "stage5Section": "公式確認・法改正確認",
+      "sourceType": "official",
+      "sourceTitle": "日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-005",
+      "stage": 5,
+      "title": "厚労省情報の確認",
+      "category": [
+        "公式確認",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "厚労省情報の確認",
+      "question": "労働・社会保険制度の解説や施策資料を確認するとき、優先度が高い確認先はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "出典不明の画像"
+        },
+        {
+          "id": "b",
+          "text": "古いSNS投稿"
+        },
+        {
+          "id": "c",
+          "text": "厚生労働省の公式情報"
+        },
+        {
+          "id": "d",
+          "text": "個人の暗記メモだけ"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "制度全体の解説や最新情報は、厚生労働省などの公的情報を確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "最後の確認先は、公式情報。",
+      "tags": [
+        "公式確認",
+        "法改正",
+        "実戦総合演習"
+      ],
+      "stage5Section": "公式確認・法改正確認",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-006",
+      "stage": 5,
+      "title": "選択式：労働者",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "選択式：労働者",
+      "question": "労基法上の「労働者」は、職業の種類を問わず、事業に使用されて【　】を支払われる者である。空欄に入る語として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "保険料"
+        },
+        {
+          "id": "b",
+          "text": "賃金"
+        },
+        {
+          "id": "c",
+          "text": "年金"
+        },
+        {
+          "id": "d",
+          "text": "補助金"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "労働者性の基本は、使用され賃金を支払われる点にある。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-007",
+      "stage": 5,
+      "title": "選択式：使用者",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "選択式：使用者",
+      "question": "労基法上の「使用者」には、事業主だけでなく、事業主のために労働者に関する事項について行為をする【　】も含まれる。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労働者だけ"
+        },
+        {
+          "id": "b",
+          "text": "被扶養者だけ"
+        },
+        {
+          "id": "c",
+          "text": "受給権者だけ"
+        },
+        {
+          "id": "d",
+          "text": "すべての者"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "使用者は社長だけに限られず、権限を持って行為する者も含めて考える。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-008",
+      "stage": 5,
+      "title": "選択式：法定労働時間",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "選択式：法定労働時間",
+      "question": "労基法の基本では、法定労働時間は原則として1日8時間、1週【　】時間で整理する。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "40"
+        },
+        {
+          "id": "b",
+          "text": "20"
+        },
+        {
+          "id": "c",
+          "text": "60"
+        },
+        {
+          "id": "d",
+          "text": "80"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "まず原則の1日8時間・1週40時間を押さえる。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-009",
+      "stage": 5,
+      "title": "選択式：36協定",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "選択式：36協定",
+      "question": "法定労働時間を超える時間外労働をさせる場合、基本的に【　】の締結・届出を確認する。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "任意継続"
+        },
+        {
+          "id": "b",
+          "text": "36協定"
+        },
+        {
+          "id": "c",
+          "text": "基本手当"
+        },
+        {
+          "id": "d",
+          "text": "標準報酬月額"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "時間外労働では36協定を確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-010",
+      "stage": 5,
+      "title": "選択式：業務災害",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "選択式：業務災害",
+      "question": "労災保険で、業務上の事由による負傷・疾病などは【　】として整理する。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "私傷病"
+        },
+        {
+          "id": "b",
+          "text": "基本手当"
+        },
+        {
+          "id": "c",
+          "text": "老齢年金"
+        },
+        {
+          "id": "d",
+          "text": "業務災害"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "勤務に関係する負傷かどうかをまず切り分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
       "sourceType": "official",
       "sourceTitle": "労働者災害補償保険法｜e-Gov法令検索",
       "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000050",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-004",
-      "stage": 4,
-      "title": "入社と社会保険",
-      "category": ["健康保険", "厚生年金"],
-      "type": "single_choice",
-      "term": "入社と社会保険",
-      "question": "会社員Dは、正社員として入社した。会社では健康保険と厚生年金の加入手続きが必要になる。このとき、健康保険と厚生年金を横断して見るときの基本視点として最も適切なものはどれか。",
-      "choices": [
-        "医療保障と老後・障害・遺族保障の両方を見る",
-        "健康保険だけ見れば厚生年金は不要",
-        "厚生年金だけ見れば医療保障は不要",
-        "どちらも労災保険の一部である"
+      "id": "stage5-question-011",
+      "stage": 5,
+      "title": "選択式：基本手当",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
       ],
-      "answer": 0,
-      "explanation": "健康保険は主に医療・傷病・出産など、厚生年金は老齢・障害・遺族などの年金給付で見る。会社員の社会保険は、この2つをセットで整理すると混乱しにくい。",
-      "trap": "会社員の社会保険を、医療か年金の片方だけで見ない。",
-      "memory": "会社員は、医療の健保と年金の厚年をセットで整理。",
-      "tags": ["健康保険", "厚生年金", "社会保険", "加入"],
+      "type": "single_choice",
+      "term": "選択式：基本手当",
+      "question": "雇用保険で、失業中の求職活動を支える代表的な給付は【　】である。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "基本手当"
+        },
+        {
+          "id": "b",
+          "text": "傷病手当金"
+        },
+        {
+          "id": "c",
+          "text": "老齢基礎年金"
+        },
+        {
+          "id": "d",
+          "text": "休業補償給付"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "退職後の求職中の生活保障は雇用保険の基本手当を確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
+      "sourceType": "official",
+      "sourceTitle": "雇用保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-012",
+      "stage": 5,
+      "title": "選択式：傷病手当金",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "選択式：傷病手当金",
+      "question": "健康保険で、業務外の病気やけがで働けないときに確認する代表的な給付は【　】である。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "基本手当"
+        },
+        {
+          "id": "b",
+          "text": "遺族厚生年金"
+        },
+        {
+          "id": "c",
+          "text": "傷病手当金"
+        },
+        {
+          "id": "d",
+          "text": "療養補償給付"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "私傷病で働けないときは、健康保険の傷病手当金を検討する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
+      "sourceType": "official",
+      "sourceTitle": "健康保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/211AC0000000070",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-013",
+      "stage": 5,
+      "title": "選択式：被保険者",
+      "category": [
+        "選択式対策",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "選択式：被保険者",
+      "question": "社会保険の問題では、まずその人がどの制度の【　】に当たるかを確認する。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "保険者"
+        },
+        {
+          "id": "b",
+          "text": "審査官"
+        },
+        {
+          "id": "c",
+          "text": "被保険者"
+        },
+        {
+          "id": "d",
+          "text": "監督官"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "給付や届出の前に、どの制度の被保険者かを整理する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "選択式は、制度の核になる語を落とさない。",
+      "tags": [
+        "選択式対策",
+        "基本語句"
+      ],
+      "stage5Section": "選択式対策",
+      "sourceType": "official",
+      "sourceTitle": "e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-014",
+      "stage": 5,
+      "title": "労基・安衛：時間外労働",
+      "category": [
+        "択一式ミニ演習",
+        "労基・安衛",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基・安衛：時間外労働",
+      "question": "法定労働時間を超えて働かせる事例で、まず確認すべきものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "厚生年金の老齢給付だけ"
+        },
+        {
+          "id": "b",
+          "text": "36協定と割増賃金などの労基法上の論点"
+        },
+        {
+          "id": "c",
+          "text": "国民年金の種別だけ"
+        },
+        {
+          "id": "d",
+          "text": "健康保険の任意継続だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "時間外労働では36協定、割増賃金、上限規制などを確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労基法",
+        "労働基準法",
+        "安衛法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-015",
+      "stage": 5,
+      "title": "労基・安衛：休憩",
+      "category": [
+        "択一式ミニ演習",
+        "労基・安衛",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基・安衛：休憩",
+      "question": "労働時間が長くなる日の事例で、休憩についてまず確認すべき視点はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "退職後の年金額"
+        },
+        {
+          "id": "b",
+          "text": "雇用保険の基本手当日額"
+        },
+        {
+          "id": "c",
+          "text": "保険者の名称だけ"
+        },
+        {
+          "id": "d",
+          "text": "労働時間に応じた休憩が与えられているか"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "休憩は労働時間とセットで確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労基法",
+        "労働基準法",
+        "安衛法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-016",
+      "stage": 5,
+      "title": "労基・安衛：年次有給休暇",
+      "category": [
+        "択一式ミニ演習",
+        "労基・安衛",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基・安衛：年次有給休暇",
+      "question": "入社後しばらく経った労働者の年休問題で、まず見るべきものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "継続勤務や出勤率など、年休発生の基本要件"
+        },
+        {
+          "id": "b",
+          "text": "厚生年金の被保険者種別だけ"
+        },
+        {
+          "id": "c",
+          "text": "労災保険料率だけ"
+        },
+        {
+          "id": "d",
+          "text": "国民健康保険料だけ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "年休は労基法の労働条件の論点として整理する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労基法",
+        "労働基準法",
+        "安衛法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-017",
+      "stage": 5,
+      "title": "労基・安衛：健康管理",
+      "category": [
+        "択一式ミニ演習",
+        "労基・安衛",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基・安衛：健康管理",
+      "question": "長時間労働が続く事例で、安衛法の視点として確認すべきものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢基礎年金の繰上げだけ"
+        },
+        {
+          "id": "b",
+          "text": "基本手当の受給資格だけ"
+        },
+        {
+          "id": "c",
+          "text": "健康確保や面接指導など安全衛生上の対応"
+        },
+        {
+          "id": "d",
+          "text": "任意継続の保険料だけ"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "長時間労働では、労働時間だけでなく健康管理も見る。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労基法",
+        "労働基準法",
+        "安衛法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-018",
+      "stage": 5,
+      "title": "労基・安衛：就業規則",
+      "category": [
+        "択一式ミニ演習",
+        "労基・安衛",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基・安衛：就業規則",
+      "question": "会社全体の労働条件ルールを確認する場面で、まず見るべきものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "年金の振込日だけ"
+        },
+        {
+          "id": "b",
+          "text": "就業規則や労働契約の内容"
+        },
+        {
+          "id": "c",
+          "text": "失業認定日のみ"
+        },
+        {
+          "id": "d",
+          "text": "医療費の自己負担割合だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "労働条件の共通ルールは就業規則を確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労基法",
+        "労働基準法",
+        "安衛法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-019",
+      "stage": 5,
+      "title": "労災・徴収：業務中の負傷",
+      "category": [
+        "択一式ミニ演習",
+        "労災・徴収"
+      ],
+      "type": "single_choice",
+      "term": "労災・徴収：業務中の負傷",
+      "question": "勤務中に負傷した場合、最初に検討すべき制度はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "健康保険だけ"
+        },
+        {
+          "id": "b",
+          "text": "国民年金だけ"
+        },
+        {
+          "id": "c",
+          "text": "厚生年金だけ"
+        },
+        {
+          "id": "d",
+          "text": "労災保険"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "業務上の負傷はまず労災保険を検討する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労災保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働者災害補償保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000050",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-020",
+      "stage": 5,
+      "title": "労災・徴収：通勤災害",
+      "category": [
+        "択一式ミニ演習",
+        "労災・徴収"
+      ],
+      "type": "single_choice",
+      "term": "労災・徴収：通勤災害",
+      "question": "通勤中の事故で負傷した場合、切り分けの軸として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "通勤による災害かどうか"
+        },
+        {
+          "id": "b",
+          "text": "賞与の有無"
+        },
+        {
+          "id": "c",
+          "text": "扶養家族の人数だけ"
+        },
+        {
+          "id": "d",
+          "text": "退職理由だけ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "通勤中の災害は通勤災害として整理する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労災保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働者災害補償保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000050",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-021",
+      "stage": 5,
+      "title": "労災・徴収：私傷病との違い",
+      "category": [
+        "択一式ミニ演習",
+        "労災・徴収"
+      ],
+      "type": "single_choice",
+      "term": "労災・徴収：私傷病との違い",
+      "question": "業務外の病気で働けない場合、労災保険との切り分けで重要な視点はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "会社名の長さ"
+        },
+        {
+          "id": "b",
+          "text": "業務上・通勤によるものか、私傷病か"
+        },
+        {
+          "id": "c",
+          "text": "年齢だけ"
+        },
+        {
+          "id": "d",
+          "text": "試験会場の場所"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "業務起因性や通勤性がなければ、労災とは別に考える。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労災保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働者災害補償保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000050",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-022",
+      "stage": 5,
+      "title": "労災・徴収：徴収法の場面",
+      "category": [
+        "択一式ミニ演習",
+        "労災・徴収"
+      ],
+      "type": "single_choice",
+      "term": "労災・徴収：徴収法の場面",
+      "question": "労災保険と雇用保険の保険料の申告・納付で中心になる科目はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "国民年金法"
+        },
+        {
+          "id": "b",
+          "text": "健康保険法だけ"
+        },
+        {
+          "id": "c",
+          "text": "厚生年金保険法だけ"
+        },
+        {
+          "id": "d",
+          "text": "労働保険徴収法"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "保険料の徴収手続きは徴収法で見る。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労災保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働者災害補償保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000050",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-023",
+      "stage": 5,
+      "title": "労災・徴収：給付と保険料",
+      "category": [
+        "択一式ミニ演習",
+        "労災・徴収"
+      ],
+      "type": "single_choice",
+      "term": "労災・徴収：給付と保険料",
+      "question": "労災保険の給付問題と労働保険料の問題を読むときの姿勢として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "給付の話か、保険料の話かを分ける"
+        },
+        {
+          "id": "b",
+          "text": "すべて年金として読む"
+        },
+        {
+          "id": "c",
+          "text": "すべて健康保険として読む"
+        },
+        {
+          "id": "d",
+          "text": "科目を見ずに暗記だけで選ぶ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "労災と徴収は近いが、論点を分けて読む。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労災保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "労働者災害補償保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000050",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-024",
+      "stage": 5,
+      "title": "雇用・徴収：基本手当",
+      "category": [
+        "択一式ミニ演習",
+        "雇用・徴収"
+      ],
+      "type": "single_choice",
+      "term": "雇用・徴収：基本手当",
+      "question": "退職後に求職活動をする人の生活保障として確認する代表的な給付はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "健康保険の傷病手当金"
+        },
+        {
+          "id": "b",
+          "text": "労災保険の療養補償給付"
+        },
+        {
+          "id": "c",
+          "text": "雇用保険の基本手当"
+        },
+        {
+          "id": "d",
+          "text": "老齢厚生年金"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "求職中の失業等給付は雇用保険で整理する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "雇用保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "雇用保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-025",
+      "stage": 5,
+      "title": "雇用・徴収：被保険者",
+      "category": [
+        "択一式ミニ演習",
+        "雇用・徴収"
+      ],
+      "type": "single_choice",
+      "term": "雇用・徴収：被保険者",
+      "question": "雇用保険の問題で最初に確認する視点として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "国民年金の保険料免除だけ"
+        },
+        {
+          "id": "b",
+          "text": "健康保険の保険者名だけ"
+        },
+        {
+          "id": "c",
+          "text": "雇用保険の被保険者に当たるか"
+        },
+        {
+          "id": "d",
+          "text": "厚生年金の受給開始年齢だけ"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "雇用保険も、まず被保険者性を確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "雇用保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "雇用保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-026",
+      "stage": 5,
+      "title": "雇用・徴収：育児休業給付",
+      "category": [
+        "択一式ミニ演習",
+        "雇用・徴収"
+      ],
+      "type": "single_choice",
+      "term": "雇用・徴収：育児休業給付",
+      "question": "育児休業中の収入面の支援として、雇用保険で確認するものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "療養補償給付"
+        },
+        {
+          "id": "b",
+          "text": "育児休業給付"
+        },
+        {
+          "id": "c",
+          "text": "老齢基礎年金"
+        },
+        {
+          "id": "d",
+          "text": "任意継続"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "育児休業は雇用保険給付と社会保険料の扱いを分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "雇用保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "雇用保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-027",
+      "stage": 5,
+      "title": "雇用・徴収：雇用と徴収",
+      "category": [
+        "択一式ミニ演習",
+        "雇用・徴収"
+      ],
+      "type": "single_choice",
+      "term": "雇用・徴収：雇用と徴収",
+      "question": "雇用保険の給付ではなく、保険料の申告・納付が問われている場合に中心となる科目はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "国民年金法"
+        },
+        {
+          "id": "b",
+          "text": "健康保険法"
+        },
+        {
+          "id": "c",
+          "text": "労働契約法だけ"
+        },
+        {
+          "id": "d",
+          "text": "労働保険徴収法"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "保険料の話なら徴収法に寄せて読む。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "雇用保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "雇用保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-028",
+      "stage": 5,
+      "title": "雇用・徴収：退職理由",
+      "category": [
+        "択一式ミニ演習",
+        "雇用・徴収"
+      ],
+      "type": "single_choice",
+      "term": "雇用・徴収：退職理由",
+      "question": "基本手当の場面で、給付制限や日数などに影響し得るため確認するものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "退職理由や離職の事情"
+        },
+        {
+          "id": "b",
+          "text": "試験の受験番号"
+        },
+        {
+          "id": "c",
+          "text": "健康保険証の色だけ"
+        },
+        {
+          "id": "d",
+          "text": "年金手帳の表紙だけ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "雇用保険では離職理由を読み落とさない。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "雇用保険",
+        "労働保険徴収法"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "雇用保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-029",
+      "stage": 5,
+      "title": "労一・社一：一般常識の読み方",
+      "category": [
+        "択一式ミニ演習",
+        "労一・社一"
+      ],
+      "type": "single_choice",
+      "term": "労一・社一：一般常識の読み方",
+      "question": "労一・社一の問題で最初に意識すべき姿勢はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "数字だけを見て決める"
+        },
+        {
+          "id": "b",
+          "text": "科目名を無視する"
+        },
+        {
+          "id": "c",
+          "text": "制度の目的や対象を、法律ごとに分けて読む"
+        },
+        {
+          "id": "d",
+          "text": "長い文章は必ず正解にする"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "一般常識は広いので、目的・対象・制度名を手がかりにする。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労一",
+        "社一",
+        "横断"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-030",
+      "stage": 5,
+      "title": "労一・社一：労働契約",
+      "category": [
+        "択一式ミニ演習",
+        "労一・社一"
+      ],
+      "type": "single_choice",
+      "term": "労一・社一：労働契約",
+      "question": "労働契約に関する事例でまず見るべき視点はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢年金の額だけ"
+        },
+        {
+          "id": "b",
+          "text": "労働者と使用者の合意・労働条件"
+        },
+        {
+          "id": "c",
+          "text": "健康保険の保険者だけ"
+        },
+        {
+          "id": "d",
+          "text": "労災保険料率だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "契約の話なら、労働条件と合意を中心に読む。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労一",
+        "社一",
+        "横断"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-031",
+      "stage": 5,
+      "title": "労一・社一：社会保険一般",
+      "category": [
+        "択一式ミニ演習",
+        "労一・社一"
+      ],
+      "type": "single_choice",
+      "term": "労一・社一：社会保険一般",
+      "question": "社会保険一般の問題で混乱したとき、整理の軸として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "すべて労基法として読む"
+        },
+        {
+          "id": "b",
+          "text": "すべて雇用保険として読む"
+        },
+        {
+          "id": "c",
+          "text": "制度名を見ない"
+        },
+        {
+          "id": "d",
+          "text": "医療・年金・介護など、どの制度の話か"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "社一は制度名を分けると迷いにくい。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労一",
+        "社一",
+        "横断"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-032",
+      "stage": 5,
+      "title": "労一・社一：目的条文",
+      "category": [
+        "択一式ミニ演習",
+        "労一・社一"
+      ],
+      "type": "single_choice",
+      "term": "労一・社一：目的条文",
+      "question": "一般常識で目的条文風の問題を読むときの注意として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "誰を守る制度か、何を目的とする制度かを見る"
+        },
+        {
+          "id": "b",
+          "text": "選択肢の長さだけで決める"
+        },
+        {
+          "id": "c",
+          "text": "一番上を選ぶ"
+        },
+        {
+          "id": "d",
+          "text": "根拠を見ない"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "目的条文は、対象者と目的語が重要。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労一",
+        "社一",
+        "横断"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-033",
+      "stage": 5,
+      "title": "労一・社一：統計・白書",
+      "category": [
+        "択一式ミニ演習",
+        "労一・社一"
+      ],
+      "type": "single_choice",
+      "term": "労一・社一：統計・白書",
+      "question": "統計や白書系の情報を学ぶときの姿勢として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "年度を見ない"
+        },
+        {
+          "id": "b",
+          "text": "出典と年度を確認し、古い数字を最新のように扱わない"
+        },
+        {
+          "id": "c",
+          "text": "出典不明でも断定する"
+        },
+        {
+          "id": "d",
+          "text": "SNSだけを根拠にする"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "統計は年度と出典をセットで確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "労一",
+        "社一",
+        "横断"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-034",
+      "stage": 5,
+      "title": "健康保険：業務外の疾病",
+      "category": [
+        "択一式ミニ演習",
+        "健康保険"
+      ],
+      "type": "single_choice",
+      "term": "健康保険：業務外の疾病",
+      "question": "健康保険で中心的に扱う負傷・疾病として適切な整理はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "業務災害だけ"
+        },
+        {
+          "id": "b",
+          "text": "通勤災害だけ"
+        },
+        {
+          "id": "c",
+          "text": "失業だけ"
+        },
+        {
+          "id": "d",
+          "text": "業務外の病気やけが"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "健康保険は業務外の医療・傷病などを中心に見る。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "健康保険"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "健康保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/211AC0000000070",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-035",
+      "stage": 5,
+      "title": "健康保険：傷病手当金",
+      "category": [
+        "択一式ミニ演習",
+        "健康保険"
+      ],
+      "type": "single_choice",
+      "term": "健康保険：傷病手当金",
+      "question": "私傷病で働けず賃金を受けられない場面で確認する健康保険の給付はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "傷病手当金"
+        },
+        {
+          "id": "b",
+          "text": "基本手当"
+        },
+        {
+          "id": "c",
+          "text": "障害補償年金"
+        },
+        {
+          "id": "d",
+          "text": "老齢基礎年金"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "私傷病の生活保障では傷病手当金を検討する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "健康保険"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "健康保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/211AC0000000070",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-036",
+      "stage": 5,
+      "title": "健康保険：被扶養者",
+      "category": [
+        "択一式ミニ演習",
+        "健康保険"
+      ],
+      "type": "single_choice",
+      "term": "健康保険：被扶養者",
+      "question": "健康保険の家族に関する問題でまず確認する視点はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "雇用保険の離職理由"
+        },
+        {
+          "id": "b",
+          "text": "労基法の休憩時間"
+        },
+        {
+          "id": "c",
+          "text": "被扶養者に当たるかどうか"
+        },
+        {
+          "id": "d",
+          "text": "国民年金の老齢給付だけ"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "健康保険では被保険者と被扶養者を区別する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "健康保険"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "健康保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/211AC0000000070",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-037",
+      "stage": 5,
+      "title": "健康保険：標準報酬月額",
+      "category": [
+        "択一式ミニ演習",
+        "健康保険"
+      ],
+      "type": "single_choice",
+      "term": "健康保険：標準報酬月額",
+      "question": "健康保険料や給付額の基礎として出てくる用語はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "基本手当日額"
+        },
+        {
+          "id": "b",
+          "text": "法定労働時間"
+        },
+        {
+          "id": "c",
+          "text": "標準報酬月額"
+        },
+        {
+          "id": "d",
+          "text": "36協定"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "健康保険では標準報酬月額が重要な基礎になる。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "健康保険"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "健康保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/211AC0000000070",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-038",
+      "stage": 5,
+      "title": "健康保険：保険者",
+      "category": [
+        "択一式ミニ演習",
+        "健康保険"
+      ],
+      "type": "single_choice",
+      "term": "健康保険：保険者",
+      "question": "健康保険の問題で、制度を運営する側を指す用語はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "被保険者"
+        },
+        {
+          "id": "b",
+          "text": "保険者"
+        },
+        {
+          "id": "c",
+          "text": "受給資格者"
+        },
+        {
+          "id": "d",
+          "text": "離職者"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "保険者と被保険者を混同しない。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "健康保険"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "健康保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/211AC0000000070",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-039",
+      "stage": 5,
+      "title": "厚生年金：会社員と厚生年金",
+      "category": [
+        "択一式ミニ演習",
+        "厚生年金",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "厚生年金：会社員と厚生年金",
+      "question": "会社員として適用事業所で働く人の年金でまず確認する制度はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労災保険だけ"
+        },
+        {
+          "id": "b",
+          "text": "雇用保険だけ"
+        },
+        {
+          "id": "c",
+          "text": "健康診断だけ"
+        },
+        {
+          "id": "d",
+          "text": "厚生年金保険"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "会社員の年金は厚生年金を中心に確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "厚生年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
       "sourceType": "official",
       "sourceTitle": "厚生年金保険法｜e-Gov法令検索",
       "sourceUrl": "https://laws.e-gov.go.jp/law/329AC0000000115",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-005",
-      "stage": 4,
-      "title": "会社員から自営業へ",
-      "category": ["国民年金", "厚生年金"],
-      "type": "single_choice",
-      "term": "会社員から自営業へ",
-      "question": "会社員Eは、会社を退職して自営業を始めることにした。退職後は厚生年金の被保険者ではなくなる。このとき、年金制度上まず確認すべきことはどれか。",
-      "choices": [
-        "国民年金の種別がどう変わるか",
-        "労災保険の休業補償給付が必ず出るか",
-        "雇用保険の育児休業給付が出るか",
-        "労基法の年次有給休暇が増えるか"
+      "id": "stage5-question-040",
+      "stage": 5,
+      "title": "厚生年金：老齢厚生年金",
+      "category": [
+        "択一式ミニ演習",
+        "厚生年金",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "会社員から自営業へ変わる場合、厚生年金から外れ、国民年金の被保険者種別を確認する必要がある。年金問題では、働き方が変わるとどの制度・種別に移るかを見る。",
-      "trap": "働き方が変わっても年金の種別は変わらない、と考えない。",
-      "memory": "会社員から自営業へ変わるなら、年金の種別変更を確認。",
-      "tags": ["年金", "国民年金", "厚生年金", "種別変更", "重点"],
+      "type": "single_choice",
+      "term": "厚生年金：老齢厚生年金",
+      "question": "会社員期間に対応する老後の年金として確認するものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢厚生年金"
+        },
+        {
+          "id": "b",
+          "text": "基本手当"
+        },
+        {
+          "id": "c",
+          "text": "傷病手当金"
+        },
+        {
+          "id": "d",
+          "text": "療養補償給付"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "厚生年金の老齢給付は老齢厚生年金。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "厚生年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
       "sourceType": "official",
-      "sourceTitle": "国民年金に加入するための手続き｜日本年金機構",
-      "sourceUrl": "https://www.nenkin.go.jp/service/kokunen/kanyu/20140710-04.html",
+      "sourceTitle": "厚生年金保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/329AC0000000115",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-006",
-      "stage": 4,
-      "title": "障害年金と初診日",
-      "category": ["国民年金", "厚生年金"],
-      "type": "single_choice",
-      "term": "障害年金と初診日",
-      "question": "Fは会社員として勤務中に重い障害状態になった。障害に関する年金を考える場合、最初に確認すべき視点として最も適切なものはどれか。",
-      "choices": [
-        "初診日にどの年金制度に加入していたか",
-        "退職後に旅行したか",
-        "会社の就業規則に賞与規定があるか",
-        "健康診断を受けた回数だけで決まる"
+      "id": "stage5-question-041",
+      "stage": 5,
+      "title": "厚生年金：障害厚生年金",
+      "category": [
+        "択一式ミニ演習",
+        "厚生年金",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "障害年金では、初診日や加入制度が重要な判断軸になる。会社員として厚生年金に加入していたのか、国民年金のみだったのかで整理する。",
-      "trap": "障害状態だけを見て、初診日と加入制度の確認を飛ばさない。",
-      "memory": "障害年金は、まず初診日と加入制度。",
-      "tags": ["年金", "障害年金", "初診日", "国民年金", "厚生年金", "重点"],
+      "type": "single_choice",
+      "term": "厚生年金：障害厚生年金",
+      "question": "障害年金の問題で、初診日に厚生年金に加入していたかを見る理由として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "休憩時間が決まるため"
+        },
+        {
+          "id": "b",
+          "text": "年休の日数だけが決まるため"
+        },
+        {
+          "id": "c",
+          "text": "どの障害年金の対象になるかに関係するため"
+        },
+        {
+          "id": "d",
+          "text": "雇用保険料率だけが決まるため"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "障害年金では初診日と加入制度が重要。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "厚生年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生年金保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/329AC0000000115",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-042",
+      "stage": 5,
+      "title": "厚生年金：遺族厚生年金",
+      "category": [
+        "択一式ミニ演習",
+        "厚生年金",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "厚生年金：遺族厚生年金",
+      "question": "被保険者等が死亡した場合に、厚生年金で確認する代表的な給付はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "基本手当"
+        },
+        {
+          "id": "b",
+          "text": "遺族厚生年金"
+        },
+        {
+          "id": "c",
+          "text": "任意継続"
+        },
+        {
+          "id": "d",
+          "text": "年次有給休暇"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "死亡に関する年金給付では遺族厚生年金を確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "厚生年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生年金保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/329AC0000000115",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-043",
+      "stage": 5,
+      "title": "厚生年金：基礎年金との関係",
+      "category": [
+        "択一式ミニ演習",
+        "厚生年金",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "厚生年金：基礎年金との関係",
+      "question": "厚生年金の問題で国民年金との関係を見るときの基本姿勢はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "厚生年金と国民年金は常に同じ給付名である"
+        },
+        {
+          "id": "b",
+          "text": "年金と健康保険は同じ制度である"
+        },
+        {
+          "id": "c",
+          "text": "雇用保険の基本手当と同じである"
+        },
+        {
+          "id": "d",
+          "text": "基礎年金に上乗せされる部分があると整理する"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "年金は基礎部分と厚生年金部分を分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "厚生年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
+      "sourceType": "official",
+      "sourceTitle": "厚生年金保険法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/329AC0000000115",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-044",
+      "stage": 5,
+      "title": "国民年金：国民年金の対象",
+      "category": [
+        "択一式ミニ演習",
+        "国民年金",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "国民年金：国民年金の対象",
+      "question": "国民年金の基本で、まず押さえる対象者の軸はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "日本国内に住所を有する20歳以上60歳未満の人を基本に見る"
+        },
+        {
+          "id": "b",
+          "text": "会社役員だけを見る"
+        },
+        {
+          "id": "c",
+          "text": "失業者だけを見る"
+        },
+        {
+          "id": "d",
+          "text": "健康保険証の色だけを見る"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "国民年金は20歳以上60歳未満を基本軸にする。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "国民年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
       "sourceType": "official",
       "sourceTitle": "国民年金法｜e-Gov法令検索",
       "sourceUrl": "https://laws.e-gov.go.jp/law/334AC0000000141",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-007",
-      "stage": 4,
-      "title": "私傷病と生活保障",
-      "category": ["労働基準法", "健康保険"],
-      "type": "single_choice",
-      "term": "私傷病と生活保障",
-      "question": "従業員Gは私傷病でしばらく働けなくなった。会社は「休んでいる間は賃金を払わない」としている。Gは生活保障を心配している。この事例で整理すべき組み合わせとして最も適切なものはどれか。",
-      "choices": [
-        "賃金支払いの有無は労働契約・労基法領域、生活保障は健康保険の傷病手当金を検討",
-        "私傷病なら必ず労災保険",
-        "休んだ時点で厚生年金が必ず全額支給される",
-        "雇用保険の基本手当が在職中に必ず出る"
+      "id": "stage5-question-045",
+      "stage": 5,
+      "title": "国民年金：第1号被保険者",
+      "category": [
+        "択一式ミニ演習",
+        "国民年金",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "私傷病で働けない場合、賃金の扱いと健康保険の給付を分けて考える。業務上の負傷ではないため、いきなり労災と判断しない。",
-      "trap": "私傷病を、すぐ労災や雇用保険だけで処理しない。",
-      "memory": "私傷病は、賃金の扱いと傷病手当金を分ける。",
-      "tags": ["労基法", "健康保険", "私傷病", "傷病手当金", "重点"],
+      "type": "single_choice",
+      "term": "国民年金：第1号被保険者",
+      "question": "自営業者などで厚生年金に加入していない人の国民年金の種別として代表的なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "第2号被保険者"
+        },
+        {
+          "id": "b",
+          "text": "第1号被保険者"
+        },
+        {
+          "id": "c",
+          "text": "保険者"
+        },
+        {
+          "id": "d",
+          "text": "使用者"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "自営業等は第1号、会社員等は第2号で整理する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "国民年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
       "sourceType": "official",
-      "sourceTitle": "傷病手当金｜協会けんぽ",
-      "sourceUrl": "https://www.kyoukaikenpo.or.jp/benefit/injury_and_sickness_allowance/index.html",
+      "sourceTitle": "国民年金法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/334AC0000000141",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-008",
-      "stage": 4,
-      "title": "年次有給休暇",
-      "category": ["労働基準法"],
-      "type": "single_choice",
-      "term": "年次有給休暇",
-      "question": "従業員Hは「忙しい時期だから、年次有給休暇は一切認めない」と会社から言われた。この場合の基本的な考え方として最も適切なものはどれか。",
-      "choices": [
-        "年休は労働者の権利として発生し、会社側は一定の場合に時季変更の問題として考える",
-        "会社が忙しければ年休権は消滅する",
-        "年休は厚生年金の給付である",
-        "年休は雇用保険の基本手当である"
+      "id": "stage5-question-046",
+      "stage": 5,
+      "title": "国民年金：第2号被保険者",
+      "category": [
+        "択一式ミニ演習",
+        "国民年金",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "年休は労基法の典型論点。会社が忙しいことと、年休権そのものが消えることは別。ここは拒否ではなく時季変更権の論点として見る。",
-      "trap": "忙しさだけで年休権そのものが消える、と考えない。",
-      "memory": "年休は権利。会社側は時季変更の論点で考える。",
-      "tags": ["労基法", "年次有給休暇", "時季変更権", "重点"],
+      "type": "single_choice",
+      "term": "国民年金：第2号被保険者",
+      "question": "会社員や公務員など、厚生年金に加入する人の国民年金上の種別はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "第1号被保険者"
+        },
+        {
+          "id": "b",
+          "text": "第3号被保険者だけ"
+        },
+        {
+          "id": "c",
+          "text": "被扶養者だけ"
+        },
+        {
+          "id": "d",
+          "text": "第2号被保険者"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "厚生年金加入者は国民年金の第2号被保険者としても見る。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "国民年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
       "sourceType": "official",
-      "sourceTitle": "労働時間・休日｜厚生労働省",
-      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "sourceTitle": "国民年金法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/334AC0000000141",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-009",
-      "stage": 4,
-      "title": "育児休業と社会保険",
-      "category": ["雇用保険", "健康保険", "厚生年金"],
-      "type": "single_choice",
-      "term": "育児休業と社会保険",
-      "question": "従業員Iは育児休業を取得する予定である。休業中の収入や社会保険料の扱いが不安だと言っている。この事例で横断して確認すべきものとして最も適切なものはどれか。",
-      "choices": [
-        "雇用保険の育児休業給付、健康保険・厚生年金の保険料免除等",
-        "労災保険の障害補償年金だけ",
-        "国民年金の老齢基礎年金だけ",
-        "年次有給休暇だけ"
+      "id": "stage5-question-047",
+      "stage": 5,
+      "title": "国民年金：老齢基礎年金",
+      "category": [
+        "択一式ミニ演習",
+        "国民年金",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "育児休業は雇用保険の給付だけでなく、社会保険料の扱いも関係する。単科目で見ず、雇用保険・健保・厚年を横断する。",
-      "trap": "育児休業を、雇用保険の給付だけで完結させない。",
-      "memory": "育休は給付と社会保険料を横断。",
-      "tags": ["雇用保険", "育児休業", "健康保険", "厚生年金", "横断"],
+      "type": "single_choice",
+      "term": "国民年金：老齢基礎年金",
+      "question": "国民年金から支給される老後の基礎的な年金はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢基礎年金"
+        },
+        {
+          "id": "b",
+          "text": "基本手当"
+        },
+        {
+          "id": "c",
+          "text": "傷病手当金"
+        },
+        {
+          "id": "d",
+          "text": "療養補償給付"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "国民年金の老齢給付は老齢基礎年金。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "国民年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
       "sourceType": "official",
-      "sourceTitle": "雇用継続給付｜ハローワークインターネットサービス",
-      "sourceUrl": "https://www.hellowork.mhlw.go.jp/insurance/insurance_continue.html",
+      "sourceTitle": "国民年金法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/334AC0000000141",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-010",
-      "stage": 4,
-      "title": "労働保険料の手続き",
-      "category": ["労働保険徴収法", "労災保険", "雇用保険"],
-      "type": "single_choice",
-      "term": "労働保険料の手続き",
-      "question": "会社Jは従業員を雇い始めた。労災保険と雇用保険に関する保険料の手続きが必要になる。このとき中心になる科目として最も適切なものはどれか。",
-      "choices": [
-        "労働保険徴収法",
-        "国民年金法",
-        "健康保険法だけ",
-        "厚生年金保険法だけ"
+      "id": "stage5-question-048",
+      "stage": 5,
+      "title": "国民年金：障害基礎年金",
+      "category": [
+        "択一式ミニ演習",
+        "国民年金",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "労災保険・雇用保険そのものの給付ではなく、保険料の申告・納付の話なら労働保険徴収法を中心に考える。",
-      "trap": "給付の話か、保険料の手続きの話かを取り違えない。",
-      "memory": "労災と雇用保険の保険料は、徴収法を中心に見る。",
-      "tags": ["労働保険徴収法", "労災保険", "雇用保険", "保険料"],
+      "type": "single_choice",
+      "term": "国民年金：障害基礎年金",
+      "question": "障害状態になった場合、国民年金で確認する代表的な給付はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "育児休業給付"
+        },
+        {
+          "id": "b",
+          "text": "任意継続"
+        },
+        {
+          "id": "c",
+          "text": "障害基礎年金"
+        },
+        {
+          "id": "d",
+          "text": "法定労働時間"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "国民年金の障害給付は障害基礎年金。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "択一式は、どの科目のどの制度かを先に決める。",
+      "tags": [
+        "択一式",
+        "国民年金",
+        "年金"
+      ],
+      "stage5Section": "択一式ミニ演習",
       "sourceType": "official",
-      "sourceTitle": "労働保険の保険料の徴収等に関する法律｜e-Gov法令検索",
-      "sourceUrl": "https://laws.e-gov.go.jp/law/344AC0000000084",
+      "sourceTitle": "国民年金法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/334AC0000000141",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-011",
-      "stage": 4,
-      "title": "退職後の医療保険と年金",
-      "category": ["社会保険一般", "健康保険", "年金"],
-      "type": "single_choice",
-      "term": "退職後の医療保険と年金",
-      "question": "Kは会社員を退職後、医療保険と年金の手続きが不安になっている。退職後すぐに再就職する予定はない。この事例で必要な視点として最も適切なものはどれか。",
-      "choices": [
-        "医療保険の切替と年金種別の確認を分けて考える",
-        "退職すれば医療保険も年金も一切不要になる",
-        "労災保険だけ確認すればよい",
-        "年休取得日数だけで判断する"
+      "id": "stage5-question-049",
+      "stage": 5,
+      "title": "年金弱点：制度の切替",
+      "category": [
+        "苦手補強",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "退職後は医療保険と年金を別々に整理する。健康保険の任意継続、国民健康保険、国民年金の種別など、制度ごとに見分ける力が必要。",
-      "trap": "退職後の医療保険と年金を、同じ手続きとして扱わない。",
-      "memory": "退職後は、医療保険の切替と年金種別を分ける。",
-      "tags": ["退職後", "医療保険", "年金", "社会保険一般", "横断"],
+      "type": "single_choice",
+      "term": "年金弱点：制度の切替",
+      "question": "会社員を退職して自営業になる人の年金でまず確認するものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労災保険料率"
+        },
+        {
+          "id": "b",
+          "text": "年休の時季変更"
+        },
+        {
+          "id": "c",
+          "text": "厚生年金から国民年金の種別へどう変わるか"
+        },
+        {
+          "id": "d",
+          "text": "健康診断の回数"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "働き方が変わると年金の種別も変わり得る。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "年金は、制度・種別・時点をセットで確認。",
+      "tags": [
+        "苦手補強",
+        "年金",
+        "国民年金",
+        "厚生年金"
+      ],
+      "stage5Section": "苦手補強",
       "sourceType": "official",
-      "sourceTitle": "任意継続｜協会けんぽ",
-      "sourceUrl": "https://www.kyoukaikenpo.or.jp/benefit/voluntary_continuation/",
+      "sourceTitle": "日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/",
       "verifiedAt": "2026-07-07"
     },
     {
-      "id": "stage4-question-012",
-      "stage": 4,
-      "title": "複合相談の判断順序",
-      "category": ["総合横断"],
-      "type": "single_choice",
-      "term": "複合相談の判断順序",
-      "question": "ある相談者Lは、「長時間労働が続いて体調を崩し、退職も考えている。退職後のお金も心配。将来の年金も不安」と相談してきた。最初の整理順として最も適切なものはどれか。",
-      "choices": [
-        "労働時間・安全衛生 → 私傷病か業務上か → 退職後の雇用保険 → 医療保険・年金の切替",
-        "いきなり老齢年金だけ計算する",
-        "すべて労災保険だけで処理する",
-        "すべて健康保険だけで処理する"
+      "id": "stage5-question-050",
+      "stage": 5,
+      "title": "年金弱点：初診日",
+      "category": [
+        "苦手補強",
+        "年金"
       ],
-      "answer": 0,
-      "explanation": "複合事例では、まず現在の労働問題を整理し、体調不良が業務上か私傷病かを切り分ける。その後、退職後の雇用保険、医療保険、年金を順番に確認する。ステージ4では、この順番が重要。",
-      "trap": "複合相談で、最初から一つの制度だけに決め打ちしない。",
-      "memory": "複合事例は、労働問題から生活保障、医療保険、年金へ順番に整理。",
-      "tags": ["総合横断", "判断順序", "長時間労働", "退職", "年金"],
+      "type": "single_choice",
+      "term": "年金弱点：初診日",
+      "question": "障害年金で初診日を確認する理由として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "休憩時間を決めるため"
+        },
+        {
+          "id": "b",
+          "text": "加入していた制度や要件判断に関係するため"
+        },
+        {
+          "id": "c",
+          "text": "36協定を届け出るため"
+        },
+        {
+          "id": "d",
+          "text": "雇用保険料を納めるため"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "障害年金は初診日を起点に整理する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "年金は、制度・種別・時点をセットで確認。",
+      "tags": [
+        "苦手補強",
+        "年金",
+        "国民年金",
+        "厚生年金"
+      ],
+      "stage5Section": "苦手補強",
       "sourceType": "official",
-      "sourceTitle": "知って役立つ労働法｜厚生労働省",
-      "sourceUrl": "https://www.mhlw.go.jp/content/001707662.pdf",
+      "sourceTitle": "日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-051",
+      "stage": 5,
+      "title": "年金弱点：第3号",
+      "category": [
+        "苦手補強",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "年金弱点：第3号",
+      "question": "会社員に扶養される配偶者の国民年金種別として確認するものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "使用者"
+        },
+        {
+          "id": "b",
+          "text": "保険者"
+        },
+        {
+          "id": "c",
+          "text": "受給資格者"
+        },
+        {
+          "id": "d",
+          "text": "第3号被保険者"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "第1号・第2号・第3号を混同しない。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "年金は、制度・種別・時点をセットで確認。",
+      "tags": [
+        "苦手補強",
+        "年金",
+        "国民年金",
+        "厚生年金"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-052",
+      "stage": 5,
+      "title": "年金弱点：老齢",
+      "category": [
+        "苦手補強",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "年金弱点：老齢",
+      "question": "老齢年金の問題で最初に整理する軸として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢基礎年金か老齢厚生年金か"
+        },
+        {
+          "id": "b",
+          "text": "業務災害か通勤災害かだけ"
+        },
+        {
+          "id": "c",
+          "text": "休憩が何分かだけ"
+        },
+        {
+          "id": "d",
+          "text": "基本手当の離職理由だけ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "年金は基礎年金と厚生年金を分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "年金は、制度・種別・時点をセットで確認。",
+      "tags": [
+        "苦手補強",
+        "年金",
+        "国民年金",
+        "厚生年金"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-053",
+      "stage": 5,
+      "title": "年金弱点：遺族",
+      "category": [
+        "苦手補強",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "年金弱点：遺族",
+      "question": "死亡に関する年金問題で確認する代表的な給付名の組み合わせはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "基本手当・傷病手当金"
+        },
+        {
+          "id": "b",
+          "text": "休業補償給付・任意継続"
+        },
+        {
+          "id": "c",
+          "text": "遺族基礎年金・遺族厚生年金"
+        },
+        {
+          "id": "d",
+          "text": "年休・36協定"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "遺族の問題は基礎と厚生を分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "年金は、制度・種別・時点をセットで確認。",
+      "tags": [
+        "苦手補強",
+        "年金",
+        "国民年金",
+        "厚生年金"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-054",
+      "stage": 5,
+      "title": "年金弱点：保険料",
+      "category": [
+        "苦手補強",
+        "年金"
+      ],
+      "type": "single_choice",
+      "term": "年金弱点：保険料",
+      "question": "国民年金の保険料の納付が難しい場合に確認する制度として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "36協定"
+        },
+        {
+          "id": "b",
+          "text": "免除や猶予の制度"
+        },
+        {
+          "id": "c",
+          "text": "育児休業給付"
+        },
+        {
+          "id": "d",
+          "text": "標準報酬月額だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "国民年金では保険料免除・猶予も重要な確認軸。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "年金は、制度・種別・時点をセットで確認。",
+      "tags": [
+        "苦手補強",
+        "年金",
+        "国民年金",
+        "厚生年金"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "日本年金機構",
+      "sourceUrl": "https://www.nenkin.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-055",
+      "stage": 5,
+      "title": "労基弱点：労働時間",
+      "category": [
+        "苦手補強",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基弱点：労働時間",
+      "question": "残業の事例で、最初に確認する組み合わせとして適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢基礎年金だけ"
+        },
+        {
+          "id": "b",
+          "text": "任意継続だけ"
+        },
+        {
+          "id": "c",
+          "text": "基本手当だけ"
+        },
+        {
+          "id": "d",
+          "text": "法定労働時間、36協定、割増賃金"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "残業は労働時間・36協定・割増賃金をセットで見る。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "労基法は、労働条件のどの論点かを先に拾う。",
+      "tags": [
+        "苦手補強",
+        "労基法",
+        "労働基準法"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-056",
+      "stage": 5,
+      "title": "労基弱点：休憩",
+      "category": [
+        "苦手補強",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基弱点：休憩",
+      "question": "休憩の問題で、まず見るべきものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労働時間が何時間を超えるか"
+        },
+        {
+          "id": "b",
+          "text": "年金の初診日"
+        },
+        {
+          "id": "c",
+          "text": "健康保険の保険者"
+        },
+        {
+          "id": "d",
+          "text": "離職理由だけ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "休憩は労働時間と連動する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "労基法は、労働条件のどの論点かを先に拾う。",
+      "tags": [
+        "苦手補強",
+        "労基法",
+        "労働基準法"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-057",
+      "stage": 5,
+      "title": "労基弱点：休日",
+      "category": [
+        "苦手補強",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基弱点：休日",
+      "question": "休日労働の問題で確認すべき視点として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "第3号被保険者だけ"
+        },
+        {
+          "id": "b",
+          "text": "法定休日や休日労働の扱い"
+        },
+        {
+          "id": "c",
+          "text": "老齢厚生年金だけ"
+        },
+        {
+          "id": "d",
+          "text": "国民年金保険料だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "休日は労働時間と同じく労基法の基本論点。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "労基法は、労働条件のどの論点かを先に拾う。",
+      "tags": [
+        "苦手補強",
+        "労基法",
+        "労働基準法"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-058",
+      "stage": 5,
+      "title": "労基弱点：賃金",
+      "category": [
+        "苦手補強",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基弱点：賃金",
+      "question": "賃金未払いの相談で中心になる法律として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "国民年金法だけ"
+        },
+        {
+          "id": "b",
+          "text": "健康保険法だけ"
+        },
+        {
+          "id": "c",
+          "text": "厚生年金保険法だけ"
+        },
+        {
+          "id": "d",
+          "text": "労働基準法"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "賃金支払いは労基法の中心論点。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "労基法は、労働条件のどの論点かを先に拾う。",
+      "tags": [
+        "苦手補強",
+        "労基法",
+        "労働基準法"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-059",
+      "stage": 5,
+      "title": "労基弱点：年休",
+      "category": [
+        "苦手補強",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基弱点：年休",
+      "question": "年休の相談で、会社が忙しいという理由だけで権利が消えるかを問われた。基本的な考え方はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "忙しさだけで年休権そのものは消えない"
+        },
+        {
+          "id": "b",
+          "text": "忙しければ常に年休は消える"
+        },
+        {
+          "id": "c",
+          "text": "年休は雇用保険の給付である"
+        },
+        {
+          "id": "d",
+          "text": "年休は厚生年金の給付である"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "年休は権利と時季変更の問題を分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "労基法は、労働条件のどの論点かを先に拾う。",
+      "tags": [
+        "苦手補強",
+        "労基法",
+        "労働基準法"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-060",
+      "stage": 5,
+      "title": "労基弱点：労働契約",
+      "category": [
+        "苦手補強",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "労基弱点：労働契約",
+      "question": "労働条件の明示や契約内容が問題になるとき、まず見るべきものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢年金の繰下げだけ"
+        },
+        {
+          "id": "b",
+          "text": "傷病手当金だけ"
+        },
+        {
+          "id": "c",
+          "text": "労働契約と労働条件"
+        },
+        {
+          "id": "d",
+          "text": "通勤災害だけ"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "契約・条件の話は労基法や労働契約の領域で整理する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "労基法は、労働条件のどの論点かを先に拾う。",
+      "tags": [
+        "苦手補強",
+        "労基法",
+        "労働基準法"
+      ],
+      "stage5Section": "苦手補強",
+      "sourceType": "official",
+      "sourceTitle": "労働基準法｜e-Gov法令検索",
+      "sourceUrl": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-061",
+      "stage": 5,
+      "title": "横断：長時間労働と体調不良",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：長時間労働と体調不良",
+      "question": "長時間労働が続き体調を崩した人の相談で、最初の整理順として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "老齢年金だけ計算する"
+        },
+        {
+          "id": "b",
+          "text": "すべて雇用保険だけで処理する"
+        },
+        {
+          "id": "c",
+          "text": "労働時間・安全衛生、業務上か私傷病か、健康保険や労災の順に分ける"
+        },
+        {
+          "id": "d",
+          "text": "試験日程だけ確認する"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "複合事例は、労働問題、けが病気の原因、生活保障を順に分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-062",
+      "stage": 5,
+      "title": "横断：退職後の不安",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：退職後の不安",
+      "question": "退職後すぐ再就職しない人の相談で、横断的に確認すべき組み合わせはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "年休だけ"
+        },
+        {
+          "id": "b",
+          "text": "雇用保険、医療保険、年金の切替"
+        },
+        {
+          "id": "c",
+          "text": "労災保険だけ"
+        },
+        {
+          "id": "d",
+          "text": "36協定だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "退職後は雇用・医療・年金を分けて確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-063",
+      "stage": 5,
+      "title": "横断：育児休業",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：育児休業",
+      "question": "育児休業中の収入と社会保険料が不安という相談で、確認すべき組み合わせはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "国民年金の老齢給付だけ"
+        },
+        {
+          "id": "b",
+          "text": "労災の障害補償だけ"
+        },
+        {
+          "id": "c",
+          "text": "就業規則の賞与だけ"
+        },
+        {
+          "id": "d",
+          "text": "雇用保険の給付と健康保険・厚生年金の扱い"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "育休は雇用保険と社会保険を横断する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-064",
+      "stage": 5,
+      "title": "横断：業務中のけが",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：業務中のけが",
+      "question": "勤務中のけがで会社が健康保険を使うよう案内した。まず確認すべきことはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "業務災害として労災保険の対象になるか"
+        },
+        {
+          "id": "b",
+          "text": "老齢基礎年金の受給権"
+        },
+        {
+          "id": "c",
+          "text": "基本手当の離職理由"
+        },
+        {
+          "id": "d",
+          "text": "第3号被保険者かどうか"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "勤務中の負傷は、まず労災を確認する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-065",
+      "stage": 5,
+      "title": "横断：私傷病で休職",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：私傷病で休職",
+      "question": "私傷病で休職し賃金が出ない人の相談で、確認すべき組み合わせはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "通勤災害だけ"
+        },
+        {
+          "id": "b",
+          "text": "老齢厚生年金だけ"
+        },
+        {
+          "id": "c",
+          "text": "賃金・休職ルールと健康保険の傷病手当金"
+        },
+        {
+          "id": "d",
+          "text": "36協定だけ"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "私傷病では、労働契約上の扱いと健康保険給付を分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-066",
+      "stage": 5,
+      "title": "横断：パートの加入",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：パートの加入",
+      "question": "短時間労働者の社会保険・雇用保険加入で、まず見るべきものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "年休の時季変更だけ"
+        },
+        {
+          "id": "b",
+          "text": "労働時間や雇用見込みなど各制度の適用条件"
+        },
+        {
+          "id": "c",
+          "text": "労災の障害等級だけ"
+        },
+        {
+          "id": "d",
+          "text": "試験の合格発表だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "加入問題は、制度ごとの適用条件を比べる。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-067",
+      "stage": 5,
+      "title": "横断：会社設立と雇用",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：会社設立と雇用",
+      "question": "人を雇い始めた会社で、労働保険・社会保険の手続きが必要になった。整理として適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "国民年金だけ確認する"
+        },
+        {
+          "id": "b",
+          "text": "年休だけ確認する"
+        },
+        {
+          "id": "c",
+          "text": "基本手当だけ確認する"
+        },
+        {
+          "id": "d",
+          "text": "労災・雇用・健康保険・厚生年金を制度別に確認する"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "会社が人を雇うと複数制度の手続きが関係する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-068",
+      "stage": 5,
+      "title": "横断：死亡と遺族",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：死亡と遺族",
+      "question": "会社員が死亡した場合、遺族の生活保障で確認する制度として適切な組み合わせはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労災の遺族給付の可能性と遺族年金を分けて確認する"
+        },
+        {
+          "id": "b",
+          "text": "年休と36協定だけ"
+        },
+        {
+          "id": "c",
+          "text": "基本手当だけ"
+        },
+        {
+          "id": "d",
+          "text": "任意継続だけ"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "死亡の原因と年金制度を分けて読む。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-069",
+      "stage": 5,
+      "title": "横断：出産・育児",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：出産・育児",
+      "question": "出産・育児に関する相談で、横断的に確認するものとして適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "労災の通勤災害だけ"
+        },
+        {
+          "id": "b",
+          "text": "健康保険の出産関係給付、雇用保険の育児関係給付、社会保険料の扱い"
+        },
+        {
+          "id": "c",
+          "text": "老齢基礎年金だけ"
+        },
+        {
+          "id": "d",
+          "text": "就業規則の懲戒だけ"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "出産育児は健康保険・雇用保険・社会保険料を分ける。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
+      "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-070",
+      "stage": 5,
+      "title": "横断：総合判断",
+      "category": [
+        "横断事例",
+        "実戦総合演習"
+      ],
+      "type": "single_choice",
+      "term": "横断：総合判断",
+      "question": "複数制度が混ざる問題で、最初に取るべき読み方はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "一番上の選択肢に決める"
+        },
+        {
+          "id": "b",
+          "text": "長い選択肢を常に正解にする"
+        },
+        {
+          "id": "c",
+          "text": "知らない語を見たら全部捨てる"
+        },
+        {
+          "id": "d",
+          "text": "誰の、いつの、どの制度の話かを分解する"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "横断問題は、対象者・時点・制度を分解する。",
+      "trap": "言葉の印象だけで決めず、どの制度・どの要件の話かを分けて確認する。",
+      "memory": "横断事例は、対象者・時点・制度を分ける。",
+      "tags": [
+        "横断事例",
+        "科目横断",
+        "実戦総合演習"
+      ],
+      "stage5Section": "横断事例",
+      "sourceType": "official",
+      "sourceTitle": "厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/",
       "verifiedAt": "2026-07-07"
     }
   ]

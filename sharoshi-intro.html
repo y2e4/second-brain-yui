@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#100b08">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=2">
   <link rel="icon" type="image/png" sizes="512x512" href="icon.png?v=2">
-  <title>社労士準備クイズ | 火種ユイ</title>
+  <title>社労士クイズOS | 火種ユイ</title>
   <style>
     :root {
       --bg: #080706;
@@ -440,6 +440,72 @@
       border-radius: 8px;
     }
 
+    .status-message.is-good {
+      color: var(--good);
+      border-color: rgba(169, 216, 110, 0.34);
+      background: rgba(169, 216, 110, 0.08);
+    }
+
+    .status-message.is-error {
+      color: var(--bad);
+      border-color: rgba(255, 130, 87, 0.34);
+      background: rgba(255, 130, 87, 0.08);
+    }
+
+    .sync-details {
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+    }
+
+    .sync-details > summary {
+      min-height: 48px;
+      padding: 11px 12px;
+      color: var(--gold);
+      font-weight: 900;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .sync-body {
+      padding: 0 12px 12px;
+    }
+
+    .sync-label,
+    .sync-meta {
+      display: block;
+      margin: 10px 0 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .sync-textarea {
+      width: 100%;
+      min-height: 160px;
+      resize: vertical;
+      padding: 11px 12px;
+      color: var(--text);
+      font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 8px;
+      outline: none;
+      overflow-wrap: anywhere;
+    }
+
+    .sync-textarea:focus {
+      border-color: rgba(245, 199, 98, 0.58);
+      box-shadow: 0 0 0 3px rgba(245, 199, 98, 0.08);
+    }
+
+    .sync-actions {
+      display: grid;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
     .progress-row {
       display: flex;
       align-items: center;
@@ -582,6 +648,40 @@
       font-weight: 850;
     }
 
+    .stage5-official-box {
+      margin: 12px 0 15px;
+      padding: 12px;
+      background: rgba(245, 199, 98, 0.07);
+      border: 1px solid rgba(245, 199, 98, 0.24);
+      border-radius: 8px;
+    }
+
+    .stage5-official-box p {
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.65;
+    }
+
+    .stage5-official-links {
+      display: grid;
+      gap: 7px;
+    }
+
+    .stage5-official-links a {
+      min-width: 0;
+      padding: 8px 10px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 850;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 7px;
+      overflow-wrap: anywhere;
+    }
+
     .reflection-actions {
       display: grid;
       gap: 8px;
@@ -711,6 +811,63 @@
       text-align: center;
     }
 
+    .debug-details {
+      margin-top: 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(126, 200, 227, 0.2);
+      border-radius: 8px;
+    }
+
+    .debug-details > summary {
+      min-height: 44px;
+      padding: 10px 12px;
+      color: var(--info);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .debug-body {
+      padding: 0 12px 12px;
+    }
+
+    .debug-info {
+      max-height: 520px;
+      margin: 0;
+      padding: 11px 12px;
+      color: var(--muted);
+      font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+      overflow: auto;
+      overflow-wrap: anywhere;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(126, 200, 227, 0.18);
+      border-radius: 8px;
+    }
+
+    .build-version {
+      margin: 8px 2px 0;
+      color: rgba(201, 187, 164, 0.74);
+      font-size: 11px;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .debug-summary-top {
+      margin: 10px 0 0;
+      padding: 10px 12px;
+      color: var(--muted);
+      font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: rgba(126, 200, 227, 0.08);
+      border: 1px solid rgba(126, 200, 227, 0.26);
+      border-radius: 8px;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -767,14 +924,17 @@
       <div class="os-switcher-links">
         <a class="os-switcher-link" href="index.html">火種ユイ</a>
         <a class="os-switcher-link" href="hygiene-os-v2.html">第二種衛生管理者 資格OS v2</a>
-        <span class="os-switcher-link is-current" aria-current="page">社労士準備クイズ</span>
+        <span class="os-switcher-link is-current" aria-current="page">社労士クイズOS</span>
       </div>
     </nav>
 
     <header>
       <div class="ember-mark" aria-hidden="true"></div>
-      <h1>社労士準備クイズ</h1>
-      <p class="tagline">難問の前に、まず言葉に慣れる。毎日1〜3問から始めよう。</p>
+      <h1>社労士クイズOS</h1>
+      <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-08-visible-file-check</p>
+      <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-08-visible-file-check
+debug: loading</pre>
     </header>
 
     <section class="panel location-card" aria-labelledby="currentLocationTitle">
@@ -808,7 +968,7 @@
         <ul class="locked-stage-list" id="lockedStagesList"></ul>
       </details>
       <p class="panel-note">
-        ステージ5：到達時点の最新公式情報を確認して作成する最終ステージ
+        ステージ5：公式確認・選択式・択一式・苦手補強・横断事例をまとめて演習する実戦総合演習
       </p>
     </section>
 
@@ -838,13 +998,36 @@
       </div>
     </section>
 
+    <section class="panel" aria-labelledby="syncTitle">
+      <details class="sync-details">
+        <summary id="syncTitle">学習データの手動同期</summary>
+        <div class="sync-body">
+          <p class="panel-note">
+            PCとスマホの学習データは、現在それぞれの端末のlocalStorageに保存されています。
+            下のJSONをコピーして別端末へ貼り付けると、手動で進捗を移せます。
+          </p>
+          <div class="sync-actions">
+            <button class="secondary-button" type="button" id="exportProgressButton">学習データをエクスポート</button>
+          </div>
+          <label class="sync-label" for="syncDataText">インポート用テキストエリア</label>
+          <textarea class="sync-textarea" id="syncDataText" rows="8" spellcheck="false" placeholder="別端末でエクスポートしたJSONをここに貼り付けます。"></textarea>
+          <div class="sync-actions">
+            <button class="primary-button" type="button" id="importProgressButton">学習データをインポート</button>
+          </div>
+          <p class="sync-meta">最終同期日時：<span id="lastSyncAt">未実行</span></p>
+          <p class="status-message" id="syncStatus" role="status" hidden></p>
+        </div>
+      </details>
+    </section>
+
     <section class="panel" id="homeView" aria-labelledby="homeTitle">
-      <h2 class="panel-title" id="homeTitle">準備モード</h2>
-      <p class="panel-note">基本用語と比較を土台に、条件・例外・数字を見分けます。</p>
+      <h2 class="panel-title" id="homeTitle">学習モード</h2>
+      <p class="panel-note">基礎用語から実戦総合演習まで、判断力を少しずつ積み上げます。</p>
       <div class="mode-actions">
         <button class="primary-button" type="button" id="dailyButton">今日の3問</button>
         <button class="secondary-button" type="button" id="challengeButton">10問チャレンジ</button>
         <button class="secondary-button" type="button" id="stageChallengeButton" hidden>ステージ4 12問チャレンジ</button>
+        <button class="secondary-button" type="button" id="stageFullChallengeButton" hidden>ステージ5 70問通し演習</button>
         <button class="secondary-button" type="button" id="termsButton">用語を見る</button>
         <button class="secondary-button" type="button" id="mistakesButton">間違えた問題</button>
       </div>
@@ -860,6 +1043,10 @@
         <div class="progress-fill" id="progressFill"></div>
       </div>
       <span class="category-label" id="questionCategory"></span>
+      <div class="stage5-official-box" id="stageOfficialBox" hidden>
+        <p id="stageOfficialNote"></p>
+        <div class="stage5-official-links" id="stageOfficialLinks"></div>
+      </div>
       <p class="question-text" id="questionText"></p>
       <div class="answer-actions" id="answerActions">
         <button class="answer-button" type="button" data-answer="true" aria-label="〇と答える">〇</button>
@@ -873,7 +1060,7 @@
         <p><strong id="termExampleLabel">例：</strong><span id="termExample"></span></p>
         <p><strong>覚え方：</strong><span id="memoryTip"></span></p>
         <div class="stage4-reflection" id="stage4Reflection" hidden>
-          <p class="stage4-reflection-title">ステージ4の理解記録</p>
+          <p class="stage4-reflection-title" id="reflectionTitle">ステージ4の理解記録</p>
           <div class="reflection-actions" id="reflectionActions">
             <button class="reflection-button" type="button" data-reflection="unsure">迷って正解</button>
             <button class="reflection-button" type="button" data-reflection="guessed">勘で正解</button>
@@ -903,28 +1090,63 @@
       <h2 class="panel-title">基本用語30</h2>
       <p class="panel-note">用語を押すと、短い説明・例・注意点・公的根拠を確認できます。</p>
       <div class="term-list" id="termList"></div>
-      <button class="secondary-button" type="button" id="termsBackButton">準備モードへ戻る</button>
+      <button class="secondary-button" type="button" id="termsBackButton">学習モードへ戻る</button>
     </section>
 
     <p class="footer-note">
-      ステージ1は2026年6月14日、ステージ2は2026年6月25日、ステージ3は2026年6月28日、ステージ4は2026年7月7日に公的情報を確認して再構成しています。
+      ステージ1は2026年6月14日、ステージ2は2026年6月25日、ステージ3は2026年6月28日、ステージ4・5は2026年7月7日に公的情報を確認して再構成しています。
       法改正後は根拠リンクも確認してください。
     </p>
+    <details class="debug-details">
+      <summary>デバッグ情報</summary>
+      <div class="debug-body">
+        <p class="panel-note">
+          スマホ実機で、保存データ・ステージ判定・問題データ読み込み状況を確認するための一時表示です。
+        </p>
+        <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
+      </div>
+    </details>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-08-visible-file-check</p>
   </main>
 
   <script>
     (function () {
       "use strict";
 
-      var DATA_URL = "sharoshi-intro-questions.json?v=20260707-stage4-playable";
+      var BUILD_VERSION = "2026-07-08-visible-file-check";
+      var DATA_URL = "sharoshi-intro-questions.json?v=20260708-visible-file-check";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
+      // この版はlocalStorage保存です。端末間同期にはSupabase等の共通DBが必要です。
       var RECENT_LIMIT = 6;
+      var STAGE_FIVE_SPLIT_LIMIT = 10;
+      var STAGE_FIVE_FULL_LIMIT = 70;
       var STAGE_ONE_ID = 1;
       var STAGE_TWO_ID = 2;
       var STAGE_THREE_ID = 3;
       var STAGE_FOUR_ID = 4;
+      var STAGE_FIVE_ID = 5;
       var STAGE_TOTAL = 5;
       var CHOICE_LABELS = ["A", "B", "C", "D", "E"];
+      var DEFAULT_CHOICE_IDS = ["a", "b", "c", "d", "e"];
+      var STAGE_OFFICIAL_LINKS = [
+        {
+          label: "社会保険労務士試験オフィシャルサイト",
+          url: "https://www.sharosi-siken.or.jp/"
+        },
+        {
+          label: "e-Gov法令検索",
+          url: "https://laws.e-gov.go.jp/"
+        },
+        {
+          label: "厚生労働省",
+          url: "https://www.mhlw.go.jp/"
+        },
+        {
+          label: "日本年金機構",
+          url: "https://www.nenkin.go.jp/"
+        }
+      ];
+      var STAGE_FIVE_NOTE = "ステージ5では、アプリ内の問題だけで完結せず、到達時点の最新公式情報も確認してください。試験日程・受験案内・法改正情報は、必ず公式情報で確認してください。";
       var FALLBACK_STAGES = [
         {
           id: 1,
@@ -964,9 +1186,18 @@
         },
         {
           id: 5,
-          name: "最新公式・本番準備",
-          objective: "到達時点の最新法改正、試験要項、公表情報、苦手履歴を確認して後から作成する。",
-          unlocked: false
+          name: "実戦総合演習",
+          objective: "社労士試験に向けて、公式情報確認・選択式対策・択一式対策・苦手補強・科目横断事例をまとめて演習する。",
+          unlocked: false,
+          questionCount: 70,
+          unlockFromStage: 4,
+          unlockAnswerCount: 12,
+          unlockAccuracy: 90,
+          completionAccuracy: 70,
+          completionPensionAccuracy: 70,
+          completionLaborAccuracy: 70,
+          completionOfficialCorrectCount: 3,
+          completionWeakAccuracy: 70
         }
       ];
       var questionBank = [];
@@ -974,13 +1205,17 @@
       var terms = [];
       var termMap = {};
       var stages = FALLBACK_STAGES.slice();
+      var lastProgressReadAt = "";
+      var lastProgressReadError = "";
+      var lastStoredProgressSnapshot = null;
       var progress = readProgress();
       var sessionQuestions = [];
       var sessionIndex = 0;
       var sessionCorrect = 0;
       var sessionMode = "daily";
       var sessionStageId = null;
-      var sessionStage4Detail = null;
+      var sessionStageDetail = null;
+      var sessionStageFullMode = false;
       var answered = false;
       var termsRendered = false;
 
@@ -1011,12 +1246,25 @@
       var dailyButton = document.getElementById("dailyButton");
       var challengeButton = document.getElementById("challengeButton");
       var stageChallengeButton = document.getElementById("stageChallengeButton");
+      var stageFullChallengeButton = document.getElementById("stageFullChallengeButton");
+      var exportProgressButton = document.getElementById("exportProgressButton");
+      var importProgressButton = document.getElementById("importProgressButton");
+      var syncDataText = document.getElementById("syncDataText");
+      var syncStatus = document.getElementById("syncStatus");
+      var lastSyncAt = document.getElementById("lastSyncAt");
+      var debugInfoText = document.getElementById("debugInfoText");
+      var buildVersionLabel = document.getElementById("buildVersionLabel");
+      var buildVersionTopLabel = document.getElementById("buildVersionTopLabel");
+      var debugSummaryTop = document.getElementById("debugSummaryTop");
       var termsButton = document.getElementById("termsButton");
       var mistakesButton = document.getElementById("mistakesButton");
       var progressLabel = document.getElementById("progressLabel");
       var modeLabel = document.getElementById("modeLabel");
       var progressFill = document.getElementById("progressFill");
       var questionCategory = document.getElementById("questionCategory");
+      var stageOfficialBox = document.getElementById("stageOfficialBox");
+      var stageOfficialNote = document.getElementById("stageOfficialNote");
+      var stageOfficialLinks = document.getElementById("stageOfficialLinks");
       var questionText = document.getElementById("questionText");
       var answerActions = document.getElementById("answerActions");
       var feedback = document.getElementById("feedback");
@@ -1029,6 +1277,7 @@
       var termExample = document.getElementById("termExample");
       var memoryTip = document.getElementById("memoryTip");
       var stage4Reflection = document.getElementById("stage4Reflection");
+      var reflectionTitle = document.getElementById("reflectionTitle");
       var reflectionActions = document.getElementById("reflectionActions");
       var reflectionStatus = document.getElementById("reflectionStatus");
       var questionSource = document.getElementById("questionSource");
@@ -1059,6 +1308,8 @@
           correctAnswers: 0,
           wrongQuestionIds: [],
           lastStudyDate: "",
+          lastManualSyncAt: "",
+          lastSavedAt: "",
           lastQuestionId: "",
           recentQuestionIds: [],
           seenQuestionIds: [],
@@ -1087,9 +1338,23 @@
               answerCount: 0,
               correctCount: 0,
               answeredQuestionIds: []
+            },
+            "5": {
+              answerCount: 0,
+              correctCount: 0,
+              answeredQuestionIds: []
             }
           },
           stage4: {
+            correctQuestionIds: [],
+            wrongQuestionIds: [],
+            unsureCorrectQuestionIds: [],
+            guessedCorrectQuestionIds: [],
+            weakQuestionIds: [],
+            achieved: false,
+            lastRun: null
+          },
+          stage5: {
             correctQuestionIds: [],
             wrongQuestionIds: [],
             unsureCorrectQuestionIds: [],
@@ -1128,6 +1393,7 @@
           weakIds: uniqueStrings(raw.weakIds),
           pensionCorrectCount: Math.max(0, Number(raw.pensionCorrectCount) || 0),
           laborCorrectCount: Math.max(0, Number(raw.laborCorrectCount) || 0),
+          officialCorrectCount: Math.max(0, Number(raw.officialCorrectCount) || 0),
           achieved: raw.achieved === true,
           completedAt: typeof raw.completedAt === "string" ? raw.completedAt : ""
         };
@@ -1135,15 +1401,26 @@
 
       function normalizeStage4Progress(raw) {
         var safe = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+        var lastRun = normalizeStage4Run(safe.lastRun);
 
         return {
-          correctQuestionIds: uniqueStrings(safe.correctQuestionIds),
-          wrongQuestionIds: uniqueStrings(safe.wrongQuestionIds),
-          unsureCorrectQuestionIds: uniqueStrings(safe.unsureCorrectQuestionIds),
-          guessedCorrectQuestionIds: uniqueStrings(safe.guessedCorrectQuestionIds),
-          weakQuestionIds: uniqueStrings(safe.weakQuestionIds),
-          achieved: safe.achieved === true,
-          lastRun: normalizeStage4Run(safe.lastRun)
+          correctQuestionIds: uniqueStrings(
+            uniqueStrings(safe.correctQuestionIds).concat(lastRun ? lastRun.correctIds : [])
+          ),
+          wrongQuestionIds: uniqueStrings(
+            uniqueStrings(safe.wrongQuestionIds).concat(lastRun ? lastRun.wrongIds : [])
+          ),
+          unsureCorrectQuestionIds: uniqueStrings(
+            uniqueStrings(safe.unsureCorrectQuestionIds).concat(lastRun ? lastRun.unsureCorrectIds : [])
+          ),
+          guessedCorrectQuestionIds: uniqueStrings(
+            uniqueStrings(safe.guessedCorrectQuestionIds).concat(lastRun ? lastRun.guessedCorrectIds : [])
+          ),
+          weakQuestionIds: uniqueStrings(
+            uniqueStrings(safe.weakQuestionIds).concat(lastRun ? lastRun.weakIds : [])
+          ),
+          achieved: safe.achieved === true || Boolean(lastRun && lastRun.achieved),
+          lastRun: lastRun
         };
       }
 
@@ -1203,15 +1480,29 @@
           0,
           []
         );
+        output[String(STAGE_FIVE_ID)] = normalizeStageStats(
+          raw && raw[String(STAGE_FIVE_ID)],
+          0,
+          0,
+          []
+        );
 
         return output;
       }
 
       function readProgress() {
         var base = defaultProgress();
+        var stored;
+
+        lastProgressReadAt = new Date().toISOString();
+        lastProgressReadError = "";
+        lastStoredProgressSnapshot = null;
 
         try {
-          var stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          if (stored && typeof stored === "object") {
+            lastStoredProgressSnapshot = JSON.parse(JSON.stringify(stored));
+          }
           if (!stored || typeof stored !== "object") {
             return base;
           }
@@ -1220,6 +1511,8 @@
           base.correctAnswers = Math.max(0, Number(stored.correctAnswers) || 0);
           base.wrongQuestionIds = uniqueStrings(stored.wrongQuestionIds);
           base.lastStudyDate = typeof stored.lastStudyDate === "string" ? stored.lastStudyDate : "";
+          base.lastManualSyncAt = typeof stored.lastManualSyncAt === "string" ? stored.lastManualSyncAt : "";
+          base.lastSavedAt = typeof stored.lastSavedAt === "string" ? stored.lastSavedAt : "";
           base.lastQuestionId = typeof stored.lastQuestionId === "string" ? stored.lastQuestionId : "";
           base.recentQuestionIds = uniqueStrings(stored.recentQuestionIds).slice(-RECENT_LIMIT);
           base.seenQuestionIds = uniqueStrings(stored.seenQuestionIds);
@@ -1234,7 +1527,9 @@
 
           base.stageProgress = normalizeStoredStageProgress(stored.stageProgress, base);
           base.stage4 = normalizeStage4Progress(stored.stage4);
+          base.stage5 = normalizeStage4Progress(stored.stage5);
         } catch (error) {
+          lastProgressReadError = error && error.message ? error.message : "保存データの読み込みに失敗しました。";
           return base;
         }
 
@@ -1242,6 +1537,7 @@
       }
 
       function saveProgress() {
+        progress.lastSavedAt = new Date().toISOString();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
       }
 
@@ -1301,28 +1597,120 @@
         return questionHasAnyLabel(question, ["労基法", "労働基準法"]);
       }
 
+      function isOfficialCheckQuestion(question) {
+        return questionHasAnyLabel(question, ["公式確認"]);
+      }
+
+      function isWeakBoostQuestion(question) {
+        return questionHasAnyLabel(question, ["苦手補強"]);
+      }
+
       function getStageQuestions(stageId) {
         return questionBank.filter(function (question) {
           return getQuestionStage(question) === stageId;
         });
       }
 
+      function getStageDetailKey(stageId) {
+        if (stageId === STAGE_FOUR_ID) {
+          return "stage4";
+        }
+        if (stageId === STAGE_FIVE_ID) {
+          return "stage5";
+        }
+        return "";
+      }
+
+      function getStageRules(stageId) {
+        var stage = getStage(stageId);
+        return {
+          correctCount: Math.max(1, Number(stage.completionCorrectCount) || 10),
+          pensionCorrectCount: Math.max(0, Number(stage.completionPensionCorrectCount) || 2),
+          laborCorrectCount: Math.max(0, Number(stage.completionLaborCorrectCount) || 2),
+          officialCorrectCount: Math.max(0, Number(stage.completionOfficialCorrectCount) || 0),
+          accuracy: Math.max(0, Number(stage.completionAccuracy) || 0),
+          pensionAccuracy: Math.max(0, Number(stage.completionPensionAccuracy) || 0),
+          laborAccuracy: Math.max(0, Number(stage.completionLaborAccuracy) || 0),
+          weakAccuracy: Math.max(0, Number(stage.completionWeakAccuracy) || 0)
+        };
+      }
+
+      function percent(correct, total) {
+        return total ? Math.round((correct / total) * 100) : 0;
+      }
+
+      function getStageCompletionRequirement(stageId) {
+        var stage = getStage(stageId);
+        var nextStage = getStage(stageId + 1);
+
+        if (stageId === STAGE_THREE_ID && nextStage) {
+          return {
+            answerCount: Math.max(1, Number(nextStage.unlockAnswerCount) || Number(stage.questionCount) || 1),
+            accuracy: Math.max(0, Number(nextStage.unlockAccuracy) || 90)
+          };
+        }
+        if (stageId === STAGE_FOUR_ID && nextStage) {
+          return {
+            answerCount: Math.max(1, Number(nextStage.unlockAnswerCount) || Number(stage.questionCount) || 1),
+            accuracy: Math.max(0, Number(nextStage.unlockAccuracy) || 90)
+          };
+        }
+        if (stageId === STAGE_FIVE_ID) {
+          return {
+            answerCount: Math.max(1, Number(stage.questionCount) || STAGE_FIVE_FULL_LIMIT),
+            accuracy: Math.max(0, Number(stage.completionAccuracy) || 70)
+          };
+        }
+
+        return {
+          answerCount: Math.max(1, Number(stage.questionCount) || 1),
+          accuracy: Math.max(0, Number(stage.unlockAccuracy) || 80)
+        };
+      }
+
+      function isStageCompleteForProgression(stageId) {
+        var stats = getStageStats(stageId);
+        var requirement = getStageCompletionRequirement(stageId);
+
+        if (stageId === STAGE_FIVE_ID) {
+          return buildStage5CumulativeRun().achieved;
+        }
+
+        return stats.answerCount >= requirement.answerCount &&
+          stats.accuracy >= requirement.accuracy;
+      }
+
+      function hasStageProgress(stageId) {
+        var stats = getStageStats(stageId);
+        return stats.answerCount > 0 || stats.answered > 0;
+      }
+
+      function hasLaterStageProgress(stageId) {
+        var laterStageId;
+        for (laterStageId = stageId + 1; laterStageId <= STAGE_TOTAL; laterStageId += 1) {
+          if (hasStageProgress(laterStageId)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
       function isStageUnlocked(stage) {
         if (!stage) {
           return false;
         }
-        if (stage.unlocked === true) {
+        if (stage.id === STAGE_ONE_ID) {
           return true;
         }
-        if (stage.id === STAGE_FOUR_ID) {
-          return getStage4Available();
+        if (stage.id >= STAGE_TWO_ID && stage.id <= STAGE_TOTAL) {
+          return getStageUnlockedByProgress(stage.id);
         }
         return false;
       }
 
       function getUnlockedStageIds() {
         return stages.filter(function (stage) {
-          return isStageUnlocked(stage) && stage.id < STAGE_TOTAL;
+          return isStageUnlocked(stage);
         }).map(function (stage) {
           return stage.id;
         }).sort(function (left, right) {
@@ -1358,7 +1746,18 @@
         var stageQuestionIds = {};
         var stored = progress.stageProgress && progress.stageProgress[String(stageId)];
         var stats = normalizeStageStats(stored, 0, 0, []);
+        var detailKey = getStageDetailKey(stageId);
+        var detail = detailKey ? normalizeStage4Progress(progress[detailKey]) : null;
+        var detailAnsweredQuestionIds = [];
+        var detailCorrectQuestionIds = [];
+        var lastRunAnsweredQuestionIds = [];
+        var lastRunCorrectQuestionIds = [];
+        var lastRunAnswerCount = 0;
+        var lastRunCorrectCount = 0;
         var answeredQuestionIds;
+        var answerCount;
+        var correctCount;
+        var answeredDisplayCount;
 
         stageQuestions.forEach(function (question) {
           stageQuestionIds[question.id] = true;
@@ -1368,97 +1767,650 @@
           return Boolean(stageQuestionIds[questionId]);
         });
 
+        if (detail) {
+          detailCorrectQuestionIds = detail.correctQuestionIds.filter(function (questionId) {
+            return Boolean(stageQuestionIds[questionId]);
+          });
+          detailAnsweredQuestionIds = uniqueStrings(detail.correctQuestionIds.concat(detail.wrongQuestionIds)).filter(function (questionId) {
+            return Boolean(stageQuestionIds[questionId]);
+          });
+          detailAnsweredQuestionIds.forEach(function (questionId) {
+            if (answeredQuestionIds.indexOf(questionId) === -1) {
+              answeredQuestionIds.push(questionId);
+            }
+          });
+          if (detail.lastRun) {
+            lastRunCorrectQuestionIds = detail.lastRun.correctIds.filter(function (questionId) {
+              return Boolean(stageQuestionIds[questionId]);
+            });
+            lastRunAnsweredQuestionIds = uniqueStrings(detail.lastRun.correctIds.concat(detail.lastRun.wrongIds)).filter(function (questionId) {
+              return Boolean(stageQuestionIds[questionId]);
+            });
+            lastRunAnsweredQuestionIds.forEach(function (questionId) {
+              if (answeredQuestionIds.indexOf(questionId) === -1) {
+                answeredQuestionIds.push(questionId);
+              }
+            });
+            lastRunAnswerCount = Math.max(detail.lastRun.total, lastRunAnsweredQuestionIds.length);
+            lastRunCorrectCount = Math.max(detail.lastRun.correctCount, lastRunCorrectQuestionIds.length);
+          }
+        }
+
+        answerCount = Math.max(stats.answerCount, answeredQuestionIds.length, lastRunAnswerCount);
+        correctCount = Math.min(Math.max(stats.correctCount, detailCorrectQuestionIds.length, lastRunCorrectCount), answerCount);
+        answeredDisplayCount = Math.min(questionTotal, Math.max(answeredQuestionIds.length, answerCount));
+
         return {
           total: questionTotal,
-          answered: answeredQuestionIds.length,
-          answerCount: stats.answerCount,
-          correctCount: stats.correctCount,
-          accuracy: stats.answerCount
-            ? Math.round((stats.correctCount / stats.answerCount) * 100)
+          answered: answeredDisplayCount,
+          answerCount: answerCount,
+          correctCount: correctCount,
+          accuracy: answerCount
+            ? Math.round((correctCount / answerCount) * 100)
             : 0,
-          unattempted: Math.max(0, questionTotal - answeredQuestionIds.length),
+          unattempted: Math.max(0, questionTotal - answeredDisplayCount),
           answeredQuestionIds: answeredQuestionIds
         };
       }
 
-      function getStage4Rules() {
-        var stage = getStage(STAGE_FOUR_ID);
+      function buildProgressDebugSnapshot() {
         return {
-          correctCount: Math.max(1, Number(stage.completionCorrectCount) || 10),
-          pensionCorrectCount: Math.max(0, Number(stage.completionPensionCorrectCount) || 2),
-          laborCorrectCount: Math.max(0, Number(stage.completionLaborCorrectCount) || 2)
+          storage: "localStorage:" + STORAGE_KEY,
+          lastStudyDate: progress.lastStudyDate || "",
+          stageProgress: {
+            1: getStageStats(STAGE_ONE_ID),
+            2: getStageStats(STAGE_TWO_ID),
+            3: getStageStats(STAGE_THREE_ID),
+            4: getStageStats(STAGE_FOUR_ID),
+            5: getStageStats(STAGE_FIVE_ID)
+          },
+          unlockedStages: getUnlockedStageIds(),
+          availableChallenges: getAvailableChallengeStageIds(),
+          wrongQuestionIds: progress.wrongQuestionIds.slice()
         };
       }
 
-      function getStage4Achieved() {
-        var rules = getStage4Rules();
-        var lastRun = progress.stage4 && progress.stage4.lastRun;
-        return progress.stage4 && (
-          progress.stage4.achieved === true ||
-          Boolean(lastRun &&
-            lastRun.total >= 12 &&
-            lastRun.correctCount >= rules.correctCount &&
-            lastRun.pensionCorrectCount >= rules.pensionCorrectCount &&
-            lastRun.laborCorrectCount >= rules.laborCorrectCount)
+      function logProgressDebug(reason) {
+        if (window.console && typeof window.console.info === "function") {
+          window.console.info("[sharoshi-intro] progress recalculated: " + reason, buildProgressDebugSnapshot());
+        }
+      }
+
+      function safeDebugJson(value) {
+        try {
+          return JSON.stringify(value, null, 2);
+        } catch (error) {
+          return String(value);
+        }
+      }
+
+      function getSharoshiLocalStorageKeys() {
+        var keys = [];
+
+        try {
+          for (var index = 0; index < localStorage.length; index += 1) {
+            var key = localStorage.key(index);
+            if (!key) {
+              continue;
+            }
+            if (
+              key === STORAGE_KEY ||
+              key.toLowerCase().indexOf("sharoshi") !== -1 ||
+              key.indexOf("社労士") !== -1
+            ) {
+              keys.push(key);
+            }
+          }
+        } catch (error) {
+          keys.push("localStorage keys read error: " + (error && error.message ? error.message : error));
+        }
+
+        return keys.sort();
+      }
+
+      function renderDebugInfo() {
+        var stage3Stats = getStageStats(STAGE_THREE_ID);
+        var stage4Stats = getStageStats(STAGE_FOUR_ID);
+        var unlockedStageIds = getUnlockedStageIds();
+        var highestUnlockedStage = unlockedStageIds.length
+          ? unlockedStageIds[unlockedStageIds.length - 1]
+          : STAGE_ONE_ID;
+        var rawStageProgress = lastStoredProgressSnapshot && lastStoredProgressSnapshot.stageProgress
+          ? lastStoredProgressSnapshot.stageProgress
+          : {};
+        var rawStage4 = lastStoredProgressSnapshot && lastStoredProgressSnapshot.stage4
+          ? lastStoredProgressSnapshot.stage4
+          : null;
+        var normalizedStage4 = normalizeStage4Progress(progress.stage4);
+        var info = {
+          appVersion: BUILD_VERSION,
+          buildVersion: BUILD_VERSION,
+          dataUrl: DATA_URL,
+          storageKey: STORAGE_KEY,
+          currentStage: getCurrentStageId(),
+          highestUnlockedStage: highestUnlockedStage,
+          completedStages: getCompletedStageIds(),
+          stage3Answered: stage3Stats.answerCount,
+          stage3Accuracy: stage3Stats.accuracy,
+          stage4Answered: stage4Stats.answerCount,
+          stage4Accuracy: stage4Stats.accuracy,
+          stage4Completed: getStageAchieved(STAGE_FOUR_ID),
+          stage5Unlocked: getStage5Unlocked(),
+          stage5Available: getStage5Available(),
+          stage5QuestionsCount: getStageQuestions(STAGE_FIVE_ID).length,
+          stageProgress3: progress.stageProgress && progress.stageProgress[String(STAGE_THREE_ID)]
+            ? progress.stageProgress[String(STAGE_THREE_ID)]
+            : null,
+          stageProgress4: progress.stageProgress && progress.stageProgress[String(STAGE_FOUR_ID)]
+            ? progress.stageProgress[String(STAGE_FOUR_ID)]
+            : null,
+          stage4LastRun: normalizedStage4.lastRun,
+          rawStageProgress3: rawStageProgress[String(STAGE_THREE_ID)] || null,
+          rawStageProgress4: rawStageProgress[String(STAGE_FOUR_ID)] || null,
+          rawStage4LastRun: rawStage4 && rawStage4.lastRun ? rawStage4.lastRun : null,
+          localStorageKeys: getSharoshiLocalStorageKeys(),
+          lastSavedAt: progress.lastSavedAt || "",
+          lastReadAt: lastProgressReadAt || "",
+          lastReadError: lastProgressReadError || "",
+          lastStudyDate: progress.lastStudyDate || "",
+          debugGeneratedAt: new Date().toISOString()
+        };
+
+        if (buildVersionLabel) {
+          buildVersionLabel.textContent = "buildVersion: " + BUILD_VERSION;
+        }
+        if (buildVersionTopLabel) {
+          buildVersionTopLabel.textContent = "buildVersion: " + BUILD_VERSION;
+        }
+        if (debugSummaryTop) {
+          debugSummaryTop.textContent = [
+            "buildVersion: " + BUILD_VERSION,
+            "currentStage: " + info.currentStage,
+            "highestUnlockedStage: " + info.highestUnlockedStage,
+            "stage4Answered: " + info.stage4Answered,
+            "stage4Accuracy: " + info.stage4Accuracy,
+            "stage4Completed: " + info.stage4Completed,
+            "stage5Unlocked: " + info.stage5Unlocked,
+            "stage5QuestionsCount: " + info.stage5QuestionsCount,
+            "stageProgress4: " + safeDebugJson(info.stageProgress4),
+            "stage4LastRun: " + safeDebugJson(info.stage4LastRun)
+          ].join("\n");
+        }
+        if (debugInfoText) {
+          debugInfoText.textContent = "デバッグ情報:\n" + safeDebugJson(info);
+        }
+      }
+
+      function isPlainObject(value) {
+        return value && typeof value === "object" && !Array.isArray(value);
+      }
+
+      function cloneJson(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+
+      function formatDateTime(value) {
+        var date;
+        if (!value) {
+          return "未実行";
+        }
+
+        date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return value;
+        }
+
+        return new Intl.DateTimeFormat("ja-JP", {
+          timeZone: "Asia/Tokyo",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date);
+      }
+
+      function updateSyncInfo() {
+        lastSyncAt.textContent = formatDateTime(progress.lastManualSyncAt);
+      }
+
+      function showSyncStatus(message, isError) {
+        syncStatus.textContent = message;
+        syncStatus.hidden = !message;
+        syncStatus.classList.toggle("is-error", Boolean(isError));
+        syncStatus.classList.toggle("is-good", Boolean(message) && !isError);
+      }
+
+      function collectAnsweredQuestionIds() {
+        var ids = uniqueStrings(progress.seenQuestionIds);
+
+        Object.keys(progress.stageProgress || {}).forEach(function (stageId) {
+          var stats = normalizeStageStats(progress.stageProgress[stageId], 0, 0, []);
+          ids = uniqueStrings(ids.concat(stats.answeredQuestionIds));
+        });
+
+        [STAGE_FOUR_ID, STAGE_FIVE_ID].forEach(function (stageId) {
+          var detail = normalizeStage4Progress(progress[getStageDetailKey(stageId)]);
+          ids = uniqueStrings(ids.concat(detail.correctQuestionIds, detail.wrongQuestionIds));
+        });
+
+        return ids;
+      }
+
+      function getReviewQuestionIds() {
+        return uniqueStrings(progress.wrongQuestionIds.concat(Object.keys(progress.wrongReview || {})));
+      }
+
+      function collectStageDetailIds(keyName) {
+        var ids = [];
+
+        [STAGE_FOUR_ID, STAGE_FIVE_ID].forEach(function (stageId) {
+          var detail = normalizeStage4Progress(progress[getStageDetailKey(stageId)]);
+          ids = ids.concat(detail[keyName] || []);
+        });
+
+        return uniqueStrings(ids);
+      }
+
+      function buildWeakCategorySummary() {
+        var counts = {};
+        var weakIds = uniqueStrings(
+          progress.wrongQuestionIds
+            .concat(collectStageDetailIds("weakQuestionIds"))
+        );
+
+        weakIds.forEach(function (questionId) {
+          var question = questionById[questionId];
+          if (!question) {
+            return;
+          }
+          getQuestionCategories(question).forEach(function (category) {
+            counts[category] = (counts[category] || 0) + 1;
+          });
+        });
+
+        return {
+          counts: counts,
+          labels: Object.keys(counts).sort(function (left, right) {
+            return counts[right] - counts[left] || left.localeCompare(right, "ja");
+          }).map(function (category) {
+            return category + " " + counts[category] + "問";
+          })
+        };
+      }
+
+      function buildStageResults() {
+        var output = {};
+
+        stages.forEach(function (stage) {
+          var stats = getStageStats(stage.id);
+          output[String(stage.id)] = {
+            total: stats.total,
+            answerCount: stats.answerCount,
+            correctCount: stats.correctCount,
+            accuracy: stats.accuracy,
+            answeredQuestionIds: stats.answeredQuestionIds,
+            unlocked: isStageUnlocked(stage),
+            achieved: getStageAchieved(stage.id)
+          };
+        });
+
+        return output;
+      }
+
+      function getCompletedStageIds() {
+        return stages.filter(function (stage) {
+          return stage.id < STAGE_FOUR_ID
+            ? getStageKeyEarned(stage.id)
+            : getStageAchieved(stage.id);
+        }).map(function (stage) {
+          return stage.id;
+        });
+      }
+
+      function buildProgressExportPayload() {
+        var unlockedStageIds = getUnlockedStageIds();
+        var stage4Result = normalizeStage4Progress(progress.stage4);
+        var stage5Result = normalizeStage4Progress(progress.stage5);
+
+        return {
+          app: "sharoshi-quiz-os",
+          title: "社労士クイズOS",
+          version: 1,
+          storageKey: STORAGE_KEY,
+          exportedAt: new Date().toISOString(),
+          currentStage: getCurrentStageId(),
+          highestUnlockedStage: unlockedStageIds.length
+            ? unlockedStageIds[unlockedStageIds.length - 1]
+            : STAGE_ONE_ID,
+          completedStages: getCompletedStageIds(),
+          answeredQuestionIds: collectAnsweredQuestionIds(),
+          stageResults: buildStageResults(),
+          wrongQuestionIds: progress.wrongQuestionIds.slice(),
+          reviewQuestionIds: getReviewQuestionIds(),
+          guessedCorrectQuestionIds: collectStageDetailIds("guessedCorrectQuestionIds"),
+          uncertainCorrectQuestionIds: collectStageDetailIds("unsureCorrectQuestionIds"),
+          weakQuestionIds: collectStageDetailIds("weakQuestionIds"),
+          weakCategories: buildWeakCategorySummary(),
+          totalAnswered: progress.totalAnswers,
+          totalCorrect: progress.correctAnswers,
+          lastStudyDate: progress.lastStudyDate || "",
+          stage4Result: stage4Result,
+          stage5Result: stage5Result,
+          progress: cloneJson(progress)
+        };
+      }
+
+      function buildStageProgressFromResults(results) {
+        var output = {};
+
+        if (!isPlainObject(results)) {
+          return null;
+        }
+
+        Object.keys(results).forEach(function (stageId) {
+          var result = results[stageId];
+          if (!/^[1-5]$/.test(stageId) || !isPlainObject(result)) {
+            return;
+          }
+          output[stageId] = {
+            answerCount: Math.max(0, Number(result.answerCount || result.answered) || 0),
+            correctCount: Math.max(0, Number(result.correctCount) || 0),
+            answeredQuestionIds: uniqueStrings(result.answeredQuestionIds)
+          };
+        });
+
+        return output;
+      }
+
+      function looksLikeProgressPayload(value) {
+        return isPlainObject(value) && (
+          isPlainObject(value.progress) ||
+          isPlainObject(value.stageProgress) ||
+          isPlainObject(value.stageResults) ||
+          Array.isArray(value.answeredQuestionIds) ||
+          Object.prototype.hasOwnProperty.call(value, "totalAnswers") ||
+          Object.prototype.hasOwnProperty.call(value, "totalAnswered")
         );
       }
 
-      function getStage4Unlocked() {
-        var stage3Stats = getStageStats(STAGE_THREE_ID);
-        var stage4 = getStage(STAGE_FOUR_ID);
-        var requiredAnswers = Math.max(1, Number(stage4.unlockAnswerCount) || 30);
-        var requiredAccuracy = Math.max(0, Number(stage4.unlockAccuracy) || 90);
+      function normalizeImportedProgressPayload(payload) {
+        var source;
+        var base;
+        var stageProgressSource;
 
-        return stage3Stats.answerCount >= requiredAnswers &&
-          stage3Stats.accuracy >= requiredAccuracy;
+        if (!looksLikeProgressPayload(payload)) {
+          throw new Error("社労士クイズOSの学習データJSONではありません。");
+        }
+
+        source = isPlainObject(payload.progress) ? payload.progress : payload;
+        base = defaultProgress();
+        base.totalAnswers = Math.max(0, Number(source.totalAnswers || payload.totalAnswered) || 0);
+        base.correctAnswers = Math.min(
+          base.totalAnswers,
+          Math.max(0, Number(source.correctAnswers || payload.totalCorrect) || 0)
+        );
+        base.wrongQuestionIds = uniqueStrings(
+          []
+            .concat(source.wrongQuestionIds || [])
+            .concat(payload.wrongQuestionIds || [])
+            .concat(payload.reviewQuestionIds || [])
+        );
+        base.lastStudyDate = typeof source.lastStudyDate === "string"
+          ? source.lastStudyDate
+          : typeof payload.lastStudyDate === "string" ? payload.lastStudyDate : "";
+        base.lastManualSyncAt = typeof source.lastManualSyncAt === "string" ? source.lastManualSyncAt : "";
+        base.lastQuestionId = typeof source.lastQuestionId === "string" ? source.lastQuestionId : "";
+        base.recentQuestionIds = uniqueStrings(source.recentQuestionIds).slice(-RECENT_LIMIT);
+        base.seenQuestionIds = uniqueStrings(
+          []
+            .concat(source.seenQuestionIds || [])
+            .concat(payload.answeredQuestionIds || [])
+        );
+        base.wrongReview = isPlainObject(source.wrongReview) ? source.wrongReview : {};
+
+        if (isPlainObject(source.daily)) {
+          base.daily.date = typeof source.daily.date === "string" ? source.daily.date : "";
+          base.daily.answers = Math.max(0, Number(source.daily.answers) || 0);
+        }
+
+        stageProgressSource = isPlainObject(source.stageProgress)
+          ? source.stageProgress
+          : buildStageProgressFromResults(payload.stageResults);
+        base.stageProgress = normalizeStoredStageProgress(stageProgressSource, base);
+        base.stage4 = normalizeStage4Progress(source.stage4 || payload.stage4Result);
+        base.stage5 = normalizeStage4Progress(source.stage5 || payload.stage5Result);
+
+        return base;
+      }
+
+      function exportProgressData() {
+        var payload;
+        var json;
+
+        normalizeStageProgress();
+        progress.lastManualSyncAt = new Date().toISOString();
+        saveProgress();
+        updateSyncInfo();
+        payload = buildProgressExportPayload();
+        json = JSON.stringify(payload, null, 2);
+        syncDataText.value = json;
+        syncDataText.focus();
+        syncDataText.select();
+
+        copyTextToClipboard(json)
+          .then(function () {
+            showSyncStatus("学習データJSONを作成し、クリップボードにもコピーしました。", false);
+          })
+          .catch(function () {
+            showSyncStatus("学習データJSONを作成しました。コピーできない場合はテキストエリアから選択してください。", false);
+          });
+      }
+
+      function importProgressData() {
+        var raw = syncDataText.value.trim();
+        var parsed;
+        var importedProgress;
+
+        if (!raw) {
+          showSyncStatus("インポートするJSONを貼り付けてください。", true);
+          return;
+        }
+
+        try {
+          parsed = JSON.parse(raw);
+        } catch (error) {
+          showSyncStatus("JSONとして読み取れませんでした。括弧や引用符が崩れていないか確認してください。", true);
+          return;
+        }
+
+        try {
+          importedProgress = normalizeImportedProgressPayload(parsed);
+          progress = importedProgress;
+          normalizeStageProgress();
+          progress.lastManualSyncAt = new Date().toISOString();
+          saveProgress();
+          updateStats();
+          logProgressDebug("manual import");
+          showSyncStatus("学習データをインポートしました。回答履歴からステージ解放状態を再計算しました。", false);
+        } catch (error) {
+          showSyncStatus(error.message || "学習データの形式が正しくありません。", true);
+        }
+      }
+
+      function getStage4Rules() {
+        return getStageRules(STAGE_FOUR_ID);
+      }
+
+      function addCategoryProgress(summary, key, question, correctIds, answeredIds, predicate) {
+        if (!predicate(question)) {
+          return;
+        }
+        if (answeredIds.indexOf(question.id) !== -1) {
+          summary[key + "AnsweredCount"] += 1;
+        }
+        if (correctIds.indexOf(question.id) !== -1) {
+          summary[key + "CorrectCount"] += 1;
+        }
+      }
+
+      function buildStage5CumulativeRun() {
+        var detail = ensureStageDetailProgress(STAGE_FIVE_ID) || normalizeStage4Progress(null);
+        var questions = getStageQuestions(STAGE_FIVE_ID);
+        var questionIds = {};
+        var answeredIds = uniqueStrings(detail.correctQuestionIds.concat(detail.wrongQuestionIds));
+        var correctIds = uniqueStrings(detail.correctQuestionIds);
+        var wrongIds = uniqueStrings(detail.wrongQuestionIds);
+        var rules = getStageRules(STAGE_FIVE_ID);
+        var summary = {
+          total: questions.length || STAGE_FIVE_FULL_LIMIT,
+          answeredCount: 0,
+          correctCount: 0,
+          accuracy: 0,
+          pensionAnsweredCount: 0,
+          pensionCorrectCount: 0,
+          pensionAccuracy: 0,
+          laborAnsweredCount: 0,
+          laborCorrectCount: 0,
+          laborAccuracy: 0,
+          officialAnsweredCount: 0,
+          officialCorrectCount: 0,
+          officialAccuracy: 0,
+          weakAnsweredCount: 0,
+          weakCorrectCount: 0,
+          weakAccuracy: 0,
+          wrongIds: wrongIds,
+          unsureCorrectIds: uniqueStrings(detail.unsureCorrectQuestionIds),
+          guessedCorrectIds: uniqueStrings(detail.guessedCorrectQuestionIds),
+          weakIds: uniqueStrings(detail.weakQuestionIds),
+          achieved: false
+        };
+
+        questions.forEach(function (question) {
+          questionIds[question.id] = true;
+        });
+        answeredIds = answeredIds.filter(function (questionId) {
+          return Boolean(questionIds[questionId]);
+        });
+        correctIds = correctIds.filter(function (questionId) {
+          return Boolean(questionIds[questionId]);
+        });
+
+        summary.answeredCount = answeredIds.length;
+        summary.correctCount = correctIds.length;
+        summary.accuracy = percent(summary.correctCount, summary.answeredCount);
+
+        questions.forEach(function (question) {
+          addCategoryProgress(summary, "pension", question, correctIds, answeredIds, isPensionQuestion);
+          addCategoryProgress(summary, "labor", question, correctIds, answeredIds, isLaborStandardsQuestion);
+          addCategoryProgress(summary, "official", question, correctIds, answeredIds, isOfficialCheckQuestion);
+          addCategoryProgress(summary, "weak", question, correctIds, answeredIds, isWeakBoostQuestion);
+        });
+
+        summary.pensionAccuracy = percent(summary.pensionCorrectCount, summary.pensionAnsweredCount);
+        summary.laborAccuracy = percent(summary.laborCorrectCount, summary.laborAnsweredCount);
+        summary.officialAccuracy = percent(summary.officialCorrectCount, summary.officialAnsweredCount);
+        summary.weakAccuracy = percent(summary.weakCorrectCount, summary.weakAnsweredCount);
+        summary.achieved = summary.answeredCount >= summary.total &&
+          summary.accuracy >= rules.accuracy &&
+          summary.pensionAccuracy >= rules.pensionAccuracy &&
+          summary.laborAccuracy >= rules.laborAccuracy &&
+          summary.officialCorrectCount >= rules.officialCorrectCount &&
+          summary.weakAccuracy >= rules.weakAccuracy;
+
+        return summary;
+      }
+
+      function getStageAchieved(stageId) {
+        if (stageId === STAGE_FIVE_ID) {
+          return buildStage5CumulativeRun().achieved;
+        }
+        return isStageCompleteForProgression(stageId);
+      }
+
+      function getStage4Achieved() {
+        return getStageAchieved(STAGE_FOUR_ID);
+      }
+
+      function getStageUnlockedByProgress(stageId) {
+        var stage = getStage(stageId);
+        var fromStageId = Math.max(1, Number(stage.unlockFromStage) || (stageId - 1));
+
+        if (stageId === STAGE_ONE_ID) {
+          return true;
+        }
+
+        return isStageCompleteForProgression(fromStageId) ||
+          hasStageProgress(stageId) ||
+          hasLaterStageProgress(stageId);
+      }
+
+      function getStage4Unlocked() {
+        return getStageUnlockedByProgress(STAGE_FOUR_ID);
       }
 
       function getStage4Available() {
         return getStage4Unlocked() && getStageQuestions(STAGE_FOUR_ID).length > 0;
       }
 
+      function getStage5Unlocked() {
+        return getStageUnlockedByProgress(STAGE_FIVE_ID);
+      }
+
+      function getStage5Available() {
+        return getStage5Unlocked() && getStageQuestions(STAGE_FIVE_ID).length > 0;
+      }
+
+      function getAvailableChallengeStageIds() {
+        return [STAGE_FOUR_ID, STAGE_FIVE_ID].filter(function (stageId) {
+          return isStageUnlocked(getStage(stageId)) &&
+            getStageQuestions(stageId).length > 0 &&
+            !getStageAchieved(stageId);
+        });
+      }
+
+      function getNextChallengeStageId() {
+        var stageIds = getAvailableChallengeStageIds();
+        return stageIds.length ? stageIds[stageIds.length - 1] : getCurrentStageId();
+      }
+
       function getStageKeyEarned(stageId) {
-        if (stageId === STAGE_FOUR_ID) {
-          return getStage4Achieved();
-        }
-        if (stageId === STAGE_THREE_ID) {
-          return getStage4Unlocked();
-        }
-        var stage = getStage(stageId);
-        var stats = getStageStats(stageId);
-        var unlockAccuracy = Number(stage.unlockAccuracy) || 80;
-        return stats.total > 0 &&
-          stats.answered >= stats.total &&
-          stats.accuracy >= unlockAccuracy;
+        return getStageAchieved(stageId);
       }
 
       function renderLockedStages() {
-        var stage4 = getStage(STAGE_FOUR_ID);
-        var stage4Playable = getStage4Available();
+        var playableStageIds = getAvailableChallengeStageIds();
+        var highestPlayableStageId = playableStageIds.length
+          ? playableStageIds[playableStageIds.length - 1]
+          : null;
+        var highestPlayableStage = highestPlayableStageId ? getStage(highestPlayableStageId) : null;
         var lockedStages = stages.filter(function (stage) {
           return stage.id >= 2 && stage.id <= STAGE_TOTAL && !isStageUnlocked(stage);
         });
 
         lockedStagesList.textContent = "";
-        if (stage4Playable) {
-          lockedStagesSummary.textContent = "挑戦可能：ステージ4「" + stage4.name + "」";
+        if (highestPlayableStage) {
+          lockedStagesSummary.textContent = "挑戦可能：ステージ" + highestPlayableStage.id + "「" + highestPlayableStage.name + "」";
         } else {
           lockedStagesSummary.textContent = lockedStages.length
             ? "未解放：🔒 ステージ" + lockedStages[0].id + "「" + lockedStages[0].name + "」"
             : "未解放：通常ステージはすべて解放済み";
         }
 
-        if (stage4Playable) {
+        playableStageIds.forEach(function (stageId) {
+          var stage = getStage(stageId);
           var playableItem = document.createElement("li");
           var playableTitle = document.createElement("strong");
           var playableDetail = document.createElement("span");
 
-          playableTitle.textContent = "挑戦可能：ステージ4「" + stage4.name + "」";
-          playableDetail.textContent = "「ステージ4を開始する」から、事例問題に進めます。";
+          playableTitle.textContent = "挑戦可能：ステージ" + stage.id + "「" + stage.name + "」";
+          playableDetail.textContent = stage.id === STAGE_FIVE_ID
+            ? "10問ずつ分割、または70問通し演習で実戦総合演習に進めます。"
+            : "「ステージ" + stage.id + "を開始する」から、事例問題に進めます。";
           playableItem.appendChild(playableTitle);
           playableItem.appendChild(playableDetail);
           lockedStagesList.appendChild(playableItem);
-        }
+        });
 
         lockedStages.forEach(function (stage) {
           var item = document.createElement("li");
@@ -1485,12 +2437,12 @@
 
       function getNextStageRequestText(stageId) {
         if (stageId === STAGE_TWO_ID) {
-          return "社労士準備OSのステージ3・条件例外数字対策を作成してください";
+          return "社労士クイズOSのステージ3・条件例外数字対策を作成してください";
         }
         if (stageId === STAGE_THREE_ID) {
-          return "社労士準備OSのステージ4・事例科目横断対策を作成してください";
+          return "社労士クイズOSのステージ4・事例科目横断対策を作成してください";
         }
-        return "社労士準備OSのステージ" + (stageId + 1) + "を作成してください";
+        return "社労士クイズOSのステージ" + (stageId + 1) + "を作成してください";
       }
 
       function updateStageCard() {
@@ -1500,8 +2452,12 @@
         var stats = getStageStats(currentStageId);
         var unlockAccuracy = Number(stage.unlockAccuracy) || 80;
         var earned = getStageKeyEarned(currentStageId);
-        var stage4Rules = getStage4Rules();
-        var stage4Available = getStage4Available();
+        var stageRules = getStageRules(currentStageId);
+        var challengeStageId = getNextChallengeStageId();
+        var challengeStage = getStage(challengeStageId);
+        var challengeAvailable = challengeStageId >= STAGE_FOUR_ID &&
+          isStageUnlocked(challengeStage) &&
+          getStageQuestions(challengeStageId).length > 0;
         var nextActionText = stageNextAction.querySelector("p");
 
         currentLocationTitle.textContent = "現在：ステージ" + currentStageId + " / " + STAGE_TOTAL;
@@ -1510,11 +2466,26 @@
         locationProgressValue.textContent =
           stats.answerCount + " / " + stats.total + "問回答\n" +
           "正答率 " + formatStageAccuracy(stats);
-        if (currentStageId === STAGE_FOUR_ID) {
+        if (currentStageId === STAGE_FIVE_ID) {
           locationKeyValue.textContent =
-            "12問中" + stage4Rules.correctCount + "問以上正解\n" +
-            "年金タグを含む問題で" + stage4Rules.pensionCorrectCount + "問以上正解\n" +
-            "労基法タグ、または労働基準法カテゴリで" + stage4Rules.laborCorrectCount + "問以上正解";
+            "70問中 正答率70%以上\n" +
+            "年金カテゴリ 正答率70%以上\n" +
+            "労働基準法カテゴリ 正答率70%以上\n" +
+            "公式確認カテゴリ 3問以上正解\n" +
+            "苦手補強カテゴリ 正答率70%以上";
+        } else if (currentStageId === STAGE_FOUR_ID) {
+          var stageFourRequirement = getStageCompletionRequirement(STAGE_FOUR_ID);
+          locationKeyValue.textContent =
+            "ステージ4の回答数" + stageFourRequirement.answerCount + "問以上\n" +
+            "ステージ4正答率" + stageFourRequirement.accuracy + "%以上";
+        } else if (currentStageId > STAGE_FOUR_ID) {
+          locationKeyValue.textContent =
+            (Number(stage.questionCount) || 12) + "問中" + stageRules.correctCount + "問以上正解\n" +
+            "年金タグを含む問題で" + stageRules.pensionCorrectCount + "問以上正解\n" +
+            "労基法タグ、または労働基準法カテゴリで" + stageRules.laborCorrectCount + "問以上正解" +
+            (stageRules.officialCorrectCount
+              ? "\n公式確認タグを含む問題で" + stageRules.officialCorrectCount + "問以上正解"
+              : "");
         } else {
           var requiredAnswers = currentStageId === STAGE_THREE_ID
             ? Math.max(1, Number(getStage(STAGE_FOUR_ID).unlockAnswerCount) || 30)
@@ -1524,11 +2495,13 @@
             "ステージ" + currentStageId + "正答率" + unlockAccuracy + "%以上";
         }
 
-        if (currentStageId === STAGE_FOUR_ID) {
+        if (currentStageId >= STAGE_FOUR_ID) {
           stageKeyStatus.textContent = earned
-            ? "ステージ4を達成しました。次のステージを作成できます。"
-            : "ステージ4が解放済みです。12問チャレンジで事例判断を練習できます。";
-        } else if (stage4Available && currentStageId === STAGE_THREE_ID) {
+            ? "ステージ" + currentStageId + "を達成しました。"
+            : currentStageId === STAGE_FIVE_ID
+              ? "ステージ5が解放済みです。10問ずつ分割または70問通し演習で実戦総合演習に取り組めます。"
+              : "ステージ4が解放済みです。12問チャレンジで事例判断を練習できます。";
+        } else if (getStage4Available() && currentStageId === STAGE_THREE_ID) {
           stageKeyStatus.textContent = "ステージ4が解放済みです。ステージ4に挑戦できます。";
         } else {
           stageKeyStatus.textContent = earned
@@ -1536,16 +2509,24 @@
             : "条件達成までは、ステージ" + currentStageId + "の問題に取り組みます。";
         }
         stageKeyStatus.classList.toggle("is-earned", earned);
-        if (stage4Available && currentStageId <= STAGE_FOUR_ID && !getStage4Achieved()) {
+        if (challengeAvailable && !getStageAchieved(challengeStageId)) {
           stageNextAction.hidden = false;
-          stageConsultButton.dataset.action = "stage4-start";
-          stageConsultButton.textContent = "ステージ4を開始する";
+          stageConsultButton.dataset.action = "stage-start";
+          stageConsultButton.dataset.stageId = String(challengeStageId);
+          stageConsultButton.textContent = challengeStageId === STAGE_FIVE_ID
+            ? "ステージ5を開始する"
+            : "ステージ" + challengeStageId + "を開始する";
           if (nextActionText) {
-            nextActionText.textContent = "ステージ4が解放済みです";
+            nextActionText.textContent = "ステージ" + challengeStageId + "が解放済みです";
           }
+        } else if (currentStageId === STAGE_FIVE_ID && earned) {
+          stageNextAction.hidden = true;
+          stageConsultButton.dataset.action = "consult";
+          stageConsultButton.dataset.stageId = "";
         } else {
           stageNextAction.hidden = !earned;
           stageConsultButton.dataset.action = "consult";
+          stageConsultButton.dataset.stageId = "";
           stageConsultButton.textContent = nextStage
             ? "ユイへステージ" + nextStage.id + "作成を相談する"
             : "ユイへ次のステージ作成を相談する";
@@ -1579,17 +2560,36 @@
         unseenCount.textContent = String(Math.max(0, playableQuestions.length - seenPlayableCount));
         wrongCount.textContent = String(progress.wrongQuestionIds.length);
         mistakesButton.textContent = "間違えた問題 (" + progress.wrongQuestionIds.length + ")";
+        updateSyncInfo();
         updateStageCard();
         currentStageId = getCurrentStageId();
         currentStageQuestions = getStageQuestions(currentStageId);
-        if (getStage4Available()) {
+        var challengeStageId = getNextChallengeStageId();
+        var challengeStage = getStage(challengeStageId);
+        if (challengeStageId >= STAGE_FOUR_ID &&
+            isStageUnlocked(challengeStage) &&
+            getStageQuestions(challengeStageId).length > 0 &&
+            !getStageAchieved(challengeStageId)) {
           stageChallengeButton.hidden = false;
           stageChallengeButton.disabled = false;
-          stageChallengeButton.textContent = "ステージ4を開始する";
+          stageChallengeButton.textContent = challengeStageId === STAGE_FIVE_ID
+            ? "ステージ5を開始する"
+            : "ステージ" + challengeStageId + "を開始する";
         } else {
           stageChallengeButton.hidden = true;
           stageChallengeButton.disabled = true;
         }
+        if (challengeStageId === STAGE_FIVE_ID &&
+            isStageUnlocked(challengeStage) &&
+            getStageQuestions(STAGE_FIVE_ID).length >= STAGE_FIVE_FULL_LIMIT &&
+            !getStageAchieved(STAGE_FIVE_ID)) {
+          stageFullChallengeButton.hidden = false;
+          stageFullChallengeButton.disabled = false;
+        } else {
+          stageFullChallengeButton.hidden = true;
+          stageFullChallengeButton.disabled = true;
+        }
+        renderDebugInfo();
       }
 
       function showOnly(name) {
@@ -1678,8 +2678,27 @@
         return selected.slice(0, limit);
       }
 
-      function selectStageQuestions(stageId) {
-        var selected = shuffled(getStageQuestions(stageId));
+      function selectStageQuestions(stageId, limit) {
+        var stageQuestions = getStageQuestions(stageId);
+        var stats = getStageStats(stageId);
+        var answeredIds = stats.answeredQuestionIds;
+        var selected = [];
+        var preferred = stageQuestions.filter(function (question) {
+          return answeredIds.indexOf(question.id) === -1 &&
+            question.id !== progress.lastQuestionId;
+        });
+        var notLast = stageQuestions.filter(function (question) {
+          return question.id !== progress.lastQuestionId;
+        });
+
+        if (!limit || limit >= stageQuestions.length) {
+          selected = shuffled(stageQuestions);
+        } else {
+          appendUnique(selected, preferred, limit);
+          appendUnique(selected, notLast, limit);
+          appendUnique(selected, stageQuestions, limit);
+          selected = selected.slice(0, limit);
+        }
 
         if (selected.length > 1 && selected[0].id === progress.lastQuestionId) {
           selected.push(selected.shift());
@@ -1688,7 +2707,7 @@
         return selected;
       }
 
-      function createStage4SessionDetail() {
+      function createStageSessionDetail() {
         return {
           total: 0,
           correctIds: [],
@@ -1696,23 +2715,37 @@
           unsureCorrectIds: [],
           guessedCorrectIds: [],
           weakIds: [],
+          pensionAnsweredCount: 0,
           pensionCorrectCount: 0,
-          laborCorrectCount: 0
+          laborAnsweredCount: 0,
+          laborCorrectCount: 0,
+          officialAnsweredCount: 0,
+          officialCorrectCount: 0,
+          weakAnsweredCount: 0,
+          weakCorrectCount: 0
         };
       }
 
-      function startSession(mode) {
+      function startSession(mode, requestedStageId, options) {
         var limit = mode === "challenge" ? 10 : 3;
+        var settings = options || {};
         sessionMode = mode;
         sessionStageId = null;
-        sessionStage4Detail = null;
+        sessionStageDetail = null;
+        sessionStageFullMode = false;
         if (mode === "mistakes") {
           sessionQuestions = selectMistakeQuestions(limit);
         } else if (mode === "stageChallenge") {
-          sessionStageId = getStage4Available() ? STAGE_FOUR_ID : getCurrentStageId();
-          sessionQuestions = selectStageQuestions(sessionStageId);
-          sessionStage4Detail = sessionStageId === STAGE_FOUR_ID
-            ? createStage4SessionDetail()
+          sessionStageId = requestedStageId || getNextChallengeStageId();
+          if (sessionStageId === STAGE_FIVE_ID) {
+            sessionStageFullMode = settings.full === true;
+            limit = sessionStageFullMode ? STAGE_FIVE_FULL_LIMIT : STAGE_FIVE_SPLIT_LIMIT;
+          } else {
+            limit = null;
+          }
+          sessionQuestions = selectStageQuestions(sessionStageId, limit);
+          sessionStageDetail = sessionStageId >= STAGE_FOUR_ID
+            ? createStageSessionDetail()
             : null;
         } else {
           sessionQuestions = selectDailyQuestions(limit);
@@ -1751,12 +2784,60 @@
         return question && question.type === "single_choice" && Array.isArray(question.choices);
       }
 
+      function getChoiceId(choice, index) {
+        if (choice && typeof choice === "object" && !Array.isArray(choice) && choice.id) {
+          return String(choice.id);
+        }
+        return DEFAULT_CHOICE_IDS[index] || String(index);
+      }
+
+      function getChoiceText(choice) {
+        if (choice && typeof choice === "object" && !Array.isArray(choice) &&
+            Object.prototype.hasOwnProperty.call(choice, "text")) {
+          return String(choice.text);
+        }
+        return String(choice);
+      }
+
+      function normalizeSingleChoiceQuestion(question) {
+        var correctIndex = Number(question.answer);
+        if (!isSingleChoiceQuestion(question)) {
+          return question;
+        }
+
+        question.choices = question.choices.map(function (choice, index) {
+          return {
+            id: getChoiceId(choice, index),
+            text: getChoiceText(choice)
+          };
+        });
+        if (!question.correctAnswerId && Number.isInteger(correctIndex) &&
+            question.choices[correctIndex]) {
+          question.correctAnswerId = question.choices[correctIndex].id;
+        }
+        return question;
+      }
+
+      function getCorrectChoiceId(question) {
+        if (!isSingleChoiceQuestion(question)) {
+          return "";
+        }
+        if (question.correctAnswerId) {
+          return String(question.correctAnswerId);
+        }
+        if (Number.isInteger(Number(question.answer)) && question.choices[Number(question.answer)]) {
+          return getChoiceId(question.choices[Number(question.answer)], Number(question.answer));
+        }
+        return "";
+      }
+
       function getAnswerLabel(question) {
         if (isSingleChoiceQuestion(question)) {
-          var index = Number(question.answer);
-          var choice = question.choices[index] || "";
-          var label = CHOICE_LABELS[index] || String(index + 1);
-          return label + ". " + choice;
+          var correctChoiceId = getCorrectChoiceId(question);
+          var correctChoice = question.choices.find(function (choice, index) {
+            return getChoiceId(choice, index) === correctChoiceId;
+          });
+          return correctChoice ? getChoiceText(correctChoice) : "正解の選択肢";
         }
         return question.answer ? "〇" : "×";
       }
@@ -1766,13 +2847,18 @@
         answerActions.classList.toggle("is-choice", isSingleChoiceQuestion(question));
 
         if (isSingleChoiceQuestion(question)) {
-          question.choices.forEach(function (choice, index) {
+          shuffled(question.choices.map(function (choice, index) {
+            return {
+              id: getChoiceId(choice, index),
+              text: getChoiceText(choice)
+            };
+          })).forEach(function (choice, index) {
             var button = document.createElement("button");
             var label = CHOICE_LABELS[index] || String(index + 1);
             button.className = "answer-button choice-button";
             button.type = "button";
-            button.setAttribute("data-choice-index", String(index));
-            button.textContent = label + ". " + choice;
+            button.setAttribute("data-choice-id", choice.id);
+            button.textContent = label + ". " + choice.text;
             answerActions.appendChild(button);
           });
           return;
@@ -1800,6 +2886,25 @@
         });
       }
 
+      function renderStageOfficialBox(question) {
+        var isStageFive = getQuestionStage(question) === STAGE_FIVE_ID;
+        stageOfficialBox.hidden = !isStageFive;
+        stageOfficialLinks.textContent = "";
+        if (!isStageFive) {
+          return;
+        }
+
+        stageOfficialNote.textContent = STAGE_FIVE_NOTE;
+        STAGE_OFFICIAL_LINKS.forEach(function (link) {
+          var anchor = document.createElement("a");
+          anchor.href = link.url;
+          anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer";
+          anchor.textContent = link.label;
+          stageOfficialLinks.appendChild(anchor);
+        });
+      }
+
       function renderQuestion() {
         var question = sessionQuestions[sessionIndex];
         var modeText = "今日の3問";
@@ -1808,6 +2913,7 @@
         stage4Reflection.hidden = true;
         reflectionStatus.hidden = true;
         renderAnswerButtons(question);
+        renderStageOfficialBox(question);
         resetAnswerButtons();
         progressLabel.textContent = "問題 " + (sessionIndex + 1) + "/" + sessionQuestions.length;
         if (sessionMode === "mistakes") {
@@ -1815,7 +2921,9 @@
         } else if (sessionMode === "challenge") {
           modeText = "10問チャレンジ";
         } else if (sessionMode === "stageChallenge") {
-          modeText = "ステージ" + getQuestionStage(question) + "チャレンジ";
+          modeText = getQuestionStage(question) === STAGE_FIVE_ID
+            ? "ステージ5 " + (sessionStageFullMode ? "70問通し演習" : "10問ずつ分割")
+            : "ステージ" + getQuestionStage(question) + "チャレンジ";
         }
         modeLabel.textContent = modeText;
         progressFill.style.width = ((sessionIndex / sessionQuestions.length) * 100) + "%";
@@ -1900,49 +3008,77 @@
         return output;
       }
 
-      function ensureStage4Progress() {
-        progress.stage4 = normalizeStage4Progress(progress.stage4);
+      function ensureStageDetailProgress(stageId) {
+        var detailKey = getStageDetailKey(stageId);
+        if (!detailKey) {
+          return null;
+        }
+        progress[detailKey] = normalizeStage4Progress(progress[detailKey]);
+        return progress[detailKey];
       }
 
       function addSessionStage4Id(key, questionId) {
-        if (!sessionStage4Detail) {
+        if (!sessionStageDetail) {
           return;
         }
-        sessionStage4Detail[key] = addUniqueId(sessionStage4Detail[key], questionId);
+        sessionStageDetail[key] = addUniqueId(sessionStageDetail[key], questionId);
       }
 
       function removeSessionStage4Id(key, questionId) {
-        if (!sessionStage4Detail) {
+        if (!sessionStageDetail) {
           return;
         }
-        sessionStage4Detail[key] = withoutId(sessionStage4Detail[key], questionId);
+        sessionStageDetail[key] = withoutId(sessionStageDetail[key], questionId);
       }
 
       function recordStage4Answer(question, isCorrect) {
-        if (getQuestionStage(question) !== STAGE_FOUR_ID) {
+        var stageId = getQuestionStage(question);
+        var detailKey = getStageDetailKey(stageId);
+        var detail;
+
+        if (!detailKey) {
           return;
         }
 
-        ensureStage4Progress();
+        detail = ensureStageDetailProgress(stageId);
         if (isCorrect) {
-          progress.stage4.correctQuestionIds = addUniqueId(progress.stage4.correctQuestionIds, question.id);
-          progress.stage4.wrongQuestionIds = withoutId(progress.stage4.wrongQuestionIds, question.id);
+          detail.correctQuestionIds = addUniqueId(detail.correctQuestionIds, question.id);
+          detail.wrongQuestionIds = withoutId(detail.wrongQuestionIds, question.id);
         } else {
-          progress.stage4.wrongQuestionIds = addUniqueId(progress.stage4.wrongQuestionIds, question.id);
-          progress.stage4.correctQuestionIds = withoutId(progress.stage4.correctQuestionIds, question.id);
-          progress.stage4.unsureCorrectQuestionIds = withoutId(progress.stage4.unsureCorrectQuestionIds, question.id);
-          progress.stage4.guessedCorrectQuestionIds = withoutId(progress.stage4.guessedCorrectQuestionIds, question.id);
+          detail.wrongQuestionIds = addUniqueId(detail.wrongQuestionIds, question.id);
+          detail.correctQuestionIds = withoutId(detail.correctQuestionIds, question.id);
+          detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
+          detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
         }
+        progress[detailKey] = detail;
 
-        if (sessionStage4Detail) {
-          sessionStage4Detail.total += 1;
+        if (sessionStageDetail) {
+          sessionStageDetail.total += 1;
+          if (isPensionQuestion(question)) {
+            sessionStageDetail.pensionAnsweredCount += 1;
+          }
+          if (isLaborStandardsQuestion(question)) {
+            sessionStageDetail.laborAnsweredCount += 1;
+          }
+          if (isOfficialCheckQuestion(question)) {
+            sessionStageDetail.officialAnsweredCount += 1;
+          }
+          if (isWeakBoostQuestion(question)) {
+            sessionStageDetail.weakAnsweredCount += 1;
+          }
           if (isCorrect) {
             addSessionStage4Id("correctIds", question.id);
             if (isPensionQuestion(question)) {
-              sessionStage4Detail.pensionCorrectCount += 1;
+              sessionStageDetail.pensionCorrectCount += 1;
             }
             if (isLaborStandardsQuestion(question)) {
-              sessionStage4Detail.laborCorrectCount += 1;
+              sessionStageDetail.laborCorrectCount += 1;
+            }
+            if (isOfficialCheckQuestion(question)) {
+              sessionStageDetail.officialCorrectCount += 1;
+            }
+            if (isWeakBoostQuestion(question)) {
+              sessionStageDetail.weakCorrectCount += 1;
             }
           } else {
             addSessionStage4Id("wrongIds", question.id);
@@ -1951,8 +3087,10 @@
       }
 
       function updateReflectionButtons(question) {
-        var isCorrect = progress.stage4 &&
-          progress.stage4.correctQuestionIds.indexOf(question.id) !== -1;
+        var stageId = getQuestionStage(question);
+        var detail = ensureStageDetailProgress(stageId);
+        var isCorrect = detail &&
+          detail.correctQuestionIds.indexOf(question.id) !== -1;
         var buttons = reflectionActions.querySelectorAll(".reflection-button");
 
         buttons.forEach(function (button) {
@@ -1960,13 +3098,13 @@
           var active = false;
 
           if (type === "unsure") {
-            active = progress.stage4.unsureCorrectQuestionIds.indexOf(question.id) !== -1;
+            active = detail.unsureCorrectQuestionIds.indexOf(question.id) !== -1;
             button.disabled = !isCorrect;
           } else if (type === "guessed") {
-            active = progress.stage4.guessedCorrectQuestionIds.indexOf(question.id) !== -1;
+            active = detail.guessedCorrectQuestionIds.indexOf(question.id) !== -1;
             button.disabled = !isCorrect;
           } else if (type === "weak") {
-            active = progress.stage4.weakQuestionIds.indexOf(question.id) !== -1;
+            active = detail.weakQuestionIds.indexOf(question.id) !== -1;
             button.disabled = false;
           }
 
@@ -1980,14 +3118,23 @@
       }
 
       function recordStage4Reflection(question, type) {
+        var stageId;
+        var detailKey;
+        var detail;
         var isCorrect;
 
-        if (!question || getQuestionStage(question) !== STAGE_FOUR_ID) {
+        if (!question) {
           return;
         }
 
-        ensureStage4Progress();
-        isCorrect = progress.stage4.correctQuestionIds.indexOf(question.id) !== -1;
+        stageId = getQuestionStage(question);
+        detailKey = getStageDetailKey(stageId);
+        if (!detailKey) {
+          return;
+        }
+
+        detail = ensureStageDetailProgress(stageId);
+        isCorrect = detail.correctQuestionIds.indexOf(question.id) !== -1;
 
         if ((type === "unsure" || type === "guessed") && !isCorrect) {
           showReflectionStatus("迷って正解・勘で正解は、正解した問題だけに記録できます。");
@@ -1995,23 +3142,24 @@
         }
 
         if (type === "unsure") {
-          progress.stage4.unsureCorrectQuestionIds = addUniqueId(progress.stage4.unsureCorrectQuestionIds, question.id);
-          progress.stage4.guessedCorrectQuestionIds = withoutId(progress.stage4.guessedCorrectQuestionIds, question.id);
+          detail.unsureCorrectQuestionIds = addUniqueId(detail.unsureCorrectQuestionIds, question.id);
+          detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
           addSessionStage4Id("unsureCorrectIds", question.id);
           removeSessionStage4Id("guessedCorrectIds", question.id);
           showReflectionStatus("迷って正解として記録しました。");
         } else if (type === "guessed") {
-          progress.stage4.guessedCorrectQuestionIds = addUniqueId(progress.stage4.guessedCorrectQuestionIds, question.id);
-          progress.stage4.unsureCorrectQuestionIds = withoutId(progress.stage4.unsureCorrectQuestionIds, question.id);
+          detail.guessedCorrectQuestionIds = addUniqueId(detail.guessedCorrectQuestionIds, question.id);
+          detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
           addSessionStage4Id("guessedCorrectIds", question.id);
           removeSessionStage4Id("unsureCorrectIds", question.id);
           showReflectionStatus("勘で正解として記録しました。");
         } else if (type === "weak") {
-          progress.stage4.weakQuestionIds = addUniqueId(progress.stage4.weakQuestionIds, question.id);
+          detail.weakQuestionIds = addUniqueId(detail.weakQuestionIds, question.id);
           addSessionStage4Id("weakIds", question.id);
           showReflectionStatus("苦手問題として記録しました。");
         }
 
+        progress[detailKey] = detail;
         saveProgress();
         updateReflectionButtons(question);
       }
@@ -2034,6 +3182,7 @@
 
         saveProgress();
         updateStats();
+        logProgressDebug("answer saved");
       }
 
       function getWeakCategories() {
@@ -2129,19 +3278,28 @@
       }
 
       function getSelectedAnswerFromButton(button) {
-        if (button.hasAttribute("data-choice-index")) {
-          return Number(button.getAttribute("data-choice-index"));
+        if (button.hasAttribute("data-choice-id")) {
+          return button.getAttribute("data-choice-id");
         }
         return button.getAttribute("data-answer") === "true";
       }
 
+      function isAnswerCorrect(question, selectedAnswer) {
+        if (isSingleChoiceQuestion(question)) {
+          return String(selectedAnswer) === getCorrectChoiceId(question);
+        }
+        return selectedAnswer === question.answer;
+      }
+
       function renderStage4Reflection(question) {
-        if (getQuestionStage(question) !== STAGE_FOUR_ID) {
+        var stageId = getQuestionStage(question);
+        if (!getStageDetailKey(stageId)) {
           stage4Reflection.hidden = true;
           return;
         }
 
-        ensureStage4Progress();
+        ensureStageDetailProgress(stageId);
+        reflectionTitle.textContent = "ステージ" + stageId + "の理解記録";
         stage4Reflection.hidden = false;
         showReflectionStatus("");
         updateReflectionButtons(question);
@@ -2155,15 +3313,17 @@
         answered = true;
         var question = sessionQuestions[sessionIndex];
         var term = question.termId ? termMap[question.termId] : null;
-        var isCorrect = selectedAnswer === question.answer;
+        var isCorrect = isAnswerCorrect(question, selectedAnswer);
         var buttons = answerActions.querySelectorAll(".answer-button");
         var sourceTitle = term ? term.sourceTitle : question.sourceTitle;
         var sourceUrl = term ? term.sourceUrl : question.sourceUrl;
+        var sourceType = term ? term.sourceType : question.sourceType;
+        var correctChoiceId = getCorrectChoiceId(question);
 
         buttons.forEach(function (button) {
           button.disabled = true;
           if (isSingleChoiceQuestion(question) &&
-              Number(button.getAttribute("data-choice-index")) === Number(question.answer)) {
+              button.getAttribute("data-choice-id") === correctChoiceId) {
             button.classList.add("selected-correct");
           }
         });
@@ -2176,7 +3336,8 @@
         termDefinitionLabel.textContent = term
           ? "用語："
           : getQuestionStage(question) === STAGE_TWO_ID ? "比較テーマ：" :
-            getQuestionStage(question) === STAGE_FOUR_ID ? "事例テーマ：" : "学習テーマ：";
+            getQuestionStage(question) === STAGE_FOUR_ID ? "事例テーマ：" :
+              getQuestionStage(question) === STAGE_FIVE_ID ? "実戦テーマ：" : "学習テーマ：";
         termDefinition.textContent = term
           ? term.term + "： " + term.simpleDefinition
           : question.term || question.title;
@@ -2184,7 +3345,7 @@
         termExample.textContent = term ? term.example : question.trap;
         memoryTip.textContent = question.memoryTip;
         questionSource.href = sourceUrl;
-        questionSource.textContent = sourceTitle ? "公的根拠を開く" : "公的根拠";
+        questionSource.textContent = sourceType === "app_policy" ? "学習方針" : sourceTitle ? "公的根拠を開く" : "公的根拠";
         questionSource.hidden = !sourceUrl;
         if (sourceTitle) {
           questionSource.setAttribute("aria-label", sourceTitle + "を開く");
@@ -2203,16 +3364,16 @@
         return ids && ids.length ? ids.join(", ") : "なし";
       }
 
-      function buildStage4Run() {
-        var detail = sessionStage4Detail || createStage4SessionDetail();
-        var rules = getStage4Rules();
+      function buildStageRun(stageId) {
+        var detail = sessionStageDetail || createStageSessionDetail();
+        var requirement = getStageCompletionRequirement(stageId);
         var total = detail.total;
         var correctCount = detail.correctIds.length;
         var accuracyValue = total ? Math.round((correctCount / total) * 100) : 0;
-        var achieved = total >= 12 &&
-          correctCount >= rules.correctCount &&
-          detail.pensionCorrectCount >= rules.pensionCorrectCount &&
-          detail.laborCorrectCount >= rules.laborCorrectCount;
+        var achieved = stageId === STAGE_FIVE_ID
+          ? buildStage5CumulativeRun().achieved
+          : total >= requirement.answerCount &&
+          accuracyValue >= requirement.accuracy;
 
         return {
           total: total,
@@ -2223,25 +3384,41 @@
           unsureCorrectIds: uniqueStrings(detail.unsureCorrectIds),
           guessedCorrectIds: uniqueStrings(detail.guessedCorrectIds),
           weakIds: uniqueStrings(detail.weakIds),
+          pensionAnsweredCount: detail.pensionAnsweredCount,
           pensionCorrectCount: detail.pensionCorrectCount,
+          pensionAccuracy: percent(detail.pensionCorrectCount, detail.pensionAnsweredCount),
+          laborAnsweredCount: detail.laborAnsweredCount,
           laborCorrectCount: detail.laborCorrectCount,
+          laborAccuracy: percent(detail.laborCorrectCount, detail.laborAnsweredCount),
+          officialAnsweredCount: detail.officialAnsweredCount,
+          officialCorrectCount: detail.officialCorrectCount,
+          officialAccuracy: percent(detail.officialCorrectCount, detail.officialAnsweredCount),
+          weakAnsweredCount: detail.weakAnsweredCount,
+          weakCorrectCount: detail.weakCorrectCount,
+          weakAccuracy: percent(detail.weakCorrectCount, detail.weakAnsweredCount),
           achieved: achieved,
           completedAt: getToday()
         };
       }
 
-      function saveStage4Run(run) {
-        ensureStage4Progress();
-        progress.stage4.lastRun = run;
-        progress.stage4.achieved = progress.stage4.achieved || run.achieved;
+      function saveStageRun(stageId, run) {
+        var detailKey = getStageDetailKey(stageId);
+        var detail = ensureStageDetailProgress(stageId);
+        if (!detailKey || !detail) {
+          return;
+        }
+        detail.lastRun = run;
+        detail.achieved = detail.achieved || (stageId === STAGE_FIVE_ID
+          ? buildStage5CumulativeRun().achieved
+          : run.achieved);
+        progress[detailKey] = detail;
         saveProgress();
         updateStats();
       }
 
-      function renderStage4Summary(run) {
-        stage4Summary.hidden = false;
-        stage4Summary.textContent = [
-          "ステージ4結果",
+      function renderStageSummary(stageId, run) {
+        var lines = [
+          "ステージ" + stageId + "結果",
           "正答数: " + run.correctCount + " / " + run.total,
           "正答率: " + run.accuracy + "%",
           "迷って正解の問題ID: " + formatIdList(run.unsureCorrectIds),
@@ -2249,13 +3426,32 @@
           "不正解の問題ID: " + formatIdList(run.wrongIds),
           "苦手登録した問題ID: " + formatIdList(run.weakIds),
           "年金カテゴリの正答数: " + run.pensionCorrectCount,
-          "労働基準法カテゴリの正答数: " + run.laborCorrectCount,
-          "ステージ4達成判定: " + (run.achieved ? "達成" : "未達成")
-        ].join("\n");
+          "労働基準法カテゴリの正答数: " + run.laborCorrectCount
+        ];
+
+        if (stageId === STAGE_FIVE_ID) {
+          var cumulative = buildStage5CumulativeRun();
+          lines.push("今回の年金カテゴリ正答率: " + run.pensionAccuracy + "%");
+          lines.push("今回の労働基準法カテゴリ正答率: " + run.laborAccuracy + "%");
+          lines.push("今回の公式確認カテゴリ正答数: " + run.officialCorrectCount);
+          lines.push("今回の苦手補強カテゴリ正答率: " + run.weakAccuracy + "%");
+          lines.push("");
+          lines.push("ステージ5累計");
+          lines.push("回答済み: " + cumulative.answeredCount + " / " + cumulative.total);
+          lines.push("累計正答率: " + cumulative.accuracy + "%");
+          lines.push("年金カテゴリ正答率: " + cumulative.pensionAccuracy + "% (" + cumulative.pensionCorrectCount + " / " + cumulative.pensionAnsweredCount + ")");
+          lines.push("労働基準法カテゴリ正答率: " + cumulative.laborAccuracy + "% (" + cumulative.laborCorrectCount + " / " + cumulative.laborAnsweredCount + ")");
+          lines.push("公式確認カテゴリ正答数: " + cumulative.officialCorrectCount);
+          lines.push("苦手補強カテゴリ正答率: " + cumulative.weakAccuracy + "% (" + cumulative.weakCorrectCount + " / " + cumulative.weakAnsweredCount + ")");
+        }
+        lines.push("ステージ" + stageId + "達成判定: " + (run.achieved ? "達成" : "未達成"));
+
+        stage4Summary.hidden = false;
+        stage4Summary.textContent = lines.join("\n");
       }
 
       function showResult() {
-        var stage4Run = null;
+        var stageRun = null;
 
         showOnly("result");
         resultTitle.textContent = sessionQuestions.length + "問終了";
@@ -2263,14 +3459,18 @@
         stage4Summary.hidden = true;
         stage4Summary.textContent = "";
 
-        if (sessionMode === "stageChallenge" && sessionStageId === STAGE_FOUR_ID) {
-          stage4Run = buildStage4Run();
-          saveStage4Run(stage4Run);
-          renderStage4Summary(stage4Run);
-          resultTitle.textContent = "ステージ4終了";
-          resultNote.textContent = stage4Run.achieved
-            ? "事例判断の橋を渡れています。次は、本番準備へ進む相談ができます。"
-            : "未達成の条件を見て、年金・労基法の判断軸をもう一度整えましょう。";
+        if (sessionMode === "stageChallenge" && sessionStageId >= STAGE_FOUR_ID) {
+          stageRun = buildStageRun(sessionStageId);
+          saveStageRun(sessionStageId, stageRun);
+          renderStageSummary(sessionStageId, stageRun);
+          resultTitle.textContent = "ステージ" + sessionStageId + "終了";
+          resultNote.textContent = stageRun.achieved
+            ? (sessionStageId === STAGE_FIVE_ID
+              ? "実戦総合演習の達成条件を通過しました。公式確認と科目横断の判断力がかなり育っています。"
+              : "事例判断の橋を渡れています。次は、実戦総合演習へ進めます。")
+            : sessionStageId === STAGE_FIVE_ID
+              ? "累計条件を見ながら、年金・労基法・公式確認・苦手補強を10問ずつ積み上げましょう。"
+              : "未達成の条件を見て、年金・労基法の判断軸をもう一度整えましょう。";
         } else {
           resultNote.textContent = sessionMode === "mistakes"
             ? "別の日にも正解できると、理解が定着してきた合図です。"
@@ -2342,8 +3542,8 @@
             !Array.isArray(data.stages)) {
           throw new Error("用語、問題、ステージのデータ形式が正しくありません。");
         }
-        if (data.terms.length !== 30 || data.questions.length !== 102) {
-          throw new Error("用語30件、問題102件が必要です。");
+        if (data.terms.length !== 30 || data.questions.length !== 172) {
+          throw new Error("用語30件、問題172件が必要です。");
         }
         if (data.stages.length !== STAGE_TOTAL) {
           throw new Error("ステージ定義は5件必要です。");
@@ -2368,8 +3568,11 @@
                 Number(stage.unlockAnswerCount) !== 30 || Number(stage.unlockAccuracy) !== 90)) {
             throw new Error("ステージ4は条件達成で動的解放する12問ステージにしてください。");
           }
-          if (stage.id >= 5 && stage.unlocked === true) {
-            throw new Error("ステージ5は現時点では未解放にしてください。");
+          if (stage.id === STAGE_FIVE_ID &&
+              (stage.unlocked !== false || Number(stage.questionCount) !== STAGE_FIVE_FULL_LIMIT ||
+                Number(stage.unlockAnswerCount) !== 12 || Number(stage.unlockAccuracy) !== 90 ||
+                Number(stage.unlockFromStage) !== STAGE_FOUR_ID)) {
+            throw new Error("ステージ5はステージ4達成後に動的解放する70問ステージにしてください。");
           }
         });
 
@@ -2396,6 +3599,17 @@
           var statement = question.statement || question.question;
           var memory = question.memoryTip || question.memory;
           var isSingleChoice = question.type === "single_choice";
+          var normalizedChoices = isSingleChoice ? question.choices.map(function (choice, index) {
+            return {
+              id: getChoiceId(choice, index),
+              text: getChoiceText(choice)
+            };
+          }) : [];
+          var correctAnswerId = question.correctAnswerId
+            ? String(question.correctAnswerId)
+            : Number.isInteger(Number(question.answer)) && normalizedChoices[Number(question.answer)]
+              ? normalizedChoices[Number(question.answer)].id
+              : "";
           var hasCategory = Array.isArray(question.category)
             ? question.category.length > 0
             : Boolean(question.category);
@@ -2403,8 +3617,8 @@
           if (!question.id || !statement || !question.explanation || !memory) {
             throw new Error("問題データの必須項目が不足しています。");
           }
-          if (questionStage < STAGE_ONE_ID || questionStage > STAGE_FOUR_ID) {
-            throw new Error("現時点の問題はステージ1から4だけにしてください。");
+          if (questionStage < STAGE_ONE_ID || questionStage > STAGE_TOTAL) {
+            throw new Error("現時点の問題はステージ1から5にしてください。");
           }
           if (questionStage === STAGE_ONE_ID && !question.termId) {
             throw new Error("ステージ1問題には用語IDが必要です。");
@@ -2414,15 +3628,16 @@
                 question.sourceType !== "official" || !question.sourceTitle || !question.sourceUrl)) {
             throw new Error("ステージ2・3問題の必須項目が不足しています。");
           }
-          if (questionStage === STAGE_FOUR_ID &&
+          if (questionStage >= STAGE_FOUR_ID &&
               (!isSingleChoice || !Array.isArray(question.choices) || question.choices.length < 2 ||
-                !Number.isInteger(question.answer) || question.answer < 0 ||
-                question.answer >= question.choices.length || !hasCategory || !question.title ||
+                !correctAnswerId || !normalizedChoices.some(function (choice) {
+                  return choice.id === correctAnswerId;
+                }) || !hasCategory || !question.title ||
                 !question.term || !question.trap || !Array.isArray(question.tags) ||
-                question.sourceType !== "official" || !question.sourceTitle || !question.sourceUrl)) {
-            throw new Error("ステージ4問題の必須項目が不足しています。");
+                !question.sourceType || !question.sourceTitle)) {
+            throw new Error("ステージ4・5問題の必須項目が不足しています。");
           }
-          if (questionStage !== STAGE_FOUR_ID && typeof question.answer !== "boolean") {
+          if (questionStage < STAGE_FOUR_ID && typeof question.answer !== "boolean") {
             throw new Error("ステージ1から3は〇×問題として登録してください。");
           }
           if ((question.termId && !termIds[question.termId]) || questionIds[question.id]) {
@@ -2433,8 +3648,9 @@
         });
 
         if (stageCounts[STAGE_ONE_ID] !== 30 || stageCounts[STAGE_TWO_ID] !== 30 ||
-            stageCounts[STAGE_THREE_ID] !== 30 || stageCounts[STAGE_FOUR_ID] !== 12) {
-          throw new Error("ステージ1から3は各30問、ステージ4は12問必要です。");
+            stageCounts[STAGE_THREE_ID] !== 30 || stageCounts[STAGE_FOUR_ID] !== 12 ||
+            stageCounts[STAGE_FIVE_ID] !== STAGE_FIVE_FULL_LIMIT) {
+          throw new Error("ステージ1から3は各30問、ステージ4は12問、ステージ5は70問必要です。");
         }
       }
 
@@ -2476,8 +3692,16 @@
       });
 
       stageChallengeButton.addEventListener("click", function () {
-        startSession("stageChallenge");
+        startSession("stageChallenge", getNextChallengeStageId(), { full: false });
       });
+
+      stageFullChallengeButton.addEventListener("click", function () {
+        startSession("stageChallenge", STAGE_FIVE_ID, { full: true });
+      });
+
+      exportProgressButton.addEventListener("click", exportProgressData);
+
+      importProgressButton.addEventListener("click", importProgressData);
 
       mistakesButton.addEventListener("click", function () {
         startSession("mistakes");
@@ -2493,8 +3717,8 @@
       });
 
       stageConsultButton.addEventListener("click", function () {
-        if (stageConsultButton.dataset.action === "stage4-start") {
-          startSession("stageChallenge");
+        if (stageConsultButton.dataset.action === "stage-start") {
+          startSession("stageChallenge", Number(stageConsultButton.dataset.stageId) || getNextChallengeStageId(), { full: false });
           return;
         }
         copyStageConsultRequest();
@@ -2529,11 +3753,17 @@
               objective: String(stage.objective),
               unlocked: stage.unlocked === true,
               questionCount: Math.max(0, Number(stage.questionCount) || 0),
+              unlockFromStage: Math.max(0, Number(stage.unlockFromStage) || 0),
               unlockAnswerCount: Math.max(0, Number(stage.unlockAnswerCount) || 0),
               unlockAccuracy: Math.max(0, Number(stage.unlockAccuracy) || 80),
               completionCorrectCount: Math.max(0, Number(stage.completionCorrectCount) || 0),
               completionPensionCorrectCount: Math.max(0, Number(stage.completionPensionCorrectCount) || 0),
-              completionLaborCorrectCount: Math.max(0, Number(stage.completionLaborCorrectCount) || 0)
+              completionLaborCorrectCount: Math.max(0, Number(stage.completionLaborCorrectCount) || 0),
+              completionOfficialCorrectCount: Math.max(0, Number(stage.completionOfficialCorrectCount) || 0),
+              completionAccuracy: Math.max(0, Number(stage.completionAccuracy) || 0),
+              completionPensionAccuracy: Math.max(0, Number(stage.completionPensionAccuracy) || 0),
+              completionLaborAccuracy: Math.max(0, Number(stage.completionLaborAccuracy) || 0),
+              completionWeakAccuracy: Math.max(0, Number(stage.completionWeakAccuracy) || 0)
             };
           });
           terms = data.terms;
@@ -2541,7 +3771,7 @@
             question.stage = Number(question.stage) || STAGE_ONE_ID;
             question.statement = question.statement || question.question;
             question.memoryTip = question.memoryTip || question.memory;
-            return question;
+            return normalizeSingleChoiceQuestion(question);
           });
           questionById = {};
           terms.forEach(function (term) {
@@ -2550,10 +3780,11 @@
           questionBank.forEach(function (question) {
             questionById[question.id] = question;
           });
-          normalizeStageProgress();
-          saveProgress();
-          updateStats();
-          dailyButton.disabled = false;
+	          normalizeStageProgress();
+	          saveProgress();
+	          updateStats();
+	          logProgressDebug("data loaded");
+	          dailyButton.disabled = false;
           challengeButton.disabled = false;
           termsButton.disabled = false;
           mistakesButton.disabled = false;
@@ -2562,15 +3793,18 @@
           dailyButton.disabled = true;
           challengeButton.disabled = true;
           stageChallengeButton.disabled = true;
+          stageFullChallengeButton.disabled = true;
           termsButton.disabled = true;
           mistakesButton.disabled = true;
           showStatus(homeStatus, error.message);
           console.error(error);
+          renderDebugInfo();
         });
 
       dailyButton.disabled = true;
       challengeButton.disabled = true;
       stageChallengeButton.disabled = true;
+      stageFullChallengeButton.disabled = true;
       termsButton.disabled = true;
       mistakesButton.disabled = true;
       updateStats();
