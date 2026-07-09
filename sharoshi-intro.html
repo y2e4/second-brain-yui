@@ -1797,6 +1797,9 @@ debug: loading</pre>
         }
 
         answerCount = Math.max(stats.answerCount, answeredQuestionIds.length, lastRunAnswerCount);
+        if (stageId === STAGE_FIVE_ID && questionTotal > 0) {
+          answerCount = Math.min(questionTotal, answerCount);
+        }
         correctCount = Math.min(Math.max(stats.correctCount, detailCorrectQuestionIds.length, lastRunCorrectCount), answerCount);
         answeredDisplayCount = Math.min(questionTotal, Math.max(answeredQuestionIds.length, answerCount));
 
@@ -2976,7 +2979,9 @@ debug: loading</pre>
       }
 
       function recordStageAnswer(question, isCorrect) {
-        var stageKey = String(getQuestionStage(question));
+        var stageId = getQuestionStage(question);
+        var stageKey = String(stageId);
+        var isAlreadyAnswered;
         var stats;
 
         if (!progress.stageProgress || typeof progress.stageProgress !== "object") {
@@ -2984,12 +2989,22 @@ debug: loading</pre>
         }
 
         stats = normalizeStageStats(progress.stageProgress[stageKey], 0, 0, []);
-        stats.answerCount += 1;
-        if (isCorrect) {
-          stats.correctCount += 1;
+        isAlreadyAnswered = stats.answeredQuestionIds.indexOf(question.id) !== -1;
+        if (stageId !== STAGE_FIVE_ID || !isAlreadyAnswered) {
+          stats.answerCount += 1;
+          if (isCorrect) {
+            stats.correctCount += 1;
+          }
         }
         if (stats.answeredQuestionIds.indexOf(question.id) === -1) {
           stats.answeredQuestionIds.push(question.id);
+        }
+        if (stageId === STAGE_FIVE_ID) {
+          stats.answerCount = Math.min(
+            STAGE_FIVE_FULL_LIMIT,
+            Math.max(stats.answerCount, stats.answeredQuestionIds.length)
+          );
+          stats.correctCount = Math.min(stats.correctCount, stats.answerCount);
         }
         progress.stageProgress[stageKey] = stats;
       }
