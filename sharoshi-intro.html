@@ -457,6 +457,51 @@
       gap: 8px;
     }
 
+    .firekeeper-card {
+      border-color: rgba(255, 123, 48, 0.34);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(255, 123, 48, 0.15), transparent 17rem),
+        rgba(23, 17, 13, 0.97);
+    }
+
+    .firekeeper-title {
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .firekeeper-message {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.75;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .firekeeper-actions,
+    .firekeeper-reasons {
+      display: grid;
+      gap: 9px;
+    }
+
+    .firekeeper-reasons {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(245, 199, 98, 0.16);
+    }
+
+    .firekeeper-status {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
     .mode-actions,
     .result-actions {
       display: grid;
@@ -896,6 +941,120 @@
       font-weight: 800;
     }
 
+    .teacher-mode-card {
+      margin: 13px 0 12px;
+      padding: 12px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(126, 200, 227, 0.12), transparent 15rem),
+        rgba(126, 200, 227, 0.07);
+      border: 1px solid rgba(126, 200, 227, 0.24);
+      border-radius: 8px;
+    }
+
+    .teacher-mode-card.is-mastered {
+      background: rgba(169, 216, 110, 0.08);
+      border-color: rgba(169, 216, 110, 0.28);
+    }
+
+    .teacher-mode-title,
+    .teacher-step-title,
+    .teacher-monster-title {
+      margin-bottom: 7px;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .teacher-mode-text,
+    .teacher-step-text,
+    .teacher-monster-text,
+    .teacher-challenge-status {
+      margin: 0 0 9px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+      white-space: pre-line;
+    }
+
+    .teacher-step {
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(245, 199, 98, 0.07);
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 8px;
+    }
+
+    .teacher-step-text {
+      margin-bottom: 0;
+      color: var(--text);
+    }
+
+    .teacher-monster {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(255, 130, 87, 0.07);
+      border: 1px solid rgba(255, 130, 87, 0.2);
+      border-radius: 8px;
+    }
+
+    .teacher-monster-name {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .teacher-challenge-box {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(245, 199, 98, 0.16);
+    }
+
+    .teacher-challenge-question {
+      margin: 0;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .teacher-challenge-choices {
+      display: grid;
+      gap: 8px;
+    }
+
+    .teacher-mini-button {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 11px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 850;
+      text-align: left;
+      background: rgba(245, 199, 98, 0.06);
+      border: 1px solid rgba(245, 199, 98, 0.24);
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .teacher-mini-button.is-correct {
+      color: #132008;
+      background: var(--good);
+      border-color: rgba(169, 216, 110, 0.72);
+    }
+
+    .teacher-mini-button.is-wrong {
+      color: #2b0c04;
+      background: var(--bad);
+      border-color: rgba(255, 130, 87, 0.72);
+    }
+
     .source-link {
       display: inline-flex;
       min-height: 40px;
@@ -1174,13 +1333,15 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-10-focus-home-01</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-11-firekeeper-beta-01</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-10-focus-home-01
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-11-firekeeper-beta-01
 debug: loading</pre>
       </details>
     </header>
+
+    <section class="panel firekeeper-card" id="firekeeperCard" aria-live="polite" hidden></section>
 
     <section class="panel location-card" aria-labelledby="currentLocationTitle">
       <span class="location-kicker">現在地</span>
@@ -1371,6 +1532,7 @@ debug: loading</pre>
           </div>
           <p class="reflection-status" id="reflectionStatus" role="status" hidden></p>
         </div>
+        <div class="teacher-mode-card" id="teacherModeCard" hidden></div>
         <a class="source-link" id="questionSource" target="_blank" rel="noopener noreferrer">公的根拠を開く</a>
         <button class="primary-button" type="button" id="nextButton">次の問題</button>
       </div>
@@ -1419,14 +1581,16 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-10-focus-home-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-11-firekeeper-beta-01</p>
   </main>
 
+  <script src="sharoshi-teacher-mode.js?v=20260710-teacher-beta-01"></script>
+  <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
   <script>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-10-focus-home-01";
+      var BUILD_VERSION = "2026-07-11-firekeeper-beta-01";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
@@ -1624,6 +1788,7 @@ debug: loading</pre>
       var mistakesButton = document.getElementById("mistakesButton");
       var dailyEmberText = document.getElementById("dailyEmberText");
       var nextEmberButton = document.getElementById("nextEmberButton");
+      var firekeeperCard = document.getElementById("firekeeperCard");
       var progressLabel = document.getElementById("progressLabel");
       var modeLabel = document.getElementById("modeLabel");
       var progressFill = document.getElementById("progressFill");
@@ -1647,6 +1812,7 @@ debug: loading</pre>
       var reflectionTitle = document.getElementById("reflectionTitle");
       var reflectionActions = document.getElementById("reflectionActions");
       var reflectionStatus = document.getElementById("reflectionStatus");
+      var teacherModeCard = document.getElementById("teacherModeCard");
       var questionSource = document.getElementById("questionSource");
       var nextButton = document.getElementById("nextButton");
       var resultTitle = document.getElementById("resultTitle");
@@ -1661,6 +1827,23 @@ debug: loading</pre>
       var termsBackButton = document.getElementById("termsBackButton");
       var stage5PriorityModeToggle = document.getElementById("stage5PriorityModeToggle");
       var reloadQuestionDataButton = document.getElementById("reloadQuestionDataButton");
+      var firekeeperMode = window.SharoshiFirekeeperModeBeta && typeof window.SharoshiFirekeeperModeBeta.create === "function"
+        ? window.SharoshiFirekeeperModeBeta.create({
+          container: firekeeperCard,
+          onStartOneQuestion: startFirekeeperOneQuestion,
+          onRest: recordFirekeeperRest,
+          onReason: recordFirekeeperReason,
+          onShown: markFirekeeperShown
+        })
+        : null;
+      var teacherMode = window.SharoshiTeacherModeBeta && typeof window.SharoshiTeacherModeBeta.create === "function"
+        ? window.SharoshiTeacherModeBeta.create({
+          container: teacherModeCard,
+          onSupplementAnswer: function () {
+            markLearningActivity("teacher_monster", { save: true, update: true });
+          }
+        })
+        : null;
 
       function getToday() {
         return new Intl.DateTimeFormat("sv-SE", {
@@ -1795,6 +1978,7 @@ debug: loading</pre>
           correctAnswers: 0,
           wrongQuestionIds: [],
           lastStudyDate: "",
+          lastStudyAt: "",
           lastManualSyncAt: "",
           lastSavedAt: "",
           lastQuestionId: "",
@@ -1851,7 +2035,37 @@ debug: loading</pre>
             weakQuestionIds: [],
             achieved: false,
             lastRun: null
+          },
+          firekeeper: {
+            lastShownDate: "",
+            lastShownAt: "",
+            dismissedDate: "",
+            lastDismissedAt: "",
+            lastDismissReason: "",
+            restRecords: []
           }
+        };
+      }
+
+      function normalizeFirekeeperProgress(raw) {
+        var safe = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+        var records = Array.isArray(safe.restRecords) ? safe.restRecords : [];
+
+        return {
+          lastShownDate: typeof safe.lastShownDate === "string" ? safe.lastShownDate : "",
+          lastShownAt: typeof safe.lastShownAt === "string" ? safe.lastShownAt : "",
+          dismissedDate: typeof safe.dismissedDate === "string" ? safe.dismissedDate : "",
+          lastDismissedAt: typeof safe.lastDismissedAt === "string" ? safe.lastDismissedAt : "",
+          lastDismissReason: typeof safe.lastDismissReason === "string" ? safe.lastDismissReason : "",
+          restRecords: records.filter(function (record) {
+            return record && typeof record === "object" && !Array.isArray(record);
+          }).map(function (record) {
+            return {
+              date: typeof record.date === "string" ? record.date : "",
+              reason: typeof record.reason === "string" ? record.reason : "",
+              recordedAt: typeof record.recordedAt === "string" ? record.recordedAt : ""
+            };
+          }).slice(-30)
         };
       }
 
@@ -2004,6 +2218,10 @@ debug: loading</pre>
           base.correctAnswers = Math.max(0, Number(stored.correctAnswers) || 0);
           base.wrongQuestionIds = uniqueStrings(stored.wrongQuestionIds);
           base.lastStudyDate = typeof stored.lastStudyDate === "string" ? stored.lastStudyDate : "";
+          base.lastStudyAt = typeof stored.lastStudyAt === "string" ? stored.lastStudyAt : "";
+          if (!base.lastStudyAt && base.lastStudyDate) {
+            base.lastStudyAt = base.lastStudyDate + "T00:00:00+09:00";
+          }
           base.lastManualSyncAt = typeof stored.lastManualSyncAt === "string" ? stored.lastManualSyncAt : "";
           base.lastSavedAt = typeof stored.lastSavedAt === "string" ? stored.lastSavedAt : "";
           base.lastQuestionId = typeof stored.lastQuestionId === "string" ? stored.lastQuestionId : "";
@@ -2021,6 +2239,7 @@ debug: loading</pre>
           base.stageProgress = normalizeStoredStageProgress(stored.stageProgress, base);
           base.stage4 = normalizeStage4Progress(stored.stage4);
           base.stage5 = normalizeStage4Progress(stored.stage5);
+          base.firekeeper = normalizeFirekeeperProgress(stored.firekeeper);
         } catch (error) {
           lastProgressReadError = error && error.message ? error.message : "保存データの読み込みに失敗しました。";
           return base;
@@ -2106,6 +2325,198 @@ debug: loading</pre>
         return Array.isArray(question.tags) ? question.tags.filter(function (tag) {
           return typeof tag === "string" && tag;
         }) : [];
+      }
+
+      function isEmploymentInsuranceQuestion(question) {
+        var values;
+        if (!question) {
+          return false;
+        }
+        values = getQuestionCategories(question)
+          .concat(getQuestionTags(question))
+          .concat([
+            question.term,
+            question.title,
+            question.statement,
+            question.question
+          ].filter(Boolean));
+        return values.some(function (value) {
+          return /雇用保険|基本手当|失業|求職|離職/.test(String(value));
+        });
+      }
+
+      function getTeacherStageDetail(question) {
+        var stageId = question ? getQuestionStage(question) : 0;
+        var detailKey = getStageDetailKey(stageId);
+        return detailKey ? normalizeStage4Progress(progress[detailKey]) : null;
+      }
+
+      function hasTeacherPriorWrong(question) {
+        var detail = getTeacherStageDetail(question);
+        if (!question) {
+          return false;
+        }
+        return progress.wrongQuestionIds.indexOf(question.id) !== -1 ||
+          Boolean(detail && detail.wrongQuestionIds.indexOf(question.id) !== -1);
+      }
+
+      function hasTeacherLowUnderstanding(question) {
+        var detail = getTeacherStageDetail(question);
+        if (!question) {
+          return false;
+        }
+        return hasTeacherPriorWrong(question) ||
+          Boolean(detail && (
+            detail.unsureCorrectQuestionIds.indexOf(question.id) !== -1 ||
+            detail.guessedCorrectQuestionIds.indexOf(question.id) !== -1 ||
+            detail.weakQuestionIds.indexOf(question.id) !== -1
+          ));
+      }
+
+      function isTeacherMastered(question) {
+        var detail = getTeacherStageDetail(question);
+        return Boolean(question && detail &&
+          detail.understoodCorrectQuestionIds.indexOf(question.id) !== -1);
+      }
+
+      function getTeacherRelatedQuestions(question) {
+        var related = questionBank.filter(function (candidate) {
+          return candidate.id !== question.id && isEmploymentInsuranceQuestion(candidate);
+        });
+
+        if (related.length < 2) {
+          related = questionBank.filter(function (candidate) {
+            return candidate.id !== question.id;
+          });
+        }
+        return shuffled(related).slice(0, 2);
+      }
+
+      function renderTeacherMode(question, options) {
+        var settings = options || {};
+        if (!teacherMode || !question) {
+          return;
+        }
+        teacherMode.render({
+          question: question,
+          trigger: settings.trigger || "",
+          isCorrect: settings.isCorrect === true,
+          repeatedWrong: settings.repeatedWrong === true,
+          lowUnderstanding: settings.lowUnderstanding === true,
+          mastered: settings.mastered === true,
+          isEmploymentQuestion: isEmploymentInsuranceQuestion(question),
+          relatedQuestions: getTeacherRelatedQuestions(question)
+        });
+      }
+
+      function ensureFirekeeperProgress() {
+        progress.firekeeper = normalizeFirekeeperProgress(progress.firekeeper);
+        return progress.firekeeper;
+      }
+
+      function getFirekeeperContext() {
+        var firekeeper = ensureFirekeeperProgress();
+
+        return {
+          todayKey: getToday(),
+          lastStudyAt: progress.lastStudyAt || "",
+          lastStudyDate: progress.lastStudyDate || "",
+          lastShownDate: firekeeper.lastShownDate || "",
+          dismissedDate: firekeeper.dismissedDate || "",
+          alreadyVisible: Boolean(firekeeperCard && !firekeeperCard.hidden)
+        };
+      }
+
+      function renderFirekeeperMode() {
+        if (!firekeeperMode || !questionBank.length) {
+          return;
+        }
+        firekeeperMode.render(getFirekeeperContext());
+      }
+
+      function markFirekeeperShown() {
+        var firekeeper = ensureFirekeeperProgress();
+        var today = getToday();
+
+        if (firekeeper.lastShownDate === today) {
+          return;
+        }
+        firekeeper.lastShownDate = today;
+        firekeeper.lastShownAt = new Date().toISOString();
+        progress.firekeeper = firekeeper;
+        saveProgress({ preserveSavedAt: true });
+      }
+
+      function dismissFirekeeperForToday(reason, saveOptions) {
+        var firekeeper = ensureFirekeeperProgress();
+        var options = saveOptions || {};
+
+        firekeeper.dismissedDate = getToday();
+        firekeeper.lastDismissedAt = new Date().toISOString();
+        firekeeper.lastDismissReason = reason || "";
+        progress.firekeeper = firekeeper;
+        if (firekeeperMode) {
+          firekeeperMode.hide();
+        }
+        if (options.save !== false) {
+          saveProgress();
+          updateStats();
+        }
+      }
+
+      function recordFirekeeperRest() {
+        var firekeeper = ensureFirekeeperProgress();
+        var now = new Date().toISOString();
+
+        firekeeper.restRecords.push({
+          date: getToday(),
+          reason: "今日は休む",
+          recordedAt: now
+        });
+        progress.firekeeper = firekeeper;
+        dismissFirekeeperForToday("rest");
+      }
+
+      function recordFirekeeperReason(reason) {
+        var firekeeper = ensureFirekeeperProgress();
+        var now = new Date().toISOString();
+
+        firekeeper.restRecords.push({
+          date: getToday(),
+          reason: reason || "その他",
+          recordedAt: now
+        });
+        progress.firekeeper = firekeeper;
+        dismissFirekeeperForToday("reason:" + (reason || "その他"));
+      }
+
+      function startFirekeeperOneQuestion() {
+        if (firekeeperMode) {
+          firekeeperMode.hide();
+        }
+        startSession("firekeeper");
+      }
+
+      function markLearningActivity(source, options) {
+        var settings = options || {};
+        var now = new Date().toISOString();
+        var firekeeper = ensureFirekeeperProgress();
+
+        progress.lastStudyAt = now;
+        progress.lastStudyDate = getToday();
+        firekeeper.dismissedDate = getToday();
+        firekeeper.lastDismissedAt = now;
+        firekeeper.lastDismissReason = source || "study";
+        progress.firekeeper = firekeeper;
+        if (firekeeperMode) {
+          firekeeperMode.hide();
+        }
+        if (settings.save) {
+          saveProgress();
+        }
+        if (settings.update) {
+          updateStats();
+        }
       }
 
       function questionHasAnyLabel(question, labels) {
@@ -3045,6 +3456,8 @@ debug: loading</pre>
           totalAnswered: progress.totalAnswers,
           totalCorrect: progress.correctAnswers,
           lastStudyDate: progress.lastStudyDate || "",
+          lastStudyAt: progress.lastStudyAt || "",
+          firekeeper: normalizeFirekeeperProgress(progress.firekeeper),
           stage4Result: stage4Result,
           stage5Result: stage5Result,
           progress: cloneJson(progress)
@@ -3109,6 +3522,12 @@ debug: loading</pre>
         base.lastStudyDate = typeof source.lastStudyDate === "string"
           ? source.lastStudyDate
           : typeof payload.lastStudyDate === "string" ? payload.lastStudyDate : "";
+        base.lastStudyAt = typeof source.lastStudyAt === "string"
+          ? source.lastStudyAt
+          : typeof payload.lastStudyAt === "string" ? payload.lastStudyAt : "";
+        if (!base.lastStudyAt && base.lastStudyDate) {
+          base.lastStudyAt = base.lastStudyDate + "T00:00:00+09:00";
+        }
         base.lastManualSyncAt = typeof source.lastManualSyncAt === "string" ? source.lastManualSyncAt : "";
         base.lastQuestionId = typeof source.lastQuestionId === "string" ? source.lastQuestionId : "";
         base.recentQuestionIds = uniqueStrings(source.recentQuestionIds).slice(-RECENT_LIMIT);
@@ -3130,6 +3549,7 @@ debug: loading</pre>
         base.stageProgress = normalizeStoredStageProgress(stageProgressSource, base);
         base.stage4 = normalizeStage4Progress(source.stage4 || payload.stage4Result);
         base.stage5 = normalizeStage4Progress(source.stage5 || payload.stage5Result);
+        base.firekeeper = normalizeFirekeeperProgress(source.firekeeper || payload.firekeeper);
 
         return base;
       }
@@ -3144,6 +3564,9 @@ debug: loading</pre>
         var lastStudyDate = typeof payload.lastStudyDate === "string" && payload.lastStudyDate
           ? payload.lastStudyDate
           : typeof source.lastStudyDate === "string" ? source.lastStudyDate : "";
+        var lastStudyAt = typeof payload.lastStudyAt === "string" && payload.lastStudyAt
+          ? payload.lastStudyAt
+          : typeof source.lastStudyAt === "string" ? source.lastStudyAt : "";
         var exportedAt = typeof payload.exportedAt === "string" ? payload.exportedAt : "";
         var syncedAt = typeof source.lastManualSyncAt === "string" ? source.lastManualSyncAt : "";
         var lastSavedAt = typeof source.lastSavedAt === "string" ? source.lastSavedAt : "";
@@ -3153,6 +3576,7 @@ debug: loading</pre>
           totalCorrect: Math.min(totalAnswered, totalCorrect),
           answeredIdCount: uniqueStrings(answeredIds).length,
           lastStudyDate: lastStudyDate,
+          lastStudyAtMs: Date.parse(lastStudyAt) || 0,
           exportedAtMs: Date.parse(exportedAt) || 0,
           syncedAtMs: Date.parse(syncedAt) || 0,
           lastSavedAtMs: Date.parse(lastSavedAt) || 0
@@ -3171,6 +3595,9 @@ debug: loading</pre>
         }
         if (remoteScore.lastStudyDate !== localScore.lastStudyDate) {
           return remoteScore.lastStudyDate > localScore.lastStudyDate ? "remote" : "local";
+        }
+        if (remoteScore.lastStudyAtMs !== localScore.lastStudyAtMs) {
+          return remoteScore.lastStudyAtMs > localScore.lastStudyAtMs ? "remote" : "local";
         }
         if (remoteScore.exportedAtMs || localScore.lastSavedAtMs) {
           if (remoteScore.exportedAtMs > localScore.lastSavedAtMs + 1000) {
@@ -3786,6 +4213,7 @@ debug: loading</pre>
           stageFullChallengeButton.hidden = true;
           stageFullChallengeButton.disabled = true;
         }
+        renderFirekeeperMode();
         renderDebugInfo();
       }
 
@@ -3972,12 +4400,18 @@ debug: loading</pre>
       function startSession(mode, requestedStageId, options) {
         var limit = mode === "challenge" ? 10 : 3;
         var settings = options || {};
+        if (mode !== "firekeeper" && firekeeperCard && !firekeeperCard.hidden) {
+          dismissFirekeeperForToday("study_started", { save: true });
+        }
         sessionMode = mode;
         sessionStageId = null;
         sessionStageDetail = null;
         sessionStageFullMode = false;
         if (mode === "mistakes") {
           sessionQuestions = selectMistakeQuestions(limit);
+        } else if (mode === "firekeeper") {
+          limit = 1;
+          sessionQuestions = selectDailyQuestions(limit);
         } else if (mode === "stageChallenge") {
           sessionStageId = requestedStageId || getNextChallengeStageId();
           if (sessionStageId === STAGE_FIVE_ID) {
@@ -4156,12 +4590,17 @@ debug: loading</pre>
         feedback.hidden = true;
         stage4Reflection.hidden = true;
         reflectionStatus.hidden = true;
+        if (teacherMode) {
+          teacherMode.reset();
+        }
         renderAnswerButtons(question);
         renderStageOfficialBox(question);
         resetAnswerButtons();
         progressLabel.textContent = "問題 " + (sessionIndex + 1) + "/" + sessionQuestions.length;
         if (sessionMode === "mistakes") {
           modeText = "間違えた問題";
+        } else if (sessionMode === "firekeeper") {
+          modeText = "火守モード 1問だけ";
         } else if (sessionMode === "challenge") {
           modeText = "10問チャレンジ";
         } else if (sessionMode === "stageChallenge") {
@@ -4442,13 +4881,20 @@ debug: loading</pre>
         progress[detailKey] = detail;
         saveProgress();
         updateReflectionButtons(question);
+        renderTeacherMode(question, {
+          trigger: type,
+          isCorrect: isCorrect,
+          repeatedWrong: false,
+          lowUnderstanding: type !== "understood",
+          mastered: type === "understood"
+        });
       }
 
       function recordAnswer(question, isCorrect) {
         normalizeDailyCount();
         progress.totalAnswers += 1;
         progress.daily.answers += 1;
-        progress.lastStudyDate = getToday();
+        markLearningActivity(sessionMode === "firekeeper" ? "firekeeper_one_question" : "answer", { save: false });
         addSeen(question.id);
         recordStageAnswer(question, isCorrect);
         recordStage4Answer(question, isCorrect);
@@ -4599,6 +5045,9 @@ debug: loading</pre>
         var sourceUrl = term ? term.sourceUrl : question.sourceUrl;
         var sourceType = term ? term.sourceType : question.sourceType;
         var correctChoiceId = getCorrectChoiceId(question);
+        var hadTeacherPriorWrong = hasTeacherPriorWrong(question);
+        var hadTeacherLowUnderstanding = hasTeacherLowUnderstanding(question);
+        var hadTeacherMastered = isTeacherMastered(question);
 
         buttons.forEach(function (button) {
           button.disabled = true;
@@ -4638,6 +5087,15 @@ debug: loading</pre>
         }
         recordAnswer(question, isCorrect);
         renderStage4Reflection(question);
+        renderTeacherMode(question, {
+          trigger: isCorrect
+            ? hadTeacherMastered ? "understood" : hadTeacherLowUnderstanding ? "low-understanding" : "answered"
+            : hadTeacherPriorWrong ? "repeated-wrong" : "wrong",
+          isCorrect: isCorrect,
+          repeatedWrong: !isCorrect && hadTeacherPriorWrong,
+          lowUnderstanding: hadTeacherLowUnderstanding,
+          mastered: isCorrect && hadTeacherMastered
+        });
       }
 
       function formatIdList(ids) {
@@ -4740,8 +5198,21 @@ debug: loading</pre>
         resultScore.textContent = sessionCorrect + " / " + sessionQuestions.length + " 正解";
         stage4Summary.hidden = true;
         stage4Summary.textContent = "";
+        moreButton.hidden = false;
+        reviewButton.hidden = false;
+        finishButton.hidden = false;
+        moreButton.textContent = "さらに3問";
+        finishButton.textContent = "今日はここまで";
 
-        if (sessionMode === "stageChallenge" && sessionStageId >= STAGE_FOUR_ID) {
+        if (sessionMode === "firekeeper") {
+          resultTitle.textContent = "1問だけ完了";
+          resultNote.textContent = sessionCorrect
+            ? "戻ってこられた。それで十分。今日の火は、ちゃんと残ったよ。"
+            : "ここまで来たことが、もう一歩です。今日は火を守れました。";
+          moreButton.hidden = true;
+          reviewButton.hidden = true;
+          finishButton.textContent = "学習モードへ戻る";
+        } else if (sessionMode === "stageChallenge" && sessionStageId >= STAGE_FOUR_ID) {
           stageRun = buildStageRun(sessionStageId);
           saveStageRun(sessionStageId, stageRun);
           renderStageSummary(sessionStageId, stageRun);
