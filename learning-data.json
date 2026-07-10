@@ -3,7 +3,7 @@
   "title": "社労士クイズOS",
   "version": 1,
   "storageKey": "sharoshiIntroProgressV1",
-  "exportedAt": "2026-07-10T05:30:27.732Z",
+  "exportedAt": "2026-07-10T05:48:19.033Z",
   "currentStage": 5,
   "highestUnlockedStage": 5,
   "completedStages": [
@@ -230,8 +230,8 @@
     },
     "2": {
       "total": 30,
-      "answerCount": 34,
-      "correctCount": 32,
+      "answerCount": 35,
+      "correctCount": 33,
       "accuracy": 94,
       "answeredQuestionIds": [
         "stage2-question-016",
@@ -425,7 +425,10 @@
     "stage3-question-026",
     "stage5-question-013"
   ],
-  "understoodCorrectQuestionIds": [],
+  "understoodCorrectQuestionIds": [
+    "stage5-question-021",
+    "stage5-question-027"
+  ],
   "guessedCorrectQuestionIds": [],
   "uncertainCorrectQuestionIds": [],
   "weakQuestionIds": [],
@@ -443,8 +446,8 @@
       "選択式対策 1問"
     ]
   },
-  "totalAnswered": 186,
-  "totalCorrect": 181,
+  "totalAnswered": 189,
+  "totalCorrect": 184,
   "lastStudyDate": "2026-07-10",
   "stage4Result": {
     "correctQuestionIds": [
@@ -572,7 +575,10 @@
     "wrongQuestionIds": [
       "stage5-question-013"
     ],
-    "understoodCorrectQuestionIds": [],
+    "understoodCorrectQuestionIds": [
+      "stage5-question-021",
+      "stage5-question-027"
+    ],
     "unsureCorrectQuestionIds": [],
     "guessedCorrectQuestionIds": [],
     "weakQuestionIds": [],
@@ -606,8 +612,8 @@
     }
   },
   "progress": {
-    "totalAnswers": 186,
-    "correctAnswers": 181,
+    "totalAnswers": 189,
+    "correctAnswers": 184,
     "wrongQuestionIds": [
       "question-013",
       "stage2-question-004",
@@ -616,16 +622,16 @@
       "stage5-question-013"
     ],
     "lastStudyDate": "2026-07-10",
-    "lastManualSyncAt": "2026-07-10T05:30:27.731Z",
-    "lastSavedAt": "2026-07-10T05:30:27.731Z",
-    "lastQuestionId": "stage2-question-012",
+    "lastManualSyncAt": "2026-07-10T05:48:19.032Z",
+    "lastSavedAt": "2026-07-10T05:48:19.032Z",
+    "lastQuestionId": "stage2-question-007",
     "recentQuestionIds": [
-      "question-009",
-      "stage5-question-024",
-      "question-020",
       "stage2-question-003",
       "question-005",
-      "stage2-question-012"
+      "stage2-question-012",
+      "stage5-question-021",
+      "stage5-question-027",
+      "stage2-question-007"
     ],
     "seenQuestionIds": [
       "question-027",
@@ -803,7 +809,7 @@
     ],
     "daily": {
       "date": "2026-07-10",
-      "answers": 10
+      "answers": 13
     },
     "wrongReview": {
       "question-013": {
@@ -865,8 +871,8 @@
         ]
       },
       "2": {
-        "answerCount": 34,
-        "correctCount": 32,
+        "answerCount": 35,
+        "correctCount": 33,
         "answeredQuestionIds": [
           "stage2-question-016",
           "stage2-question-030",
@@ -955,8 +961,8 @@
         ]
       },
       "5": {
-        "answerCount": 72,
-        "correctCount": 71,
+        "answerCount": 70,
+        "correctCount": 70,
         "answeredQuestionIds": [
           "stage5-question-030",
           "stage5-question-028",
@@ -1157,7 +1163,10 @@
       "wrongQuestionIds": [
         "stage5-question-013"
       ],
-      "understoodCorrectQuestionIds": [],
+      "understoodCorrectQuestionIds": [
+        "stage5-question-021",
+        "stage5-question-027"
+      ],
       "unsureCorrectQuestionIds": [],
       "guessedCorrectQuestionIds": [],
       "weakQuestionIds": [],
