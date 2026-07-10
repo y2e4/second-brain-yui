@@ -481,6 +481,46 @@
       font-weight: 850;
     }
 
+    .sync-state-card {
+      display: grid;
+      gap: 4px;
+      margin: 10px 0 0;
+      padding: 11px 12px;
+      overflow-wrap: anywhere;
+      background: rgba(245, 199, 98, 0.055);
+      border: 1px solid rgba(245, 199, 98, 0.2);
+      border-radius: 8px;
+    }
+
+    .sync-state-card.is-synced {
+      background: rgba(169, 216, 110, 0.08);
+      border-color: rgba(169, 216, 110, 0.32);
+    }
+
+    .sync-state-card.is-unsynced {
+      background: rgba(245, 199, 98, 0.08);
+      border-color: rgba(245, 199, 98, 0.34);
+    }
+
+    .sync-state-card.is-error {
+      background: rgba(255, 130, 87, 0.08);
+      border-color: rgba(255, 130, 87, 0.34);
+    }
+
+    .sync-state-title {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .sync-state-detail {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
     .sync-provider-box {
       display: grid;
       gap: 10px;
@@ -952,17 +992,42 @@
       overflow-wrap: anywhere;
     }
 
-    .debug-summary-top {
+    .debug-summary-details {
       margin: 10px 0 0;
+      overflow: hidden;
+      background: rgba(126, 200, 227, 0.06);
+      border: 1px solid rgba(126, 200, 227, 0.22);
+      border-radius: 8px;
+    }
+
+    .debug-summary-details > summary {
+      min-height: 42px;
+      padding: 9px 11px;
+      color: var(--info);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: left;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+      list-style: none;
+    }
+
+    .debug-summary-details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .debug-summary-top {
+      max-width: 100%;
+      margin: 0;
       padding: 10px 12px;
       color: var(--muted);
       font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       text-align: left;
       white-space: pre-wrap;
+      word-break: break-word;
       overflow-wrap: anywhere;
       background: rgba(126, 200, 227, 0.08);
-      border: 1px solid rgba(126, 200, 227, 0.26);
-      border-radius: 8px;
+      border-top: 1px solid rgba(126, 200, 227, 0.18);
     }
 
     [hidden] {
@@ -1029,9 +1094,12 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-10-github-onetap-01</p>
-      <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-10-github-onetap-01
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-10-debug-collapse-01</p>
+      <details class="debug-summary-details" id="debugSummaryDetails" hidden>
+        <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-10-debug-collapse-01
 debug: loading</pre>
+      </details>
     </header>
 
     <section class="panel location-card" aria-labelledby="currentLocationTitle">
@@ -1104,6 +1172,10 @@ debug: loading</pre>
             GitHubリポジトリの learning-data.json を使い、別端末でも「同期する」だけで進捗を移します。
           </p>
           <button class="primary-button" type="button" id="githubSyncButton">同期する</button>
+          <div class="sync-state-card is-unsynced" id="githubSyncStateCard" aria-live="polite">
+            <strong class="sync-state-title" id="githubSyncStateTitle">🟡 未同期</strong>
+            <span class="sync-state-detail" id="githubSyncStateDetail">GitHub同期設定を確認しています。</span>
+          </div>
           <p class="sync-meta">最終同期日時：<span id="lastSyncAt">未実行</span></p>
           <p class="status-message" id="syncStatus" role="status" hidden></p>
           <div class="sync-provider-box">
@@ -1174,7 +1246,7 @@ debug: loading</pre>
         <div class="progress-fill" id="progressFill"></div>
       </div>
       <span class="category-label" id="questionCategory"></span>
-      <p class="question-debug-line" id="questionDebugLine">questionId: loading</p>
+      <p class="question-debug-line" id="questionDebugLine" hidden>questionId: loading</p>
       <div class="stage5-official-box" id="stageOfficialBox" hidden>
         <p id="stageOfficialNote"></p>
         <div class="stage5-official-links" id="stageOfficialLinks"></div>
@@ -1230,8 +1302,8 @@ debug: loading</pre>
       ステージ1は2026年6月14日、ステージ2は2026年6月25日、ステージ3は2026年6月28日、ステージ4・5は2026年7月7日に公的情報を確認して再構成しています。
       法改正後は根拠リンクも確認してください。
     </p>
-    <details class="debug-details">
-      <summary>デバッグ情報</summary>
+    <details class="debug-details" id="debugDetails" hidden>
+      <summary id="debugDetailsToggle">▶ デバッグ情報</summary>
       <div class="debug-body">
         <p class="panel-note">
           スマホ実機で、保存データ・ステージ判定・問題データ読み込み状況を確認するための一時表示です。
@@ -1249,18 +1321,19 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-10-github-onetap-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-10-debug-collapse-01</p>
   </main>
 
   <script>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-10-github-onetap-01";
+      var BUILD_VERSION = "2026-07-10-debug-collapse-01";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
       var GITHUB_SYNC_CONFIG_KEY = "sharoshiGithubSyncConfigV1";
+      var GITHUB_SYNC_META_KEY = "sharoshiGithubSyncMetaV1";
       // この版はlocalStorage保存です。端末間同期にはSupabase等の共通DBが必要です。
       var RECENT_LIMIT = 6;
       var STAGE_FIVE_SPLIT_LIMIT = 10;
@@ -1367,6 +1440,9 @@ debug: loading</pre>
       var lastStoredProgressSnapshot = null;
       var progress = readProgress();
       var stageFivePriorityMode = readStageFivePriorityMode();
+      var syncStatusTimer = 0;
+      var autoSyncStarted = false;
+      var debugMode = isDebugModeEnabled();
       var sessionQuestions = [];
       var sessionIndex = 0;
       var sessionCorrect = 0;
@@ -1416,10 +1492,17 @@ debug: loading</pre>
       var importProgressButton = document.getElementById("importProgressButton");
       var syncDataText = document.getElementById("syncDataText");
       var syncStatus = document.getElementById("syncStatus");
+      var githubSyncStateCard = document.getElementById("githubSyncStateCard");
+      var githubSyncStateTitle = document.getElementById("githubSyncStateTitle");
+      var githubSyncStateDetail = document.getElementById("githubSyncStateDetail");
       var lastSyncAt = document.getElementById("lastSyncAt");
       var debugInfoText = document.getElementById("debugInfoText");
+      var debugDetails = document.getElementById("debugDetails");
+      var debugDetailsToggle = document.getElementById("debugDetailsToggle");
       var buildVersionLabel = document.getElementById("buildVersionLabel");
       var buildVersionTopLabel = document.getElementById("buildVersionTopLabel");
+      var debugSummaryDetails = document.getElementById("debugSummaryDetails");
+      var debugSummaryToggle = document.getElementById("debugSummaryToggle");
       var debugSummaryTop = document.getElementById("debugSummaryTop");
       var termsButton = document.getElementById("termsButton");
       var mistakesButton = document.getElementById("mistakesButton");
@@ -1468,6 +1551,41 @@ debug: loading</pre>
           month: "2-digit",
           day: "2-digit"
         }).format(new Date());
+      }
+
+      function isDebugModeEnabled() {
+        try {
+          return new URLSearchParams(window.location.search).get("debug") === "1";
+        } catch (error) {
+          return /(?:\?|&)debug=1(?:&|$)/.test(window.location.search);
+        }
+      }
+
+      function updateDebugSummaryLabel(details, summary) {
+        if (!summary) {
+          return;
+        }
+        summary.textContent = details && details.open ? "▼ デバッグ情報" : "▶ デバッグ情報";
+      }
+
+      function setupDebugDetails(details, summary) {
+        if (!details) {
+          return;
+        }
+        details.hidden = !debugMode;
+        details.open = false;
+        updateDebugSummaryLabel(details, summary);
+        details.addEventListener("toggle", function () {
+          updateDebugSummaryLabel(details, summary);
+        });
+      }
+
+      function setupDebugVisibility() {
+        setupDebugDetails(debugSummaryDetails, debugSummaryToggle);
+        setupDebugDetails(debugDetails, debugDetailsToggle);
+        if (questionDebugLine) {
+          questionDebugLine.hidden = !debugMode;
+        }
       }
 
       function readStageFivePriorityMode() {
@@ -1728,9 +1846,16 @@ debug: loading</pre>
         return base;
       }
 
-      function saveProgress() {
-        progress.lastSavedAt = new Date().toISOString();
+      function saveProgress(options) {
+        var settings = options || {};
+
+        if (settings.savedAt) {
+          progress.lastSavedAt = settings.savedAt;
+        } else if (!settings.preserveSavedAt || !progress.lastSavedAt) {
+          progress.lastSavedAt = new Date().toISOString();
+        }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+        updateSyncInfo();
       }
 
       function normalizeDailyCount() {
@@ -2115,6 +2240,8 @@ debug: loading</pre>
           ? lastStoredProgressSnapshot.stage4
           : null;
         var normalizedStage4 = normalizeStage4Progress(progress.stage4);
+        var syncMeta = readGitHubSyncMeta();
+        var syncSnapshot = getSyncStateSnapshot();
         var info = {
           appVersion: BUILD_VERSION,
           buildVersion: BUILD_VERSION,
@@ -2156,6 +2283,13 @@ debug: loading</pre>
           lastReadAt: lastProgressReadAt || "",
           lastReadError: lastProgressReadError || "",
           lastStudyDate: progress.lastStudyDate || "",
+          syncState: syncSnapshot.title,
+          syncStateDetail: syncSnapshot.detail,
+          syncLocalUpdatedAt: progress.lastSavedAt || "",
+          syncGitHubUpdatedAt: syncMeta.githubUpdatedAt || "",
+          syncWhichIsNewer: syncMeta.comparison || "unknown",
+          syncLastAutoFetchAt: syncMeta.lastAutoFetchAt || "",
+          syncLastError: syncMeta.lastError || "",
           debugGeneratedAt: new Date().toISOString()
         };
 
@@ -2178,6 +2312,10 @@ debug: loading</pre>
             "stage4Completed: " + info.stage4Completed,
             "stage5Unlocked: " + info.stage5Unlocked,
             "stage5QuestionsCount: " + info.stage5QuestionsCount,
+            "syncState: " + info.syncState,
+            "syncLocalUpdatedAt: " + info.syncLocalUpdatedAt,
+            "syncGitHubUpdatedAt: " + info.syncGitHubUpdatedAt,
+            "syncWhichIsNewer: " + info.syncWhichIsNewer,
             "stage5PriorityIdsFound: " + info.stage5PriorityIdsFound.join(", "),
             "stageProgress4: " + safeDebugJson(info.stageProgress4),
             "stage4LastRun: " + safeDebugJson(info.stage4LastRun)
@@ -2217,15 +2355,201 @@ debug: loading</pre>
         }).format(date);
       }
 
-      function updateSyncInfo() {
-        lastSyncAt.textContent = formatDateTime(progress.lastManualSyncAt);
+      function getTimeValue(value) {
+        var parsed = Date.parse(value || "");
+        return Number.isNaN(parsed) ? 0 : parsed;
       }
 
-      function showSyncStatus(message, isError) {
+      function readGitHubSyncMeta() {
+        var stored;
+
+        try {
+          stored = JSON.parse(localStorage.getItem(GITHUB_SYNC_META_KEY) || "null");
+        } catch (error) {
+          stored = null;
+        }
+
+        if (!isPlainObject(stored)) {
+          stored = {};
+        }
+
+        return {
+          lastStatus: typeof stored.lastStatus === "string" ? stored.lastStatus : "",
+          lastSyncedAt: typeof stored.lastSyncedAt === "string" ? stored.lastSyncedAt : "",
+          lastSyncedScore: isPlainObject(stored.lastSyncedScore) ? stored.lastSyncedScore : null,
+          githubUpdatedAt: typeof stored.githubUpdatedAt === "string" ? stored.githubUpdatedAt : "",
+          comparison: typeof stored.comparison === "string" ? stored.comparison : "unknown",
+          lastError: typeof stored.lastError === "string" ? stored.lastError : "",
+          lastErrorAt: typeof stored.lastErrorAt === "string" ? stored.lastErrorAt : "",
+          lastAutoFetchAt: typeof stored.lastAutoFetchAt === "string" ? stored.lastAutoFetchAt : ""
+        };
+      }
+
+      function saveGitHubSyncMeta(meta) {
+        try {
+          localStorage.setItem(GITHUB_SYNC_META_KEY, JSON.stringify(meta));
+        } catch (error) {
+          // 同期状態表示用のメタ情報なので、保存できなくても学習記録は継続する。
+        }
+      }
+
+      function updateGitHubSyncMeta(patch) {
+        var meta = readGitHubSyncMeta();
+
+        Object.keys(patch || {}).forEach(function (key) {
+          meta[key] = patch[key];
+        });
+        saveGitHubSyncMeta(meta);
+        return meta;
+      }
+
+      function hasCompleteGitHubSyncConfig(config) {
+        return Boolean(config && config.owner && config.repo && config.branch && config.path && config.token);
+      }
+
+      function getPayloadUpdatedAt(payload) {
+        var source = isPlainObject(payload) && isPlainObject(payload.progress) ? payload.progress : payload;
+
+        if (!isPlainObject(payload)) {
+          return "";
+        }
+
+        return typeof payload.exportedAt === "string" && payload.exportedAt
+          ? payload.exportedAt
+          : typeof source.lastManualSyncAt === "string" && source.lastManualSyncAt
+            ? source.lastManualSyncAt
+            : typeof source.lastSavedAt === "string" ? source.lastSavedAt : "";
+      }
+
+      function isLocalProgressNewerThanLastSync() {
+        var localSavedAt = getTimeValue(progress.lastSavedAt);
+        var lastSyncedAt = getTimeValue(progress.lastManualSyncAt);
+
+        return Boolean(localSavedAt && (!lastSyncedAt || localSavedAt > lastSyncedAt + 1000));
+      }
+
+      function getUnsyncedAnswerCount(meta) {
+        var lastScore = meta && isPlainObject(meta.lastSyncedScore) ? meta.lastSyncedScore : null;
+        var lastTotal = lastScore ? Math.max(0, Number(lastScore.totalAnswered) || 0) : 0;
+        var diff = Math.max(0, progress.totalAnswers - lastTotal);
+
+        return diff;
+      }
+
+      function getSyncStateSnapshot() {
+        var config = readGitHubSyncConfig();
+        var meta = readGitHubSyncMeta();
+        var localUnsynced = isLocalProgressNewerThanLastSync();
+        var unsyncedAnswers = getUnsyncedAnswerCount(meta);
+        var detail;
+
+        if (!hasCompleteGitHubSyncConfig(config)) {
+          return {
+            kind: "unsynced",
+            title: "🟡 未同期",
+            detail: "GitHub tokenを設定すると同期できます。",
+            meta: meta
+          };
+        }
+
+        if (meta.lastStatus === "error") {
+          return {
+            kind: "error",
+            title: "🔴 同期エラー",
+            detail: meta.lastError || "GitHubへ接続できませんでした。",
+            meta: meta
+          };
+        }
+
+        if (localUnsynced) {
+          detail = unsyncedAnswers > 0
+            ? "この端末で" + unsyncedAnswers + "件の回答変更があります"
+            : "この端末で未同期の変更があります";
+          return {
+            kind: "unsynced",
+            title: "🟡 未同期",
+            detail: detail,
+            meta: meta
+          };
+        }
+
+        if (progress.lastManualSyncAt) {
+          return {
+            kind: "synced",
+            title: "🟢 GitHub同期済み",
+            detail: "最終同期：" + formatDateTime(progress.lastManualSyncAt),
+            meta: meta
+          };
+        }
+
+        return {
+          kind: "unsynced",
+          title: "🟡 未同期",
+          detail: "まだGitHubへ学習データを保存していません。",
+          meta: meta
+        };
+      }
+
+      function renderSyncState() {
+        var snapshot = getSyncStateSnapshot();
+
+        if (!githubSyncStateCard || !githubSyncStateTitle || !githubSyncStateDetail) {
+          return;
+        }
+
+        githubSyncStateCard.classList.remove("is-synced", "is-unsynced", "is-error");
+        githubSyncStateCard.classList.add("is-" + snapshot.kind);
+        githubSyncStateTitle.textContent = snapshot.title;
+        githubSyncStateDetail.textContent = snapshot.detail;
+      }
+
+      function updateSyncInfo() {
+        if (lastSyncAt) {
+          lastSyncAt.textContent = formatDateTime(progress.lastManualSyncAt);
+        }
+        renderSyncState();
+      }
+
+      function showSyncStatus(message, isError, durationMs) {
+        if (syncStatusTimer) {
+          window.clearTimeout(syncStatusTimer);
+          syncStatusTimer = 0;
+        }
         syncStatus.textContent = message;
         syncStatus.hidden = !message;
         syncStatus.classList.toggle("is-error", Boolean(isError));
         syncStatus.classList.toggle("is-good", Boolean(message) && !isError);
+        if (message && durationMs) {
+          syncStatusTimer = window.setTimeout(function () {
+            syncStatus.hidden = true;
+            syncStatus.textContent = "";
+            syncStatusTimer = 0;
+          }, durationMs);
+        }
+      }
+
+      function markSyncError(message) {
+        updateGitHubSyncMeta({
+          lastStatus: "error",
+          lastError: message || "GitHubへ接続できませんでした。",
+          lastErrorAt: new Date().toISOString()
+        });
+        updateSyncInfo();
+        renderDebugInfo();
+      }
+
+      function markSyncSuccess(remoteUpdatedAt, comparison) {
+        updateGitHubSyncMeta({
+          lastStatus: "synced",
+          lastSyncedAt: progress.lastManualSyncAt || new Date().toISOString(),
+          lastSyncedScore: getPayloadSyncScore(buildProgressExportPayload()),
+          githubUpdatedAt: remoteUpdatedAt || progress.lastManualSyncAt || "",
+          comparison: comparison || "same",
+          lastError: "",
+          lastErrorAt: ""
+        });
+        updateSyncInfo();
+        renderDebugInfo();
       }
 
       function inferGitHubConfig() {
@@ -2629,6 +2953,7 @@ debug: loading</pre>
           : typeof source.lastStudyDate === "string" ? source.lastStudyDate : "";
         var exportedAt = typeof payload.exportedAt === "string" ? payload.exportedAt : "";
         var syncedAt = typeof source.lastManualSyncAt === "string" ? source.lastManualSyncAt : "";
+        var lastSavedAt = typeof source.lastSavedAt === "string" ? source.lastSavedAt : "";
 
         return {
           totalAnswered: totalAnswered,
@@ -2636,7 +2961,8 @@ debug: loading</pre>
           answeredIdCount: uniqueStrings(answeredIds).length,
           lastStudyDate: lastStudyDate,
           exportedAtMs: Date.parse(exportedAt) || 0,
-          syncedAtMs: Date.parse(syncedAt) || 0
+          syncedAtMs: Date.parse(syncedAt) || 0,
+          lastSavedAtMs: Date.parse(lastSavedAt) || 0
         };
       }
 
@@ -2653,31 +2979,59 @@ debug: loading</pre>
         if (remoteScore.lastStudyDate !== localScore.lastStudyDate) {
           return remoteScore.lastStudyDate > localScore.lastStudyDate ? "remote" : "local";
         }
-        if (remoteScore.exportedAtMs !== localScore.syncedAtMs) {
-          return remoteScore.exportedAtMs > localScore.syncedAtMs ? "remote" : "local";
+        if (remoteScore.exportedAtMs || localScore.lastSavedAtMs) {
+          if (remoteScore.exportedAtMs > localScore.lastSavedAtMs + 1000) {
+            return "remote";
+          }
+          if (localScore.lastSavedAtMs > remoteScore.exportedAtMs + 1000) {
+            return "local";
+          }
         }
-        return "local";
+        return "same";
       }
 
       function applyImportedProgressPayload(payload, reason) {
+        var syncAt = new Date().toISOString();
+
         progress = normalizeImportedProgressPayload(payload);
         normalizeStageProgress();
-        progress.lastManualSyncAt = new Date().toISOString();
-        saveProgress();
+        progress.lastManualSyncAt = syncAt;
+        saveProgress({ savedAt: syncAt });
         updateStats();
         logProgressDebug(reason);
+        return syncAt;
+      }
+
+      function markProgressSyncedNow(reason) {
+        var syncAt = new Date().toISOString();
+
+        progress.lastManualSyncAt = syncAt;
+        saveProgress({ savedAt: syncAt });
+        updateStats();
+        if (reason) {
+          logProgressDebug(reason);
+        }
+        return syncAt;
       }
 
       function pushProgressToSyncProvider(provider, remoteSha) {
         var payload;
+        var syncAt = new Date().toISOString();
+        var previousManualSyncAt = progress.lastManualSyncAt;
+        var previousSavedAt = progress.lastSavedAt;
 
         normalizeStageProgress();
-        progress.lastManualSyncAt = new Date().toISOString();
-        saveProgress();
+        progress.lastManualSyncAt = syncAt;
+        progress.lastSavedAt = syncAt;
         payload = buildProgressExportPayload();
         return provider.write(payload, remoteSha).then(function () {
+          saveProgress({ savedAt: syncAt });
           updateStats();
           return payload;
+        }).catch(function (error) {
+          progress.lastManualSyncAt = previousManualSyncAt;
+          progress.lastSavedAt = previousSavedAt;
+          throw error;
         });
       }
 
@@ -2695,6 +3049,8 @@ debug: loading</pre>
             githubSyncSettings.open = true;
           }
           showSyncStatus(error.message, true);
+          updateSyncInfo();
+          renderDebugInfo();
           return;
         }
 
@@ -2708,11 +3064,14 @@ debug: loading</pre>
         provider.read()
           .then(function (remote) {
             var remoteScore;
+            var remoteUpdatedAt = "";
             var decision;
+            var localUnsynced = isLocalProgressNewerThanLastSync();
 
             if (!remote.exists) {
-              return pushProgressToSyncProvider(provider, "").then(function () {
-                return "GitHubに learning-data.json を作成しました。";
+              return pushProgressToSyncProvider(provider, "").then(function (payload) {
+                markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+                return "GitHubと同期しました";
               });
             }
 
@@ -2720,27 +3079,118 @@ debug: loading</pre>
               throw new Error("GitHub上の learning-data.json は社労士クイズOSの学習データではありません。");
             }
 
+            remoteUpdatedAt = getPayloadUpdatedAt(remote.payload);
             remoteScore = getPayloadSyncScore(remote.payload);
             decision = compareSyncScores(localScore, remoteScore);
+            updateGitHubSyncMeta({
+              githubUpdatedAt: remoteUpdatedAt,
+              comparison: localUnsynced && decision === "remote" ? "conflict" : decision
+            });
 
             if (decision === "remote") {
+              if (localUnsynced) {
+                throw new Error("ローカルとGitHubの両方に新しい変更があります。データ消失防止のため自動上書きを止めました。");
+              }
               applyImportedProgressPayload(remote.payload, "github sync import");
-              return "GitHubから最新の学習データを取得しました。";
+              markSyncSuccess(remoteUpdatedAt, "remote");
+              return "GitHubと同期しました";
             }
 
-            return pushProgressToSyncProvider(provider, remote.sha).then(function () {
-              return "ローカルの学習データをGitHubへ保存しました。";
+            if (decision === "same" && !localUnsynced) {
+              markProgressSyncedNow("github sync check");
+              markSyncSuccess(remoteUpdatedAt, "same");
+              return "GitHubと同期しました";
+            }
+
+            return pushProgressToSyncProvider(provider, remote.sha).then(function (payload) {
+              markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+              return "GitHubと同期しました";
             });
           })
           .then(function (message) {
-            showSyncStatus(message, false);
+            showSyncStatus(message, false, 2000);
           })
           .catch(function (error) {
-            showSyncStatus(error.message || "GitHub同期に失敗しました。", true);
+            markSyncError(error.message || "GitHubへ接続できませんでした。");
+            showSyncStatus(error.message || "GitHubへ接続できませんでした。", true);
           })
           .finally(function () {
             githubSyncButton.disabled = false;
             updateSyncInfo();
+          });
+      }
+
+      function autoFetchLatestFromGitHub() {
+        var config = readGitHubSyncConfig();
+        var provider;
+        var localPayload;
+        var localScore;
+
+        if (autoSyncStarted || !hasCompleteGitHubSyncConfig(config)) {
+          updateSyncInfo();
+          return;
+        }
+
+        autoSyncStarted = true;
+        provider = createGitHubSyncProvider(config);
+        normalizeStageProgress();
+        localPayload = buildProgressExportPayload();
+        localScore = getPayloadSyncScore(localPayload);
+        showSyncStatus("GitHubの最新データを確認しています...", false);
+
+        provider.read()
+          .then(function (remote) {
+            var remoteUpdatedAt = "";
+            var remoteScore;
+            var decision;
+            var localUnsynced = isLocalProgressNewerThanLastSync();
+            var now = new Date().toISOString();
+
+            if (!remote.exists) {
+              updateGitHubSyncMeta({
+                lastStatus: localUnsynced ? "unsynced" : "",
+                lastAutoFetchAt: now,
+                comparison: localUnsynced ? "local" : "unknown",
+                githubUpdatedAt: ""
+              });
+              updateSyncInfo();
+              showSyncStatus("", false);
+              return;
+            }
+
+            if (!looksLikeProgressPayload(remote.payload)) {
+              throw new Error("GitHub上の learning-data.json は社労士クイズOSの学習データではありません。");
+            }
+
+            remoteUpdatedAt = getPayloadUpdatedAt(remote.payload);
+            remoteScore = getPayloadSyncScore(remote.payload);
+            decision = compareSyncScores(localScore, remoteScore);
+
+            if (decision === "remote" && !localUnsynced) {
+              applyImportedProgressPayload(remote.payload, "github auto import");
+              updateGitHubSyncMeta({
+                lastAutoFetchAt: now
+              });
+              markSyncSuccess(remoteUpdatedAt, "remote");
+              showSyncStatus("GitHubと同期しました", false, 2000);
+              return;
+            }
+
+            updateGitHubSyncMeta({
+              lastStatus: localUnsynced ? "unsynced" : "synced",
+              lastAutoFetchAt: now,
+              githubUpdatedAt: remoteUpdatedAt,
+              comparison: localUnsynced && decision === "remote" ? "conflict" : decision,
+              lastError: "",
+              lastErrorAt: ""
+            });
+            updateSyncInfo();
+            renderDebugInfo();
+            showSyncStatus("", false);
+          })
+          .catch(function (error) {
+            markSyncError(error.message || "GitHubへ接続できませんでした。");
+            showSyncStatus(error.message || "GitHubへ接続できませんでした。", true);
           });
       }
 
@@ -4296,6 +4746,8 @@ debug: loading</pre>
         }
       }
 
+      setupDebugVisibility();
+
       if (stage5PriorityModeToggle) {
         stage5PriorityModeToggle.checked = stageFivePriorityMode;
         stage5PriorityModeToggle.addEventListener("change", function () {
@@ -4445,9 +4897,10 @@ debug: loading</pre>
             questionById[question.id] = question;
           });
 	          normalizeStageProgress();
-	          saveProgress();
+	          saveProgress({ preserveSavedAt: true });
 	          updateStats();
 	          logProgressDebug("data loaded");
+            autoFetchLatestFromGitHub();
 	          dailyButton.disabled = false;
           challengeButton.disabled = false;
           termsButton.disabled = false;
