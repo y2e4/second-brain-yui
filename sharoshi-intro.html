@@ -246,6 +246,42 @@
       font-weight: 800;
     }
 
+    .progress-detail-details,
+    .stats-detail-details {
+      margin-top: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.028);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+    }
+
+    .progress-detail-details > summary,
+    .stats-detail-details > summary {
+      min-height: 46px;
+      padding: 11px 12px;
+      color: var(--gold);
+      font-weight: 900;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+      list-style: none;
+    }
+
+    .progress-detail-details > summary::-webkit-details-marker,
+    .stats-detail-details > summary::-webkit-details-marker,
+    .sync-details > summary::-webkit-details-marker,
+    .sync-settings > summary::-webkit-details-marker,
+    .sync-backup > summary::-webkit-details-marker,
+    .locked-stage-details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .progress-detail-body,
+    .stats-detail-body {
+      display: grid;
+      gap: 12px;
+      padding: 0 12px 12px;
+    }
+
     .location-grid {
       display: grid;
       gap: 9px;
@@ -393,6 +429,34 @@
       font-weight: 800;
     }
 
+    .ember-quote-card {
+      border-color: rgba(255, 123, 48, 0.3);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 123, 48, 0.14), transparent 16rem),
+        rgba(23, 17, 13, 0.96);
+    }
+
+    .ember-quote-title {
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .ember-quote-text {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: clamp(17px, 4.7vw, 21px);
+      font-weight: 900;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .ember-quote-actions {
+      display: grid;
+      gap: 8px;
+    }
+
     .mode-actions,
     .result-actions {
       display: grid;
@@ -415,6 +479,16 @@
       box-shadow:
         0 10px 22px rgba(0, 0, 0, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .hero-learning-button {
+      min-height: 66px;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.36),
+        0 0 0 1px rgba(255, 232, 160, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
     }
 
     .secondary-button {
@@ -466,6 +540,7 @@
       font-weight: 900;
       cursor: pointer;
       overflow-wrap: anywhere;
+      list-style: none;
     }
 
     .sync-body {
@@ -505,6 +580,10 @@
     .sync-state-card.is-error {
       background: rgba(255, 130, 87, 0.08);
       border-color: rgba(255, 130, 87, 0.34);
+    }
+
+    .sync-state-card + .primary-button {
+      margin-top: 10px;
     }
 
     .sync-state-title {
@@ -603,6 +682,7 @@
       font-weight: 900;
       cursor: pointer;
       overflow-wrap: anywhere;
+      list-style: none;
     }
 
     .sync-settings-body,
@@ -1040,7 +1120,7 @@
       }
 
       .stats-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .location-grid {
@@ -1094,10 +1174,10 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-10-debug-collapse-01</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-10-focus-home-01</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-10-debug-collapse-01
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-10-focus-home-01
 debug: loading</pre>
       </details>
     </header>
@@ -1106,35 +1186,40 @@ debug: loading</pre>
       <span class="location-kicker">現在地</span>
       <h2 class="location-title" id="currentLocationTitle">現在：ステージ3 / 5</h2>
       <p class="location-subtitle" id="currentLocationName">条件・例外・数字対策</p>
-      <div class="location-grid">
-        <div class="location-box">
-          <span class="location-label">解放済み</span>
-          <span class="location-value" id="locationUnlockedValue">ステージ1、ステージ2、ステージ3</span>
-        </div>
-        <div class="location-box">
-          <span class="location-label">現在のステージ進捗</span>
-          <span class="location-value" id="locationProgressValue">0 / 30問回答
+      <details class="progress-detail-details" id="progressDetails">
+        <summary id="progressDetailsSummary">▶ 進捗の詳細を見る</summary>
+        <div class="progress-detail-body">
+          <div class="location-grid">
+            <div class="location-box">
+              <span class="location-label">解放済み</span>
+              <span class="location-value" id="locationUnlockedValue">ステージ1、ステージ2、ステージ3</span>
+            </div>
+            <div class="location-box">
+              <span class="location-label">現在のステージ進捗</span>
+              <span class="location-value" id="locationProgressValue">0 / 30問回答
 正答率 0%</span>
-        </div>
-        <div class="location-box">
-          <span class="location-label">次の鍵</span>
-          <span class="location-value" id="locationKeyValue">ステージ3の全30問を1回以上解答
+            </div>
+            <div class="location-box">
+              <span class="location-label">次の鍵</span>
+              <span class="location-value" id="locationKeyValue">ステージ3の全30問を1回以上解答
 ステージ3正答率80%以上</span>
+            </div>
+          </div>
+          <p class="stage-key-status" id="stageKeyStatus">条件達成までは、ステージ3の問題に取り組みます。</p>
+          <div class="stage-next-action" id="stageNextAction" hidden>
+            <p>ステージ4が解放済みです</p>
+            <button class="primary-button" type="button" id="stageConsultButton">ステージ4を開始する</button>
+            <p class="stage-copy-status" id="stageCopyStatus" role="status" hidden></p>
+          </div>
+          <details class="locked-stage-details" id="lockedStagesDetails">
+            <summary id="lockedStagesSummary">ステージ情報を確認中</summary>
+            <ul class="locked-stage-list" id="lockedStagesList"></ul>
+          </details>
+          <p class="panel-note">
+            ステージ5：公式確認・選択式・択一式・苦手補強・横断事例をまとめて演習する実戦総合演習
+          </p>
         </div>
-      </div>
-      <p class="stage-key-status" id="stageKeyStatus">条件達成までは、ステージ3の問題に取り組みます。</p>
-      <div class="stage-next-action" id="stageNextAction" hidden>
-        <p>ステージ4が解放済みです</p>
-        <button class="primary-button" type="button" id="stageConsultButton">ステージ4を開始する</button>
-        <p class="stage-copy-status" id="stageCopyStatus" role="status" hidden></p>
-      </div>
-      <details class="locked-stage-details" id="lockedStagesDetails">
-        <summary id="lockedStagesSummary">ステージ情報を確認中</summary>
-        <ul class="locked-stage-list" id="lockedStagesList"></ul>
       </details>
-      <p class="panel-note">
-        ステージ5：公式確認・選択式・択一式・苦手補強・横断事例をまとめて演習する実戦総合演習
-      </p>
     </section>
 
     <section class="panel" aria-labelledby="statsTitle">
@@ -1153,35 +1238,40 @@ debug: loading</pre>
           <span class="stat-label">正答率</span>
         </div>
         <div class="stat">
-          <span class="stat-value" id="unseenCount">30</span>
-          <span class="stat-label">未出題問題数</span>
-        </div>
-        <div class="stat">
           <span class="stat-value" id="wrongCount">0</span>
-          <span class="stat-label">間違えた問題数</span>
+          <span class="stat-label">迷った／間違えた問題数</span>
         </div>
       </div>
+      <details class="stats-detail-details" id="statsDetails">
+        <summary id="statsDetailsSummary">▶ 記録の詳細を見る</summary>
+        <div class="stats-detail-body">
+          <div class="stat">
+            <span class="stat-value" id="unseenCount">30</span>
+            <span class="stat-label">未出題問題数</span>
+          </div>
+        </div>
+      </details>
     </section>
 
     <section class="panel" aria-labelledby="syncTitle">
       <details class="sync-details" open>
         <summary id="syncTitle">学習データ同期</summary>
         <div class="sync-body">
-          <p class="panel-note">
-            PCとスマホの学習データは、現在それぞれの端末のlocalStorageに保存されています。
-            GitHubリポジトリの learning-data.json を使い、別端末でも「同期する」だけで進捗を移します。
-          </p>
-          <button class="primary-button" type="button" id="githubSyncButton">同期する</button>
           <div class="sync-state-card is-unsynced" id="githubSyncStateCard" aria-live="polite">
             <strong class="sync-state-title" id="githubSyncStateTitle">🟡 未同期</strong>
             <span class="sync-state-detail" id="githubSyncStateDetail">GitHub同期設定を確認しています。</span>
           </div>
+          <button class="primary-button" type="button" id="githubSyncButton">同期する</button>
           <p class="sync-meta">最終同期日時：<span id="lastSyncAt">未実行</span></p>
           <p class="status-message" id="syncStatus" role="status" hidden></p>
           <div class="sync-provider-box">
             <details class="sync-settings" id="githubSyncSettings">
-              <summary>初回だけGitHub同期設定を開く</summary>
+              <summary id="githubSyncSettingsSummary">▶ 同期設定を開く</summary>
               <div class="sync-settings-body">
+                <p class="sync-help">
+                  PCとスマホの学習データは、現在それぞれの端末のlocalStorageに保存されています。
+                  GitHubリポジトリの learning-data.json を使い、別端末でも「同期する」だけで進捗を移します。
+                </p>
                 <p class="sync-help">
                   GitHub Pagesだけで動く同期です。Fine-grained personal access token は各端末のlocalStorageにだけ保存し、HTMLやJSONには保存しません。
                 </p>
@@ -1200,34 +1290,42 @@ debug: loading</pre>
                 <p class="sync-help">
                   初回設定後は、先に進めた端末で「同期する」→別端末で「同期する」だけで反映します。
                 </p>
+                <details class="sync-backup">
+                  <summary>バックアップ用JSONを開く</summary>
+                  <div class="sync-backup-body">
+                    <p class="sync-help">
+                      通常は使いません。GitHub同期が使えないときだけ、JSONを手動で退避・復元できます。
+                    </p>
+                    <div class="sync-actions">
+                      <button class="secondary-button" type="button" id="exportProgressButton">学習データをエクスポート</button>
+                    </div>
+                    <label class="sync-label" for="syncDataText">インポート用テキストエリア</label>
+                    <textarea class="sync-textarea" id="syncDataText" rows="8" spellcheck="false" placeholder="バックアップJSONをここに貼り付けます。"></textarea>
+                    <div class="sync-actions">
+                      <button class="secondary-button" type="button" id="importProgressButton">学習データをインポート</button>
+                    </div>
+                  </div>
+                </details>
               </div>
             </details>
           </div>
-          <details class="sync-backup">
-            <summary>バックアップ用JSONを開く</summary>
-            <div class="sync-backup-body">
-              <p class="sync-help">
-                通常は使いません。GitHub同期が使えないときだけ、JSONを手動で退避・復元できます。
-              </p>
-              <div class="sync-actions">
-                <button class="secondary-button" type="button" id="exportProgressButton">学習データをエクスポート</button>
-              </div>
-              <label class="sync-label" for="syncDataText">インポート用テキストエリア</label>
-              <textarea class="sync-textarea" id="syncDataText" rows="8" spellcheck="false" placeholder="バックアップJSONをここに貼り付けます。"></textarea>
-              <div class="sync-actions">
-                <button class="secondary-button" type="button" id="importProgressButton">学習データをインポート</button>
-              </div>
-            </div>
-          </details>
         </div>
       </details>
+    </section>
+
+    <section class="panel ember-quote-card" aria-labelledby="dailyEmberTitle">
+      <h2 class="ember-quote-title" id="dailyEmberTitle">🔥 今日の火種</h2>
+      <p class="ember-quote-text" id="dailyEmberText">今日の3問が、未来の判断力をつくる。</p>
+      <div class="ember-quote-actions">
+        <button class="secondary-button" type="button" id="nextEmberButton">次の言葉</button>
+      </div>
     </section>
 
     <section class="panel" id="homeView" aria-labelledby="homeTitle">
       <h2 class="panel-title" id="homeTitle">学習モード</h2>
       <p class="panel-note">基礎用語から実戦総合演習まで、判断力を少しずつ積み上げます。</p>
       <div class="mode-actions">
-        <button class="primary-button" type="button" id="dailyButton">今日の3問</button>
+        <button class="primary-button hero-learning-button" type="button" id="dailyButton">今日の3問</button>
         <button class="secondary-button" type="button" id="challengeButton">10問チャレンジ</button>
         <button class="secondary-button" type="button" id="stageChallengeButton" hidden>ステージ4 12問チャレンジ</button>
         <button class="secondary-button" type="button" id="stageFullChallengeButton" hidden>ステージ5 70問通し演習</button>
@@ -1321,14 +1419,14 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-10-debug-collapse-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-10-focus-home-01</p>
   </main>
 
   <script>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-10-debug-collapse-01";
+      var BUILD_VERSION = "2026-07-10-focus-home-01";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
@@ -1355,6 +1453,18 @@ debug: loading</pre>
         "stage5-question-045",
         "stage5-question-051",
         "stage5-question-064"
+      ];
+      var DAILY_EMBER_QUOTES = [
+        "今日の3問が、未来の判断力をつくる。",
+        "迷った一問は、理解を深める入口になる。",
+        "正解を増やすより、曖昧さを一つ減らそう。",
+        "知識は、判断できるまで育てて初めて力になる。",
+        "一度に全部覚えなくていい。今日は一つ確かにする。",
+        "勉強は、自分の未来の選択肢を増やす行動である。",
+        "間違いは失敗ではなく、次の問題を作る材料になる。",
+        "続けるとは、毎日完璧にやることではなく、また戻ること。",
+        "今日の一問を雑にしない。それが本番の一問を支える。",
+        "昨日の火を受け取り、今日の一歩へつなげる。"
       ];
       var CHOICE_LABELS = ["A", "B", "C", "D", "E"];
       var DEFAULT_CHOICE_IDS = ["a", "b", "c", "d", "e"];
@@ -1452,6 +1562,7 @@ debug: loading</pre>
       var sessionStageFullMode = false;
       var answered = false;
       var termsRendered = false;
+      var dailyEmberIndex = 0;
 
       var views = {
         home: document.getElementById("homeView"),
@@ -1470,12 +1581,16 @@ debug: loading</pre>
       var locationUnlockedValue = document.getElementById("locationUnlockedValue");
       var locationProgressValue = document.getElementById("locationProgressValue");
       var locationKeyValue = document.getElementById("locationKeyValue");
+      var progressDetails = document.getElementById("progressDetails");
+      var progressDetailsSummary = document.getElementById("progressDetailsSummary");
       var stageKeyStatus = document.getElementById("stageKeyStatus");
       var stageNextAction = document.getElementById("stageNextAction");
       var stageConsultButton = document.getElementById("stageConsultButton");
       var stageCopyStatus = document.getElementById("stageCopyStatus");
       var lockedStagesSummary = document.getElementById("lockedStagesSummary");
       var lockedStagesList = document.getElementById("lockedStagesList");
+      var statsDetails = document.getElementById("statsDetails");
+      var statsDetailsSummary = document.getElementById("statsDetailsSummary");
       var homeStatus = document.getElementById("homeStatus");
       var dailyButton = document.getElementById("dailyButton");
       var challengeButton = document.getElementById("challengeButton");
@@ -1488,6 +1603,7 @@ debug: loading</pre>
       var githubTokenInput = document.getElementById("githubTokenInput");
       var githubSyncButton = document.getElementById("githubSyncButton");
       var githubSyncSettings = document.getElementById("githubSyncSettings");
+      var githubSyncSettingsSummary = document.getElementById("githubSyncSettingsSummary");
       var exportProgressButton = document.getElementById("exportProgressButton");
       var importProgressButton = document.getElementById("importProgressButton");
       var syncDataText = document.getElementById("syncDataText");
@@ -1506,6 +1622,8 @@ debug: loading</pre>
       var debugSummaryTop = document.getElementById("debugSummaryTop");
       var termsButton = document.getElementById("termsButton");
       var mistakesButton = document.getElementById("mistakesButton");
+      var dailyEmberText = document.getElementById("dailyEmberText");
+      var nextEmberButton = document.getElementById("nextEmberButton");
       var progressLabel = document.getElementById("progressLabel");
       var modeLabel = document.getElementById("modeLabel");
       var progressFill = document.getElementById("progressFill");
@@ -1553,12 +1671,77 @@ debug: loading</pre>
         }).format(new Date());
       }
 
+      function getDailyEmberIndex() {
+        var today = getToday();
+        var total = 0;
+        var i;
+
+        for (i = 0; i < today.length; i += 1) {
+          total += today.charCodeAt(i) * (i + 1);
+        }
+        return DAILY_EMBER_QUOTES.length ? total % DAILY_EMBER_QUOTES.length : 0;
+      }
+
+      function renderDailyEmber() {
+        if (!dailyEmberText || !DAILY_EMBER_QUOTES.length) {
+          return;
+        }
+        dailyEmberText.textContent = DAILY_EMBER_QUOTES[dailyEmberIndex];
+      }
+
+      function showNextDailyEmber() {
+        if (!DAILY_EMBER_QUOTES.length) {
+          return;
+        }
+        dailyEmberIndex = (dailyEmberIndex + 1) % DAILY_EMBER_QUOTES.length;
+        renderDailyEmber();
+      }
+
       function isDebugModeEnabled() {
         try {
           return new URLSearchParams(window.location.search).get("debug") === "1";
         } catch (error) {
           return /(?:\?|&)debug=1(?:&|$)/.test(window.location.search);
         }
+      }
+
+      function updateDisclosureLabel(details, summary, closedText, openText) {
+        if (!summary) {
+          return;
+        }
+        summary.textContent = details && details.open ? openText : closedText;
+      }
+
+      function setupDisclosure(details, summary, closedText, openText) {
+        if (!details) {
+          return;
+        }
+        details.open = false;
+        updateDisclosureLabel(details, summary, closedText, openText);
+        details.addEventListener("toggle", function () {
+          updateDisclosureLabel(details, summary, closedText, openText);
+        });
+      }
+
+      function setupTopScreenDisclosures() {
+        setupDisclosure(
+          progressDetails,
+          progressDetailsSummary,
+          "▶ 進捗の詳細を見る",
+          "▼ 進捗の詳細を見る"
+        );
+        setupDisclosure(
+          statsDetails,
+          statsDetailsSummary,
+          "▶ 記録の詳細を見る",
+          "▼ 記録の詳細を見る"
+        );
+        setupDisclosure(
+          githubSyncSettings,
+          githubSyncSettingsSummary,
+          "▶ 同期設定を開く",
+          "▼ 同期設定を閉じる"
+        );
       }
 
       function updateDebugSummaryLabel(details, summary) {
@@ -2768,6 +2951,16 @@ debug: loading</pre>
         return uniqueStrings(ids);
       }
 
+      function getReviewFocusQuestionIds() {
+        return uniqueStrings(
+          progress.wrongQuestionIds
+            .concat(collectStageDetailIds("wrongQuestionIds"))
+            .concat(collectStageDetailIds("unsureCorrectQuestionIds"))
+            .concat(collectStageDetailIds("guessedCorrectQuestionIds"))
+            .concat(collectStageDetailIds("weakQuestionIds"))
+        );
+      }
+
       function buildWeakCategorySummary() {
         var counts = {};
         var weakIds = uniqueStrings(
@@ -3562,7 +3755,7 @@ debug: loading</pre>
           ? Math.round((progress.correctAnswers / progress.totalAnswers) * 100) + "%"
           : "--";
         unseenCount.textContent = String(Math.max(0, playableQuestions.length - seenPlayableCount));
-        wrongCount.textContent = String(progress.wrongQuestionIds.length);
+        wrongCount.textContent = String(getReviewFocusQuestionIds().length);
         mistakesButton.textContent = "間違えた問題 (" + progress.wrongQuestionIds.length + ")";
         updateSyncInfo();
         updateStageCard();
@@ -4747,6 +4940,9 @@ debug: loading</pre>
       }
 
       setupDebugVisibility();
+      setupTopScreenDisclosures();
+      dailyEmberIndex = getDailyEmberIndex();
+      renderDailyEmber();
 
       if (stage5PriorityModeToggle) {
         stage5PriorityModeToggle.checked = stageFivePriorityMode;
@@ -4802,6 +4998,10 @@ debug: loading</pre>
       dailyButton.addEventListener("click", function () {
         startSession("daily");
       });
+
+      if (nextEmberButton) {
+        nextEmberButton.addEventListener("click", showNextDailyEmber);
+      }
 
       challengeButton.addEventListener("click", function () {
         startSession("challenge");
