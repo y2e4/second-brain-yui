@@ -1584,6 +1584,7 @@ debug: loading</pre>
     <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-11-firekeeper-beta-01</p>
   </main>
 
+  <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
   <script src="sharoshi-teacher-mode.js?v=20260710-teacher-beta-01"></script>
   <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
   <script>
@@ -1591,6 +1592,8 @@ debug: loading</pre>
       "use strict";
 
       var BUILD_VERSION = "2026-07-11-firekeeper-beta-01";
+      var COMMON = window.QualificationOSCommon || {};
+      var QUALIFICATION_NAMESPACE = "sharoshi";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
@@ -2954,6 +2957,29 @@ debug: loading</pre>
         return Number.isNaN(parsed) ? 0 : parsed;
       }
 
+      function extractLearningPayload(payload) {
+        if (COMMON.extractLearningPayload) {
+          return COMMON.extractLearningPayload(payload, QUALIFICATION_NAMESPACE);
+        }
+        if (isPlainObject(payload) && isPlainObject(payload[QUALIFICATION_NAMESPACE])) {
+          return payload[QUALIFICATION_NAMESPACE];
+        }
+        return payload;
+      }
+
+      function wrapLearningPayload(remotePayload, localPayload) {
+        if (COMMON.upsertLearningPayload) {
+          return COMMON.upsertLearningPayload(remotePayload, QUALIFICATION_NAMESPACE, localPayload);
+        }
+        var output = isPlainObject(remotePayload) && !looksLikeProgressPayload(remotePayload)
+          ? cloneJson(remotePayload)
+          : {};
+        output.schemaVersion = 1;
+        output.updatedAt = getPayloadUpdatedAt(localPayload);
+        output[QUALIFICATION_NAMESPACE] = localPayload;
+        return output;
+      }
+
       function readGitHubSyncMeta() {
         var stored;
 
@@ -3300,7 +3326,7 @@ debug: loading</pre>
           },
           write: function (payload, sha) {
             var body = {
-              message: "Sync sharoshi learning data",
+              message: "Sync qualification learning data",
               content: encodeBase64Utf8(JSON.stringify(payload, null, 2) + "\n"),
               branch: config.branch
             };
@@ -3502,6 +3528,7 @@ debug: loading</pre>
         var base;
         var stageProgressSource;
 
+        payload = extractLearningPayload(payload);
         if (!looksLikeProgressPayload(payload)) {
           throw new Error("社労士クイズOSの学習データJSONではありません。");
         }
@@ -3634,8 +3661,9 @@ debug: loading</pre>
         return syncAt;
       }
 
-      function pushProgressToSyncProvider(provider, remoteSha) {
+      function pushProgressToSyncProvider(provider, remoteSha, remotePayload) {
         var payload;
+        var wrappedPayload;
         var syncAt = new Date().toISOString();
         var previousManualSyncAt = progress.lastManualSyncAt;
         var previousSavedAt = progress.lastSavedAt;
@@ -3644,7 +3672,8 @@ debug: loading</pre>
         progress.lastManualSyncAt = syncAt;
         progress.lastSavedAt = syncAt;
         payload = buildProgressExportPayload();
-        return provider.write(payload, remoteSha).then(function () {
+        wrappedPayload = wrapLearningPayload(remotePayload, payload);
+        return provider.write(wrappedPayload, remoteSha).then(function () {
           saveProgress({ savedAt: syncAt });
           updateStats();
           return payload;
@@ -3683,24 +3712,33 @@ debug: loading</pre>
 
         provider.read()
           .then(function (remote) {
+            var remotePayload;
             var remoteScore;
             var remoteUpdatedAt = "";
             var decision;
             var localUnsynced = isLocalProgressNewerThanLastSync();
 
             if (!remote.exists) {
-              return pushProgressToSyncProvider(provider, "").then(function (payload) {
+              return pushProgressToSyncProvider(provider, "", null).then(function (payload) {
                 markSyncSuccess(getPayloadUpdatedAt(payload), "local");
                 return "GitHubと同期しました";
               });
             }
 
-            if (!looksLikeProgressPayload(remote.payload)) {
+            remotePayload = extractLearningPayload(remote.payload);
+            if (!remotePayload) {
+              return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
+                markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+                return "GitHubと同期しました";
+              });
+            }
+
+            if (!looksLikeProgressPayload(remotePayload)) {
               throw new Error("GitHub上の learning-data.json は社労士クイズOSの学習データではありません。");
             }
 
-            remoteUpdatedAt = getPayloadUpdatedAt(remote.payload);
-            remoteScore = getPayloadSyncScore(remote.payload);
+            remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
+            remoteScore = getPayloadSyncScore(remotePayload);
             decision = compareSyncScores(localScore, remoteScore);
             updateGitHubSyncMeta({
               githubUpdatedAt: remoteUpdatedAt,
@@ -3711,7 +3749,7 @@ debug: loading</pre>
               if (localUnsynced) {
                 throw new Error("ローカルとGitHubの両方に新しい変更があります。データ消失防止のため自動上書きを止めました。");
               }
-              applyImportedProgressPayload(remote.payload, "github sync import");
+              applyImportedProgressPayload(remotePayload, "github sync import");
               markSyncSuccess(remoteUpdatedAt, "remote");
               return "GitHubと同期しました";
             }
@@ -3722,7 +3760,7 @@ debug: loading</pre>
               return "GitHubと同期しました";
             }
 
-            return pushProgressToSyncProvider(provider, remote.sha).then(function (payload) {
+            return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
               markSyncSuccess(getPayloadUpdatedAt(payload), "local");
               return "GitHubと同期しました";
             });
@@ -3760,6 +3798,7 @@ debug: loading</pre>
 
         provider.read()
           .then(function (remote) {
+            var remotePayload;
             var remoteUpdatedAt = "";
             var remoteScore;
             var decision;
@@ -3778,16 +3817,29 @@ debug: loading</pre>
               return;
             }
 
-            if (!looksLikeProgressPayload(remote.payload)) {
+            remotePayload = extractLearningPayload(remote.payload);
+            if (!remotePayload) {
+              updateGitHubSyncMeta({
+                lastStatus: localUnsynced ? "unsynced" : "synced",
+                lastAutoFetchAt: now,
+                comparison: localUnsynced ? "local" : "unknown",
+                githubUpdatedAt: ""
+              });
+              updateSyncInfo();
+              showSyncStatus("", false);
+              return;
+            }
+
+            if (!looksLikeProgressPayload(remotePayload)) {
               throw new Error("GitHub上の learning-data.json は社労士クイズOSの学習データではありません。");
             }
 
-            remoteUpdatedAt = getPayloadUpdatedAt(remote.payload);
-            remoteScore = getPayloadSyncScore(remote.payload);
+            remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
+            remoteScore = getPayloadSyncScore(remotePayload);
             decision = compareSyncScores(localScore, remoteScore);
 
             if (decision === "remote" && !localUnsynced) {
-              applyImportedProgressPayload(remote.payload, "github auto import");
+              applyImportedProgressPayload(remotePayload, "github auto import");
               updateGitHubSyncMeta({
                 lastAutoFetchAt: now
               });
@@ -3823,7 +3875,7 @@ debug: loading</pre>
         saveProgress();
         updateSyncInfo();
         payload = buildProgressExportPayload();
-        json = JSON.stringify(payload, null, 2);
+        json = JSON.stringify(wrapLearningPayload(null, payload), null, 2);
         syncDataText.value = json;
         syncDataText.focus();
         syncDataText.select();

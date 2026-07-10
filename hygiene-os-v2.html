@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#17100d">
   <title>第二種衛生管理者 資格OS v2</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon.png?v=2">
   <style>
     :root {
       color-scheme: dark;
@@ -167,6 +169,155 @@
       min-height: 1.7em;
       margin: 12px 0 0;
       white-space: pre-wrap;
+    }
+
+    .status.is-good {
+      color: var(--good);
+    }
+
+    .status.is-error {
+      color: var(--bad);
+    }
+
+    .firekeeper-card,
+    .ember-quote-card {
+      border-color: #8d5b32;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(243, 122, 56, 0.13), transparent 16rem),
+        rgba(32, 23, 19, 0.97);
+    }
+
+    .firekeeper-title,
+    .ember-quote-title,
+    .teacher-mode-title,
+    .teacher-monster-title {
+      margin: 0 0 8px;
+      color: var(--ember-light);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .firekeeper-message,
+    .ember-quote-text,
+    .teacher-mode-text,
+    .teacher-monster-text,
+    .teacher-challenge-status {
+      margin: 0 0 12px;
+      color: var(--muted);
+      white-space: pre-line;
+    }
+
+    .firekeeper-actions,
+    .firekeeper-reasons,
+    .ember-quote-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .sync-details,
+    .compact-details {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    .sync-details > summary,
+    .compact-details > summary {
+      min-height: 48px;
+      padding: 13px 14px;
+      cursor: pointer;
+      color: var(--ember-light);
+      font-weight: 900;
+    }
+
+    .sync-body,
+    .compact-details-body {
+      padding: 0 14px 14px;
+    }
+
+    .sync-state-card {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .sync-state-card.is-synced {
+      border-color: rgba(122, 215, 163, 0.56);
+    }
+
+    .sync-state-card.is-error {
+      border-color: rgba(255, 141, 134, 0.58);
+    }
+
+    .sync-state-title,
+    .sync-state-detail,
+    .sync-meta,
+    .sync-help,
+    .sync-label {
+      display: block;
+    }
+
+    .sync-state-title {
+      color: var(--ember-light);
+      font-weight: 900;
+    }
+
+    .sync-state-detail,
+    .sync-meta,
+    .sync-help {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sync-settings,
+    .sync-backup {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.035);
+      overflow: hidden;
+    }
+
+    .sync-settings > summary,
+    .sync-backup > summary {
+      padding: 11px 12px;
+      cursor: pointer;
+      font-weight: 850;
+    }
+
+    .sync-settings-body,
+    .sync-backup-body {
+      padding: 0 12px 12px;
+    }
+
+    .sync-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .sync-input,
+    .sync-textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #160f0c;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .sync-textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .sync-actions {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0;
     }
 
     .dashboard-grid {
@@ -547,6 +698,55 @@
       margin-top: 0;
     }
 
+    .teacher-mode-card {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid #76513a;
+      border-radius: 14px;
+      background: rgba(255, 189, 115, 0.08);
+    }
+
+    .teacher-monster {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255, 189, 115, 0.24);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .teacher-monster-name {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ember-light);
+      font-size: 17px;
+    }
+
+    .teacher-challenge-box,
+    .teacher-challenge-choices {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .teacher-mini-button {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 10px;
+      background: #34231c;
+      color: var(--text);
+      font-weight: 800;
+      text-align: left;
+    }
+
+    .teacher-mini-button.is-correct {
+      border-color: var(--good);
+    }
+
+    .teacher-mini-button.is-wrong {
+      border-color: var(--bad);
+    }
+
     .feedback-label {
       margin-bottom: 2px;
       color: var(--muted);
@@ -724,67 +924,132 @@
       <div class="os-switcher-links">
         <a class="os-switcher-link" href="index.html">火種ユイ</a>
         <span class="os-switcher-link is-current" aria-current="page">第二種衛生管理者 資格OS v2</span>
-        <a class="os-switcher-link" href="sharoshi-intro.html">社労士準備クイズ</a>
+        <a class="os-switcher-link" href="sharoshi-intro.html">社労士クイズOS</a>
       </div>
     </nav>
 
     <header>
       <p class="eyebrow">段階解放型 QUALIFICATION OS</p>
       <h1>第二種衛生管理者 資格OS v2</h1>
-      <p class="tagline">全問を一巡し、理解度を積み上げて、自分の判断で次の鍵を使う。</p>
+      <p class="tagline">基礎から実戦まで、毎日少しずつ判断力を育てる資格OS。</p>
     </header>
 
+    <section class="panel firekeeper-card" id="firekeeperCard" aria-live="polite" hidden></section>
+
     <section class="panel location-card" aria-labelledby="currentLocationTitle">
-      <span class="location-kicker">CURRENT LOCATION</span>
+      <span class="location-kicker">現在地</span>
       <h2 class="location-title" id="currentLocationTitle">現在：ステージ1 / 5</h2>
       <p class="location-subtitle" id="currentLocationName">基礎</p>
-      <div class="location-grid">
-        <div class="location-box">
-          <span class="location-label">解放済み</span>
-          <span class="location-value" id="locationUnlockedValue">ステージ1</span>
-        </div>
-        <div class="location-box">
-          <span class="location-label">現在のステージ進捗</span>
-          <span class="location-value" id="locationProgressValue">0 / 30問回答
+      <details class="compact-details" id="progressDetails">
+        <summary>進捗の詳細を見る</summary>
+        <div class="compact-details-body">
+          <div class="location-grid">
+            <div class="location-box">
+              <span class="location-label">解放済み</span>
+              <span class="location-value" id="locationUnlockedValue">ステージ1</span>
+            </div>
+            <div class="location-box">
+              <span class="location-label">現在のステージ進捗</span>
+              <span class="location-value" id="locationProgressValue">0 / 30問回答
 正答率 0%</span>
-        </div>
-        <div class="location-box">
-          <span class="location-label">次の鍵</span>
-          <span class="location-value" id="locationNextKeyValue">全問題を1回以上解答
+            </div>
+            <div class="location-box">
+              <span class="location-label">次の鍵</span>
+              <span class="location-value" id="locationNextKeyValue">全問題を1回以上解答
 ステージ正答率80%以上</span>
+            </div>
+            <div class="location-box">
+              <span class="location-label">最終ステージ</span>
+              <span class="location-value" id="finalStageSummary">実戦ステージ</span>
+            </div>
+          </div>
+          <details class="locked-stage-details" id="lockedStagesDetails">
+            <summary id="lockedStagesSummary">未解放：ステージ2「理解」</summary>
+            <ul class="locked-stage-list" id="lockedStagesList"></ul>
+          </details>
         </div>
-        <div class="location-box">
-          <span class="location-label">最終ステージ</span>
-          <span class="location-value" id="finalStageSummary">到達時点の最新公式情報を確認して作成する最終ステージ</span>
-        </div>
-      </div>
-      <details class="locked-stage-details" id="lockedStagesDetails">
-        <summary id="lockedStagesSummary">未解放：ステージ2「比較・混同対策」</summary>
-        <ul class="locked-stage-list" id="lockedStagesList"></ul>
       </details>
     </section>
 
     <section class="panel" aria-labelledby="dashboardTitle">
-      <h2 class="panel-title" id="dashboardTitle">学習ダッシュボード</h2>
+      <h2 class="panel-title" id="dashboardTitle">学習記録</h2>
       <div class="dashboard-grid">
-        <div class="stat"><span class="stat-label">現在のステージ</span><span class="stat-value" id="currentStageValue">-</span></div>
-        <div class="stat"><span class="stat-label">解放済み</span><span class="stat-value" id="unlockedStagesValue">-</span></div>
-        <div class="stat"><span class="stat-label">次の鍵の条件</span><span class="stat-value" id="nextKeyValue">-</span></div>
+        <div class="stat"><span class="stat-label">今日の解答数</span><span class="stat-value" id="todayAnsweredValue">0</span></div>
         <div class="stat"><span class="stat-label">累計解答数</span><span class="stat-value" id="totalAnsweredValue">0</span></div>
-        <div class="stat"><span class="stat-label">未出題問題</span><span class="stat-value" id="unattemptedValue">0</span></div>
-        <div class="stat"><span class="stat-label">間違えた問題</span><span class="stat-value" id="wrongValue">0</span></div>
+        <div class="stat"><span class="stat-label">正答率</span><span class="stat-value" id="accuracyValue">--</span></div>
+        <div class="stat"><span class="stat-label">迷った問題</span><span class="stat-value" id="unsureValue">0</span></div>
         <div class="stat"><span class="stat-label">苦手問題</span><span class="stat-value" id="weakValue">0</span></div>
+        <div class="stat"><span class="stat-label">理解度</span><span class="stat-value" id="understandingValue">--</span></div>
         <div class="stat"><span class="stat-label">最終学習日</span><span class="stat-value" id="lastStudyValue">未学習</span></div>
+      </div>
+      <details class="compact-details" id="statsDetails">
+        <summary>記録の詳細を見る</summary>
+        <div class="compact-details-body dashboard-grid">
+          <div class="stat"><span class="stat-label">現在のステージ</span><span class="stat-value" id="currentStageValue">-</span></div>
+          <div class="stat"><span class="stat-label">解放済み</span><span class="stat-value" id="unlockedStagesValue">-</span></div>
+          <div class="stat"><span class="stat-label">次の鍵の条件</span><span class="stat-value" id="nextKeyValue">-</span></div>
+          <div class="stat"><span class="stat-label">未出題問題</span><span class="stat-value" id="unattemptedValue">0</span></div>
+          <div class="stat"><span class="stat-label">間違えた問題</span><span class="stat-value" id="wrongValue">0</span></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel" aria-labelledby="syncTitle">
+      <details class="sync-details" open>
+        <summary id="syncTitle">同期状態</summary>
+        <div class="sync-body">
+          <div class="sync-state-card is-unsynced" id="githubSyncStateCard" aria-live="polite">
+            <strong class="sync-state-title" id="githubSyncStateTitle">未同期</strong>
+            <span class="sync-state-detail" id="githubSyncStateDetail">GitHub同期設定を確認しています。</span>
+          </div>
+          <button class="primary-button" type="button" id="githubSyncButton">同期する</button>
+          <p class="sync-meta">最終同期日時：<span id="lastSyncAt">未実行</span></p>
+          <p class="status" id="syncStatus" role="status" hidden></p>
+          <details class="sync-settings" id="githubSyncSettings">
+            <summary id="githubSyncSettingsSummary">同期設定を開く</summary>
+            <div class="sync-settings-body">
+              <p class="sync-help">GitHub Pagesだけで動く同期です。learning-data.json内で資格ごとにデータを分離します。</p>
+              <div class="sync-grid">
+                <label class="sync-label" for="githubOwnerInput">GitHub owner</label>
+                <input class="sync-input" id="githubOwnerInput" type="text" autocomplete="username" placeholder="例: y2e4">
+                <label class="sync-label" for="githubRepoInput">Repository</label>
+                <input class="sync-input" id="githubRepoInput" type="text" autocomplete="off" placeholder="例: second-brain-yui">
+                <label class="sync-label" for="githubBranchInput">Branch</label>
+                <input class="sync-input" id="githubBranchInput" type="text" autocomplete="off" placeholder="main">
+                <label class="sync-label" for="githubPathInput">保存ファイル</label>
+                <input class="sync-input" id="githubPathInput" type="text" autocomplete="off" placeholder="learning-data.json">
+                <label class="sync-label" for="githubTokenInput">GitHub token</label>
+                <input class="sync-input" id="githubTokenInput" type="password" autocomplete="off" placeholder="Contents read/write のトークン">
+              </div>
+              <details class="sync-backup">
+                <summary>バックアップ用JSONを開く</summary>
+                <div class="sync-backup-body">
+                  <div class="sync-actions">
+                    <button class="secondary-button" type="button" id="exportProgressButton">学習データをエクスポート</button>
+                  </div>
+                  <label class="sync-label" for="syncDataText">インポート用テキストエリア</label>
+                  <textarea class="sync-textarea" id="syncDataText" rows="8" spellcheck="false" placeholder="バックアップJSONをここに貼り付けます。"></textarea>
+                  <div class="sync-actions">
+                    <button class="secondary-button" type="button" id="importProgressButton">学習データをインポート</button>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </details>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel ember-quote-card" aria-labelledby="dailyEmberTitle">
+      <h2 class="ember-quote-title" id="dailyEmberTitle">今日の火種</h2>
+      <p class="ember-quote-text" id="dailyEmberText">今日の3問が、未来の判断力をつくる。</p>
+      <div class="ember-quote-actions">
+        <button class="secondary-button" type="button" id="nextEmberButton">次の言葉</button>
       </div>
     </section>
 
-    <section class="panel" aria-labelledby="stagesTitle">
-      <h2 class="panel-title" id="stagesTitle">ステージ</h2>
-      <div class="stage-list" id="stageList"></div>
-    </section>
-
     <section class="panel" id="studyPanel" aria-labelledby="studyTitle">
-      <h2 class="panel-title" id="studyTitle">ステージ1：基礎</h2>
+      <h2 class="panel-title" id="studyTitle">学習開始</h2>
       <p class="panel-note" id="studyObjective"></p>
       <div class="button-grid" id="regularStudyModes">
         <button class="primary-button" type="button" data-mode="today">今日の3問</button>
@@ -822,6 +1087,15 @@
       </div>
     </section>
 
+    <section class="panel" aria-labelledby="stagesTitle">
+      <details class="compact-details">
+        <summary id="stagesTitle">詳細メニュー：ステージ一覧</summary>
+        <div class="compact-details-body">
+          <div class="stage-list" id="stageList"></div>
+        </div>
+      </details>
+    </section>
+
     <section class="question-card" id="questionView" aria-live="polite" hidden>
       <div class="question-progress">
         <span id="sessionModeLabel">今日の3問</span>
@@ -851,6 +1125,7 @@
         <p class="feedback-label">覚え方</p>
         <p id="memoryText"></p>
         <a class="source-link" id="sourceLink" target="_blank" rel="noopener noreferrer" hidden>根拠資料を確認</a>
+        <div class="teacher-mode-card" id="teacherModeCard" hidden></div>
         <p class="status" id="answerStatus"></p>
       </div>
 
@@ -879,14 +1154,18 @@
     </section>
 
     <section class="panel" aria-labelledby="migrationTitle">
-      <h2 class="panel-title" id="migrationTitle">旧版履歴の取り込み</h2>
-      <p class="panel-note">旧版の履歴は削除しません。取り込み前にlocalStorage内へバックアップを保存し、問題IDが一致する記録だけを一度マージします。</p>
-      <button class="secondary-button" type="button" id="migrationButton">旧版履歴を取り込む</button>
-      <p class="status" id="migrationStatus" aria-live="polite"></p>
+      <details class="compact-details">
+        <summary id="migrationTitle">詳細メニュー：旧版履歴の取り込み</summary>
+        <div class="compact-details-body">
+          <p class="panel-note">旧版の履歴は削除しません。取り込み前にlocalStorage内へバックアップを保存し、問題IDが一致する記録だけを一度マージします。</p>
+          <button class="secondary-button" type="button" id="migrationButton">旧版履歴を取り込む</button>
+          <p class="status" id="migrationStatus" aria-live="polite"></p>
+        </div>
+      </details>
     </section>
 
     <section class="panel final-ready" id="finalReadyPanel" hidden>
-      <h2 class="panel-title">ステージ5：最新公式・本番仕上げ</h2>
+      <h2 class="panel-title">ステージ5：実戦</h2>
       <p class="final-message">最終ステージ作成条件を達成しました。
 最新の公式情報、法改正、公表問題、苦手履歴を確認した本番形式30問を追加しました。</p>
       <button class="primary-button" type="button" id="unlockStage5Button">ステージ5を開く</button>
@@ -894,18 +1173,28 @@
     </section>
 
     <section class="panel audit-note" aria-labelledby="auditTitle">
-      <h2 class="panel-title" id="auditTitle">問題監査メモ</h2>
-      <p id="dataStatus">問題データを読み込んでいます。</p>
-      <p>ステージ5は、令和8年4月掲載の公式公表問題、最新の厚生労働省情報、ステージ1〜4の苦手履歴を確認して独自再構成した30問です。</p>
+      <details class="compact-details">
+        <summary id="auditTitle">詳細メニュー：問題監査メモ</summary>
+        <div class="compact-details-body">
+          <p id="dataStatus">問題データを読み込んでいます。</p>
+          <p>ステージ5は、令和8年4月掲載の公式公表問題、最新の厚生労働省情報、ステージ1〜4の苦手履歴を確認して独自再構成した30問です。</p>
+        </div>
+      </details>
     </section>
   </main>
 
+  <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
   <script>
     (function () {
       "use strict";
 
-      var DATA_URL = "hygiene-os-v2-questions.json?v=20260627-stage5";
+      var COMMON = window.QualificationOSCommon || {};
+      var DATA_URL = "hygiene-os-v2-questions.json?v=20260711-common-os-01";
       var STATE_KEY = "hygieneQualificationOSV2StateV1";
+      var QUALIFICATION_NAMESPACE = "eisei";
+      var GITHUB_SYNC_CONFIG_KEY = "qualificationOSGithubSyncConfigV1";
+      var LEGACY_SHAROSHI_GITHUB_SYNC_CONFIG_KEY = "sharoshiGithubSyncConfigV1";
+      var GITHUB_SYNC_META_KEY = "eiseiGithubSyncMetaV1";
       var MIGRATION_BACKUP_KEY = "hygieneQualificationOSV2MigrationBackupV1";
       var MIGRATION_DONE_KEY = "hygieneQualificationOSV2MigrationDoneV1";
       var OLD_STATS_KEY = "hygieneManagerSecondTypeQuestionStatsV1";
@@ -928,7 +1217,8 @@
         today: 3,
         more3: 3,
         challenge10: 10,
-        final30: 30
+        final30: 30,
+        firekeeper: 1
       };
       var MODE_NAMES = {
         today: "今日の3問",
@@ -936,7 +1226,8 @@
         challenge10: "10問チャレンジ",
         wrong: "間違えた問題",
         weak: "苦手克服",
-        final30: "本番30問"
+        final30: "本番30問",
+        firekeeper: "火守モード 1問だけ"
       };
       var STAGE5_CATEGORIES = ["関係法令", "労働衛生", "労働生理"];
 
@@ -945,10 +1236,18 @@
       var questionById = {};
       var state = makeDefaultState();
       var pendingAnswer = "";
+      var syncStatusTimer = 0;
+      var autoSyncStarted = false;
+      var firekeeperMode = null;
+      var teacherMode = null;
 
       var currentStageValue = document.getElementById("currentStageValue");
       var unlockedStagesValue = document.getElementById("unlockedStagesValue");
       var nextKeyValue = document.getElementById("nextKeyValue");
+      var todayAnsweredValue = document.getElementById("todayAnsweredValue");
+      var accuracyValue = document.getElementById("accuracyValue");
+      var unsureValue = document.getElementById("unsureValue");
+      var understandingValue = document.getElementById("understandingValue");
       var currentLocationTitle = document.getElementById("currentLocationTitle");
       var currentLocationName = document.getElementById("currentLocationName");
       var locationUnlockedValue = document.getElementById("locationUnlockedValue");
@@ -985,6 +1284,7 @@
       var trapText = document.getElementById("trapText");
       var memoryText = document.getElementById("memoryText");
       var sourceLink = document.getElementById("sourceLink");
+      var teacherModeCard = document.getElementById("teacherModeCard");
       var answerStatus = document.getElementById("answerStatus");
       var weakToggleButton = document.getElementById("weakToggleButton");
       var nextQuestionButton = document.getElementById("nextQuestionButton");
@@ -1005,6 +1305,22 @@
       var stage5ReadinessText = document.getElementById("stage5ReadinessText");
       var stage5CopyStatus = document.getElementById("stage5CopyStatus");
       var stage5CopyFallback = document.getElementById("stage5CopyFallback");
+      var firekeeperCard = document.getElementById("firekeeperCard");
+      var dailyEmberText = document.getElementById("dailyEmberText");
+      var nextEmberButton = document.getElementById("nextEmberButton");
+      var githubOwnerInput = document.getElementById("githubOwnerInput");
+      var githubRepoInput = document.getElementById("githubRepoInput");
+      var githubBranchInput = document.getElementById("githubBranchInput");
+      var githubPathInput = document.getElementById("githubPathInput");
+      var githubTokenInput = document.getElementById("githubTokenInput");
+      var githubSyncButton = document.getElementById("githubSyncButton");
+      var githubSyncSettings = document.getElementById("githubSyncSettings");
+      var lastSyncAt = document.getElementById("lastSyncAt");
+      var syncStatus = document.getElementById("syncStatus");
+      var syncDataText = document.getElementById("syncDataText");
+      var githubSyncStateCard = document.getElementById("githubSyncStateCard");
+      var githubSyncStateTitle = document.getElementById("githubSyncStateTitle");
+      var githubSyncStateDetail = document.getElementById("githubSyncStateDetail");
       var dataStatus = document.getElementById("dataStatus");
 
       function getLocalDateKey() {
@@ -1023,12 +1339,21 @@
           stage5Ready: false,
           totalAnswered: 0,
           lastStudyDate: "",
+          lastStudyAt: "",
+          lastSavedAt: "",
+          lastManualSyncAt: "",
           shownSequence: 0,
           recentQuestionIds: [],
           dailyDate: getLocalDateKey(),
           dailyShownIds: [],
+          dailyAnsweredCount: 0,
           lastQueueByStage: {},
           lastQuestionId: "",
+          firekeeper: {
+            lastShownDate: "",
+            dismissedDate: "",
+            restRecords: []
+          },
           questionStats: {},
           currentSession: null
         };
@@ -1076,15 +1401,31 @@
         if (state.dailyDate !== getLocalDateKey()) {
           state.dailyDate = getLocalDateKey();
           state.dailyShownIds = [];
+          state.dailyAnsweredCount = 0;
         }
 
         if (!Array.isArray(state.dailyShownIds)) {
           state.dailyShownIds = [];
         }
+
+        state.dailyAnsweredCount = Math.max(0, Number(state.dailyAnsweredCount || 0));
+        state.firekeeper = state.firekeeper && typeof state.firekeeper === "object"
+          ? Object.assign(makeDefaultState().firekeeper, state.firekeeper)
+          : makeDefaultState().firekeeper;
+        if (!Array.isArray(state.firekeeper.restRecords)) {
+          state.firekeeper.restRecords = [];
+        }
       }
 
-      function saveState() {
+      function saveState(options) {
+        var settings = options || {};
+        if (settings.savedAt) {
+          state.lastSavedAt = settings.savedAt;
+        } else if (!settings.preserveSavedAt || !state.lastSavedAt) {
+          state.lastSavedAt = new Date().toISOString();
+        }
         localStorage.setItem(STATE_KEY, JSON.stringify(state));
+        updateSyncInfo();
       }
 
       function normalizeChoice(choice, index) {
@@ -1135,6 +1476,9 @@
           explanation: String(raw.explanation || ""),
           trap: String(raw.trap || ""),
           memory: String(raw.memory || ""),
+          difficulty: String(raw.difficulty || (COMMON.STAGES && COMMON.STAGES[Number(raw.stage) - 1]
+            ? COMMON.STAGES[Number(raw.stage) - 1].difficulty
+            : "")),
           sourceType: String(raw.sourceType || ""),
           sourceTitle: String(raw.sourceTitle || ""),
           sourceQuestion: String(raw.sourceQuestion || ""),
@@ -1366,7 +1710,7 @@
         lockedStages.forEach(function (stage) {
           var item = document.createElement("li");
           item.textContent = stage.id === 5
-            ? "🔒 ステージ5「最新公式・本番仕上げ」：公式情報と苦手履歴から作成した最終ステージ"
+            ? "🔒 ステージ5「実戦」：公式情報と苦手履歴から作成した最終ステージ"
             : "🔒 ステージ" + stage.id + "「" + stage.name + "」";
           lockedStagesList.appendChild(item);
         });
@@ -1384,7 +1728,7 @@
           "正答率 " + currentStats.accuracy + "%";
         locationNextKeyValue.textContent = getNextKeyText();
         finalStageSummary.textContent = state.unlockedStages.indexOf(5) !== -1
-          ? "ステージ5「最新公式・本番仕上げ」を解放済み"
+          ? "ステージ5「実戦」を解放済み"
           : "到達時点の最新公式情報と苦手履歴から作成した30問の最終ステージ";
         renderLockedStageList();
       }
@@ -1395,15 +1739,29 @@
         var allUnlockedQuestions = questions.filter(function (question) {
           return state.unlockedStages.indexOf(question.stage) !== -1;
         });
+        var totalAttempts = 0;
+        var totalCorrect = 0;
         var wrongCount = 0;
         var weakCount = 0;
+        var unsureCount = 0;
+        var understoodCount = 0;
 
         allUnlockedQuestions.forEach(function (question) {
           var stats = getQuestionStats(question.id);
+          totalAttempts += Number(stats.attempts || 0);
+          totalCorrect += Number(stats.correct || 0);
           wrongCount += stats.wrongActive ? 1 : 0;
           weakCount += isWeakStats(stats) ? 1 : 0;
+          unsureCount += Number(stats.unsure || 0) + Number(stats.guess || 0) > 0 ? 1 : 0;
+          understoodCount += Number(stats.understoodStreak || 0) >= 2 ? 1 : 0;
         });
 
+        todayAnsweredValue.textContent = Number(state.dailyAnsweredCount || 0) + "回答";
+        accuracyValue.textContent = totalAttempts ? Math.round(totalCorrect / totalAttempts * 100) + "%" : "--";
+        unsureValue.textContent = unsureCount + "問";
+        understandingValue.textContent = allUnlockedQuestions.length
+          ? Math.round(understoodCount / allUnlockedQuestions.length * 100) + "%"
+          : "--";
         currentStageValue.textContent = "S" + state.currentStage + " " + currentStage.name;
         unlockedStagesValue.textContent = state.unlockedStages.map(function (stageId) {
           return "S" + stageId;
@@ -1545,7 +1903,7 @@
       function renderStudyPanel() {
         var stage = getStage(state.currentStage);
         var isStage5 = state.currentStage === 5;
-        studyTitle.textContent = formatStageName(state.currentStage);
+        studyTitle.textContent = "学習開始：" + formatStageName(state.currentStage);
         studyObjective.textContent = stage.objective;
         regularStudyModes.hidden = isStage5;
         stage5StudyModes.hidden = !isStage5;
@@ -1580,14 +1938,69 @@
             "目安：全体80%以上・各分野40%以上・復習待ち5問以下";
       }
 
+      function ensureFirekeeperProgress() {
+        if (!state.firekeeper || typeof state.firekeeper !== "object") {
+          state.firekeeper = makeDefaultState().firekeeper;
+        }
+        if (!Array.isArray(state.firekeeper.restRecords)) {
+          state.firekeeper.restRecords = [];
+        }
+        return state.firekeeper;
+      }
+
+      function renderFirekeeper() {
+        var firekeeper = ensureFirekeeperProgress();
+        if (!firekeeperMode) {
+          return;
+        }
+        firekeeperMode.render({
+          todayKey: getLocalDateKey(),
+          lastStudyDate: state.lastStudyDate || "",
+          lastStudyAt: state.lastStudyAt || "",
+          lastShownDate: firekeeper.lastShownDate || "",
+          dismissedDate: firekeeper.dismissedDate || "",
+          alreadyVisible: Boolean(firekeeperCard && !firekeeperCard.hidden)
+        });
+      }
+
+      function markFirekeeperShown(info) {
+        var firekeeper = ensureFirekeeperProgress();
+        if (firekeeper.lastShownDate === info.todayKey) {
+          return;
+        }
+        firekeeper.lastShownDate = info.todayKey;
+        firekeeper.lastShownAt = new Date().toISOString();
+        saveState();
+      }
+
+      function dismissFirekeeper(reason) {
+        var firekeeper = ensureFirekeeperProgress();
+        firekeeper.dismissedDate = getLocalDateKey();
+        firekeeper.lastDismissedAt = new Date().toISOString();
+        firekeeper.lastDismissReason = reason || "";
+        saveState();
+      }
+
+      function recordFirekeeperRest(reason) {
+        var firekeeper = ensureFirekeeperProgress();
+        firekeeper.restRecords.push({
+          date: getLocalDateKey(),
+          reason: reason || "休む",
+          recordedAt: new Date().toISOString()
+        });
+        firekeeper.restRecords = firekeeper.restRecords.slice(-30);
+        dismissFirekeeper(reason || "休む");
+      }
+
       function renderAll() {
         refreshEarnedKeys();
-        saveState();
+        saveState({ preserveSavedAt: true });
         renderCurrentLocation();
         renderDashboard();
         renderStages();
         renderStudyPanel();
         renderMigrationStatus();
+        renderFirekeeper();
       }
 
       function selectStage(stageId) {
@@ -1776,12 +2189,16 @@
         progressFill.style.width = ((session.index + 1) / session.queue.length * 100) + "%";
         questionMeta.textContent =
           "ステージ" + question.stage + " / " + question.category + " / " + question.theme +
+          (question.difficulty ? " / " + question.difficulty : "") +
           (question.stage === 5 ? " / 五肢択一" : "");
         questionText.textContent = question.question;
         choiceList.replaceChildren();
         confidencePanel.hidden = true;
         feedback.hidden = true;
         feedback.className = "feedback";
+        if (teacherMode) {
+          teacherMode.hide();
+        }
         weakToggleButton.hidden = true;
         nextQuestionButton.hidden = true;
 
@@ -1859,6 +2276,13 @@
         stats.attempts = Number(stats.attempts || 0) + 1;
         state.totalAnswered = Number(state.totalAnswered || 0) + 1;
         state.lastStudyDate = today;
+        state.lastStudyAt = new Date().toISOString();
+        if (state.dailyDate !== today) {
+          state.dailyDate = today;
+          state.dailyShownIds = [];
+          state.dailyAnsweredCount = 0;
+        }
+        state.dailyAnsweredCount = Number(state.dailyAnsweredCount || 0) + 1;
         stats.lastAnsweredDate = today;
         stats.lastOutcome = outcome;
 
@@ -1916,6 +2340,42 @@
         return labels[outcome];
       }
 
+      function getMonsterChallengeQuestions(question) {
+        var sameTheme = questions.filter(function (item) {
+          return item.id !== question.id &&
+            item.stage <= state.currentStage &&
+            (item.theme === question.theme || item.category === question.category);
+        });
+        var selected = buildPriorityQueue(sameTheme.length >= 2 ? sameTheme : questions, 2, [question.id]);
+        return selected.map(function (id) {
+          return questionById[id];
+        }).filter(Boolean).slice(0, 2);
+      }
+
+      function renderTeacherSupport(question, outcome) {
+        var stats = getQuestionStats(question.id);
+        var shouldShow = Boolean(teacherMode) &&
+          outcome !== "understood" &&
+          Number(stats.understoodStreak || 0) < 2 &&
+          (outcome === "incorrect" ||
+            outcome === "unsure" ||
+            outcome === "guess" ||
+            stats.reviewActive ||
+            stats.wrongActive ||
+            isWeakStats(stats));
+
+        if (!teacherMode) {
+          return;
+        }
+
+        teacherMode.render({
+          shouldShow: shouldShow,
+          question: question,
+          message: "ここは理解度が下がりやすいところ。対象・数字・時期だけ短く分けよう。",
+          challengeQuestions: getMonsterChallengeQuestions(question)
+        });
+      }
+
       function showFeedback(question, outcome, selectedAnswer) {
         var stats = getQuestionStats(question.id);
         var correct = outcome !== "incorrect";
@@ -1946,6 +2406,7 @@
           (stats.understoodStreak >= 2
             ? "\n別の日の「理解して正解」が2回連続したため、間違い・要復習から外しました。"
             : "");
+        renderTeacherSupport(question, outcome);
         feedback.hidden = false;
         updateWeakButton();
         weakToggleButton.hidden = false;
@@ -2065,7 +2526,7 @@
         saveState();
         hideTransientViews();
         stage5UnlockStatus.textContent = "ステージ5を解放しました。";
-        modeStatus.textContent = "ステージ5「最新公式・本番仕上げ」を開きました。";
+        modeStatus.textContent = "ステージ5「実戦」を開きました。";
         renderAll();
         document.getElementById("studyPanel").scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -2324,6 +2785,612 @@
         useFallback();
       }
 
+      function cloneJson(value) {
+        return COMMON.cloneJson ? COMMON.cloneJson(value) : JSON.parse(JSON.stringify(value || null));
+      }
+
+      function isPlainObject(value) {
+        return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+      }
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "未実行";
+        }
+        try {
+          return new Intl.DateTimeFormat("ja-JP", {
+            timeZone: "Asia/Tokyo",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+          }).format(new Date(value));
+        } catch (error) {
+          return String(value);
+        }
+      }
+
+      function getTimeValue(value) {
+        var parsed = Date.parse(value || "");
+        return Number.isNaN(parsed) ? 0 : parsed;
+      }
+
+      function encodePathForGitHub(path) {
+        return path.split("/").map(function (part) {
+          return encodeURIComponent(part);
+        }).join("/");
+      }
+
+      function encodeBase64Utf8(text) {
+        var bytes = new TextEncoder().encode(text);
+        var binary = "";
+        var chunkSize = 0x8000;
+        for (var index = 0; index < bytes.length; index += chunkSize) {
+          binary += String.fromCharCode.apply(null, bytes.slice(index, index + chunkSize));
+        }
+        return btoa(binary);
+      }
+
+      function decodeBase64Utf8(text) {
+        var binary = atob(String(text || "").replace(/\s/g, ""));
+        var bytes = new Uint8Array(binary.length);
+        for (var index = 0; index < binary.length; index += 1) {
+          bytes[index] = binary.charCodeAt(index);
+        }
+        return new TextDecoder().decode(bytes);
+      }
+
+      function buildStageResults() {
+        var output = {};
+        data.stages.forEach(function (stage) {
+          var stats = getStageStats(stage.id);
+          output[String(stage.id)] = {
+            total: stats.total,
+            answerCount: stats.attempts,
+            correctCount: stats.correct,
+            accuracy: stats.accuracy,
+            answeredQuestionIds: getStageQuestions(stage.id).filter(function (question) {
+              return Number(getQuestionStats(question.id).attempts || 0) > 0;
+            }).map(function (question) {
+              return question.id;
+            }),
+            unlocked: state.unlockedStages.indexOf(stage.id) !== -1
+          };
+        });
+        return output;
+      }
+
+      function buildProgressExportPayload() {
+        var answeredIds = [];
+        var wrongIds = [];
+        var uncertainIds = [];
+        var weakIds = [];
+        var totalCorrect = 0;
+
+        questions.forEach(function (question) {
+          var stats = getQuestionStats(question.id);
+          if (Number(stats.attempts || 0) > 0) {
+            answeredIds.push(question.id);
+          }
+          if (stats.wrongActive) {
+            wrongIds.push(question.id);
+          }
+          if (stats.reviewActive || Number(stats.unsure || 0) > 0 || Number(stats.guess || 0) > 0) {
+            uncertainIds.push(question.id);
+          }
+          if (isWeakStats(stats)) {
+            weakIds.push(question.id);
+          }
+          totalCorrect += Number(stats.correct || 0);
+        });
+
+        return {
+          app: "eisei-qualification-os",
+          title: "第二種衛生管理者OS",
+          version: 2,
+          storageKey: STATE_KEY,
+          exportedAt: new Date().toISOString(),
+          currentStage: state.currentStage,
+          highestUnlockedStage: Math.max.apply(null, state.unlockedStages),
+          completedStages: state.unlockedStages.filter(function (stageId) {
+            return stageQualifies(stageId);
+          }),
+          answeredQuestionIds: answeredIds,
+          stageResults: buildStageResults(),
+          wrongQuestionIds: wrongIds,
+          uncertainQuestionIds: uncertainIds,
+          weakQuestionIds: weakIds,
+          totalAnswered: Number(state.totalAnswered || 0),
+          totalCorrect: totalCorrect,
+          todayAnswers: Number(state.dailyAnsweredCount || 0),
+          lastStudyDate: state.lastStudyDate || "",
+          lastStudyAt: state.lastStudyAt || "",
+          firekeeper: cloneJson(state.firekeeper),
+          progress: cloneJson(state)
+        };
+      }
+
+      function extractLearningPayload(payload) {
+        if (COMMON.extractLearningPayload) {
+          return COMMON.extractLearningPayload(payload, QUALIFICATION_NAMESPACE);
+        }
+        if (isPlainObject(payload) && isPlainObject(payload[QUALIFICATION_NAMESPACE])) {
+          return payload[QUALIFICATION_NAMESPACE];
+        }
+        return payload;
+      }
+
+      function looksLikeLearningPayload(payload) {
+        return COMMON.looksLikeLearningPayload
+          ? COMMON.looksLikeLearningPayload(payload)
+          : Boolean(isPlainObject(payload) && (payload.progress || payload.stageResults || payload.totalAnswered));
+      }
+
+      function getPayloadUpdatedAt(payload) {
+        return COMMON.getPayloadUpdatedAt
+          ? COMMON.getPayloadUpdatedAt(payload)
+          : String(payload && (payload.exportedAt || payload.lastSavedAt || "") || "");
+      }
+
+      function getPayloadSyncScore(payload) {
+        var source = isPlainObject(payload) && isPlainObject(payload.progress) ? payload.progress : payload;
+        var answeredIds = Array.isArray(payload.answeredQuestionIds)
+          ? payload.answeredQuestionIds
+          : [];
+        return {
+          totalAnswered: Math.max(0, Number(payload.totalAnswered || source.totalAnswered) || 0),
+          totalCorrect: Math.max(0, Number(payload.totalCorrect) || 0),
+          answeredIdCount: answeredIds.length,
+          lastStudyDate: String(payload.lastStudyDate || source.lastStudyDate || ""),
+          exportedAtMs: getTimeValue(payload.exportedAt),
+          lastSavedAtMs: getTimeValue(source.lastSavedAt)
+        };
+      }
+
+      function compareSyncScores(localScore, remoteScore) {
+        if (remoteScore.totalAnswered !== localScore.totalAnswered) {
+          return remoteScore.totalAnswered > localScore.totalAnswered ? "remote" : "local";
+        }
+        if (remoteScore.answeredIdCount !== localScore.answeredIdCount) {
+          return remoteScore.answeredIdCount > localScore.answeredIdCount ? "remote" : "local";
+        }
+        if (remoteScore.totalCorrect !== localScore.totalCorrect) {
+          return remoteScore.totalCorrect > localScore.totalCorrect ? "remote" : "local";
+        }
+        if (remoteScore.lastStudyDate !== localScore.lastStudyDate) {
+          return remoteScore.lastStudyDate > localScore.lastStudyDate ? "remote" : "local";
+        }
+        if (remoteScore.exportedAtMs > localScore.lastSavedAtMs + 1000) {
+          return "remote";
+        }
+        if (localScore.lastSavedAtMs > remoteScore.exportedAtMs + 1000) {
+          return "local";
+        }
+        return "same";
+      }
+
+      function readGitHubSyncMeta() {
+        var stored = getStoredJson(GITHUB_SYNC_META_KEY, {});
+        return isPlainObject(stored) ? stored : {};
+      }
+
+      function saveGitHubSyncMeta(meta) {
+        try {
+          localStorage.setItem(GITHUB_SYNC_META_KEY, JSON.stringify(meta));
+        } catch (error) {
+          // 表示用メタデータなので保存できなくても学習は続ける。
+        }
+      }
+
+      function updateGitHubSyncMeta(patch) {
+        var meta = readGitHubSyncMeta();
+        Object.keys(patch || {}).forEach(function (key) {
+          meta[key] = patch[key];
+        });
+        saveGitHubSyncMeta(meta);
+        return meta;
+      }
+
+      function inferGitHubConfig() {
+        var owner = "";
+        var repo = "second-brain-yui";
+        var hostParts = window.location.hostname.split(".");
+        var pathParts = window.location.pathname.split("/").filter(Boolean);
+        if (window.location.hostname.indexOf("github.io") !== -1 && hostParts.length >= 3) {
+          owner = hostParts[0];
+          if (pathParts[0]) {
+            repo = pathParts[0];
+          }
+        }
+        return { owner: owner, repo: repo, branch: "main", path: "learning-data.json", token: "" };
+      }
+
+      function readGitHubSyncConfig() {
+        var fallback = inferGitHubConfig();
+        var stored = getStoredJson(GITHUB_SYNC_CONFIG_KEY, null) ||
+          getStoredJson(LEGACY_SHAROSHI_GITHUB_SYNC_CONFIG_KEY, null);
+        if (!isPlainObject(stored)) {
+          return fallback;
+        }
+        return {
+          owner: stored.owner || fallback.owner,
+          repo: stored.repo || fallback.repo,
+          branch: stored.branch || fallback.branch,
+          path: stored.path || fallback.path,
+          token: typeof stored.token === "string" ? stored.token : ""
+        };
+      }
+
+      function saveGitHubSyncConfig(config) {
+        localStorage.setItem(GITHUB_SYNC_CONFIG_KEY, JSON.stringify(config));
+      }
+
+      function setGitHubSyncInputs(config) {
+        githubOwnerInput.value = config.owner;
+        githubRepoInput.value = config.repo;
+        githubBranchInput.value = config.branch;
+        githubPathInput.value = config.path;
+        githubTokenInput.value = config.token;
+      }
+
+      function readGitHubSyncInputs() {
+        return {
+          owner: githubOwnerInput.value.trim(),
+          repo: githubRepoInput.value.trim(),
+          branch: githubBranchInput.value.trim() || "main",
+          path: githubPathInput.value.trim() || "learning-data.json",
+          token: githubTokenInput.value.trim()
+        };
+      }
+
+      function validateGitHubSyncConfig(config) {
+        if (!config.owner || !config.repo || !config.branch || !config.path) {
+          throw new Error("GitHub owner、repo、branch、保存ファイルを入力してください。");
+        }
+        if (!config.token) {
+          throw new Error("GitHubへ保存するには、Contentsの読み書き権限を持つtokenが必要です。");
+        }
+        if (config.path.indexOf("..") !== -1 || config.path.charAt(0) === "/") {
+          throw new Error("保存ファイルはリポジトリ内の相対パスで指定してください。");
+        }
+      }
+
+      function hasCompleteGitHubSyncConfig(config) {
+        return Boolean(config && config.owner && config.repo && config.branch && config.path && config.token);
+      }
+
+      function createGitHubSyncProvider(config) {
+        var contentUrl = "https://api.github.com/repos/" +
+          encodeURIComponent(config.owner) + "/" +
+          encodeURIComponent(config.repo) + "/contents/" +
+          encodePathForGitHub(config.path);
+        var headers = {
+          Accept: "application/vnd.github+json",
+          Authorization: "Bearer " + config.token,
+          "X-GitHub-Api-Version": "2022-11-28"
+        };
+
+        return {
+          read: function () {
+            return fetch(contentUrl + "?ref=" + encodeURIComponent(config.branch), {
+              method: "GET",
+              headers: headers
+            }).then(function (response) {
+              if (response.status === 404) {
+                return { exists: false, sha: "", payload: null };
+              }
+              if (!response.ok) {
+                throw new Error("GitHubから学習データを取得できませんでした: HTTP " + response.status);
+              }
+              return response.json().then(function (file) {
+                return {
+                  exists: true,
+                  sha: file.sha || "",
+                  payload: JSON.parse(decodeBase64Utf8(file.content || ""))
+                };
+              });
+            });
+          },
+          write: function (payload, sha) {
+            var body = {
+              message: "Sync qualification learning data",
+              content: encodeBase64Utf8(JSON.stringify(payload, null, 2) + "\n"),
+              branch: config.branch
+            };
+            if (sha) {
+              body.sha = sha;
+            }
+            return fetch(contentUrl, {
+              method: "PUT",
+              headers: Object.assign({}, headers, { "Content-Type": "application/json" }),
+              body: JSON.stringify(body)
+            }).then(function (response) {
+              if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                  throw new Error("GitHubへの保存権限がありません。tokenの権限を確認してください。");
+                }
+                if (response.status === 409) {
+                  throw new Error("GitHub側のファイルが同時に更新されました。もう一度「同期する」を押してください。");
+                }
+                throw new Error("GitHubへ学習データを保存できませんでした: HTTP " + response.status);
+              }
+              return response.json();
+            });
+          }
+        };
+      }
+
+      function isLocalProgressNewerThanLastSync() {
+        var localSavedAt = getTimeValue(state.lastSavedAt);
+        var lastSyncedAt = getTimeValue(state.lastManualSyncAt);
+        return Boolean(localSavedAt && (!lastSyncedAt || localSavedAt > lastSyncedAt + 1000));
+      }
+
+      function getSyncStateSnapshot() {
+        var config = readGitHubSyncConfig();
+        var meta = readGitHubSyncMeta();
+        if (!hasCompleteGitHubSyncConfig(config)) {
+          return { kind: "unsynced", title: "未同期", detail: "GitHub tokenを設定すると同期できます。" };
+        }
+        if (meta.lastStatus === "error") {
+          return { kind: "error", title: "同期エラー", detail: meta.lastError || "GitHubへ接続できませんでした。" };
+        }
+        if (isLocalProgressNewerThanLastSync()) {
+          return { kind: "unsynced", title: "未同期", detail: "この端末に未同期の学習記録があります。" };
+        }
+        if (state.lastManualSyncAt) {
+          return { kind: "synced", title: "GitHub同期済み", detail: "最終同期：" + formatDateTime(state.lastManualSyncAt) };
+        }
+        return { kind: "unsynced", title: "未同期", detail: "まだGitHubへ学習データを保存していません。" };
+      }
+
+      function updateSyncInfo() {
+        var snapshot;
+        if (!githubSyncStateCard || !githubSyncStateTitle || !githubSyncStateDetail) {
+          return;
+        }
+        snapshot = getSyncStateSnapshot();
+        githubSyncStateCard.classList.remove("is-synced", "is-unsynced", "is-error");
+        githubSyncStateCard.classList.add("is-" + snapshot.kind);
+        githubSyncStateTitle.textContent = snapshot.title;
+        githubSyncStateDetail.textContent = snapshot.detail;
+        lastSyncAt.textContent = formatDateTime(state.lastManualSyncAt);
+      }
+
+      function showSyncStatus(message, isError, durationMs) {
+        if (syncStatusTimer) {
+          window.clearTimeout(syncStatusTimer);
+          syncStatusTimer = 0;
+        }
+        syncStatus.textContent = message;
+        syncStatus.hidden = !message;
+        syncStatus.classList.toggle("is-error", Boolean(isError));
+        syncStatus.classList.toggle("is-good", Boolean(message) && !isError);
+        if (message && durationMs) {
+          syncStatusTimer = window.setTimeout(function () {
+            syncStatus.hidden = true;
+            syncStatus.textContent = "";
+          }, durationMs);
+        }
+      }
+
+      function normalizeImportedProgressPayload(payload) {
+        var extracted = extractLearningPayload(payload);
+        var source;
+        var next;
+        if (!looksLikeLearningPayload(extracted)) {
+          throw new Error("衛生管理者OSの学習データJSONではありません。");
+        }
+        source = isPlainObject(extracted.progress) ? extracted.progress : extracted;
+        next = Object.assign(makeDefaultState(), source);
+        next.totalAnswered = Math.max(0, Number(source.totalAnswered || extracted.totalAnswered) || 0);
+        next.lastStudyDate = String(source.lastStudyDate || extracted.lastStudyDate || "");
+        next.lastStudyAt = String(source.lastStudyAt || extracted.lastStudyAt || "");
+        next.questionStats = isPlainObject(source.questionStats) ? source.questionStats : {};
+        return next;
+      }
+
+      function applyImportedProgressPayload(payload) {
+        var syncAt = new Date().toISOString();
+        state = normalizeImportedProgressPayload(payload);
+        state.lastManualSyncAt = syncAt;
+        state.lastSavedAt = syncAt;
+        saveState({ savedAt: syncAt });
+        loadState();
+        renderAll();
+        return syncAt;
+      }
+
+      function wrapLearningPayload(remotePayload, localPayload) {
+        if (COMMON.upsertLearningPayload) {
+          return COMMON.upsertLearningPayload(remotePayload, QUALIFICATION_NAMESPACE, localPayload);
+        }
+        var output = isPlainObject(remotePayload) && !looksLikeLearningPayload(remotePayload)
+          ? cloneJson(remotePayload)
+          : {};
+        output.schemaVersion = 1;
+        output.updatedAt = getPayloadUpdatedAt(localPayload);
+        output[QUALIFICATION_NAMESPACE] = localPayload;
+        return output;
+      }
+
+      function pushProgressToSyncProvider(provider, remoteSha, remotePayload) {
+        var syncAt = new Date().toISOString();
+        var previousManualSyncAt = state.lastManualSyncAt;
+        var previousSavedAt = state.lastSavedAt;
+        var payload;
+        var wrapped;
+
+        state.lastManualSyncAt = syncAt;
+        state.lastSavedAt = syncAt;
+        payload = buildProgressExportPayload();
+        wrapped = wrapLearningPayload(remotePayload, payload);
+        return provider.write(wrapped, remoteSha).then(function () {
+          saveState({ savedAt: syncAt });
+          return payload;
+        }).catch(function (error) {
+          state.lastManualSyncAt = previousManualSyncAt;
+          state.lastSavedAt = previousSavedAt;
+          throw error;
+        });
+      }
+
+      function markSyncSuccess(remoteUpdatedAt, comparison) {
+        updateGitHubSyncMeta({
+          lastStatus: "synced",
+          lastSyncedAt: state.lastManualSyncAt || new Date().toISOString(),
+          githubUpdatedAt: remoteUpdatedAt || state.lastManualSyncAt || "",
+          comparison: comparison || "same",
+          lastError: "",
+          lastErrorAt: ""
+        });
+        updateSyncInfo();
+      }
+
+      function markSyncError(message) {
+        updateGitHubSyncMeta({
+          lastStatus: "error",
+          lastError: message || "GitHubへ接続できませんでした。",
+          lastErrorAt: new Date().toISOString()
+        });
+        updateSyncInfo();
+      }
+
+      function syncProgressWithGitHub() {
+        var config = readGitHubSyncInputs();
+        var provider;
+        var localPayload;
+        var localScore;
+
+        try {
+          validateGitHubSyncConfig(config);
+          saveGitHubSyncConfig(config);
+        } catch (error) {
+          githubSyncSettings.open = true;
+          showSyncStatus(error.message, true);
+          updateSyncInfo();
+          return;
+        }
+
+        localPayload = buildProgressExportPayload();
+        localScore = getPayloadSyncScore(localPayload);
+        provider = createGitHubSyncProvider(config);
+        githubSyncButton.disabled = true;
+        showSyncStatus("GitHubと同期しています...", false);
+
+        provider.read().then(function (remote) {
+          var remotePayload;
+          var remoteScore;
+          var decision;
+          var localUnsynced = isLocalProgressNewerThanLastSync();
+          if (!remote.exists) {
+            return pushProgressToSyncProvider(provider, "", null).then(function (payload) {
+              markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+              return "GitHubと同期しました";
+            });
+          }
+          remotePayload = extractLearningPayload(remote.payload);
+          if (!remotePayload) {
+            return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
+              markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+              return "GitHubと同期しました";
+            });
+          }
+          if (!looksLikeLearningPayload(remotePayload)) {
+            throw new Error("GitHub上のlearning-data.json内に衛生管理者OSの学習データを確認できませんでした。");
+          }
+          remoteScore = getPayloadSyncScore(remotePayload);
+          decision = compareSyncScores(localScore, remoteScore);
+          if (decision === "remote") {
+            if (localUnsynced) {
+              throw new Error("ローカルとGitHubの両方に新しい変更があります。先に手動バックアップを取ってください。");
+            }
+            applyImportedProgressPayload(remotePayload);
+            markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote");
+            return "GitHubと同期しました";
+          }
+          if (decision === "same" && !localUnsynced) {
+            state.lastManualSyncAt = new Date().toISOString();
+            saveState({ savedAt: state.lastManualSyncAt });
+            markSyncSuccess(getPayloadUpdatedAt(remotePayload), "same");
+            return "GitHubと同期しました";
+          }
+          return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
+            markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+            return "GitHubと同期しました";
+          });
+        }).then(function (message) {
+          showSyncStatus(message, false, 2400);
+        }).catch(function (error) {
+          markSyncError(error.message || "GitHubへ接続できませんでした。");
+          showSyncStatus(error.message || "GitHubへ接続できませんでした。", true);
+        }).finally(function () {
+          githubSyncButton.disabled = false;
+          updateSyncInfo();
+        });
+      }
+
+      function autoFetchLatestFromGitHub() {
+        var config = readGitHubSyncConfig();
+        var provider;
+        var localScore;
+        if (autoSyncStarted || !hasCompleteGitHubSyncConfig(config)) {
+          updateSyncInfo();
+          return;
+        }
+        autoSyncStarted = true;
+        provider = createGitHubSyncProvider(config);
+        localScore = getPayloadSyncScore(buildProgressExportPayload());
+        provider.read().then(function (remote) {
+          var remotePayload;
+          var decision;
+          if (!remote.exists) {
+            updateSyncInfo();
+            return;
+          }
+          remotePayload = extractLearningPayload(remote.payload);
+          if (!remotePayload || !looksLikeLearningPayload(remotePayload)) {
+            updateSyncInfo();
+            return;
+          }
+          decision = compareSyncScores(localScore, getPayloadSyncScore(remotePayload));
+          if (decision === "remote" && !isLocalProgressNewerThanLastSync()) {
+            applyImportedProgressPayload(remotePayload);
+            markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote");
+            showSyncStatus("GitHubと同期しました", false, 2000);
+          } else {
+            updateSyncInfo();
+          }
+        }).catch(function (error) {
+          markSyncError(error.message || "GitHubへ接続できませんでした。");
+        });
+      }
+
+      function exportProgressData() {
+        var payload = wrapLearningPayload(null, buildProgressExportPayload());
+        var json = JSON.stringify(payload, null, 2);
+        syncDataText.value = json;
+        syncDataText.focus();
+        syncDataText.select();
+        showSyncStatus("資格OS共通形式の学習データJSONを作成しました。", false);
+      }
+
+      function importProgressData() {
+        var raw = syncDataText.value.trim();
+        var parsed;
+        if (!raw) {
+          showSyncStatus("インポートするJSONを貼り付けてください。", true);
+          return;
+        }
+        try {
+          parsed = JSON.parse(raw);
+          applyImportedProgressPayload(parsed);
+          showSyncStatus("衛生管理者OSの学習データをインポートしました。", false);
+        } catch (error) {
+          showSyncStatus(error.message || "学習データの形式が正しくありません。", true);
+        }
+      }
+
       function showStage5CopyFallback(text) {
         stage5CopyFallback.value = text;
         stage5CopyFallback.hidden = false;
@@ -2366,6 +3433,9 @@
         migrationButton.addEventListener("click", migrateOldHistory);
         document.getElementById("unlockStage5Button").addEventListener("click", unlockStage5);
         document.getElementById("copyStage5WeeklyButton").addEventListener("click", copyStage5WeeklyRequest);
+        githubSyncButton.addEventListener("click", syncProgressWithGitHub);
+        document.getElementById("exportProgressButton").addEventListener("click", exportProgressData);
+        document.getElementById("importProgressButton").addEventListener("click", importProgressData);
       }
 
       function validateData(rawData) {
@@ -2412,6 +3482,36 @@
       function initialize() {
         attachEvents();
         loadState();
+        setGitHubSyncInputs(readGitHubSyncConfig());
+        updateSyncInfo();
+
+        if (COMMON.createDailyEmber) {
+          COMMON.createDailyEmber({
+            textElement: dailyEmberText,
+            button: nextEmberButton
+          });
+        }
+
+        if (COMMON.createFirekeeper) {
+          firekeeperMode = COMMON.createFirekeeper({
+            container: firekeeperCard,
+            onStartOneQuestion: function () {
+              dismissFirekeeper("start");
+              startMode("firekeeper");
+            },
+            onRest: function () {
+              recordFirekeeperRest("休む");
+            },
+            onReason: recordFirekeeperRest,
+            onShown: markFirekeeperShown
+          });
+        }
+
+        if (COMMON.createTeacherMode) {
+          teacherMode = COMMON.createTeacherMode({
+            container: teacherModeCard
+          });
+        }
 
         fetch(DATA_URL).then(function (response) {
           if (!response.ok) {
@@ -2435,6 +3535,7 @@
             counts.slice(0, 4).join("問 / ") + "問。ステージ5に本番形式" +
             counts[4] + "問を追加しました。";
           renderAll();
+          autoFetchLatestFromGitHub();
 
           if (state.currentSession &&
               state.unlockedStages.indexOf(state.currentSession.stage) !== -1 &&

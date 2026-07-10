@@ -10,35 +10,35 @@
     {
       "id": 1,
       "name": "基礎",
-      "objective": "基本用語・数字・役割を理解する",
+      "objective": "知識問題で、基本用語・数字・役割を確認する",
       "unlockAccuracy": 80,
       "questionCount": 30
     },
     {
       "id": 2,
-      "name": "比較・混同対策",
-      "objective": "似た制度・数字・用語を区別する",
+      "name": "理解",
+      "objective": "知識の意味をつかみ、似た制度へ進む前の土台を固める",
       "unlockAccuracy": 80,
       "questionCount": 19
     },
     {
       "id": 3,
-      "name": "例外・ひっかけ",
-      "objective": "例外・条件・数値の違いを判断する",
+      "name": "比較",
+      "objective": "比較問題で、例外・条件・数値の違いを見分ける",
       "unlockAccuracy": 80,
       "questionCount": 14
     },
     {
       "id": 4,
-      "name": "事例・本番準備",
-      "objective": "短い事例から誰が・いつ・何を行うか判断する",
+      "name": "判断",
+      "objective": "事例問題・判断問題で、誰が・いつ・何を行うか判断する",
       "unlockAccuracy": 85,
       "questionCount": 18
     },
     {
       "id": 5,
-      "name": "最新公式・本番仕上げ",
-      "objective": "苦手履歴をもとに、同じ知識を別表現・別条件・本番形式で確認する最終ステージ",
+      "name": "実戦",
+      "objective": "本試験レベルの五肢択一で、公式情報と苦手履歴を踏まえて仕上げる",
       "unlockAccuracy": 80,
       "questionCount": 30
     }
