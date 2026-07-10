@@ -481,6 +481,46 @@
       font-weight: 850;
     }
 
+    .sync-provider-box {
+      display: grid;
+      gap: 10px;
+      margin: 12px 0;
+      padding: 12px;
+      background: rgba(245, 199, 98, 0.055);
+      border: 1px solid rgba(245, 199, 98, 0.18);
+      border-radius: 8px;
+    }
+
+    .sync-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    .sync-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 11px;
+      color: var(--text);
+      font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .sync-input:focus {
+      border-color: rgba(245, 199, 98, 0.58);
+      box-shadow: 0 0 0 3px rgba(245, 199, 98, 0.08);
+    }
+
+    .sync-help {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
     .sync-textarea {
       width: 100%;
       min-height: 160px;
@@ -504,6 +544,30 @@
       display: grid;
       gap: 9px;
       margin-top: 10px;
+    }
+
+    .sync-settings,
+    .sync-backup {
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(245, 199, 98, 0.14);
+      border-radius: 8px;
+    }
+
+    .sync-settings > summary,
+    .sync-backup > summary {
+      min-height: 44px;
+      padding: 10px 11px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .sync-settings-body,
+    .sync-backup-body {
+      padding: 0 11px 11px;
     }
 
     .progress-row {
@@ -847,6 +911,39 @@
       border-radius: 8px;
     }
 
+    .question-debug-line,
+    .debug-control-note {
+      margin: 8px 0 0;
+      color: rgba(126, 200, 227, 0.9);
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .debug-control-box {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 12px;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(126, 200, 227, 0.06);
+      border: 1px solid rgba(126, 200, 227, 0.18);
+      border-radius: 8px;
+    }
+
+    .debug-toggle {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-weight: 850;
+      line-height: 1.5;
+    }
+
+    .debug-toggle input {
+      flex: 0 0 auto;
+      margin-top: 4px;
+    }
+
     .build-version {
       margin: 8px 2px 0;
       color: rgba(201, 187, 164, 0.74);
@@ -932,8 +1029,8 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-08-difficulty-up-01</p>
-      <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-08-difficulty-up-01
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-10-github-onetap-01</p>
+      <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-10-github-onetap-01
 debug: loading</pre>
     </header>
 
@@ -999,23 +1096,57 @@ debug: loading</pre>
     </section>
 
     <section class="panel" aria-labelledby="syncTitle">
-      <details class="sync-details">
-        <summary id="syncTitle">学習データの手動同期</summary>
+      <details class="sync-details" open>
+        <summary id="syncTitle">学習データ同期</summary>
         <div class="sync-body">
           <p class="panel-note">
             PCとスマホの学習データは、現在それぞれの端末のlocalStorageに保存されています。
-            下のJSONをコピーして別端末へ貼り付けると、手動で進捗を移せます。
+            GitHubリポジトリの learning-data.json を使い、別端末でも「同期する」だけで進捗を移します。
           </p>
-          <div class="sync-actions">
-            <button class="secondary-button" type="button" id="exportProgressButton">学習データをエクスポート</button>
-          </div>
-          <label class="sync-label" for="syncDataText">インポート用テキストエリア</label>
-          <textarea class="sync-textarea" id="syncDataText" rows="8" spellcheck="false" placeholder="別端末でエクスポートしたJSONをここに貼り付けます。"></textarea>
-          <div class="sync-actions">
-            <button class="primary-button" type="button" id="importProgressButton">学習データをインポート</button>
-          </div>
+          <button class="primary-button" type="button" id="githubSyncButton">同期する</button>
           <p class="sync-meta">最終同期日時：<span id="lastSyncAt">未実行</span></p>
           <p class="status-message" id="syncStatus" role="status" hidden></p>
+          <div class="sync-provider-box">
+            <details class="sync-settings" id="githubSyncSettings">
+              <summary>初回だけGitHub同期設定を開く</summary>
+              <div class="sync-settings-body">
+                <p class="sync-help">
+                  GitHub Pagesだけで動く同期です。Fine-grained personal access token は各端末のlocalStorageにだけ保存し、HTMLやJSONには保存しません。
+                </p>
+                <div class="sync-grid">
+                  <label class="sync-label" for="githubOwnerInput">GitHub owner</label>
+                  <input class="sync-input" id="githubOwnerInput" type="text" autocomplete="username" placeholder="例: y2e4">
+                  <label class="sync-label" for="githubRepoInput">Repository</label>
+                  <input class="sync-input" id="githubRepoInput" type="text" autocomplete="off" placeholder="例: second-brain-yui">
+                  <label class="sync-label" for="githubBranchInput">Branch</label>
+                  <input class="sync-input" id="githubBranchInput" type="text" autocomplete="off" placeholder="main">
+                  <label class="sync-label" for="githubPathInput">保存ファイル</label>
+                  <input class="sync-input" id="githubPathInput" type="text" autocomplete="off" placeholder="learning-data.json">
+                  <label class="sync-label" for="githubTokenInput">GitHub token</label>
+                  <input class="sync-input" id="githubTokenInput" type="password" autocomplete="off" placeholder="repo contents read/write のトークン">
+                </div>
+                <p class="sync-help">
+                  初回設定後は、先に進めた端末で「同期する」→別端末で「同期する」だけで反映します。
+                </p>
+              </div>
+            </details>
+          </div>
+          <details class="sync-backup">
+            <summary>バックアップ用JSONを開く</summary>
+            <div class="sync-backup-body">
+              <p class="sync-help">
+                通常は使いません。GitHub同期が使えないときだけ、JSONを手動で退避・復元できます。
+              </p>
+              <div class="sync-actions">
+                <button class="secondary-button" type="button" id="exportProgressButton">学習データをエクスポート</button>
+              </div>
+              <label class="sync-label" for="syncDataText">インポート用テキストエリア</label>
+              <textarea class="sync-textarea" id="syncDataText" rows="8" spellcheck="false" placeholder="バックアップJSONをここに貼り付けます。"></textarea>
+              <div class="sync-actions">
+                <button class="secondary-button" type="button" id="importProgressButton">学習データをインポート</button>
+              </div>
+            </div>
+          </details>
         </div>
       </details>
     </section>
@@ -1043,6 +1174,7 @@ debug: loading</pre>
         <div class="progress-fill" id="progressFill"></div>
       </div>
       <span class="category-label" id="questionCategory"></span>
+      <p class="question-debug-line" id="questionDebugLine">questionId: loading</p>
       <div class="stage5-official-box" id="stageOfficialBox" hidden>
         <p id="stageOfficialNote"></p>
         <div class="stage5-official-links" id="stageOfficialLinks"></div>
@@ -1062,6 +1194,7 @@ debug: loading</pre>
         <div class="stage4-reflection" id="stage4Reflection" hidden>
           <p class="stage4-reflection-title" id="reflectionTitle">ステージ4の理解記録</p>
           <div class="reflection-actions" id="reflectionActions">
+            <button class="reflection-button" type="button" data-reflection="understood">理解して正解</button>
             <button class="reflection-button" type="button" data-reflection="unsure">迷って正解</button>
             <button class="reflection-button" type="button" data-reflection="guessed">勘で正解</button>
             <button class="reflection-button" type="button" data-reflection="weak">苦手登録</button>
@@ -1103,19 +1236,31 @@ debug: loading</pre>
         <p class="panel-note">
           スマホ実機で、保存データ・ステージ判定・問題データ読み込み状況を確認するための一時表示です。
         </p>
+        <div class="debug-control-box">
+          <label class="debug-toggle">
+            <input type="checkbox" id="stage5PriorityModeToggle">
+            <span>確認用：ステージ5では高難度化した10問を優先出題する</span>
+          </label>
+          <button class="secondary-button" type="button" id="reloadQuestionDataButton">問題データを再読み込み</button>
+          <p class="debug-control-note">
+            対象ID: stage5-question-001, 014, 019, 024, 034, 039, 041, 045, 051, 064
+          </p>
+        </div>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-08-difficulty-up-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-10-github-onetap-01</p>
   </main>
 
   <script>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-08-difficulty-up-01";
-      var DATA_URL = "sharoshi-intro-questions.json?v=20260708-difficulty-up-01";
+      var BUILD_VERSION = "2026-07-10-github-onetap-01";
+      var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
+      var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
+      var GITHUB_SYNC_CONFIG_KEY = "sharoshiGithubSyncConfigV1";
       // この版はlocalStorage保存です。端末間同期にはSupabase等の共通DBが必要です。
       var RECENT_LIMIT = 6;
       var STAGE_FIVE_SPLIT_LIMIT = 10;
@@ -1126,6 +1271,18 @@ debug: loading</pre>
       var STAGE_FOUR_ID = 4;
       var STAGE_FIVE_ID = 5;
       var STAGE_TOTAL = 5;
+      var STAGE_FIVE_PRIORITY_IDS = [
+        "stage5-question-001",
+        "stage5-question-014",
+        "stage5-question-019",
+        "stage5-question-024",
+        "stage5-question-034",
+        "stage5-question-039",
+        "stage5-question-041",
+        "stage5-question-045",
+        "stage5-question-051",
+        "stage5-question-064"
+      ];
       var CHOICE_LABELS = ["A", "B", "C", "D", "E"];
       var DEFAULT_CHOICE_IDS = ["a", "b", "c", "d", "e"];
       var STAGE_OFFICIAL_LINKS = [
@@ -1209,6 +1366,7 @@ debug: loading</pre>
       var lastProgressReadError = "";
       var lastStoredProgressSnapshot = null;
       var progress = readProgress();
+      var stageFivePriorityMode = readStageFivePriorityMode();
       var sessionQuestions = [];
       var sessionIndex = 0;
       var sessionCorrect = 0;
@@ -1247,6 +1405,13 @@ debug: loading</pre>
       var challengeButton = document.getElementById("challengeButton");
       var stageChallengeButton = document.getElementById("stageChallengeButton");
       var stageFullChallengeButton = document.getElementById("stageFullChallengeButton");
+      var githubOwnerInput = document.getElementById("githubOwnerInput");
+      var githubRepoInput = document.getElementById("githubRepoInput");
+      var githubBranchInput = document.getElementById("githubBranchInput");
+      var githubPathInput = document.getElementById("githubPathInput");
+      var githubTokenInput = document.getElementById("githubTokenInput");
+      var githubSyncButton = document.getElementById("githubSyncButton");
+      var githubSyncSettings = document.getElementById("githubSyncSettings");
       var exportProgressButton = document.getElementById("exportProgressButton");
       var importProgressButton = document.getElementById("importProgressButton");
       var syncDataText = document.getElementById("syncDataText");
@@ -1262,6 +1427,7 @@ debug: loading</pre>
       var modeLabel = document.getElementById("modeLabel");
       var progressFill = document.getElementById("progressFill");
       var questionCategory = document.getElementById("questionCategory");
+      var questionDebugLine = document.getElementById("questionDebugLine");
       var stageOfficialBox = document.getElementById("stageOfficialBox");
       var stageOfficialNote = document.getElementById("stageOfficialNote");
       var stageOfficialLinks = document.getElementById("stageOfficialLinks");
@@ -1292,6 +1458,8 @@ debug: loading</pre>
       var finishButton = document.getElementById("finishButton");
       var termList = document.getElementById("termList");
       var termsBackButton = document.getElementById("termsBackButton");
+      var stage5PriorityModeToggle = document.getElementById("stage5PriorityModeToggle");
+      var reloadQuestionDataButton = document.getElementById("reloadQuestionDataButton");
 
       function getToday() {
         return new Intl.DateTimeFormat("sv-SE", {
@@ -1300,6 +1468,24 @@ debug: loading</pre>
           month: "2-digit",
           day: "2-digit"
         }).format(new Date());
+      }
+
+      function readStageFivePriorityMode() {
+        try {
+          var stored = localStorage.getItem(STAGE_FIVE_PRIORITY_MODE_KEY);
+          return stored === null ? true : stored === "true";
+        } catch (error) {
+          return true;
+        }
+      }
+
+      function saveStageFivePriorityMode(enabled) {
+        stageFivePriorityMode = enabled === true;
+        try {
+          localStorage.setItem(STAGE_FIVE_PRIORITY_MODE_KEY, String(stageFivePriorityMode));
+        } catch (error) {
+          // 確認用の出題優先設定だけなので、保存できなくても学習記録はそのまま続行する。
+        }
       }
 
       function defaultProgress() {
@@ -1348,6 +1534,7 @@ debug: loading</pre>
           stage4: {
             correctQuestionIds: [],
             wrongQuestionIds: [],
+            understoodCorrectQuestionIds: [],
             unsureCorrectQuestionIds: [],
             guessedCorrectQuestionIds: [],
             weakQuestionIds: [],
@@ -1357,6 +1544,7 @@ debug: loading</pre>
           stage5: {
             correctQuestionIds: [],
             wrongQuestionIds: [],
+            understoodCorrectQuestionIds: [],
             unsureCorrectQuestionIds: [],
             guessedCorrectQuestionIds: [],
             weakQuestionIds: [],
@@ -1388,6 +1576,7 @@ debug: loading</pre>
           accuracy: Math.max(0, Number(raw.accuracy) || 0),
           correctIds: uniqueStrings(raw.correctIds),
           wrongIds: uniqueStrings(raw.wrongIds),
+          understoodCorrectIds: uniqueStrings(raw.understoodCorrectIds),
           unsureCorrectIds: uniqueStrings(raw.unsureCorrectIds),
           guessedCorrectIds: uniqueStrings(raw.guessedCorrectIds),
           weakIds: uniqueStrings(raw.weakIds),
@@ -1409,6 +1598,9 @@ debug: loading</pre>
           ),
           wrongQuestionIds: uniqueStrings(
             uniqueStrings(safe.wrongQuestionIds).concat(lastRun ? lastRun.wrongIds : [])
+          ),
+          understoodCorrectQuestionIds: uniqueStrings(
+            uniqueStrings(safe.understoodCorrectQuestionIds).concat(lastRun ? lastRun.understoodCorrectIds : [])
           ),
           unsureCorrectQuestionIds: uniqueStrings(
             uniqueStrings(safe.unsureCorrectQuestionIds).concat(lastRun ? lastRun.unsureCorrectIds : [])
@@ -1574,6 +1766,34 @@ debug: loading</pre>
         return categories.length ? categories.join("・") : "未分類";
       }
 
+      function getQuestionTypeLabel(question) {
+        if (typeof question.questionTypeLabel === "string" && question.questionTypeLabel) {
+          return question.questionTypeLabel;
+        }
+        if (typeof question.questionType === "string" && question.questionType) {
+          return question.questionType;
+        }
+        return "";
+      }
+
+      function isStageReviewTarget(questionId) {
+        var detail = normalizeStage4Progress(progress.stage5);
+        return progress.wrongQuestionIds.indexOf(questionId) !== -1 ||
+          detail.wrongQuestionIds.indexOf(questionId) !== -1 ||
+          detail.unsureCorrectQuestionIds.indexOf(questionId) !== -1 ||
+          detail.guessedCorrectQuestionIds.indexOf(questionId) !== -1 ||
+          detail.weakQuestionIds.indexOf(questionId) !== -1;
+      }
+
+      function getDisplayQuestionText(question) {
+        if (getQuestionStage(question) === STAGE_FIVE_ID &&
+            typeof question.reviewPrompt === "string" && question.reviewPrompt &&
+            isStageReviewTarget(question.id)) {
+          return question.reviewPrompt;
+        }
+        return question.statement;
+      }
+
       function getQuestionTags(question) {
         return Array.isArray(question.tags) ? question.tags.filter(function (tag) {
           return typeof tag === "string" && tag;
@@ -1608,6 +1828,14 @@ debug: loading</pre>
       function getStageQuestions(stageId) {
         return questionBank.filter(function (question) {
           return getQuestionStage(question) === stageId;
+        });
+      }
+
+      function getStageFivePriorityQuestions() {
+        return STAGE_FIVE_PRIORITY_IDS.map(function (questionId) {
+          return questionById[questionId];
+        }).filter(function (question) {
+          return question && getQuestionStage(question) === STAGE_FIVE_ID;
         });
       }
 
@@ -1875,6 +2103,8 @@ debug: loading</pre>
         var stage3Stats = getStageStats(STAGE_THREE_ID);
         var stage4Stats = getStageStats(STAGE_FOUR_ID);
         var unlockedStageIds = getUnlockedStageIds();
+        var currentQuestion = sessionQuestions[sessionIndex] || null;
+        var priorityQuestions = getStageFivePriorityQuestions();
         var highestUnlockedStage = unlockedStageIds.length
           ? unlockedStageIds[unlockedStageIds.length - 1]
           : STAGE_ONE_ID;
@@ -1890,6 +2120,16 @@ debug: loading</pre>
           buildVersion: BUILD_VERSION,
           dataUrl: DATA_URL,
           storageKey: STORAGE_KEY,
+          currentQuestionId: currentQuestion ? currentQuestion.id : "",
+          currentQuestionStage: currentQuestion ? getQuestionStage(currentQuestion) : "",
+          sessionQuestionIds: sessionQuestions.map(function (question) {
+            return question.id;
+          }),
+          stage5PriorityMode: stageFivePriorityMode,
+          stage5PriorityIds: STAGE_FIVE_PRIORITY_IDS,
+          stage5PriorityIdsFound: priorityQuestions.map(function (question) {
+            return question.id;
+          }),
           currentStage: getCurrentStageId(),
           highestUnlockedStage: highestUnlockedStage,
           completedStages: getCompletedStageIds(),
@@ -1928,13 +2168,17 @@ debug: loading</pre>
         if (debugSummaryTop) {
           debugSummaryTop.textContent = [
             "buildVersion: " + BUILD_VERSION,
+            "dataUrl: " + DATA_URL,
+            "currentQuestionId: " + info.currentQuestionId,
             "currentStage: " + info.currentStage,
             "highestUnlockedStage: " + info.highestUnlockedStage,
+            "stage5PriorityMode: " + info.stage5PriorityMode,
             "stage4Answered: " + info.stage4Answered,
             "stage4Accuracy: " + info.stage4Accuracy,
             "stage4Completed: " + info.stage4Completed,
             "stage5Unlocked: " + info.stage5Unlocked,
             "stage5QuestionsCount: " + info.stage5QuestionsCount,
+            "stage5PriorityIdsFound: " + info.stage5PriorityIdsFound.join(", "),
             "stageProgress4: " + safeDebugJson(info.stageProgress4),
             "stage4LastRun: " + safeDebugJson(info.stage4LastRun)
           ].join("\n");
@@ -1982,6 +2226,191 @@ debug: loading</pre>
         syncStatus.hidden = !message;
         syncStatus.classList.toggle("is-error", Boolean(isError));
         syncStatus.classList.toggle("is-good", Boolean(message) && !isError);
+      }
+
+      function inferGitHubConfig() {
+        var owner = "";
+        var repo = "second-brain-yui";
+        var hostParts = window.location.hostname.split(".");
+        var pathParts = window.location.pathname.split("/").filter(Boolean);
+
+        if (window.location.hostname.indexOf("github.io") !== -1 && hostParts.length >= 3) {
+          owner = hostParts[0];
+          if (pathParts[0]) {
+            repo = pathParts[0];
+          }
+        }
+
+        return {
+          owner: owner,
+          repo: repo,
+          branch: "main",
+          path: "learning-data.json",
+          token: ""
+        };
+      }
+
+      function readGitHubSyncConfig() {
+        var fallback = inferGitHubConfig();
+        var stored;
+
+        try {
+          stored = JSON.parse(localStorage.getItem(GITHUB_SYNC_CONFIG_KEY) || "null");
+        } catch (error) {
+          stored = null;
+        }
+
+        if (!isPlainObject(stored)) {
+          return fallback;
+        }
+
+        return {
+          owner: typeof stored.owner === "string" && stored.owner ? stored.owner : fallback.owner,
+          repo: typeof stored.repo === "string" && stored.repo ? stored.repo : fallback.repo,
+          branch: typeof stored.branch === "string" && stored.branch ? stored.branch : fallback.branch,
+          path: typeof stored.path === "string" && stored.path ? stored.path : fallback.path,
+          token: typeof stored.token === "string" ? stored.token : ""
+        };
+      }
+
+      function saveGitHubSyncConfig(config) {
+        localStorage.setItem(GITHUB_SYNC_CONFIG_KEY, JSON.stringify({
+          owner: config.owner,
+          repo: config.repo,
+          branch: config.branch,
+          path: config.path,
+          token: config.token
+        }));
+      }
+
+      function setGitHubSyncInputs(config) {
+        githubOwnerInput.value = config.owner;
+        githubRepoInput.value = config.repo;
+        githubBranchInput.value = config.branch;
+        githubPathInput.value = config.path;
+        githubTokenInput.value = config.token;
+      }
+
+      function readGitHubSyncInputs() {
+        return {
+          owner: githubOwnerInput.value.trim(),
+          repo: githubRepoInput.value.trim(),
+          branch: githubBranchInput.value.trim() || "main",
+          path: githubPathInput.value.trim() || "learning-data.json",
+          token: githubTokenInput.value.trim()
+        };
+      }
+
+      function validateGitHubSyncConfig(config) {
+        if (!config.owner || !config.repo || !config.branch || !config.path) {
+          throw new Error("GitHub owner、repo、branch、保存ファイルを入力してください。");
+        }
+        if (!config.token) {
+          throw new Error("GitHubへ保存するには、Contentsの読み書き権限を持つtokenが必要です。");
+        }
+        if (config.path.indexOf("..") !== -1 || config.path.charAt(0) === "/") {
+          throw new Error("保存ファイルはリポジトリ内の相対パスで指定してください。");
+        }
+      }
+
+      function encodePathForGitHub(path) {
+        return path.split("/").map(function (part) {
+          return encodeURIComponent(part);
+        }).join("/");
+      }
+
+      function encodeBase64Utf8(text) {
+        var bytes = new TextEncoder().encode(text);
+        var binary = "";
+        var chunkSize = 0x8000;
+
+        for (var index = 0; index < bytes.length; index += chunkSize) {
+          binary += String.fromCharCode.apply(null, bytes.slice(index, index + chunkSize));
+        }
+
+        return btoa(binary);
+      }
+
+      function decodeBase64Utf8(text) {
+        var binary = atob(String(text || "").replace(/\s/g, ""));
+        var bytes = new Uint8Array(binary.length);
+
+        for (var index = 0; index < binary.length; index += 1) {
+          bytes[index] = binary.charCodeAt(index);
+        }
+
+        return new TextDecoder().decode(bytes);
+      }
+
+      // Firebaseへ移行する場合は、read/writeを持つ同期プロバイダだけ差し替える。
+      function createGitHubSyncProvider(config) {
+        var encodedPath = encodePathForGitHub(config.path);
+        var contentUrl = "https://api.github.com/repos/" +
+          encodeURIComponent(config.owner) + "/" +
+          encodeURIComponent(config.repo) + "/contents/" +
+          encodedPath;
+        var headers = {
+          Accept: "application/vnd.github+json",
+          Authorization: "Bearer " + config.token,
+          "X-GitHub-Api-Version": "2022-11-28"
+        };
+
+        return {
+          name: "github",
+          read: function () {
+            return fetch(contentUrl + "?ref=" + encodeURIComponent(config.branch), {
+              method: "GET",
+              headers: headers
+            }).then(function (response) {
+              if (response.status === 404) {
+                return { exists: false, sha: "", payload: null };
+              }
+              if (!response.ok) {
+                throw new Error("GitHubから学習データを取得できませんでした: HTTP " + response.status);
+              }
+              return response.json().then(function (file) {
+                if (!file || file.type !== "file" || !file.content) {
+                  throw new Error("GitHub上の学習データファイルを読み取れませんでした。");
+                }
+                return {
+                  exists: true,
+                  sha: file.sha || "",
+                  payload: JSON.parse(decodeBase64Utf8(file.content))
+                };
+              });
+            });
+          },
+          write: function (payload, sha) {
+            var body = {
+              message: "Sync sharoshi learning data",
+              content: encodeBase64Utf8(JSON.stringify(payload, null, 2) + "\n"),
+              branch: config.branch
+            };
+
+            if (sha) {
+              body.sha = sha;
+            }
+
+            return fetch(contentUrl, {
+              method: "PUT",
+              headers: Object.assign({}, headers, {
+                "Content-Type": "application/json"
+              }),
+              body: JSON.stringify(body)
+            }).then(function (response) {
+              if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                  throw new Error("GitHubへの保存権限がありません。tokenの権限を確認してください。");
+                }
+                if (response.status === 409) {
+                  throw new Error("GitHub側のファイルが同時に更新されました。もう一度「同期する」を押してください。");
+                }
+                throw new Error("GitHubへ学習データを保存できませんでした: HTTP " + response.status);
+              }
+              return response.json();
+            });
+          }
+        };
       }
 
       function collectAnsweredQuestionIds() {
@@ -2091,6 +2520,7 @@ debug: loading</pre>
           stageResults: buildStageResults(),
           wrongQuestionIds: progress.wrongQuestionIds.slice(),
           reviewQuestionIds: getReviewQuestionIds(),
+          understoodCorrectQuestionIds: collectStageDetailIds("understoodCorrectQuestionIds"),
           guessedCorrectQuestionIds: collectStageDetailIds("guessedCorrectQuestionIds"),
           uncertainCorrectQuestionIds: collectStageDetailIds("unsureCorrectQuestionIds"),
           weakQuestionIds: collectStageDetailIds("weakQuestionIds"),
@@ -2187,6 +2617,133 @@ debug: loading</pre>
         return base;
       }
 
+      function getPayloadSyncScore(payload) {
+        var source = isPlainObject(payload) && isPlainObject(payload.progress) ? payload.progress : payload;
+        var answeredIds = Array.isArray(payload.answeredQuestionIds)
+          ? payload.answeredQuestionIds
+          : Array.isArray(source.seenQuestionIds) ? source.seenQuestionIds : [];
+        var totalAnswered = Math.max(0, Number(payload.totalAnswered || source.totalAnswers) || 0);
+        var totalCorrect = Math.max(0, Number(payload.totalCorrect || source.correctAnswers) || 0);
+        var lastStudyDate = typeof payload.lastStudyDate === "string" && payload.lastStudyDate
+          ? payload.lastStudyDate
+          : typeof source.lastStudyDate === "string" ? source.lastStudyDate : "";
+        var exportedAt = typeof payload.exportedAt === "string" ? payload.exportedAt : "";
+        var syncedAt = typeof source.lastManualSyncAt === "string" ? source.lastManualSyncAt : "";
+
+        return {
+          totalAnswered: totalAnswered,
+          totalCorrect: Math.min(totalAnswered, totalCorrect),
+          answeredIdCount: uniqueStrings(answeredIds).length,
+          lastStudyDate: lastStudyDate,
+          exportedAtMs: Date.parse(exportedAt) || 0,
+          syncedAtMs: Date.parse(syncedAt) || 0
+        };
+      }
+
+      function compareSyncScores(localScore, remoteScore) {
+        if (remoteScore.totalAnswered !== localScore.totalAnswered) {
+          return remoteScore.totalAnswered > localScore.totalAnswered ? "remote" : "local";
+        }
+        if (remoteScore.answeredIdCount !== localScore.answeredIdCount) {
+          return remoteScore.answeredIdCount > localScore.answeredIdCount ? "remote" : "local";
+        }
+        if (remoteScore.totalCorrect !== localScore.totalCorrect) {
+          return remoteScore.totalCorrect > localScore.totalCorrect ? "remote" : "local";
+        }
+        if (remoteScore.lastStudyDate !== localScore.lastStudyDate) {
+          return remoteScore.lastStudyDate > localScore.lastStudyDate ? "remote" : "local";
+        }
+        if (remoteScore.exportedAtMs !== localScore.syncedAtMs) {
+          return remoteScore.exportedAtMs > localScore.syncedAtMs ? "remote" : "local";
+        }
+        return "local";
+      }
+
+      function applyImportedProgressPayload(payload, reason) {
+        progress = normalizeImportedProgressPayload(payload);
+        normalizeStageProgress();
+        progress.lastManualSyncAt = new Date().toISOString();
+        saveProgress();
+        updateStats();
+        logProgressDebug(reason);
+      }
+
+      function pushProgressToSyncProvider(provider, remoteSha) {
+        var payload;
+
+        normalizeStageProgress();
+        progress.lastManualSyncAt = new Date().toISOString();
+        saveProgress();
+        payload = buildProgressExportPayload();
+        return provider.write(payload, remoteSha).then(function () {
+          updateStats();
+          return payload;
+        });
+      }
+
+      function syncProgressWithGitHub() {
+        var config = readGitHubSyncInputs();
+        var provider;
+        var localPayload;
+        var localScore;
+
+        try {
+          validateGitHubSyncConfig(config);
+          saveGitHubSyncConfig(config);
+        } catch (error) {
+          if (githubSyncSettings) {
+            githubSyncSettings.open = true;
+          }
+          showSyncStatus(error.message, true);
+          return;
+        }
+
+        normalizeStageProgress();
+        localPayload = buildProgressExportPayload();
+        localScore = getPayloadSyncScore(localPayload);
+        provider = createGitHubSyncProvider(config);
+        githubSyncButton.disabled = true;
+        showSyncStatus("GitHubと同期しています...", false);
+
+        provider.read()
+          .then(function (remote) {
+            var remoteScore;
+            var decision;
+
+            if (!remote.exists) {
+              return pushProgressToSyncProvider(provider, "").then(function () {
+                return "GitHubに learning-data.json を作成しました。";
+              });
+            }
+
+            if (!looksLikeProgressPayload(remote.payload)) {
+              throw new Error("GitHub上の learning-data.json は社労士クイズOSの学習データではありません。");
+            }
+
+            remoteScore = getPayloadSyncScore(remote.payload);
+            decision = compareSyncScores(localScore, remoteScore);
+
+            if (decision === "remote") {
+              applyImportedProgressPayload(remote.payload, "github sync import");
+              return "GitHubから最新の学習データを取得しました。";
+            }
+
+            return pushProgressToSyncProvider(provider, remote.sha).then(function () {
+              return "ローカルの学習データをGitHubへ保存しました。";
+            });
+          })
+          .then(function (message) {
+            showSyncStatus(message, false);
+          })
+          .catch(function (error) {
+            showSyncStatus(error.message || "GitHub同期に失敗しました。", true);
+          })
+          .finally(function () {
+            githubSyncButton.disabled = false;
+            updateSyncInfo();
+          });
+      }
+
       function exportProgressData() {
         var payload;
         var json;
@@ -2213,7 +2770,6 @@ debug: loading</pre>
       function importProgressData() {
         var raw = syncDataText.value.trim();
         var parsed;
-        var importedProgress;
 
         if (!raw) {
           showSyncStatus("インポートするJSONを貼り付けてください。", true);
@@ -2228,13 +2784,7 @@ debug: loading</pre>
         }
 
         try {
-          importedProgress = normalizeImportedProgressPayload(parsed);
-          progress = importedProgress;
-          normalizeStageProgress();
-          progress.lastManualSyncAt = new Date().toISOString();
-          saveProgress();
-          updateStats();
-          logProgressDebug("manual import");
+          applyImportedProgressPayload(parsed, "manual import");
           showSyncStatus("学習データをインポートしました。回答履歴からステージ解放状態を再計算しました。", false);
         } catch (error) {
           showSyncStatus(error.message || "学習データの形式が正しくありません。", true);
@@ -2283,6 +2833,7 @@ debug: loading</pre>
           weakCorrectCount: 0,
           weakAccuracy: 0,
           wrongIds: wrongIds,
+          understoodCorrectIds: uniqueStrings(detail.understoodCorrectQuestionIds),
           unsureCorrectIds: uniqueStrings(detail.unsureCorrectQuestionIds),
           guessedCorrectIds: uniqueStrings(detail.guessedCorrectQuestionIds),
           weakIds: uniqueStrings(detail.weakQuestionIds),
@@ -2681,23 +3232,68 @@ debug: loading</pre>
         return selected.slice(0, limit);
       }
 
+      function getStageReviewQuestionIds(stageId) {
+        var detailKey = getStageDetailKey(stageId);
+        var detail = detailKey ? normalizeStage4Progress(progress[detailKey]) : null;
+        if (!detail) {
+          return [];
+        }
+        return uniqueStrings(
+          progress.wrongQuestionIds
+            .concat(detail.wrongQuestionIds)
+            .concat(detail.unsureCorrectQuestionIds)
+            .concat(detail.guessedCorrectQuestionIds)
+            .concat(detail.weakQuestionIds)
+        );
+      }
+
       function selectStageQuestions(stageId, limit) {
         var stageQuestions = getStageQuestions(stageId);
         var stats = getStageStats(stageId);
         var answeredIds = stats.answeredQuestionIds;
+        var reviewIds = stageId === STAGE_FIVE_ID ? getStageReviewQuestionIds(stageId) : [];
         var selected = [];
+        var priorityQuestions = stageId === STAGE_FIVE_ID && stageFivePriorityMode
+          ? getStageFivePriorityQuestions()
+          : [];
+        var priorityQuestionIds = {};
         var preferred = stageQuestions.filter(function (question) {
           return answeredIds.indexOf(question.id) === -1 &&
+            question.id !== progress.lastQuestionId;
+        });
+        var reviewCandidates = stageQuestions.filter(function (question) {
+          return reviewIds.indexOf(question.id) !== -1 &&
             question.id !== progress.lastQuestionId;
         });
         var notLast = stageQuestions.filter(function (question) {
           return question.id !== progress.lastQuestionId;
         });
 
+        priorityQuestions.forEach(function (question) {
+          priorityQuestionIds[question.id] = true;
+        });
+
+        if (priorityQuestions.length) {
+          selected = priorityQuestions.slice();
+          if (!limit || limit >= stageQuestions.length) {
+            appendUnique(selected, stageQuestions.filter(function (question) {
+              return !priorityQuestionIds[question.id];
+            }), limit || stageQuestions.length);
+          } else if (selected.length < limit) {
+            appendUnique(selected, preferred, limit);
+            appendUnique(selected, notLast, limit);
+            appendUnique(selected, stageQuestions, limit);
+          }
+          return selected.slice(0, limit || selected.length);
+        }
+
         if (!limit || limit >= stageQuestions.length) {
           selected = shuffled(stageQuestions);
         } else {
           appendUnique(selected, preferred, limit);
+          if (stageId === STAGE_FIVE_ID) {
+            appendUnique(selected, shuffled(reviewCandidates), limit);
+          }
           appendUnique(selected, notLast, limit);
           appendUnique(selected, stageQuestions, limit);
           selected = selected.slice(0, limit);
@@ -2715,6 +3311,7 @@ debug: loading</pre>
           total: 0,
           correctIds: [],
           wrongIds: [],
+          understoodCorrectIds: [],
           unsureCorrectIds: [],
           guessedCorrectIds: [],
           weakIds: [],
@@ -2911,6 +3508,7 @@ debug: loading</pre>
       function renderQuestion() {
         var question = sessionQuestions[sessionIndex];
         var modeText = "今日の3問";
+        var questionTypeLabel;
         answered = false;
         feedback.hidden = true;
         stage4Reflection.hidden = true;
@@ -2930,10 +3528,17 @@ debug: loading</pre>
         }
         modeLabel.textContent = modeText;
         progressFill.style.width = ((sessionIndex / sessionQuestions.length) * 100) + "%";
-        questionCategory.textContent = "ステージ" + getQuestionStage(question) + " / " + getCategoryText(question);
-        questionText.textContent = question.statement;
+        questionTypeLabel = getQuestionTypeLabel(question);
+        questionCategory.textContent = "ステージ" + getQuestionStage(question) + " / " +
+          getCategoryText(question) + (questionTypeLabel ? " / " + questionTypeLabel : "");
+        if (questionDebugLine) {
+          questionDebugLine.textContent = "questionId: " + question.id +
+            (STAGE_FIVE_PRIORITY_IDS.indexOf(question.id) !== -1 ? " / 高難度化確認対象" : "");
+        }
+        questionText.textContent = getDisplayQuestionText(question);
         nextButton.textContent = sessionIndex === sessionQuestions.length - 1 ? "結果を見る" : "次の問題";
         markQuestionShown(question.id);
+        renderDebugInfo();
       }
 
       function addSeen(questionId) {
@@ -3062,6 +3667,7 @@ debug: loading</pre>
         } else {
           detail.wrongQuestionIds = addUniqueId(detail.wrongQuestionIds, question.id);
           detail.correctQuestionIds = withoutId(detail.correctQuestionIds, question.id);
+          detail.understoodCorrectQuestionIds = withoutId(detail.understoodCorrectQuestionIds, question.id);
           detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
           detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
         }
@@ -3112,7 +3718,11 @@ debug: loading</pre>
           var type = button.getAttribute("data-reflection");
           var active = false;
 
-          if (type === "unsure") {
+          button.hidden = type === "understood" && stageId !== STAGE_FIVE_ID;
+          if (type === "understood") {
+            active = detail.understoodCorrectQuestionIds.indexOf(question.id) !== -1;
+            button.disabled = !isCorrect;
+          } else if (type === "unsure") {
             active = detail.unsureCorrectQuestionIds.indexOf(question.id) !== -1;
             button.disabled = !isCorrect;
           } else if (type === "guessed") {
@@ -3151,20 +3761,32 @@ debug: loading</pre>
         detail = ensureStageDetailProgress(stageId);
         isCorrect = detail.correctQuestionIds.indexOf(question.id) !== -1;
 
-        if ((type === "unsure" || type === "guessed") && !isCorrect) {
-          showReflectionStatus("迷って正解・勘で正解は、正解した問題だけに記録できます。");
+        if ((type === "understood" || type === "unsure" || type === "guessed") && !isCorrect) {
+          showReflectionStatus("理解して正解・迷って正解・勘で正解は、正解した問題だけに記録できます。");
           return;
         }
 
-        if (type === "unsure") {
+        if (type === "understood") {
+          detail.understoodCorrectQuestionIds = addUniqueId(detail.understoodCorrectQuestionIds, question.id);
+          detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
+          detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
+          addSessionStage4Id("understoodCorrectIds", question.id);
+          removeSessionStage4Id("unsureCorrectIds", question.id);
+          removeSessionStage4Id("guessedCorrectIds", question.id);
+          showReflectionStatus("理解して正解として記録しました。");
+        } else if (type === "unsure") {
+          detail.understoodCorrectQuestionIds = withoutId(detail.understoodCorrectQuestionIds, question.id);
           detail.unsureCorrectQuestionIds = addUniqueId(detail.unsureCorrectQuestionIds, question.id);
           detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
+          removeSessionStage4Id("understoodCorrectIds", question.id);
           addSessionStage4Id("unsureCorrectIds", question.id);
           removeSessionStage4Id("guessedCorrectIds", question.id);
           showReflectionStatus("迷って正解として記録しました。");
         } else if (type === "guessed") {
+          detail.understoodCorrectQuestionIds = withoutId(detail.understoodCorrectQuestionIds, question.id);
           detail.guessedCorrectQuestionIds = addUniqueId(detail.guessedCorrectQuestionIds, question.id);
           detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
+          removeSessionStage4Id("understoodCorrectIds", question.id);
           addSessionStage4Id("guessedCorrectIds", question.id);
           removeSessionStage4Id("unsureCorrectIds", question.id);
           showReflectionStatus("勘で正解として記録しました。");
@@ -3396,6 +4018,7 @@ debug: loading</pre>
           accuracy: accuracyValue,
           correctIds: uniqueStrings(detail.correctIds),
           wrongIds: uniqueStrings(detail.wrongIds),
+          understoodCorrectIds: uniqueStrings(detail.understoodCorrectIds),
           unsureCorrectIds: uniqueStrings(detail.unsureCorrectIds),
           guessedCorrectIds: uniqueStrings(detail.guessedCorrectIds),
           weakIds: uniqueStrings(detail.weakIds),
@@ -3436,6 +4059,7 @@ debug: loading</pre>
           "ステージ" + stageId + "結果",
           "正答数: " + run.correctCount + " / " + run.total,
           "正答率: " + run.accuracy + "%",
+          "理解して正解の問題ID: " + formatIdList(run.understoodCorrectIds),
           "迷って正解の問題ID: " + formatIdList(run.unsureCorrectIds),
           "勘で正解の問題ID: " + formatIdList(run.guessedCorrectIds),
           "不正解の問題ID: " + formatIdList(run.wrongIds),
@@ -3652,6 +4276,9 @@ debug: loading</pre>
                 !question.sourceType || !question.sourceTitle)) {
             throw new Error("ステージ4・5問題の必須項目が不足しています。");
           }
+          if (questionStage === STAGE_FIVE_ID && question.questionType && !question.questionTypeLabel) {
+            throw new Error("ステージ5問題タイプの表示名が不足しています。");
+          }
           if (questionStage < STAGE_FOUR_ID && typeof question.answer !== "boolean") {
             throw new Error("ステージ1から3は〇×問題として登録してください。");
           }
@@ -3668,6 +4295,28 @@ debug: loading</pre>
           throw new Error("ステージ1から3は各30問、ステージ4は12問、ステージ5は70問必要です。");
         }
       }
+
+      if (stage5PriorityModeToggle) {
+        stage5PriorityModeToggle.checked = stageFivePriorityMode;
+        stage5PriorityModeToggle.addEventListener("change", function () {
+          saveStageFivePriorityMode(stage5PriorityModeToggle.checked);
+          renderDebugInfo();
+          showStatus(homeStatus, stageFivePriorityMode
+            ? "確認用モードON：ステージ5は高難度化した10問を優先出題します。"
+            : "確認用モードOFF：ステージ5は通常の出題順に戻ります。");
+        });
+      }
+
+      if (reloadQuestionDataButton) {
+        reloadQuestionDataButton.addEventListener("click", function () {
+          var baseUrl = window.location.href.split("#")[0].split("?")[0];
+          window.location.href = baseUrl + "?v=" + Date.now();
+        });
+      }
+
+      setGitHubSyncInputs(readGitHubSyncConfig());
+
+      githubSyncButton.addEventListener("click", syncProgressWithGitHub);
 
       answerActions.addEventListener("click", function (event) {
         var button = event.target.closest(".answer-button");
