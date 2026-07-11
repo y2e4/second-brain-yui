@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-11T09:58:09.098Z",
+  "updatedAt": "2026-07-11T21:44:04.663Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,7 +10,7 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-07-11T09:58:09.098Z",
+    "exportedAt": "2026-07-11T21:44:04.663Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -197,8 +197,8 @@
     "stageResults": {
       "1": {
         "total": 30,
-        "answerCount": 38,
-        "correctCount": 37,
+        "answerCount": 39,
+        "correctCount": 38,
         "accuracy": 97,
         "answeredQuestionIds": [
           "question-027",
@@ -237,8 +237,8 @@
       },
       "2": {
         "total": 30,
-        "answerCount": 37,
-        "correctCount": 35,
+        "answerCount": 38,
+        "correctCount": 36,
         "accuracy": 95,
         "answeredQuestionIds": [
           "stage2-question-016",
@@ -317,8 +317,8 @@
       },
       "4": {
         "total": 12,
-        "answerCount": 15,
-        "correctCount": 15,
+        "answerCount": 16,
+        "correctCount": 16,
         "accuracy": 100,
         "answeredQuestionIds": [
           "stage4-question-010",
@@ -459,15 +459,15 @@
         "選択式対策 1問"
       ]
     },
-    "totalAnswered": 204,
-    "totalCorrect": 199,
-    "lastStudyDate": "2026-07-11",
-    "lastStudyAt": "2026-07-10T21:41:37.525Z",
+    "totalAnswered": 207,
+    "totalCorrect": 202,
+    "lastStudyDate": "2026-07-12",
+    "lastStudyAt": "2026-07-11T21:42:44.136Z",
     "firekeeper": {
       "lastShownDate": "",
       "lastShownAt": "",
-      "dismissedDate": "2026-07-11",
-      "lastDismissedAt": "2026-07-10T21:41:37.525Z",
+      "dismissedDate": "2026-07-12",
+      "lastDismissedAt": "2026-07-11T21:42:44.136Z",
       "lastDismissReason": "answer",
       "restRecords": []
     },
@@ -640,8 +640,8 @@
       }
     },
     "progress": {
-      "totalAnswers": 204,
-      "correctAnswers": 199,
+      "totalAnswers": 207,
+      "correctAnswers": 202,
       "wrongQuestionIds": [
         "question-013",
         "stage2-question-004",
@@ -649,18 +649,18 @@
         "stage3-question-026",
         "stage5-question-013"
       ],
-      "lastStudyDate": "2026-07-11",
-      "lastStudyAt": "2026-07-10T21:41:37.525Z",
-      "lastManualSyncAt": "2026-07-11T09:58:09.098Z",
-      "lastSavedAt": "2026-07-11T09:58:09.098Z",
-      "lastQuestionId": "question-002",
+      "lastStudyDate": "2026-07-12",
+      "lastStudyAt": "2026-07-11T21:42:44.136Z",
+      "lastManualSyncAt": "2026-07-11T21:44:04.662Z",
+      "lastSavedAt": "2026-07-11T21:44:04.662Z",
+      "lastQuestionId": "question-022",
       "recentQuestionIds": [
-        "stage4-question-009",
-        "question-001",
-        "stage5-question-034",
         "stage2-question-021",
         "stage5-question-069",
-        "question-002"
+        "question-002",
+        "stage2-question-009",
+        "stage4-question-002",
+        "question-022"
       ],
       "seenQuestionIds": [
         "question-027",
@@ -837,8 +837,8 @@
         "stage5-question-051"
       ],
       "daily": {
-        "date": "2026-07-11",
-        "answers": 9
+        "date": "2026-07-12",
+        "answers": 3
       },
       "wrongReview": {
         "question-013": {
@@ -864,8 +864,8 @@
       },
       "stageProgress": {
         "1": {
-          "answerCount": 38,
-          "correctCount": 37,
+          "answerCount": 39,
+          "correctCount": 38,
           "answeredQuestionIds": [
             "question-027",
             "question-004",
@@ -900,8 +900,8 @@
           ]
         },
         "2": {
-          "answerCount": 37,
-          "correctCount": 35,
+          "answerCount": 38,
+          "correctCount": 36,
           "answeredQuestionIds": [
             "stage2-question-016",
             "stage2-question-030",
@@ -972,8 +972,8 @@
           ]
         },
         "4": {
-          "answerCount": 15,
-          "correctCount": 15,
+          "answerCount": 16,
+          "correctCount": 16,
           "answeredQuestionIds": [
             "stage4-question-010",
             "stage4-question-003",
@@ -1237,8 +1237,8 @@
       "firekeeper": {
         "lastShownDate": "",
         "lastShownAt": "",
-        "dismissedDate": "2026-07-11",
-        "lastDismissedAt": "2026-07-10T21:41:37.525Z",
+        "dismissedDate": "2026-07-12",
+        "lastDismissedAt": "2026-07-11T21:42:44.136Z",
         "lastDismissReason": "answer",
         "restRecords": []
       }
