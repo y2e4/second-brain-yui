@@ -669,6 +669,24 @@
       overflow-wrap: anywhere;
     }
 
+    .sync-conflict-subtitle,
+    .sync-conflict-recommendation {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .sync-conflict-recommendation {
+      padding: 10px 11px;
+      color: var(--text);
+      background: rgba(245, 199, 98, 0.09);
+      border: 1px solid rgba(245, 199, 98, 0.24);
+      border-radius: 8px;
+      font-weight: 850;
+    }
+
     .sync-conflict-grid {
       display: grid;
       gap: 10px;
@@ -1404,10 +1422,10 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-sync-conflict-ui-01</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-sync-conflict-friendly-01</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-sync-conflict-ui-01
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-sync-conflict-friendly-01
 debug: loading</pre>
       </details>
     </header>
@@ -1491,33 +1509,36 @@ debug: loading</pre>
         <div class="sync-body">
           <div class="sync-state-card is-unsynced" id="githubSyncStateCard" aria-live="polite">
             <strong class="sync-state-title" id="githubSyncStateTitle">🟡 未同期</strong>
-            <span class="sync-state-detail" id="githubSyncStateDetail">GitHub同期設定を確認しています。</span>
+            <span class="sync-state-detail" id="githubSyncStateDetail">同期設定を確認しています。</span>
           </div>
           <button class="primary-button" type="button" id="githubSyncButton">同期する</button>
           <p class="sync-meta">最終同期日時：<span id="lastSyncAt">未実行</span></p>
           <p class="status-message" id="syncStatus" role="status" hidden></p>
           <div class="sync-conflict-card" id="syncConflictPanel" hidden>
-            <h3>同期競合が見つかりました</h3>
+            <h3>どちらの勉強記録を残しますか？</h3>
             <p class="sync-conflict-note">
-              ローカル端末とGitHubの両方に新しい学習データがあります。上書き前に両方のJSONをバックアップします。
+              今使っている端末と、前回保存した記録の両方に新しい学習データがあります。上書き前に両方をバックアップします。
             </p>
+            <p class="sync-conflict-recommendation" id="syncConflictRecommendation"></p>
             <div class="sync-conflict-grid">
               <article class="sync-conflict-summary">
-                <h4>この端末</h4>
+                <h4>💻 今使っている端末</h4>
+                <p class="sync-conflict-subtitle">（このパソコン・スマホの記録）</p>
                 <div id="syncConflictLocalSummary"></div>
               </article>
               <article class="sync-conflict-summary">
-                <h4>GitHub</h4>
+                <h4>☁️ 保存済みの記録</h4>
+                <p class="sync-conflict-subtitle">（前回保存した記録）</p>
                 <div id="syncConflictRemoteSummary"></div>
               </article>
             </div>
             <p class="sync-conflict-note" id="syncConflictMergeNote">
-              回答済み問題IDなど重複除外できる項目は、バックアップJSON内に安全マージ候補として含めます。
+              回答済みの問題は重複しないように整理します。判断が難しい項目は勝手に混ぜません。
             </p>
             <div class="sync-actions">
-              <button class="secondary-button" type="button" id="syncUseLocalButton">ローカルをGitHubへ保存</button>
-              <button class="secondary-button" type="button" id="syncUseRemoteButton">GitHubをこの端末へ反映</button>
-              <button class="secondary-button" type="button" id="syncBackupBothButton">両方をバックアップして後で決める</button>
+              <button class="secondary-button" type="button" id="syncUseLocalButton">この端末の記録を保存する</button>
+              <button class="secondary-button" type="button" id="syncUseRemoteButton">保存済みの記録を使う</button>
+              <button class="secondary-button" type="button" id="syncBackupBothButton">両方バックアップして後で決める</button>
             </div>
             <p class="status-message" id="syncConflictStatus" role="status" hidden></p>
           </div>
@@ -1677,7 +1698,7 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-sync-conflict-ui-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-sync-conflict-friendly-01</p>
   </main>
 
   <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
@@ -1687,7 +1708,7 @@ debug: loading</pre>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-12-sync-conflict-ui-01";
+      var BUILD_VERSION = "2026-07-12-sync-conflict-friendly-01";
       var COMMON = window.QualificationOSCommon || {};
       var QUALIFICATION_NAMESPACE = "sharoshi";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
@@ -1878,6 +1899,7 @@ debug: loading</pre>
       var githubSyncStateTitle = document.getElementById("githubSyncStateTitle");
       var githubSyncStateDetail = document.getElementById("githubSyncStateDetail");
       var syncConflictPanel = document.getElementById("syncConflictPanel");
+      var syncConflictRecommendation = document.getElementById("syncConflictRecommendation");
       var syncConflictLocalSummary = document.getElementById("syncConflictLocalSummary");
       var syncConflictRemoteSummary = document.getElementById("syncConflictRemoteSummary");
       var syncConflictMergeNote = document.getElementById("syncConflictMergeNote");
@@ -3174,7 +3196,7 @@ debug: loading</pre>
           return {
             kind: "unsynced",
             title: "🟡 未同期",
-            detail: "GitHub tokenを設定すると同期できます。",
+            detail: "保存用の設定をすると、別の端末でも記録を使えます。",
             meta: meta
           };
         }
@@ -3184,7 +3206,7 @@ debug: loading</pre>
             kind: "error",
             title: "🔴 同期競合",
             detail: activeSyncConflict
-              ? "ローカルとGitHubの両方に新しい変更があります。下の比較から解決してください。"
+              ? "勉強記録が2つ見つかりました。下の比較から残す方を選んでください。"
               : "前回の同期で競合がありました。もう一度「同期する」を押して比較を表示してください。",
             meta: meta
           };
@@ -3194,7 +3216,7 @@ debug: loading</pre>
           return {
             kind: "error",
             title: "🔴 同期エラー",
-            detail: meta.lastError || "GitHubへ接続できませんでした。",
+            detail: meta.lastError || "保存先へ接続できませんでした。",
             meta: meta
           };
         }
@@ -3214,8 +3236,8 @@ debug: loading</pre>
         if (progress.lastManualSyncAt) {
           return {
             kind: "synced",
-            title: "🟢 GitHub同期済み",
-            detail: "最終同期：" + formatDateTime(progress.lastManualSyncAt),
+            title: "🟢 保存済み",
+            detail: "最終保存：" + formatDateTime(progress.lastManualSyncAt),
             meta: meta
           };
         }
@@ -3223,7 +3245,7 @@ debug: loading</pre>
         return {
           kind: "unsynced",
           title: "🟡 未同期",
-          detail: "まだGitHubへ学習データを保存していません。",
+          detail: "まだ保存済みの学習データがありません。",
           meta: meta
         };
       }
@@ -3314,7 +3336,7 @@ debug: loading</pre>
 
       function renderConflictSummary(container, summary) {
         var rows = [
-          ["最終更新日時", formatDateTime(summary.updatedAt)],
+          ["最終更新", formatDateTime(summary.updatedAt)],
           ["今日の解答数", String(summary.todayAnswers)],
           ["累計解答数", String(summary.totalAnswered)],
           ["正答率", summary.totalAnswered ? summary.accuracy + "%" : "--"],
@@ -3336,6 +3358,35 @@ debug: loading</pre>
           dl.appendChild(dd);
         });
         container.appendChild(dl);
+      }
+
+      function buildSyncConflictRecommendation(localSummary, remoteSummary) {
+        var localTime = getTimeValue(localSummary.updatedAt);
+        var remoteTime = getTimeValue(remoteSummary.updatedAt);
+        var remoteLooksBetter = remoteTime >= localTime &&
+          remoteSummary.totalAnswered >= localSummary.totalAnswered;
+        var localLooksBetter = localTime >= remoteTime &&
+          localSummary.totalAnswered >= remoteSummary.totalAnswered;
+
+        if (remoteLooksBetter && !localLooksBetter) {
+          return "⭐ 保存済みの記録（おすすめ）\n理由：こちらの方が新しく、学習記録が多いためです。";
+        }
+        if (localLooksBetter && !remoteLooksBetter) {
+          return "⭐ 今使っている端末（おすすめ）\n理由：こちらが最新の学習内容です。";
+        }
+        if (remoteSummary.totalAnswered > localSummary.totalAnswered) {
+          return "⭐ 保存済みの記録（おすすめ）\n理由：こちらの方が学習記録が多いためです。";
+        }
+        if (localSummary.totalAnswered > remoteSummary.totalAnswered) {
+          return "⭐ 今使っている端末（おすすめ）\n理由：こちらの方が学習記録が多いためです。";
+        }
+        if (remoteTime > localTime) {
+          return "⭐ 保存済みの記録（おすすめ）\n理由：こちらの方が新しく保存されています。";
+        }
+        if (localTime > remoteTime) {
+          return "⭐ 今使っている端末（おすすめ）\n理由：こちらの方が新しい学習内容です。";
+        }
+        return "どちらも近い内容です。迷う場合は、先に両方をバックアップしてください。";
       }
 
       function hideSyncConflictPanel() {
@@ -3522,33 +3573,36 @@ debug: loading</pre>
         activeSyncConflict = conflict;
         renderConflictSummary(syncConflictLocalSummary, localSummary);
         renderConflictSummary(syncConflictRemoteSummary, remoteSummary);
+        if (syncConflictRecommendation) {
+          syncConflictRecommendation.textContent = buildSyncConflictRecommendation(localSummary, remoteSummary);
+        }
         if (syncConflictMergeNote) {
-          syncConflictMergeNote.textContent = "安全マージ候補をバックアップJSON内に作成します。判定できない項目は自動反映しません。";
+          syncConflictMergeNote.textContent = "回答済みの問題は重複しないように整理します。判断が難しい項目は勝手に混ぜません。";
         }
         if (syncConflictPanel) {
           syncConflictPanel.hidden = false;
         }
-        showSyncConflictStatus("どちらを採用するか選んでください。上書き前に両方をバックアップします。", true);
+        showSyncConflictStatus("残したい勉強記録を選んでください。上書き前に両方をバックアップします。", true);
       }
 
       function showGitHubSyncConflict(conflict) {
         renderSyncConflict(conflict);
         updateGitHubSyncMeta({
           lastStatus: "error",
-          lastError: "ローカルとGitHubの両方に新しい変更があります。下の比較から解決方法を選んでください。",
+          lastError: "今使っている端末と保存済みの記録の両方に新しい変更があります。下の比較から選んでください。",
           lastErrorAt: new Date().toISOString(),
           githubUpdatedAt: conflict.remoteUpdatedAt || "",
           comparison: "conflict"
         });
         updateSyncInfo();
         renderDebugInfo();
-        showSyncStatus("同期競合があります。比較を確認して解決方法を選んでください。", true);
+        showSyncStatus("勉強記録が2つ見つかりました。比較して残す方を選んでください。", true);
       }
 
       function markSyncError(message) {
         updateGitHubSyncMeta({
           lastStatus: "error",
-          lastError: message || "GitHubへ接続できませんでした。",
+          lastError: message || "保存先へ接続できませんでした。",
           lastErrorAt: new Date().toISOString()
         });
         updateSyncInfo();
@@ -3795,12 +3849,12 @@ debug: loading</pre>
                   action: "GET learning-data.json",
                   url: readUrl,
                   authorizationScheme: authorization.scheme,
-                  fallbackMessage: "GitHubから学習データを取得できませんでした"
+                  fallbackMessage: "保存済みの記録を取得できませんでした"
                 });
               }
               return response.json().then(function (file) {
                 if (!file || file.type !== "file" || !file.content) {
-                  throw new Error("GitHub上の学習データファイルを読み取れませんでした。");
+                  throw new Error("保存済みの記録を読み取れませんでした。");
                 }
                 return {
                   exists: true,
@@ -3841,10 +3895,10 @@ debug: loading</pre>
                   url: contentUrl,
                   authorizationScheme: authorization.scheme,
                   fallbackMessage: response.status === 401 || response.status === 403
-                    ? "GitHubへの保存権限がありません。tokenの権限を確認してください"
+                    ? "保存先への権限がありません。tokenの権限を確認してください"
                     : response.status === 409
-                      ? "GitHub側のファイルが同時に更新されました。もう一度「同期する」を押してください"
-                    : "GitHubへ学習データを保存できませんでした"
+                      ? "保存済みの記録が同時に更新されました。もう一度「同期する」を押してください"
+                    : "学習データを保存できませんでした"
                 });
               }
               return response.json();
@@ -4196,7 +4250,7 @@ debug: loading</pre>
         if (!conflict) {
           return;
         }
-        if (!window.confirm("GitHub上の learning-data.json を、この端末の学習データで上書きします。上書き前に両方のJSONをバックアップします。実行しますか？")) {
+        if (!window.confirm("保存済みの記録を、今使っている端末の勉強記録で上書きします。上書き前に両方をバックアップします。実行しますか？")) {
           return;
         }
 
@@ -4209,18 +4263,18 @@ debug: loading</pre>
         );
         saveSyncConflictBackup(backup);
         setSyncConflictButtonsDisabled(true);
-        showSyncStatus("ローカルデータをGitHubへ保存しています...", false);
-        showSyncConflictStatus("バックアップを作成しました。GitHubへ保存しています。", false);
+        showSyncStatus("この端末の記録を保存しています...", false);
+        showSyncConflictStatus("バックアップを作成しました。保存先へ反映しています。", false);
 
         pushProgressToSyncProvider(provider, conflict.remoteSha, conflict.remoteRawPayload)
           .then(function (payload) {
             markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-            showSyncStatus("ローカルデータをGitHubへ保存しました。", false, 2000);
+            showSyncStatus("この端末の記録を保存しました。", false, 2000);
           })
           .catch(function (error) {
-            markSyncError(error.message || "GitHubへの保存に失敗しました。");
-            showSyncStatus(error.message || "GitHubへの保存に失敗しました。", true);
-            showSyncConflictStatus("保存に失敗しました。バックアップJSONは手動バックアップ欄に残しています。", true);
+            markSyncError(error.message || "保存に失敗しました。");
+            showSyncStatus(error.message || "保存に失敗しました。", true);
+            showSyncConflictStatus("保存に失敗しました。バックアップは手動バックアップ欄に残しています。", true);
           })
           .finally(function () {
             setSyncConflictButtonsDisabled(false);
@@ -4235,7 +4289,7 @@ debug: loading</pre>
         if (!conflict) {
           return;
         }
-        if (!window.confirm("この端末の学習データを、GitHub上の learning-data.json で上書きします。上書き前に両方のJSONをバックアップします。実行しますか？")) {
+        if (!window.confirm("今使っている端末の勉強記録を、保存済みの記録で上書きします。上書き前に両方をバックアップします。実行しますか？")) {
           return;
         }
 
@@ -4250,11 +4304,11 @@ debug: loading</pre>
         try {
           applyImportedProgressPayload(conflict.remotePayload, "github conflict remote import");
           markSyncSuccess(conflict.remoteUpdatedAt, "remote");
-          showSyncStatus("GitHubデータをこの端末へ反映しました。", false, 2000);
+          showSyncStatus("保存済みの記録をこの端末へ反映しました。", false, 2000);
         } catch (error) {
-          markSyncError(error.message || "GitHubデータの反映に失敗しました。");
-          showSyncStatus(error.message || "GitHubデータの反映に失敗しました。", true);
-          showSyncConflictStatus("反映に失敗しました。バックアップJSONは手動バックアップ欄に残しています。", true);
+          markSyncError(error.message || "保存済みの記録の反映に失敗しました。");
+          showSyncStatus(error.message || "保存済みの記録の反映に失敗しました。", true);
+          showSyncConflictStatus("反映に失敗しました。バックアップは手動バックアップ欄に残しています。", true);
         } finally {
           setSyncConflictButtonsDisabled(false);
           updateSyncInfo();
@@ -4275,8 +4329,8 @@ debug: loading</pre>
           conflict.remoteRawPayload
         );
         saveSyncConflictBackup(backup);
-        showSyncStatus("ローカルとGitHubの両方をバックアップしました。", false, 2000);
-        showSyncConflictStatus("バックアップJSONを同期設定内のテキストエリアへ出力しました。後で採用するデータを選べます。", false);
+        showSyncStatus("両方の勉強記録をバックアップしました。", false, 2000);
+        showSyncConflictStatus("バックアップを同期設定内のテキストエリアへ出力しました。後で採用するデータを選べます。", false);
       }
 
       function syncProgressWithGitHub() {
@@ -4303,7 +4357,7 @@ debug: loading</pre>
         localScore = getPayloadSyncScore(localPayload);
         provider = createGitHubSyncProvider(config);
         githubSyncButton.disabled = true;
-        showSyncStatus("GitHubと同期しています...", false);
+        showSyncStatus("保存済みの記録を確認しています...", false);
 
         provider.read()
           .then(function (remote) {
@@ -4316,7 +4370,7 @@ debug: loading</pre>
             if (!remote.exists) {
               return pushProgressToSyncProvider(provider, "", null).then(function (payload) {
                 markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-                return "GitHubと同期しました";
+                return "同期しました";
               });
             }
 
@@ -4324,12 +4378,12 @@ debug: loading</pre>
             if (!remotePayload) {
               return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
                 markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-                return "GitHubと同期しました";
+                return "同期しました";
               });
             }
 
             if (!looksLikeProgressPayload(remotePayload)) {
-              throw new Error("GitHub上の learning-data.json は社労士クイズOSの学習データではありません。");
+              throw new Error("保存済みの記録は社労士クイズOSの学習データではありません。");
             }
 
             remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
@@ -4354,18 +4408,18 @@ debug: loading</pre>
               }
               applyImportedProgressPayload(remotePayload, "github sync import");
               markSyncSuccess(remoteUpdatedAt, "remote");
-              return "GitHubと同期しました";
+              return "同期しました";
             }
 
             if (decision === "same" && !localUnsynced) {
               markProgressSyncedNow("github sync check");
               markSyncSuccess(remoteUpdatedAt, "same");
-              return "GitHubと同期しました";
+              return "同期しました";
             }
 
             return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
               markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-              return "GitHubと同期しました";
+              return "同期しました";
             });
           })
           .then(function (message) {
@@ -4374,8 +4428,8 @@ debug: loading</pre>
             }
           })
           .catch(function (error) {
-            markSyncError(error.message || "GitHubへ接続できませんでした。");
-            showSyncStatus(error.message || "GitHubへ接続できませんでした。", true);
+            markSyncError(error.message || "保存先へ接続できませんでした。");
+            showSyncStatus(error.message || "保存先へ接続できませんでした。", true);
           })
           .finally(function () {
             githubSyncButton.disabled = false;
@@ -4399,7 +4453,7 @@ debug: loading</pre>
         normalizeStageProgress();
         localPayload = buildProgressExportPayload();
         localScore = getPayloadSyncScore(localPayload);
-        showSyncStatus("GitHubの最新データを確認しています...", false);
+        showSyncStatus("保存済みの記録を確認しています...", false);
 
         provider.read()
           .then(function (remote) {
@@ -4436,7 +4490,7 @@ debug: loading</pre>
             }
 
             if (!looksLikeProgressPayload(remotePayload)) {
-              throw new Error("GitHub上の learning-data.json は社労士クイズOSの学習データではありません。");
+              throw new Error("保存済みの記録は社労士クイズOSの学習データではありません。");
             }
 
             remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
@@ -4449,7 +4503,7 @@ debug: loading</pre>
                 lastAutoFetchAt: now
               });
               markSyncSuccess(remoteUpdatedAt, "remote");
-              showSyncStatus("GitHubと同期しました", false, 2000);
+              showSyncStatus("同期しました", false, 2000);
               return;
             }
 
@@ -4478,8 +4532,8 @@ debug: loading</pre>
             showSyncStatus("", false);
           })
           .catch(function (error) {
-            markSyncError(error.message || "GitHubへ接続できませんでした。");
-            showSyncStatus(error.message || "GitHubへ接続できませんでした。", true);
+            markSyncError(error.message || "保存先へ接続できませんでした。");
+            showSyncStatus(error.message || "保存先へ接続できませんでした。", true);
           });
       }
 
