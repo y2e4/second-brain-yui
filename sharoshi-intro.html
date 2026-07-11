@@ -1333,10 +1333,10 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-github-classic-token-01</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-github-auth-debug-01</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-github-classic-token-01
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-github-auth-debug-01
 debug: loading</pre>
       </details>
     </header>
@@ -1581,7 +1581,7 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-github-classic-token-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-github-auth-debug-01</p>
   </main>
 
   <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
@@ -1591,7 +1591,7 @@ debug: loading</pre>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-12-github-classic-token-01";
+      var BUILD_VERSION = "2026-07-12-github-auth-debug-01";
       var COMMON = window.QualificationOSCommon || {};
       var QUALIFICATION_NAMESPACE = "sharoshi";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
@@ -3249,7 +3249,7 @@ debug: loading</pre>
         if (!config.owner || !config.repo || !config.branch || !config.path) {
           throw new Error("GitHub owner、repo、branch、保存ファイルを入力してください。");
         }
-        if (!config.token) {
+        if (!normalizeGitHubTokenInput(config.token).token) {
           throw new Error("GitHubへ保存するには、Contentsの読み書き権限を持つtokenが必要です。");
         }
         if (config.path.indexOf("..") !== -1 || config.path.charAt(0) === "/") {
@@ -3286,33 +3286,106 @@ debug: loading</pre>
         return new TextDecoder().decode(bytes);
       }
 
-      function buildGitHubAuthorizationHeader(token) {
+      function normalizeGitHubTokenInput(token) {
         var normalizedToken = String(token || "").trim();
+        var prefixedMatch;
 
-        if (/^(github_pat_|ghs_|ghu_|ghr_)/.test(normalizedToken)) {
-          return "Bearer " + normalizedToken;
+        normalizedToken = normalizedToken.replace(/^Authorization:\s*/i, "").trim();
+        prefixedMatch = normalizedToken.match(/^(Bearer|token)\s+(.+)$/i);
+
+        if (prefixedMatch) {
+          normalizedToken = prefixedMatch[2].trim();
         }
 
-        return "token " + normalizedToken;
+        return {
+          token: normalizedToken,
+          explicitScheme: prefixedMatch ? prefixedMatch[1].toLowerCase() : ""
+        };
+      }
+
+      function createGitHubAuthorization(token) {
+        var normalized = normalizeGitHubTokenInput(token);
+        var scheme = normalized.explicitScheme;
+
+        if (/^ghp_/.test(normalized.token)) {
+          scheme = "token";
+        } else if (!scheme) {
+          scheme = /^(github_pat_|ghs_|ghu_|ghr_)/.test(normalized.token) ? "Bearer" : "token";
+        } else {
+          scheme = scheme === "bearer" ? "Bearer" : "token";
+        }
+
+        return {
+          header: scheme + " " + normalized.token,
+          scheme: scheme,
+          token: normalized.token
+        };
+      }
+
+      function extractGitHubApiMessage(responseBody) {
+        var parsed;
+
+        try {
+          parsed = JSON.parse(responseBody);
+        } catch (error) {
+          return "";
+        }
+
+        return parsed && typeof parsed.message === "string" ? parsed.message : "";
+      }
+
+      function handleGitHubApiError(response, details) {
+        return response.text().catch(function () {
+          return "";
+        }).then(function (responseBody) {
+          var apiMessage = extractGitHubApiMessage(responseBody);
+          var message = details.fallbackMessage + ": HTTP " + response.status;
+
+          if (apiMessage) {
+            message += " - " + apiMessage;
+          }
+
+          console.error("[社労士クイズOS GitHub同期] GitHub API error", {
+            action: details.action,
+            status: response.status,
+            statusText: response.statusText,
+            url: details.url,
+            accept: "application/vnd.github+json",
+            authorizationScheme: details.authorizationScheme,
+            responseBody: responseBody
+          });
+
+          throw new Error(message);
+        });
       }
 
       // Firebaseへ移行する場合は、read/writeを持つ同期プロバイダだけ差し替える。
       function createGitHubSyncProvider(config) {
         var encodedPath = encodePathForGitHub(config.path);
+        var authorization = createGitHubAuthorization(config.token);
         var contentUrl = "https://api.github.com/repos/" +
           encodeURIComponent(config.owner) + "/" +
           encodeURIComponent(config.repo) + "/contents/" +
           encodedPath;
         var headers = {
           Accept: "application/vnd.github+json",
-          Authorization: buildGitHubAuthorizationHeader(config.token),
+          Authorization: authorization.header,
           "X-GitHub-Api-Version": "2022-11-28"
         };
 
         return {
           name: "github",
           read: function () {
-            return fetch(contentUrl + "?ref=" + encodeURIComponent(config.branch), {
+            var readUrl = contentUrl + "?ref=" + encodeURIComponent(config.branch);
+
+            console.info("[社労士クイズOS GitHub同期] GitHub API request", {
+              action: "GET learning-data.json",
+              url: readUrl,
+              accept: headers.Accept,
+              authorizationScheme: authorization.scheme
+            });
+
+            return fetch(readUrl, {
               method: "GET",
               headers: headers
             }).then(function (response) {
@@ -3320,7 +3393,12 @@ debug: loading</pre>
                 return { exists: false, sha: "", payload: null };
               }
               if (!response.ok) {
-                throw new Error("GitHubから学習データを取得できませんでした: HTTP " + response.status);
+                return handleGitHubApiError(response, {
+                  action: "GET learning-data.json",
+                  url: readUrl,
+                  authorizationScheme: authorization.scheme,
+                  fallbackMessage: "GitHubから学習データを取得できませんでした"
+                });
               }
               return response.json().then(function (file) {
                 if (!file || file.type !== "file" || !file.content) {
@@ -3345,6 +3423,13 @@ debug: loading</pre>
               body.sha = sha;
             }
 
+            console.info("[社労士クイズOS GitHub同期] GitHub API request", {
+              action: "PUT learning-data.json",
+              url: contentUrl,
+              accept: headers.Accept,
+              authorizationScheme: authorization.scheme
+            });
+
             return fetch(contentUrl, {
               method: "PUT",
               headers: Object.assign({}, headers, {
@@ -3353,13 +3438,16 @@ debug: loading</pre>
               body: JSON.stringify(body)
             }).then(function (response) {
               if (!response.ok) {
-                if (response.status === 401 || response.status === 403) {
-                  throw new Error("GitHubへの保存権限がありません。tokenの権限を確認してください。");
-                }
-                if (response.status === 409) {
-                  throw new Error("GitHub側のファイルが同時に更新されました。もう一度「同期する」を押してください。");
-                }
-                throw new Error("GitHubへ学習データを保存できませんでした: HTTP " + response.status);
+                return handleGitHubApiError(response, {
+                  action: "PUT learning-data.json",
+                  url: contentUrl,
+                  authorizationScheme: authorization.scheme,
+                  fallbackMessage: response.status === 401 || response.status === 403
+                    ? "GitHubへの保存権限がありません。tokenの権限を確認してください"
+                    : response.status === 409
+                      ? "GitHub側のファイルが同時に更新されました。もう一度「同期する」を押してください"
+                    : "GitHubへ学習データを保存できませんでした"
+                });
               }
               return response.json();
             });
