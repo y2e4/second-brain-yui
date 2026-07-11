@@ -1591,7 +1591,7 @@ debug: loading</pre>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-11-firekeeper-beta-01";
+      var BUILD_VERSION = "2026-07-12-github-classic-token-01";
       var COMMON = window.QualificationOSCommon || {};
       var QUALIFICATION_NAMESPACE = "sharoshi";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
@@ -3286,6 +3286,16 @@ debug: loading</pre>
         return new TextDecoder().decode(bytes);
       }
 
+      function buildGitHubAuthorizationHeader(token) {
+        var normalizedToken = String(token || "").trim();
+
+        if (/^(github_pat_|ghs_|ghu_|ghr_)/.test(normalizedToken)) {
+          return "Bearer " + normalizedToken;
+        }
+
+        return "token " + normalizedToken;
+      }
+
       // Firebaseへ移行する場合は、read/writeを持つ同期プロバイダだけ差し替える。
       function createGitHubSyncProvider(config) {
         var encodedPath = encodePathForGitHub(config.path);
@@ -3295,7 +3305,7 @@ debug: loading</pre>
           encodedPath;
         var headers = {
           Accept: "application/vnd.github+json",
-          Authorization: "Bearer " + config.token,
+          Authorization: buildGitHubAuthorizationHeader(config.token),
           "X-GitHub-Api-Version": "2022-11-28"
         };
 
