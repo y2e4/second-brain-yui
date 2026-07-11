@@ -645,6 +645,73 @@
       white-space: pre-line;
     }
 
+    .sync-conflict-card {
+      display: grid;
+      gap: 12px;
+      margin: 12px 0;
+      padding: 12px;
+      background: rgba(255, 130, 87, 0.075);
+      border: 1px solid rgba(255, 130, 87, 0.28);
+      border-radius: 8px;
+    }
+
+    .sync-conflict-card[hidden] {
+      display: none;
+    }
+
+    .sync-conflict-card h3,
+    .sync-conflict-summary h4 {
+      margin: 0;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 950;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .sync-conflict-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sync-conflict-summary {
+      min-width: 0;
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(245, 199, 98, 0.14);
+      border-radius: 8px;
+    }
+
+    .sync-conflict-summary dl {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 7px 10px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .sync-conflict-summary dt,
+    .sync-conflict-summary dd {
+      min-width: 0;
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .sync-conflict-summary dd {
+      color: var(--text);
+      text-align: right;
+    }
+
+    .sync-conflict-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
     .sync-provider-box {
       display: grid;
       gap: 10px;
@@ -708,6 +775,10 @@
       display: grid;
       gap: 9px;
       margin-top: 10px;
+    }
+
+    .sync-conflict-card .sync-actions {
+      margin-top: 0;
     }
 
     .sync-settings,
@@ -1333,10 +1404,10 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-github-auth-debug-01</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-sync-conflict-ui-01</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-github-auth-debug-01
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-sync-conflict-ui-01
 debug: loading</pre>
       </details>
     </header>
@@ -1425,6 +1496,31 @@ debug: loading</pre>
           <button class="primary-button" type="button" id="githubSyncButton">同期する</button>
           <p class="sync-meta">最終同期日時：<span id="lastSyncAt">未実行</span></p>
           <p class="status-message" id="syncStatus" role="status" hidden></p>
+          <div class="sync-conflict-card" id="syncConflictPanel" hidden>
+            <h3>同期競合が見つかりました</h3>
+            <p class="sync-conflict-note">
+              ローカル端末とGitHubの両方に新しい学習データがあります。上書き前に両方のJSONをバックアップします。
+            </p>
+            <div class="sync-conflict-grid">
+              <article class="sync-conflict-summary">
+                <h4>この端末</h4>
+                <div id="syncConflictLocalSummary"></div>
+              </article>
+              <article class="sync-conflict-summary">
+                <h4>GitHub</h4>
+                <div id="syncConflictRemoteSummary"></div>
+              </article>
+            </div>
+            <p class="sync-conflict-note" id="syncConflictMergeNote">
+              回答済み問題IDなど重複除外できる項目は、バックアップJSON内に安全マージ候補として含めます。
+            </p>
+            <div class="sync-actions">
+              <button class="secondary-button" type="button" id="syncUseLocalButton">ローカルをGitHubへ保存</button>
+              <button class="secondary-button" type="button" id="syncUseRemoteButton">GitHubをこの端末へ反映</button>
+              <button class="secondary-button" type="button" id="syncBackupBothButton">両方をバックアップして後で決める</button>
+            </div>
+            <p class="status-message" id="syncConflictStatus" role="status" hidden></p>
+          </div>
           <div class="sync-provider-box">
             <details class="sync-settings" id="githubSyncSettings">
               <summary id="githubSyncSettingsSummary">▶ 同期設定を開く</summary>
@@ -1451,7 +1547,7 @@ debug: loading</pre>
                 <p class="sync-help">
                   初回設定後は、先に進めた端末で「同期する」→別端末で「同期する」だけで反映します。
                 </p>
-                <details class="sync-backup">
+                <details class="sync-backup" id="syncBackupDetails">
                   <summary>バックアップ用JSONを開く</summary>
                   <div class="sync-backup-body">
                     <p class="sync-help">
@@ -1581,7 +1677,7 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-github-auth-debug-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-sync-conflict-ui-01</p>
   </main>
 
   <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
@@ -1591,7 +1687,7 @@ debug: loading</pre>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-12-github-auth-debug-01";
+      var BUILD_VERSION = "2026-07-12-sync-conflict-ui-01";
       var COMMON = window.QualificationOSCommon || {};
       var QUALIFICATION_NAMESPACE = "sharoshi";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
@@ -1599,6 +1695,7 @@ debug: loading</pre>
       var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
       var GITHUB_SYNC_CONFIG_KEY = "sharoshiGithubSyncConfigV1";
       var GITHUB_SYNC_META_KEY = "sharoshiGithubSyncMetaV1";
+      var GITHUB_SYNC_CONFLICT_BACKUP_KEY = "sharoshiGithubSyncConflictBackupsV1";
       // この版はlocalStorage保存です。端末間同期にはSupabase等の共通DBが必要です。
       var RECENT_LIMIT = 6;
       var STAGE_FIVE_SPLIT_LIMIT = 10;
@@ -1730,6 +1827,7 @@ debug: loading</pre>
       var answered = false;
       var termsRendered = false;
       var dailyEmberIndex = 0;
+      var activeSyncConflict = null;
 
       var views = {
         home: document.getElementById("homeView"),
@@ -1771,6 +1869,7 @@ debug: loading</pre>
       var githubSyncButton = document.getElementById("githubSyncButton");
       var githubSyncSettings = document.getElementById("githubSyncSettings");
       var githubSyncSettingsSummary = document.getElementById("githubSyncSettingsSummary");
+      var syncBackupDetails = document.getElementById("syncBackupDetails");
       var exportProgressButton = document.getElementById("exportProgressButton");
       var importProgressButton = document.getElementById("importProgressButton");
       var syncDataText = document.getElementById("syncDataText");
@@ -1778,6 +1877,14 @@ debug: loading</pre>
       var githubSyncStateCard = document.getElementById("githubSyncStateCard");
       var githubSyncStateTitle = document.getElementById("githubSyncStateTitle");
       var githubSyncStateDetail = document.getElementById("githubSyncStateDetail");
+      var syncConflictPanel = document.getElementById("syncConflictPanel");
+      var syncConflictLocalSummary = document.getElementById("syncConflictLocalSummary");
+      var syncConflictRemoteSummary = document.getElementById("syncConflictRemoteSummary");
+      var syncConflictMergeNote = document.getElementById("syncConflictMergeNote");
+      var syncUseLocalButton = document.getElementById("syncUseLocalButton");
+      var syncUseRemoteButton = document.getElementById("syncUseRemoteButton");
+      var syncBackupBothButton = document.getElementById("syncBackupBothButton");
+      var syncConflictStatus = document.getElementById("syncConflictStatus");
       var lastSyncAt = document.getElementById("lastSyncAt");
       var debugInfoText = document.getElementById("debugInfoText");
       var debugDetails = document.getElementById("debugDetails");
@@ -3072,6 +3179,17 @@ debug: loading</pre>
           };
         }
 
+        if (activeSyncConflict || meta.comparison === "conflict") {
+          return {
+            kind: "error",
+            title: "🔴 同期競合",
+            detail: activeSyncConflict
+              ? "ローカルとGitHubの両方に新しい変更があります。下の比較から解決してください。"
+              : "前回の同期で競合がありました。もう一度「同期する」を押して比較を表示してください。",
+            meta: meta
+          };
+        }
+
         if (meta.lastStatus === "error") {
           return {
             kind: "error",
@@ -3148,6 +3266,285 @@ debug: loading</pre>
         }
       }
 
+      function showSyncConflictStatus(message, isError) {
+        if (!syncConflictStatus) {
+          return;
+        }
+        syncConflictStatus.textContent = message || "";
+        syncConflictStatus.hidden = !message;
+        syncConflictStatus.classList.toggle("is-error", Boolean(isError));
+        syncConflictStatus.classList.toggle("is-good", Boolean(message) && !isError);
+      }
+
+      function setSyncConflictButtonsDisabled(disabled) {
+        [syncUseLocalButton, syncUseRemoteButton, syncBackupBothButton].forEach(function (button) {
+          if (button) {
+            button.disabled = Boolean(disabled);
+          }
+        });
+      }
+
+      function getConflictWrongIdsFromProgress(normalized) {
+        var stage4 = normalizeStage4Progress(normalized.stage4);
+        var stage5 = normalizeStage4Progress(normalized.stage5);
+
+        return uniqueStrings(
+          normalized.wrongQuestionIds
+            .concat(Object.keys(normalized.wrongReview || {}))
+            .concat(stage4.wrongQuestionIds)
+            .concat(stage5.wrongQuestionIds)
+        );
+      }
+
+      function buildConflictSummary(payload) {
+        var normalized = normalizeImportedProgressPayload(payload);
+        var total = Math.max(0, Number(normalized.totalAnswers) || 0);
+        var correct = Math.min(total, Math.max(0, Number(normalized.correctAnswers) || 0));
+
+        return {
+          updatedAt: getPayloadUpdatedAt(payload) || normalized.lastSavedAt || normalized.lastManualSyncAt || "",
+          todayAnswers: normalized.daily && normalized.daily.date === getToday()
+            ? Math.max(0, Number(normalized.daily.answers) || 0)
+            : 0,
+          totalAnswered: total,
+          accuracy: total ? Math.round((correct / total) * 100) : 0,
+          wrongCount: getConflictWrongIdsFromProgress(normalized).length
+        };
+      }
+
+      function renderConflictSummary(container, summary) {
+        var rows = [
+          ["最終更新日時", formatDateTime(summary.updatedAt)],
+          ["今日の解答数", String(summary.todayAnswers)],
+          ["累計解答数", String(summary.totalAnswered)],
+          ["正答率", summary.totalAnswered ? summary.accuracy + "%" : "--"],
+          ["間違えた問題数", String(summary.wrongCount)]
+        ];
+        var dl;
+
+        if (!container) {
+          return;
+        }
+        container.textContent = "";
+        dl = document.createElement("dl");
+        rows.forEach(function (row) {
+          var dt = document.createElement("dt");
+          var dd = document.createElement("dd");
+          dt.textContent = row[0];
+          dd.textContent = row[1];
+          dl.appendChild(dt);
+          dl.appendChild(dd);
+        });
+        container.appendChild(dl);
+      }
+
+      function hideSyncConflictPanel() {
+        activeSyncConflict = null;
+        if (syncConflictPanel) {
+          syncConflictPanel.hidden = true;
+        }
+        showSyncConflictStatus("", false);
+      }
+
+      function mergeStageStatsSafely(localStats, remoteStats) {
+        var localSafe = normalizeStageStats(localStats, 0, 0, []);
+        var remoteSafe = normalizeStageStats(remoteStats, 0, 0, []);
+        var answeredIds = uniqueStrings(localSafe.answeredQuestionIds.concat(remoteSafe.answeredQuestionIds));
+        var answerCount = Math.max(localSafe.answerCount, remoteSafe.answerCount, answeredIds.length);
+
+        return {
+          answerCount: answerCount,
+          correctCount: Math.min(answerCount, Math.max(localSafe.correctCount, remoteSafe.correctCount)),
+          answeredQuestionIds: answeredIds
+        };
+      }
+
+      function pickNewerValue(left, right) {
+        var leftTime = getTimeValue(left);
+        var rightTime = getTimeValue(right);
+
+        if (rightTime > leftTime) {
+          return right || "";
+        }
+        return left || right || "";
+      }
+
+      function mergeStageDetailSafely(localDetail, remoteDetail) {
+        var localSafe = normalizeStage4Progress(localDetail);
+        var remoteSafe = normalizeStage4Progress(remoteDetail);
+        var localRunTime = getTimeValue(localSafe.lastRun && localSafe.lastRun.completedAt);
+        var remoteRunTime = getTimeValue(remoteSafe.lastRun && remoteSafe.lastRun.completedAt);
+
+        return {
+          correctQuestionIds: uniqueStrings(localSafe.correctQuestionIds.concat(remoteSafe.correctQuestionIds)),
+          wrongQuestionIds: uniqueStrings(localSafe.wrongQuestionIds.concat(remoteSafe.wrongQuestionIds)),
+          understoodCorrectQuestionIds: uniqueStrings(
+            localSafe.understoodCorrectQuestionIds.concat(remoteSafe.understoodCorrectQuestionIds)
+          ),
+          unsureCorrectQuestionIds: uniqueStrings(
+            localSafe.unsureCorrectQuestionIds.concat(remoteSafe.unsureCorrectQuestionIds)
+          ),
+          guessedCorrectQuestionIds: uniqueStrings(
+            localSafe.guessedCorrectQuestionIds.concat(remoteSafe.guessedCorrectQuestionIds)
+          ),
+          weakQuestionIds: uniqueStrings(localSafe.weakQuestionIds.concat(remoteSafe.weakQuestionIds)),
+          achieved: localSafe.achieved === true || remoteSafe.achieved === true,
+          lastRun: remoteRunTime > localRunTime ? remoteSafe.lastRun : localSafe.lastRun
+        };
+      }
+
+      function mergeDailyProgressSafely(localDaily, remoteDaily) {
+        var localSafe = isPlainObject(localDaily) ? localDaily : {};
+        var remoteSafe = isPlainObject(remoteDaily) ? remoteDaily : {};
+        var localDate = typeof localSafe.date === "string" ? localSafe.date : "";
+        var remoteDate = typeof remoteSafe.date === "string" ? remoteSafe.date : "";
+
+        if (localDate && localDate === remoteDate) {
+          return {
+            date: localDate,
+            answers: Math.max(0, Number(localSafe.answers) || 0, Number(remoteSafe.answers) || 0)
+          };
+        }
+        return remoteDate > localDate
+          ? { date: remoteDate, answers: Math.max(0, Number(remoteSafe.answers) || 0) }
+          : { date: localDate, answers: Math.max(0, Number(localSafe.answers) || 0) };
+      }
+
+      function buildSafeMergeCandidate(localPayload, remotePayload) {
+        var localProgress = normalizeImportedProgressPayload(localPayload);
+        var remoteProgress = normalizeImportedProgressPayload(remotePayload);
+        var merged = defaultProgress();
+        var stageKeys = ["1", "2", "3", "4", "5"];
+
+        merged.seenQuestionIds = uniqueStrings(localProgress.seenQuestionIds.concat(remoteProgress.seenQuestionIds));
+        merged.wrongQuestionIds = uniqueStrings(localProgress.wrongQuestionIds.concat(remoteProgress.wrongQuestionIds));
+        merged.totalAnswers = Math.max(localProgress.totalAnswers, remoteProgress.totalAnswers, merged.seenQuestionIds.length);
+        merged.correctAnswers = Math.min(
+          merged.totalAnswers,
+          Math.max(localProgress.correctAnswers, remoteProgress.correctAnswers)
+        );
+        merged.lastStudyDate = localProgress.lastStudyDate > remoteProgress.lastStudyDate
+          ? localProgress.lastStudyDate
+          : remoteProgress.lastStudyDate;
+        merged.lastStudyAt = pickNewerValue(localProgress.lastStudyAt, remoteProgress.lastStudyAt);
+        merged.lastManualSyncAt = pickNewerValue(localProgress.lastManualSyncAt, remoteProgress.lastManualSyncAt);
+        merged.lastSavedAt = pickNewerValue(localProgress.lastSavedAt, remoteProgress.lastSavedAt);
+        merged.lastQuestionId = pickNewerValue(localProgress.lastSavedAt, remoteProgress.lastSavedAt) === remoteProgress.lastSavedAt
+          ? remoteProgress.lastQuestionId
+          : localProgress.lastQuestionId;
+        merged.recentQuestionIds = uniqueStrings(
+          localProgress.recentQuestionIds.concat(remoteProgress.recentQuestionIds)
+        ).slice(-RECENT_LIMIT);
+        merged.daily = mergeDailyProgressSafely(localProgress.daily, remoteProgress.daily);
+        merged.wrongReview = Object.assign({}, localProgress.wrongReview || {}, remoteProgress.wrongReview || {});
+        stageKeys.forEach(function (stageKey) {
+          merged.stageProgress[stageKey] = mergeStageStatsSafely(
+            localProgress.stageProgress && localProgress.stageProgress[stageKey],
+            remoteProgress.stageProgress && remoteProgress.stageProgress[stageKey]
+          );
+        });
+        merged.stage4 = mergeStageDetailSafely(localProgress.stage4, remoteProgress.stage4);
+        merged.stage5 = mergeStageDetailSafely(localProgress.stage5, remoteProgress.stage5);
+        merged.firekeeper = normalizeFirekeeperProgress(
+          getTimeValue(remoteProgress.lastStudyAt) > getTimeValue(localProgress.lastStudyAt)
+            ? remoteProgress.firekeeper
+            : localProgress.firekeeper
+        );
+
+        return {
+          app: "sharoshi-quiz-os",
+          title: "社労士クイズOS",
+          version: 1,
+          storageKey: STORAGE_KEY,
+          exportedAt: new Date().toISOString(),
+          mergeCandidate: true,
+          mergeNotes: [
+            "回答済み問題IDは重複を除いて統合しました。",
+            "累計解答数は単純加算せず、大きい方の累計値と重複除外後のID数を基準にしました。",
+            "判定できない細部は自動反映せず、localPayloadとgithubPayloadを確認してください。"
+          ],
+          answeredQuestionIds: merged.seenQuestionIds.slice(),
+          wrongQuestionIds: merged.wrongQuestionIds.slice(),
+          reviewQuestionIds: uniqueStrings(merged.wrongQuestionIds.concat(Object.keys(merged.wrongReview || {}))),
+          totalAnswered: merged.totalAnswers,
+          totalCorrect: merged.correctAnswers,
+          lastStudyDate: merged.lastStudyDate,
+          lastStudyAt: merged.lastStudyAt,
+          stage4Result: merged.stage4,
+          stage5Result: merged.stage5,
+          progress: merged
+        };
+      }
+
+      function buildSyncConflictBackup(action, localPayload, remotePayload, remoteRawPayload) {
+        return {
+          app: "sharoshi-quiz-os",
+          type: "github-sync-conflict-backup",
+          version: 1,
+          action: action,
+          createdAt: new Date().toISOString(),
+          localPayload: cloneJson(localPayload),
+          githubPayload: cloneJson(remotePayload),
+          githubRawPayload: cloneJson(remoteRawPayload),
+          safeMergeCandidate: buildSafeMergeCandidate(localPayload, remotePayload)
+        };
+      }
+
+      function saveSyncConflictBackup(backup) {
+        var backups;
+
+        try {
+          backups = JSON.parse(localStorage.getItem(GITHUB_SYNC_CONFLICT_BACKUP_KEY) || "[]");
+          if (!Array.isArray(backups)) {
+            backups = [];
+          }
+          backups.unshift(backup);
+          localStorage.setItem(GITHUB_SYNC_CONFLICT_BACKUP_KEY, JSON.stringify(backups.slice(0, 3)));
+        } catch (error) {
+          console.warn("[社労士クイズOS GitHub同期] 競合バックアップをlocalStorageへ保存できませんでした", error);
+        }
+
+        if (syncDataText) {
+          syncDataText.value = JSON.stringify(backup, null, 2);
+        }
+        if (githubSyncSettings) {
+          githubSyncSettings.open = true;
+        }
+        if (syncBackupDetails) {
+          syncBackupDetails.open = true;
+        }
+      }
+
+      function renderSyncConflict(conflict) {
+        var localSummary = buildConflictSummary(conflict.localPayload);
+        var remoteSummary = buildConflictSummary(conflict.remotePayload);
+
+        activeSyncConflict = conflict;
+        renderConflictSummary(syncConflictLocalSummary, localSummary);
+        renderConflictSummary(syncConflictRemoteSummary, remoteSummary);
+        if (syncConflictMergeNote) {
+          syncConflictMergeNote.textContent = "安全マージ候補をバックアップJSON内に作成します。判定できない項目は自動反映しません。";
+        }
+        if (syncConflictPanel) {
+          syncConflictPanel.hidden = false;
+        }
+        showSyncConflictStatus("どちらを採用するか選んでください。上書き前に両方をバックアップします。", true);
+      }
+
+      function showGitHubSyncConflict(conflict) {
+        renderSyncConflict(conflict);
+        updateGitHubSyncMeta({
+          lastStatus: "error",
+          lastError: "ローカルとGitHubの両方に新しい変更があります。下の比較から解決方法を選んでください。",
+          lastErrorAt: new Date().toISOString(),
+          githubUpdatedAt: conflict.remoteUpdatedAt || "",
+          comparison: "conflict"
+        });
+        updateSyncInfo();
+        renderDebugInfo();
+        showSyncStatus("同期競合があります。比較を確認して解決方法を選んでください。", true);
+      }
+
       function markSyncError(message) {
         updateGitHubSyncMeta({
           lastStatus: "error",
@@ -3159,6 +3556,7 @@ debug: loading</pre>
       }
 
       function markSyncSuccess(remoteUpdatedAt, comparison) {
+        hideSyncConflictPanel();
         updateGitHubSyncMeta({
           lastStatus: "synced",
           lastSyncedAt: progress.lastManualSyncAt || new Date().toISOString(),
@@ -3782,6 +4180,105 @@ debug: loading</pre>
         });
       }
 
+      function getActiveSyncConflict() {
+        if (!activeSyncConflict) {
+          showSyncStatus("同期競合の情報がありません。もう一度「同期する」を押してください。", true);
+          return null;
+        }
+        return activeSyncConflict;
+      }
+
+      function resolveConflictWithLocal() {
+        var conflict = getActiveSyncConflict();
+        var provider;
+        var backup;
+
+        if (!conflict) {
+          return;
+        }
+        if (!window.confirm("GitHub上の learning-data.json を、この端末の学習データで上書きします。上書き前に両方のJSONをバックアップします。実行しますか？")) {
+          return;
+        }
+
+        provider = createGitHubSyncProvider(conflict.config);
+        backup = buildSyncConflictBackup(
+          "overwrite-github-with-local",
+          buildProgressExportPayload(),
+          conflict.remotePayload,
+          conflict.remoteRawPayload
+        );
+        saveSyncConflictBackup(backup);
+        setSyncConflictButtonsDisabled(true);
+        showSyncStatus("ローカルデータをGitHubへ保存しています...", false);
+        showSyncConflictStatus("バックアップを作成しました。GitHubへ保存しています。", false);
+
+        pushProgressToSyncProvider(provider, conflict.remoteSha, conflict.remoteRawPayload)
+          .then(function (payload) {
+            markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+            showSyncStatus("ローカルデータをGitHubへ保存しました。", false, 2000);
+          })
+          .catch(function (error) {
+            markSyncError(error.message || "GitHubへの保存に失敗しました。");
+            showSyncStatus(error.message || "GitHubへの保存に失敗しました。", true);
+            showSyncConflictStatus("保存に失敗しました。バックアップJSONは手動バックアップ欄に残しています。", true);
+          })
+          .finally(function () {
+            setSyncConflictButtonsDisabled(false);
+            updateSyncInfo();
+          });
+      }
+
+      function resolveConflictWithRemote() {
+        var conflict = getActiveSyncConflict();
+        var backup;
+
+        if (!conflict) {
+          return;
+        }
+        if (!window.confirm("この端末の学習データを、GitHub上の learning-data.json で上書きします。上書き前に両方のJSONをバックアップします。実行しますか？")) {
+          return;
+        }
+
+        backup = buildSyncConflictBackup(
+          "overwrite-local-with-github",
+          buildProgressExportPayload(),
+          conflict.remotePayload,
+          conflict.remoteRawPayload
+        );
+        saveSyncConflictBackup(backup);
+        setSyncConflictButtonsDisabled(true);
+        try {
+          applyImportedProgressPayload(conflict.remotePayload, "github conflict remote import");
+          markSyncSuccess(conflict.remoteUpdatedAt, "remote");
+          showSyncStatus("GitHubデータをこの端末へ反映しました。", false, 2000);
+        } catch (error) {
+          markSyncError(error.message || "GitHubデータの反映に失敗しました。");
+          showSyncStatus(error.message || "GitHubデータの反映に失敗しました。", true);
+          showSyncConflictStatus("反映に失敗しました。バックアップJSONは手動バックアップ欄に残しています。", true);
+        } finally {
+          setSyncConflictButtonsDisabled(false);
+          updateSyncInfo();
+        }
+      }
+
+      function backupConflictAndDecideLater() {
+        var conflict = getActiveSyncConflict();
+        var backup;
+
+        if (!conflict) {
+          return;
+        }
+        backup = buildSyncConflictBackup(
+          "backup-both-decide-later",
+          buildProgressExportPayload(),
+          conflict.remotePayload,
+          conflict.remoteRawPayload
+        );
+        saveSyncConflictBackup(backup);
+        showSyncStatus("ローカルとGitHubの両方をバックアップしました。", false, 2000);
+        showSyncConflictStatus("バックアップJSONを同期設定内のテキストエリアへ出力しました。後で採用するデータを選べます。", false);
+      }
+
       function syncProgressWithGitHub() {
         var config = readGitHubSyncInputs();
         var provider;
@@ -3845,7 +4342,15 @@ debug: loading</pre>
 
             if (decision === "remote") {
               if (localUnsynced) {
-                throw new Error("ローカルとGitHubの両方に新しい変更があります。データ消失防止のため自動上書きを止めました。");
+                showGitHubSyncConflict({
+                  config: cloneJson(config),
+                  remoteSha: remote.sha || "",
+                  remoteRawPayload: cloneJson(remote.payload),
+                  remotePayload: cloneJson(remotePayload),
+                  remoteUpdatedAt: remoteUpdatedAt,
+                  localPayload: cloneJson(localPayload)
+                });
+                return "";
               }
               applyImportedProgressPayload(remotePayload, "github sync import");
               markSyncSuccess(remoteUpdatedAt, "remote");
@@ -3864,7 +4369,9 @@ debug: loading</pre>
             });
           })
           .then(function (message) {
-            showSyncStatus(message, false, 2000);
+            if (message) {
+              showSyncStatus(message, false, 2000);
+            }
           })
           .catch(function (error) {
             markSyncError(error.message || "GitHubへ接続できませんでした。");
@@ -3943,6 +4450,18 @@ debug: loading</pre>
               });
               markSyncSuccess(remoteUpdatedAt, "remote");
               showSyncStatus("GitHubと同期しました", false, 2000);
+              return;
+            }
+
+            if (decision === "remote" && localUnsynced) {
+              showGitHubSyncConflict({
+                config: cloneJson(config),
+                remoteSha: remote.sha || "",
+                remoteRawPayload: cloneJson(remote.payload),
+                remotePayload: cloneJson(remotePayload),
+                remoteUpdatedAt: remoteUpdatedAt,
+                localPayload: cloneJson(localPayload)
+              });
               return;
             }
 
@@ -5586,6 +6105,9 @@ debug: loading</pre>
       setGitHubSyncInputs(readGitHubSyncConfig());
 
       githubSyncButton.addEventListener("click", syncProgressWithGitHub);
+      syncUseLocalButton.addEventListener("click", resolveConflictWithLocal);
+      syncUseRemoteButton.addEventListener("click", resolveConflictWithRemote);
+      syncBackupBothButton.addEventListener("click", backupConflictAndDecideLater);
 
       answerActions.addEventListener("click", function (event) {
         var button = event.target.closest(".answer-button");
