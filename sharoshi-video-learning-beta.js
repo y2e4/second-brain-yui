@@ -75,8 +75,10 @@
   ];
 
   var DANGER_PATTERNS = [
-    { label: "数字", pattern: /[0-9０-９]+/g, reason: "数字は1桁違いで結論が変わるため、正式登録前に確認します。" },
-    { label: "期間", pattern: /[0-9０-９]+(?:日|週間|か月|ヶ月|月|年|時間|分)(?:以内|以上|以下|未満|超)?/g, reason: "期間は試験で問われやすい条件です。" },
+    { label: "数字・条件", pattern: /(?:1日|１日)[0-9０-９]+時間(?:以内|以上|以下|未満|超|を超える)?/g, reason: "労働時間などの条件は、単位と文脈をセットで確認します。" },
+    { label: "数字・条件", pattern: /週[0-9０-９]+時間(?:以内|以上|以下|未満|超|を超える)?/g, reason: "週単位の時間条件は制度上の判断に直結します。" },
+    { label: "人数", pattern: /[0-9０-９]+人(?:以内|以上|以下|未満|超|を超える)?/g, reason: "人数要件は適用や手続きの判断に関係します。" },
+    { label: "期間", pattern: /[0-9０-９]+(?:日|週間|か月|ヶ月|月|年|時間|分)(?:以内|以上|以下|未満|超|を超える)?/g, reason: "期間は試験で問われやすい条件です。" },
     { label: "年齢", pattern: /[0-9０-９]+歳(?:以上|以下|未満|超)?/g, reason: "年齢要件は制度ごとに異なるため確認が必要です。" },
     { label: "割合", pattern: /[0-9０-９]+(?:割|%|％)/g, reason: "割合は支給要件や算定で判断を左右します。" },
     { label: "罰則", pattern: /罰則|懲役|罰金|過料|科料/g, reason: "罰則は条文確認が必要な危険項目です。" },
@@ -136,8 +138,23 @@
     });
   }
 
-  function normalizeTranscript(text) {
+  function removeTranscriptTimestamps(text) {
     return String(text || "")
+      .replace(/(^|\s|\[|\(|。|！|？|、)(?:[0-9０-９]{1,2}:)?[0-9０-９]{1,2}:[0-9０-９]{2}(?=\s|\]|\)|。|！|？|、|$)/g, "$1")
+      .replace(/^\s*(?:[0-9０-９]{1,2}:)?[0-9０-９]{1,2}:[0-9０-９]{2}\s*/gm, "");
+  }
+
+  function isNoiseSentence(sentence) {
+    return /こんにちは|こんばんは|おはようございます|ご視聴|チャンネル登録|高評価|コメント|概要欄|最後まで|ありがとうございました|また次回|よろしくお願いします|はいどうも|今回の動画では|この動画では/.test(sentence)
+      && !/労働基準法|労災|雇用保険|健康保険|年金|被保険者|労働者|使用者|事業主|制度|法律|要件|義務|例外|適用|給付|保険料/.test(sentence);
+  }
+
+  function isLegalLearningSentence(sentence) {
+    return /労働基準法|労働安全衛生法|労災|雇用保険|健康保険|国民年金|厚生年金|被保険者|労働者|使用者|事業主|制度|法律|条文|対象|要件|義務|権利|禁止|適用|除外|例外|原則|罰則|給付|保険料|労働時間|休憩|休日|賃金|契約|就業規則|36協定|第[0-9０-９一二三四五六七八九十百]+条/.test(sentence);
+  }
+
+  function normalizeTranscript(text) {
+    return removeTranscriptTimestamps(text)
       .replace(/\r\n?/g, "\n")
       .replace(/\s+\n/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
@@ -290,7 +307,12 @@
     DANGER_PATTERNS.forEach(function (rule) {
       getMatches(text, rule.pattern).forEach(function (value) {
         var key = rule.label + ":" + value;
+        var rawContext = getRawSentenceContext(text, value);
+        var context = getSentenceContext(text, value);
         if (seen[key]) {
+          return;
+        }
+        if (isNoiseSentence(rawContext) || isNoiseSentence(context)) {
           return;
         }
         seen[key] = true;
@@ -298,6 +320,7 @@
           original: value,
           candidate: "自動補正しない（確認対象）",
           reason: rule.reason,
+          context: context,
           confidence: "要確認",
           category: rule.label,
           autoApplied: false
@@ -306,6 +329,48 @@
     });
 
     return items.slice(0, 12);
+  }
+
+  function basicSplitSentences(text) {
+    return String(text || "")
+      .replace(/([。！？])/g, "$1\n")
+      .split(/\n+/)
+      .map(function (sentence) {
+        return sentence.trim();
+      })
+      .filter(function (sentence) {
+        return sentence.length >= 12 && !isNoiseSentence(sentence);
+      });
+  }
+
+  function getSentenceContext(text, value) {
+    var sentences = basicSplitSentences(text);
+    var index = -1;
+    sentences.some(function (sentence, sentenceIndex) {
+      if (sentence.indexOf(value) !== -1) {
+        index = sentenceIndex;
+        return true;
+      }
+      return false;
+    });
+    if (index === -1) {
+      return value;
+    }
+    return sentences.slice(Math.max(0, index - 1), Math.min(sentences.length, index + 2)).join(" ");
+  }
+
+  function getRawSentenceContext(text, value) {
+    var sentences = String(text || "")
+      .replace(/([。！？])/g, "$1\n")
+      .split(/\n+/)
+      .map(function (sentence) {
+        return sentence.trim();
+      })
+      .filter(Boolean);
+    var found = sentences.filter(function (sentence) {
+      return sentence.indexOf(value) !== -1;
+    })[0];
+    return found || value;
   }
 
   function findReviewTargets(text) {
@@ -337,15 +402,7 @@
   }
 
   function splitSentences(text) {
-    return normalizeTranscript(text)
-      .replace(/([。！？])/g, "$1\n")
-      .split(/\n+/)
-      .map(function (sentence) {
-        return sentence.trim();
-      })
-      .filter(function (sentence) {
-        return sentence.length >= 12;
-      });
+    return basicSplitSentences(normalizeTranscript(text));
   }
 
   function detectTerms(text) {
@@ -356,12 +413,15 @@
 
   function scoreSentence(sentence, terms) {
     var score = 0;
+    if (!isLegalLearningSentence(sentence)) {
+      return -1;
+    }
     terms.forEach(function (term) {
       if (sentence.indexOf(term) !== -1) {
         score += 3;
       }
     });
-    if (/対象|条件|加入|給付|期間|年齢|原則|例外|会社員|自営業|退職|離職|業務上|通勤/.test(sentence)) {
+    if (/法律|制度|対象|条件|要件|義務|加入|給付|期間|年齢|原則|例外|会社員|自営業|退職|離職|業務上|通勤|使用者|労働者|事業主/.test(sentence)) {
       score += 2;
     }
     if (/違い|比較|混同|区別|判断|確認/.test(sentence)) {
@@ -386,34 +446,16 @@
       return right.score - left.score || left.index - right.index;
     });
     var selected = uniqueStrings(scored.filter(function (item) {
-      return item.score > 0;
+      return item.score >= 3;
     }).map(function (item) {
       return item.sentence;
     })).slice(0, 5);
 
-    if (!selected.length && sentences.length) {
-      selected = sentences.slice(0, 3);
-    }
-    if (!selected.length) {
-      selected = ["この動画では、資格学習につながる用語や制度の整理が扱われています。"];
-    }
-
-    while (selected.length < 3) {
-      selected.push(buildFallbackPoint(terms, selected.length));
+    if (selected.length < 2) {
+      return [];
     }
 
     return selected.slice(0, 5);
-  }
-
-  function buildFallbackPoint(terms, index) {
-    var mainTerm = terms[index % Math.max(terms.length, 1)] || "制度";
-    if (index === 0) {
-      return mainTerm + "は、まず対象者と場面を分けて理解する。";
-    }
-    if (index === 1) {
-      return "似た制度は、名前ではなく条件と給付内容で区別する。";
-    }
-    return "試験では、原則と例外の言い換えに注意する。";
   }
 
   function chooseSubject(text, selected) {
@@ -441,9 +483,13 @@
       detail.push("出てきた主な用語: " + terms.join("、"));
     }
     detail.push("重要ポイント:");
-    points.forEach(function (point, index) {
-      detail.push((index + 1) + ". " + point);
-    });
+    if (!points.length) {
+      detail.push("要レビュー: 法律知識として十分な内容を抽出できませんでした。");
+    } else {
+      points.forEach(function (point, index) {
+        detail.push((index + 1) + ". " + point);
+      });
+    }
     detail.push("本試験では、正しい説明の一部だけを入れ替えた選択肢が出やすいので、似た制度との違いを確認してください。");
     return detail.join("\n");
   }
@@ -461,44 +507,77 @@
     return lines.join("\n");
   }
 
-  function buildLayeredContent(points, terms, subjectTemplate, reviewItems) {
+  function buildLayeredContent(points, terms, subjectTemplate, reviewItems, reviewRequired) {
     var firstTerm = terms[0] || subjectTemplate.label || "制度";
-    var instructor = [
+    var instructor = reviewRequired ? [
+      "要レビュー: 法律・制度・要件に関する十分な内容を抽出できませんでした。",
+      "文字起こしの前後を確認し、教材登録前に人の目で整理してください。"
+    ] : [
       firstTerm + "は、用語だけでなく「誰に・どの場面で・どんな条件で」使うかを分けると理解しやすくなります。",
       points[0] || "動画の中心テーマを一つに絞って、制度の入口から確認します。",
       "覚え方は、制度名より先に対象者と場面を見ることです。"
     ];
-    var exam = subjectTemplate.examGuides.slice();
+    var exam = reviewRequired ? [
+      "要レビュー: 試験で覚えるポイントを自動確定できません。",
+      "法律、制度、対象者、要件、義務、例外に関する説明を確認してください。"
+    ] : subjectTemplate.examGuides.slice();
 
-    subjectTemplate.fields.forEach(function (field) {
-      if (exam.length >= 6) {
-        return;
+    if (!reviewRequired) {
+      subjectTemplate.fields.forEach(function (field) {
+        if (exam.length >= 6) {
+          return;
+        }
+        exam.push(field + ": 動画内の該当箇所を公式情報と照合して整理する。");
+      });
+
+      if (points[1]) {
+        exam.push("主体・語尾・数字が出た文: " + points[1]);
       }
-      exam.push(field + ": 動画内の該当箇所を公式情報と照合して整理する。");
-    });
-
-    if (points[1]) {
-      exam.push("主体・語尾・数字が出た文: " + points[1]);
     }
 
     return {
       instructor: instructor.slice(0, 5),
       exam: exam.slice(0, 6),
-      review: buildReviewLayer(reviewItems)
+      review: buildReviewLayer(reviewItems, reviewRequired)
     };
   }
 
-  function buildReviewLayer(reviewItems) {
-    if (!reviewItems.length) {
-      return ["数字・例外・法改正などの危険項目は検出されませんでした。正式登録前には念のため公式情報を確認してください。"];
+  function buildReviewLayer(reviewItems, reviewRequired) {
+    var reviewLines = [];
+    if (reviewRequired) {
+      reviewLines.push("要レビュー: 法律知識として確定できる説明が不足しています。正式登録前に内容を確認してください。");
     }
-    return reviewItems.slice(0, 8).map(function (item) {
-      return item.category + "「" + item.original + "」: " + item.reason;
+    if (!reviewItems.length) {
+      reviewLines.push("数字・例外・法改正などの危険項目は検出されませんでした。正式登録前には念のため公式情報を確認してください。");
+      return reviewLines;
+    }
+    return reviewLines.concat(reviewItems.slice(0, 8).map(function (item) {
+      var line = item.category + "「" + item.original + "」: " + item.reason;
+      if (item.context && item.context !== item.original) {
+        line += " / 文脈: " + item.context;
+      }
+      return line;
+    }));
+  }
+
+  function hasReviewRequiredContent(state) {
+    return Boolean(state && state.reviewRequired);
+  }
+
+  function hasUnresolvedReviewItems(state) {
+    if (!state || state.status !== "waiting") {
+      return false;
+    }
+    return state.reviewItems.some(function (item) {
+      return item.confidence === "要確認";
     });
   }
 
   function inferSystemName(state) {
     var text = state.correction.text;
+    if (/労働基準法/.test(text) && /全体像|概要|基本|はじめに|入門|ポイント|どんな法律|労働条件|最低基準/.test(text)) {
+      return "労働基準法の全体像";
+    }
     if (/雇用保険/.test(text) && /被保険者|週20時間|31日|適用除外/.test(text)) {
       return "雇用保険の被保険者要件";
     }
@@ -598,7 +677,7 @@
     };
   }
 
-  function validateMaterialInput(input) {
+  function validateMaterialInput(input, state) {
     var requiredLabels = [
       ["科目", input.subjectLabel],
       ["制度名", input.systemName],
@@ -619,6 +698,12 @@
     if (missing.length) {
       return "正式登録に必要な項目が未入力です: " + missing.join("、");
     }
+    if (hasUnresolvedReviewItems(state)) {
+      return "未解決の要確認項目があります。「確認済みにする」で内容確認を完了してから正式登録してください。";
+    }
+    if (hasReviewRequiredContent(state)) {
+      return "教材内容が要レビューです。法律知識・重要ポイント・クイズを確認できる内容に整理してから正式登録してください。";
+    }
     if (!input.examPoints.length) {
       return "「試験で覚えること」を1つ以上入力してください。";
     }
@@ -634,7 +719,7 @@
   function buildRegisteredMaterial(controller, now) {
     var state = controller.state;
     var input = readMaterialForm(controller, now);
-    var validationError = validateMaterialInput(input);
+    var validationError = validateMaterialInput(input, state);
     var materialId = state.registeredMaterialId || makeMaterialId(state.id);
 
     if (validationError) {
@@ -673,6 +758,7 @@
           dangerItems: state.correction.dangerItems,
           reviewTargets: state.correction.reviewTargets
         },
+        reviewRequired: Boolean(state.reviewRequired),
         generatedLayers: state.layers,
         sourceTranscript: {
           raw: state.rawTranscript,
@@ -693,24 +779,37 @@
     localStorage.setItem(VIDEO_MATERIAL_STORAGE_KEY, JSON.stringify(store));
   }
 
-  function buildQuiz(points, terms) {
+  function buildQuiz(points, terms, subjectKey, text) {
+    var hasLegalContent = points.length >= 2 || isLegalLearningSentence(text);
     var hasPension = terms.some(function (term) {
       return /年金/.test(term);
     });
     var hasEmployment = terms.indexOf("雇用保険") !== -1 || terms.indexOf("基本手当") !== -1;
     var hasHealth = terms.indexOf("健康保険") !== -1 || terms.indexOf("傷病手当金") !== -1;
-    var quiz = [
-      {
-        question: "動画を教材として使うときは、まず「誰が対象か」「どの場面の話か」を分けて確認するとよい。",
-        answer: true,
-        explanation: "制度名だけで判断すると混同しやすいため、対象者と場面を先に分けます。"
-      },
-      {
-        question: "数字・期間・例外が含まれる説明は、補正候補が自然ならそのまま正式問題データへ登録してよい。",
+    var quiz = [];
+
+    if (!hasLegalContent) {
+      return [];
+    }
+
+    if (subjectKey === "labor_standards" || /労働基準法/.test(text)) {
+      quiz.push({
+        question: "労働基準法は、労働条件について会社が自由に決められる上限だけを定めた法律である。",
         answer: false,
-        explanation: "数字・期間・例外は危険項目です。正式登録前に公式情報で確認します。"
-      }
-    ];
+        explanation: "労働基準法は、労働条件の最低基準を定める法律として理解します。"
+      });
+      quiz.push({
+        question: "労働基準法を学ぶときは、労働者・使用者・労働条件・義務の関係を分けて確認する必要がある。",
+        answer: true,
+        explanation: "誰に義務があり、誰を守る制度かを分けることが判断の入口です。"
+      });
+      quiz.push({
+        question: "労働基準法の説明に数字や例外が出た場合は、公式情報で確認してから教材として確定する。",
+        answer: true,
+        explanation: "労働時間、休憩、休日、罰則などは数字や例外で結論が変わるため確認が必要です。"
+      });
+      return quiz.slice(0, 3);
+    }
 
     if (hasPension) {
       quiz.push({
@@ -718,11 +817,21 @@
         answer: true,
         explanation: "同じ年金でも、加入する制度と受け取る給付は分けて判断します。"
       });
+      quiz.push({
+        question: "厚生年金と国民年金は、対象者や上乗せ関係を区別して確認する必要がある。",
+        answer: true,
+        explanation: "会社員等が関係する厚生年金と、基礎部分の国民年金は役割を分けます。"
+      });
     } else if (hasEmployment) {
       quiz.push({
         question: "雇用保険では、加入できる人かどうかと、離職後にどの給付を受けるかを同じ条件として判断する。",
         answer: false,
         explanation: "加入条件と給付条件は見る場面が違います。まず在職中か離職後かを分けます。"
+      });
+      quiz.push({
+        question: "雇用保険の説明で週の所定労働時間や雇用見込みが出た場合は、被保険者要件として確認する。",
+        answer: true,
+        explanation: "雇用保険では、誰が被保険者になるかを数字や適用除外と合わせて確認します。"
       });
     } else if (hasHealth) {
       quiz.push({
@@ -730,14 +839,34 @@
         answer: true,
         explanation: "業務上なら労災保険、私傷病なら健康保険という入口の違いを確認します。"
       });
-    } else {
       quiz.push({
-        question: "動画の重要ポイントは、用語の意味だけでなく、条件や例外と結びつけて確認する。",
+        question: "健康保険は、業務上の災害も常に健康保険で処理する制度である。",
+        answer: false,
+        explanation: "業務上の災害は労災保険との関係を確認します。"
+      });
+    } else if (subjectKey === "workers_comp" || /労災|業務災害|通勤災害/.test(text)) {
+      quiz.push({
+        question: "労災保険では、業務災害と通勤災害を分けて確認する必要がある。",
         answer: true,
-        explanation: "資格試験では、用語を知っているだけでなく条件判断まで問われます。"
+        explanation: "労災保険は、どの災害にあたるかが制度判断の入口になります。"
+      });
+      quiz.push({
+        question: "仕事中のけがであっても、必ず健康保険だけで処理する。",
+        answer: false,
+        explanation: "業務上のけがは労災保険の対象になる可能性があります。"
       });
     }
 
+    if (!quiz.length) {
+      return [];
+    }
+    while (quiz.length < 3) {
+      quiz.push({
+        question: "法律や制度の説明では、対象者・要件・例外を分けて確認する必要がある。",
+        answer: true,
+        explanation: "資格試験では、用語だけでなく条件や例外の判断が問われます。"
+      });
+    }
     return quiz.slice(0, 3);
   }
 
@@ -794,6 +923,9 @@
       row.appendChild(createElement("p", "", "元の文字: " + item.original));
       row.appendChild(createElement("p", "", "補正候補: " + item.candidate));
       row.appendChild(createElement("p", "", "補正理由: " + item.reason));
+      if (item.context && item.context !== item.original) {
+        row.appendChild(createElement("p", "", "前後の文脈: " + item.context));
+      }
       row.appendChild(confidence);
       controller.correctionReviewList.appendChild(row);
     });
@@ -853,7 +985,7 @@
     renderList(controller.examLayer, state.layers.exam);
     renderList(controller.reviewLayer, state.layers.review);
     populateMaterialForm(controller);
-    renderList(controller.pointList, state.points);
+    renderList(controller.pointList, state.points.length ? state.points : ["要レビュー: 法律・制度・対象者・要件・義務・例外に関する十分な内容を抽出できませんでした。"]);
     controller.detailText.textContent = buildDetail(state.points, terms, state.subjectTemplate);
     controller.teacherText.textContent = buildTeacherExplanation(state.points, terms);
     setRegistrationStatus(controller, "", false);
@@ -863,6 +995,15 @@
 
   function renderQuiz(controller) {
     var question = controller.state.quiz[controller.state.quizIndex];
+
+    if (!controller.state.quiz.length) {
+      controller.quizProgress.textContent = "3問クイズ: 要レビュー";
+      controller.quizQuestion.textContent = "法律知識として十分な内容を抽出できなかったため、クイズは自動生成しません。文字起こしと公式情報を確認してください。";
+      controller.quizFeedback.hidden = true;
+      controller.quizFeedback.textContent = "";
+      controller.quizChoices.textContent = "";
+      return;
+    }
 
     controller.quizProgress.textContent = "問題 " + (controller.state.quizIndex + 1) + " / " + controller.state.quiz.length;
     controller.quizQuestion.textContent = question.question;
@@ -967,6 +1108,7 @@
         reviewTargets: state.correction.reviewTargets,
         points: state.points,
         layers: state.layers,
+        reviewRequired: Boolean(state.reviewRequired),
         quiz: state.quiz,
         answers: state.answers,
         registeredMaterialId: state.registeredMaterialId || "",
@@ -1017,6 +1159,7 @@
       terms: detectTerms(correction.text),
       points: [],
       layers: { instructor: [], exam: [], review: [] },
+      reviewRequired: false,
       quiz: [],
       quizIndex: 0,
       answers: []
@@ -1039,10 +1182,14 @@
       return item.confidence === "要確認";
     }) ? "waiting" : "confirmed";
     state.points = extractImportantPoints(state.correction.text);
+    state.reviewRequired = state.points.length < 2;
+    state.quiz = buildQuiz(state.points, state.terms, state.subject, state.correction.text);
+    if (!state.quiz.length) {
+      state.reviewRequired = true;
+    }
     state.layers = buildLayeredContent(state.points, state.terms, state.subjectTemplate, state.reviewItems.filter(function (item) {
       return item.confidence === "要確認";
-    }));
-    state.quiz = buildQuiz(state.points, state.terms);
+    }), state.reviewRequired);
     state.quizIndex = 0;
     state.answers = [];
 
