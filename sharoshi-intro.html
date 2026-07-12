@@ -1363,6 +1363,42 @@
       overflow-wrap: anywhere;
     }
 
+    .video-material-form {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 11px;
+      background: rgba(245, 199, 98, 0.045);
+      border: 1px solid rgba(245, 199, 98, 0.16);
+      border-radius: 8px;
+    }
+
+    .video-material-form h4 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .video-material-textarea {
+      width: 100%;
+      min-height: 82px;
+      resize: vertical;
+      padding: 10px 11px;
+      color: var(--text);
+      font: 13px/1.6 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(245, 199, 98, 0.22);
+      border-radius: 8px;
+      outline: none;
+      overflow-wrap: anywhere;
+    }
+
+    .video-material-textarea:focus {
+      border-color: rgba(245, 199, 98, 0.58);
+      box-shadow: 0 0 0 3px rgba(245, 199, 98, 0.08);
+    }
+
     .video-point-list {
       display: grid;
       gap: 8px;
@@ -1708,10 +1744,10 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-video-learning-review-01</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-video-materials-01</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-video-learning-review-01
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-video-materials-01
 debug: loading</pre>
       </details>
     </header>
@@ -1953,6 +1989,33 @@ debug: loading</pre>
               <ul id="videoReviewLayer"></ul>
             </div>
           </div>
+          <div class="video-material-form" aria-labelledby="videoMaterialFormTitle">
+            <h4 id="videoMaterialFormTitle">正式登録する教材情報</h4>
+            <p class="video-learning-small">
+              今後の社労士学習機能へ渡すための確認欄です。正式問題JSONには自動登録しません。
+            </p>
+            <label class="video-learning-label" for="videoMaterialSubjectInput">科目</label>
+            <input class="video-learning-input" id="videoMaterialSubjectInput" type="text" autocomplete="off">
+            <label class="video-learning-label" for="videoMaterialSystemNameInput">制度名</label>
+            <input class="video-learning-input" id="videoMaterialSystemNameInput" type="text" autocomplete="off" placeholder="例：雇用保険の被保険者要件">
+            <label class="video-learning-label" for="videoMaterialSummaryInput">一言要約</label>
+            <textarea class="video-material-textarea" id="videoMaterialSummaryInput" rows="3" placeholder="制度名で指定した論点そのものを一言で説明します。"></textarea>
+            <label class="video-learning-label" for="videoMaterialProtectsWhomInput">誰を守る制度か</label>
+            <textarea class="video-material-textarea" id="videoMaterialProtectsWhomInput" rows="3"></textarea>
+            <label class="video-learning-label" for="videoMaterialWorkplaceSceneInput">会社で使う場面</label>
+            <textarea class="video-material-textarea" id="videoMaterialWorkplaceSceneInput" rows="3"></textarea>
+            <label class="video-learning-label" for="videoMaterialNewsSceneInput">ニュースで使う場面</label>
+            <textarea class="video-material-textarea" id="videoMaterialNewsSceneInput" rows="3"></textarea>
+            <label class="video-learning-label" for="videoMaterialExamPointsInput">試験で覚えること</label>
+            <textarea class="video-material-textarea" id="videoMaterialExamPointsInput" rows="4" placeholder="1行に1項目ずつ入力します。"></textarea>
+            <label class="video-learning-label" for="videoMaterialNumbersInput">数字・期間・例外</label>
+            <textarea class="video-material-textarea" id="videoMaterialNumbersInput" rows="4" placeholder="1行に1項目ずつ入力します。"></textarea>
+            <label class="video-learning-label" for="videoMaterialVerifiedSourcesInput">確認済み公式情報</label>
+            <textarea class="video-material-textarea" id="videoMaterialVerifiedSourcesInput" rows="4" placeholder="例：厚生労働省 雇用保険制度 | https://www.mhlw.go.jp/ | 被保険者要件を確認"></textarea>
+            <p class="video-learning-small">
+              厚生労働省・日本年金機構・e-Govなどの公式情報だけを入力してください。公式根拠がない場合は正式登録できません。
+            </p>
+          </div>
           <div class="video-learning-actions">
             <button class="secondary-button" type="button" id="videoMarkConfirmedButton">確認済みにする</button>
             <button class="secondary-button" type="button" id="videoFormalRegisterButton">正式登録（確認済みのみ）</button>
@@ -2095,18 +2158,18 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-video-learning-review-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-video-materials-01</p>
   </main>
 
   <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
   <script src="sharoshi-teacher-mode.js?v=20260710-teacher-beta-01"></script>
   <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
-  <script src="sharoshi-video-learning-beta.js?v=20260712-video-learning-review-01"></script>
+  <script src="sharoshi-video-learning-beta.js?v=20260712-video-materials-01"></script>
   <script>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-12-video-learning-review-01";
+      var BUILD_VERSION = "2026-07-12-video-materials-01";
       var COMMON = window.QualificationOSCommon || {};
       var QUALIFICATION_NAMESPACE = "sharoshi";
       var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";

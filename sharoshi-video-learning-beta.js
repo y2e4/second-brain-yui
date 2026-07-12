@@ -3,6 +3,16 @@
 
   var SOURCE_NOTICE = "この内容は動画の文字起こしをもとに再構成しています。";
   var VIDEO_DRAFT_STORAGE_KEY = "sharoshiVideoLearningDraftsV1";
+  var VIDEO_MATERIAL_STORAGE_KEY = "sharoshiVideoTeachingMaterialsV1";
+  var MATERIAL_SCHEMA_VERSION = 1;
+  var OFFICIAL_SOURCE_HOSTS = [
+    "mhlw.go.jp",
+    "jsite.mhlw.go.jp",
+    "nenkin.go.jp",
+    "e-gov.go.jp",
+    "shiken.or.jp",
+    "kyoukaikenpo.or.jp"
+  ];
   var DRAFT_STATUSES = {
     draft: "下書き",
     waiting: "確認待ち",
@@ -136,6 +146,95 @@
 
   function makeId() {
     return "video-draft-" + new Date().toISOString().replace(/[^0-9]/g, "").slice(0, 14) + "-" + Math.random().toString(36).slice(2, 6);
+  }
+
+  function makeMaterialId(draftId) {
+    return "video-material-" + String(draftId || makeId()).replace(/^video-draft-/, "");
+  }
+
+  function cloneJson(value) {
+    return JSON.parse(JSON.stringify(value || null));
+  }
+
+  function splitLines(text) {
+    return uniqueStrings(String(text || "")
+      .split(/\n+/)
+      .map(function (line) {
+        return line.trim();
+      }));
+  }
+
+  function getOfficialHost(url) {
+    var parsed;
+    try {
+      parsed = new URL(url);
+      return parsed.hostname.replace(/^www\./, "").toLowerCase();
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function isOfficialSourceUrl(url) {
+    var host = getOfficialHost(url);
+    if (!host) {
+      return false;
+    }
+    return OFFICIAL_SOURCE_HOSTS.some(function (officialHost) {
+      return host === officialHost || host.endsWith("." + officialHost);
+    });
+  }
+
+  function parseVerifiedSources(text, verifiedAt) {
+    return splitLines(text).map(function (line) {
+      var parts = line.split("|").map(function (part) {
+        return part.trim();
+      });
+      var urlMatch = line.match(/https?:\/\/[^\s|]+/);
+      var url = parts[1] || (urlMatch ? urlMatch[0] : "");
+      var title = parts[0] && parts[0] !== url ? parts[0] : "";
+      var memo = parts[2] || "";
+      var host = getOfficialHost(url);
+
+      if (!title && host) {
+        title = host;
+      }
+
+      return {
+        title: title,
+        url: url,
+        memo: memo,
+        host: host,
+        official: isOfficialSourceUrl(url),
+        verifiedAt: verifiedAt
+      };
+    });
+  }
+
+  function readMaterialStore() {
+    var stored;
+    try {
+      stored = JSON.parse(localStorage.getItem(VIDEO_MATERIAL_STORAGE_KEY) || "null");
+    } catch (error) {
+      stored = null;
+    }
+    if (!stored || typeof stored !== "object" || !Array.isArray(stored.materials)) {
+      return {
+        schemaVersion: MATERIAL_SCHEMA_VERSION,
+        type: "sharoshi-video-teaching-materials",
+        updatedAt: "",
+        materials: []
+      };
+    }
+    return {
+      schemaVersion: Number(stored.schemaVersion) || MATERIAL_SCHEMA_VERSION,
+      type: stored.type || "sharoshi-video-teaching-materials",
+      updatedAt: stored.updatedAt || "",
+      materials: stored.materials
+    };
+  }
+
+  function exportRegisteredMaterials() {
+    return cloneJson(readMaterialStore());
   }
 
   function getMatches(text, pattern) {
@@ -398,6 +497,202 @@
     });
   }
 
+  function inferSystemName(state) {
+    var text = state.correction.text;
+    if (/雇用保険/.test(text) && /被保険者|週20時間|31日|適用除外/.test(text)) {
+      return "雇用保険の被保険者要件";
+    }
+    if (/労災保険|労災/.test(text) && /業務災害|通勤災害/.test(text)) {
+      return "労災保険の対象災害";
+    }
+    if (/労働基準法|36協定|時間外/.test(text)) {
+      return "労働基準法の労働時間規制";
+    }
+    if (state.terms.length) {
+      return state.terms[0] + "の基本論点";
+    }
+    return state.subjectTemplate.label + "の基本論点";
+  }
+
+  function defaultProtectsWhom(subjectKey) {
+    if (subjectKey === "employment") {
+      return "失業や雇用継続の不安がある労働者";
+    }
+    if (subjectKey === "workers_comp") {
+      return "業務上または通勤によるけが・病気で困る労働者やその家族";
+    }
+    if (subjectKey === "labor_standards") {
+      return "労働条件の最低基準によって守られる労働者";
+    }
+    return "その制度の対象になる人";
+  }
+
+  function defaultWorkplaceScene(subjectKey, systemName) {
+    if (subjectKey === "employment") {
+      return "短時間勤務者や新しく雇い入れる人について、雇用保険の加入対象か確認する場面";
+    }
+    if (subjectKey === "workers_comp") {
+      return "仕事中や通勤中のけがについて、健康保険ではなく労災保険の対象か確認する場面";
+    }
+    if (subjectKey === "labor_standards") {
+      return "労働時間、休憩、休日、時間外労働の扱いを会社で確認する場面";
+    }
+    return systemName + "が会社の手続きや説明に関係する場面";
+  }
+
+  function defaultNewsScene(subjectKey, systemName) {
+    if (subjectKey === "employment") {
+      return "雇用保険、失業給付、育児休業給付、雇用調整に関するニュースを見る場面";
+    }
+    if (subjectKey === "workers_comp") {
+      return "労働災害、通勤災害、安全配慮、労災認定に関するニュースを見る場面";
+    }
+    if (subjectKey === "labor_standards") {
+      return "長時間労働、残業、36協定、賃金未払いに関するニュースを見る場面";
+    }
+    return systemName + "に関する制度改正や社会保険のニュースを見る場面";
+  }
+
+  function buildOneLineSummary(systemName) {
+    if (systemName === "雇用保険の被保険者要件") {
+      return "雇用保険の被保険者は、原則として週20時間以上かつ31日以上の雇用見込みで判断する。";
+    }
+    return systemName + "は、対象者・条件・例外を分けて判断する論点です。";
+  }
+
+  function setFieldValue(field, value) {
+    if (field) {
+      field.value = value || "";
+    }
+  }
+
+  function populateMaterialForm(controller) {
+    var state = controller.state;
+    var systemName;
+    if (!state) {
+      return;
+    }
+    systemName = inferSystemName(state);
+    setFieldValue(controller.materialSubject, state.subjectTemplate.label);
+    setFieldValue(controller.materialSystemName, systemName);
+    setFieldValue(controller.materialSummary, buildOneLineSummary(systemName));
+    setFieldValue(controller.materialProtectsWhom, defaultProtectsWhom(state.subject));
+    setFieldValue(controller.materialWorkplaceScene, defaultWorkplaceScene(state.subject, systemName));
+    setFieldValue(controller.materialNewsScene, defaultNewsScene(state.subject, systemName));
+    setFieldValue(controller.materialExamPoints, state.layers.exam.join("\n"));
+    setFieldValue(controller.materialNumbers, state.layers.review.join("\n"));
+    setFieldValue(controller.materialVerifiedSources, "");
+  }
+
+  function readMaterialForm(controller, now) {
+    return {
+      subjectLabel: controller.materialSubject ? controller.materialSubject.value.trim() : "",
+      systemName: controller.materialSystemName ? controller.materialSystemName.value.trim() : "",
+      oneLineSummary: controller.materialSummary ? controller.materialSummary.value.trim() : "",
+      protectsWhom: controller.materialProtectsWhom ? controller.materialProtectsWhom.value.trim() : "",
+      workplaceScene: controller.materialWorkplaceScene ? controller.materialWorkplaceScene.value.trim() : "",
+      newsScene: controller.materialNewsScene ? controller.materialNewsScene.value.trim() : "",
+      examPoints: splitLines(controller.materialExamPoints ? controller.materialExamPoints.value : ""),
+      numbersPeriodsExceptions: splitLines(controller.materialNumbers ? controller.materialNumbers.value : ""),
+      verifiedSources: parseVerifiedSources(controller.materialVerifiedSources ? controller.materialVerifiedSources.value : "", now)
+    };
+  }
+
+  function validateMaterialInput(input) {
+    var requiredLabels = [
+      ["科目", input.subjectLabel],
+      ["制度名", input.systemName],
+      ["一言要約", input.oneLineSummary],
+      ["誰を守る制度か", input.protectsWhom],
+      ["会社で使う場面", input.workplaceScene],
+      ["ニュースで使う場面", input.newsScene]
+    ];
+    var missing = requiredLabels.filter(function (item) {
+      return !item[1];
+    }).map(function (item) {
+      return item[0];
+    });
+    var invalidSources = input.verifiedSources.filter(function (source) {
+      return !source.url || !source.official;
+    });
+
+    if (missing.length) {
+      return "正式登録に必要な項目が未入力です: " + missing.join("、");
+    }
+    if (!input.examPoints.length) {
+      return "「試験で覚えること」を1つ以上入力してください。";
+    }
+    if (!input.verifiedSources.length) {
+      return "確認済み公式情報を1件以上入力してください。厚生労働省・日本年金機構・e-GovなどのURLが必要です。";
+    }
+    if (invalidSources.length) {
+      return "公式情報として確認できないURLがあります。厚生労働省・日本年金機構・e-Govなどの公式URLだけを入力してください。";
+    }
+    return "";
+  }
+
+  function buildRegisteredMaterial(controller, now) {
+    var state = controller.state;
+    var input = readMaterialForm(controller, now);
+    var validationError = validateMaterialInput(input);
+    var materialId = state.registeredMaterialId || makeMaterialId(state.id);
+
+    if (validationError) {
+      return {
+        error: validationError,
+        material: null
+      };
+    }
+
+    return {
+      error: "",
+      material: {
+        id: materialId,
+        sourceDraftId: state.id,
+        status: DRAFT_STATUSES.registered,
+        subject: {
+          id: state.subject,
+          label: input.subjectLabel
+        },
+        systemName: input.systemName,
+        oneLineSummary: input.oneLineSummary,
+        protectsWhom: input.protectsWhom,
+        workplaceScene: input.workplaceScene,
+        newsScene: input.newsScene,
+        examPoints: input.examPoints,
+        numbersPeriodsExceptions: input.numbersPeriodsExceptions,
+        verifiedSources: input.verifiedSources,
+        registeredAt: state.registeredAt || now,
+        sourceVideo: {
+          title: state.source.videoTitle,
+          url: state.source.videoUrl,
+          studiedAt: state.source.studiedAt
+        },
+        correctionReview: {
+          corrections: state.correction.corrections,
+          dangerItems: state.correction.dangerItems,
+          reviewTargets: state.correction.reviewTargets
+        },
+        generatedLayers: state.layers,
+        sourceTranscript: {
+          raw: state.rawTranscript,
+          corrected: state.correction.text
+        },
+        updatedAt: now
+      }
+    };
+  }
+
+  function saveRegisteredMaterial(material) {
+    var store = readMaterialStore();
+    store.materials = store.materials.filter(function (item) {
+      return item && item.id !== material.id && item.sourceDraftId !== material.sourceDraftId;
+    });
+    store.materials.unshift(material);
+    store.updatedAt = material.updatedAt;
+    localStorage.setItem(VIDEO_MATERIAL_STORAGE_KEY, JSON.stringify(store));
+  }
+
   function buildQuiz(points, terms) {
     var hasPension = terms.some(function (term) {
       return /年金/.test(term);
@@ -557,6 +852,7 @@
     renderList(controller.instructorLayer, state.layers.instructor);
     renderList(controller.examLayer, state.layers.exam);
     renderList(controller.reviewLayer, state.layers.review);
+    populateMaterialForm(controller);
     renderList(controller.pointList, state.points);
     controller.detailText.textContent = buildDetail(state.points, terms, state.subjectTemplate);
     controller.teacherText.textContent = buildTeacherExplanation(state.points, terms);
@@ -673,6 +969,8 @@
         layers: state.layers,
         quiz: state.quiz,
         answers: state.answers,
+        registeredMaterialId: state.registeredMaterialId || "",
+        registeredAt: state.registeredAt || "",
         updatedAt: new Date().toISOString()
       });
       localStorage.setItem(VIDEO_DRAFT_STORAGE_KEY, JSON.stringify(drafts.slice(0, 10)));
@@ -764,17 +1062,28 @@
   }
 
   function markRegistered(controller) {
+    var now;
+    var result;
     if (!controller.state) {
       return;
     }
-    if (controller.state.status !== "confirmed") {
+    if (controller.state.status !== "confirmed" && controller.state.status !== "registered") {
       setRegistrationStatus(controller, "正式登録の前に「確認済みにする」を押してください。要確認項目を残したまま正式登録しない設計です。", true);
       return;
     }
+    now = new Date().toISOString();
+    result = buildRegisteredMaterial(controller, now);
+    if (result.error) {
+      setRegistrationStatus(controller, result.error, true);
+      return;
+    }
+    saveRegisteredMaterial(result.material);
+    controller.state.registeredMaterialId = result.material.id;
+    controller.state.registeredAt = result.material.registeredAt;
     controller.state.status = "registered";
     renderDraftStatus(controller);
     saveDraft(controller);
-    setRegistrationStatus(controller, "正式登録として記録しました。β版では正式問題JSONへは書き込まず、明示操作の記録だけ保存します。", false);
+    setRegistrationStatus(controller, "正式登録済み教材JSONへ保存しました。正式問題JSONへは書き込んでいません。", false);
   }
 
   function clear(controller) {
@@ -800,6 +1109,21 @@
       controller.registrationStatus.hidden = true;
       controller.registrationStatus.textContent = "";
     }
+    [
+      controller.materialSubject,
+      controller.materialSystemName,
+      controller.materialSummary,
+      controller.materialProtectsWhom,
+      controller.materialWorkplaceScene,
+      controller.materialNewsScene,
+      controller.materialExamPoints,
+      controller.materialNumbers,
+      controller.materialVerifiedSources
+    ].forEach(function (field) {
+      if (field) {
+        field.value = "";
+      }
+    });
     controller.state = null;
     setStatus(controller, "", false);
   }
@@ -824,6 +1148,15 @@
       instructorLayer: byId("videoInstructorLayer"),
       examLayer: byId("videoExamLayer"),
       reviewLayer: byId("videoReviewLayer"),
+      materialSubject: byId("videoMaterialSubjectInput"),
+      materialSystemName: byId("videoMaterialSystemNameInput"),
+      materialSummary: byId("videoMaterialSummaryInput"),
+      materialProtectsWhom: byId("videoMaterialProtectsWhomInput"),
+      materialWorkplaceScene: byId("videoMaterialWorkplaceSceneInput"),
+      materialNewsScene: byId("videoMaterialNewsSceneInput"),
+      materialExamPoints: byId("videoMaterialExamPointsInput"),
+      materialNumbers: byId("videoMaterialNumbersInput"),
+      materialVerifiedSources: byId("videoMaterialVerifiedSourcesInput"),
       markConfirmedButton: byId("videoMarkConfirmedButton"),
       formalRegisterButton: byId("videoFormalRegisterButton"),
       registrationStatus: byId("videoRegistrationStatus"),
@@ -871,6 +1204,7 @@
   }
 
   global.SharoshiVideoLearningBeta = {
-    create: create
+    create: create,
+    exportRegisteredMaterials: exportRegisteredMaterials
   };
 }(window));
