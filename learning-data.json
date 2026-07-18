@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-15T10:09:21.127Z",
+  "updatedAt": "2026-07-18T17:07:07.777Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,7 +10,7 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-07-15T10:03:48.795Z",
+    "exportedAt": "2026-07-18T17:07:07.777Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -472,8 +472,8 @@
     "lastStudyDate": "2026-07-15",
     "lastStudyAt": "2026-07-15T09:43:09.609Z",
     "firekeeper": {
-      "lastShownDate": "",
-      "lastShownAt": "",
+      "lastShownDate": "2026-07-19",
+      "lastShownAt": "2026-07-18T17:07:03.929Z",
       "dismissedDate": "2026-07-15",
       "lastDismissedAt": "2026-07-15T09:43:09.609Z",
       "lastDismissReason": "answer",
@@ -667,8 +667,8 @@
       ],
       "lastStudyDate": "2026-07-15",
       "lastStudyAt": "2026-07-15T09:43:09.609Z",
-      "lastManualSyncAt": "2026-07-15T10:03:48.795Z",
-      "lastSavedAt": "2026-07-15T10:03:48.795Z",
+      "lastManualSyncAt": "2026-07-18T17:07:07.777Z",
+      "lastSavedAt": "2026-07-18T17:07:07.777Z",
       "lastQuestionId": "stage2-question-009",
       "recentQuestionIds": [
         "question-020",
@@ -853,8 +853,8 @@
         "stage5-question-051"
       ],
       "daily": {
-        "date": "2026-07-15",
-        "answers": 19
+        "date": "2026-07-19",
+        "answers": 0
       },
       "wrongReview": {
         "question-013": {
@@ -1259,8 +1259,8 @@
         }
       },
       "firekeeper": {
-        "lastShownDate": "",
-        "lastShownAt": "",
+        "lastShownDate": "2026-07-19",
+        "lastShownAt": "2026-07-18T17:07:03.929Z",
         "dismissedDate": "2026-07-15",
         "lastDismissedAt": "2026-07-15T09:43:09.609Z",
         "lastDismissReason": "answer",
