@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-18T17:07:07.777Z",
+  "updatedAt": "2026-07-18T22:43:22.946Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,7 +10,7 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-07-18T17:07:07.777Z",
+    "exportedAt": "2026-07-18T22:43:22.946Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -197,8 +197,8 @@
     "stageResults": {
       "1": {
         "total": 30,
-        "answerCount": 43,
-        "correctCount": 42,
+        "answerCount": 45,
+        "correctCount": 44,
         "accuracy": 98,
         "answeredQuestionIds": [
           "question-027",
@@ -237,8 +237,8 @@
       },
       "2": {
         "total": 30,
-        "answerCount": 45,
-        "correctCount": 43,
+        "answerCount": 49,
+        "correctCount": 47,
         "accuracy": 96,
         "answeredQuestionIds": [
           "stage2-question-016",
@@ -277,8 +277,8 @@
       },
       "3": {
         "total": 30,
-        "answerCount": 40,
-        "correctCount": 39,
+        "answerCount": 42,
+        "correctCount": 41,
         "accuracy": 98,
         "answeredQuestionIds": [
           "stage3-question-016",
@@ -317,8 +317,8 @@
       },
       "4": {
         "total": 12,
-        "answerCount": 20,
-        "correctCount": 20,
+        "answerCount": 22,
+        "correctCount": 22,
         "accuracy": 100,
         "answeredQuestionIds": [
           "stage4-question-010",
@@ -448,7 +448,13 @@
       "stage5-question-019",
       "stage5-question-062",
       "stage5-question-023",
-      "stage5-question-043"
+      "stage5-question-043",
+      "stage5-question-047",
+      "stage5-question-025",
+      "stage5-question-016",
+      "stage5-question-029",
+      "stage5-question-053",
+      "stage5-question-036"
     ],
     "guessedCorrectQuestionIds": [],
     "uncertainCorrectQuestionIds": [],
@@ -467,15 +473,15 @@
         "選択式対策 1問"
       ]
     },
-    "totalAnswered": 238,
-    "totalCorrect": 233,
-    "lastStudyDate": "2026-07-15",
-    "lastStudyAt": "2026-07-15T09:43:09.609Z",
+    "totalAnswered": 256,
+    "totalCorrect": 251,
+    "lastStudyDate": "2026-07-18",
+    "lastStudyAt": "2026-07-18T10:36:08.215Z",
     "firekeeper": {
-      "lastShownDate": "2026-07-19",
-      "lastShownAt": "2026-07-18T17:07:03.929Z",
-      "dismissedDate": "2026-07-15",
-      "lastDismissedAt": "2026-07-15T09:43:09.609Z",
+      "lastShownDate": "2026-07-18",
+      "lastShownAt": "2026-07-18T09:53:43.120Z",
+      "dismissedDate": "2026-07-18",
+      "lastDismissedAt": "2026-07-18T10:36:08.215Z",
       "lastDismissReason": "answer",
       "restRecords": []
     },
@@ -621,7 +627,13 @@
         "stage5-question-019",
         "stage5-question-062",
         "stage5-question-023",
-        "stage5-question-043"
+        "stage5-question-043",
+        "stage5-question-047",
+        "stage5-question-025",
+        "stage5-question-016",
+        "stage5-question-029",
+        "stage5-question-053",
+        "stage5-question-036"
       ],
       "unsureCorrectQuestionIds": [],
       "guessedCorrectQuestionIds": [],
@@ -656,8 +668,8 @@
       }
     },
     "progress": {
-      "totalAnswers": 238,
-      "correctAnswers": 233,
+      "totalAnswers": 256,
+      "correctAnswers": 251,
       "wrongQuestionIds": [
         "question-013",
         "stage2-question-004",
@@ -665,18 +677,18 @@
         "stage3-question-026",
         "stage5-question-013"
       ],
-      "lastStudyDate": "2026-07-15",
-      "lastStudyAt": "2026-07-15T09:43:09.609Z",
-      "lastManualSyncAt": "2026-07-18T17:07:07.777Z",
-      "lastSavedAt": "2026-07-18T17:07:07.777Z",
-      "lastQuestionId": "stage2-question-009",
+      "lastStudyDate": "2026-07-18",
+      "lastStudyAt": "2026-07-18T10:36:08.215Z",
+      "lastManualSyncAt": "2026-07-18T22:43:22.946Z",
+      "lastSavedAt": "2026-07-18T22:43:22.946Z",
+      "lastQuestionId": "question-025",
       "recentQuestionIds": [
-        "question-020",
-        "question-023",
-        "stage2-question-021",
-        "stage5-question-043",
-        "stage5-question-069",
-        "stage2-question-009"
+        "stage2-question-001",
+        "stage5-question-036",
+        "question-030",
+        "stage3-question-020",
+        "stage4-question-011",
+        "question-025"
       ],
       "seenQuestionIds": [
         "question-027",
@@ -880,8 +892,8 @@
       },
       "stageProgress": {
         "1": {
-          "answerCount": 43,
-          "correctCount": 42,
+          "answerCount": 45,
+          "correctCount": 44,
           "answeredQuestionIds": [
             "question-027",
             "question-004",
@@ -916,8 +928,8 @@
           ]
         },
         "2": {
-          "answerCount": 45,
-          "correctCount": 43,
+          "answerCount": 49,
+          "correctCount": 47,
           "answeredQuestionIds": [
             "stage2-question-016",
             "stage2-question-030",
@@ -952,8 +964,8 @@
           ]
         },
         "3": {
-          "answerCount": 40,
-          "correctCount": 39,
+          "answerCount": 42,
+          "correctCount": 41,
           "answeredQuestionIds": [
             "stage3-question-016",
             "stage3-question-018",
@@ -988,8 +1000,8 @@
           ]
         },
         "4": {
-          "answerCount": 20,
-          "correctCount": 20,
+          "answerCount": 22,
+          "correctCount": 22,
           "answeredQuestionIds": [
             "stage4-question-010",
             "stage4-question-003",
@@ -1224,7 +1236,13 @@
           "stage5-question-019",
           "stage5-question-062",
           "stage5-question-023",
-          "stage5-question-043"
+          "stage5-question-043",
+          "stage5-question-047",
+          "stage5-question-025",
+          "stage5-question-016",
+          "stage5-question-029",
+          "stage5-question-053",
+          "stage5-question-036"
         ],
         "unsureCorrectQuestionIds": [],
         "guessedCorrectQuestionIds": [],
@@ -1259,10 +1277,10 @@
         }
       },
       "firekeeper": {
-        "lastShownDate": "2026-07-19",
-        "lastShownAt": "2026-07-18T17:07:03.929Z",
-        "dismissedDate": "2026-07-15",
-        "lastDismissedAt": "2026-07-15T09:43:09.609Z",
+        "lastShownDate": "2026-07-18",
+        "lastShownAt": "2026-07-18T09:53:43.120Z",
+        "dismissedDate": "2026-07-18",
+        "lastDismissedAt": "2026-07-18T10:36:08.215Z",
         "lastDismissReason": "answer",
         "restRecords": []
       }
