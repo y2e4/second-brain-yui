@@ -216,6 +216,102 @@
       font-size: 14px;
     }
 
+    .difficulty-card {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      margin: 0 0 14px;
+      padding: 10px 12px;
+      background: rgba(245, 199, 98, 0.07);
+      border: 1px solid rgba(245, 199, 98, 0.2);
+      border-radius: 8px;
+    }
+
+    .difficulty-card-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .difficulty-card-copy {
+      min-width: 0;
+    }
+
+    .difficulty-card-label,
+    .difficulty-card-note {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .difficulty-card-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .difficulty-card-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .difficulty-card-level {
+      flex: 0 0 auto;
+      color: var(--gold);
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .difficulty-progress-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .difficulty-progress-item {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+      padding: 8px 9px;
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 7px;
+    }
+
+    .difficulty-progress-item span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .difficulty-progress-item strong {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .difficulty-rise-status {
+      margin: 0;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 390px) {
+      .difficulty-card-header {
+        align-items: flex-start;
+      }
+
+      .difficulty-progress-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .location-card {
       border-color: rgba(255, 197, 98, 0.46);
       background:
@@ -1744,10 +1840,10 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-12-video-cleanup-01</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-19-adaptive-difficulty-02</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-12-video-cleanup-01
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-19-adaptive-difficulty-02
 debug: loading</pre>
       </details>
     </header>
@@ -2062,6 +2158,26 @@ debug: loading</pre>
     <section class="panel" id="homeView" aria-labelledby="homeTitle">
       <h2 class="panel-title" id="homeTitle">学習モード</h2>
       <p class="panel-note">基礎用語から実戦総合演習まで、判断力を少しずつ積み上げます。</p>
+      <div class="difficulty-card" aria-live="polite">
+        <div class="difficulty-card-header">
+          <div class="difficulty-card-copy">
+            <span class="difficulty-card-label">現在の適応難易度</span>
+            <span class="difficulty-card-note" id="difficultyLevelNote">思考量に合う3問を準備しています。</span>
+          </div>
+          <strong class="difficulty-card-level" id="difficultyLevelLabel">1/5</strong>
+        </div>
+        <div class="difficulty-progress-grid">
+          <div class="difficulty-progress-item">
+            <span>完全理解セット</span>
+            <strong id="perfectSetStreakValue">0/2</strong>
+          </div>
+          <div class="difficulty-progress-item">
+            <span>難易度上昇まで</span>
+            <strong id="adaptiveSetsRemainingValue">あと2セット</strong>
+          </div>
+        </div>
+        <p class="difficulty-rise-status" id="adaptiveDifficultyStatus">3問すべてを理解して正解したセットが2回続くと上がります。</p>
+      </div>
       <div class="mode-actions">
         <button class="primary-button hero-learning-button" type="button" id="dailyButton">今日の3問</button>
         <button class="secondary-button" type="button" id="challengeButton">10問チャレンジ</button>
@@ -2105,6 +2221,7 @@ debug: loading</pre>
             <button class="reflection-button" type="button" data-reflection="understood">理解して正解</button>
             <button class="reflection-button" type="button" data-reflection="unsure">迷って正解</button>
             <button class="reflection-button" type="button" data-reflection="guessed">勘で正解</button>
+            <button class="reflection-button" type="button" data-reflection="ambiguous">曖昧だった</button>
             <button class="reflection-button" type="button" data-reflection="weak">苦手登録</button>
           </div>
           <p class="reflection-status" id="reflectionStatus" role="status" hidden></p>
@@ -2119,6 +2236,26 @@ debug: loading</pre>
       <h2 class="panel-title" id="resultTitle">3問終了</h2>
       <p class="result-score" id="resultScore"></p>
       <p class="panel-note" id="resultNote"></p>
+      <div class="difficulty-card" id="resultAdaptiveSummary" aria-live="polite" hidden>
+        <div class="difficulty-card-header">
+          <div class="difficulty-card-copy">
+            <span class="difficulty-card-label">現在の適応難易度</span>
+            <span class="difficulty-card-note" id="resultAdaptiveDifficultyNote"></span>
+          </div>
+          <strong class="difficulty-card-level" id="resultAdaptiveDifficulty">1/5</strong>
+        </div>
+        <div class="difficulty-progress-grid">
+          <div class="difficulty-progress-item">
+            <span>完全理解セット</span>
+            <strong id="resultAdaptiveStreak">0/2</strong>
+          </div>
+          <div class="difficulty-progress-item">
+            <span>今回の判定</span>
+            <strong id="resultAdaptiveVerdict">確認中</strong>
+          </div>
+        </div>
+        <p class="difficulty-rise-status" id="resultAdaptiveReason"></p>
+      </div>
       <div class="stage4-summary" id="stage4Summary" hidden></div>
       <div class="result-actions">
         <button class="primary-button" type="button" id="moreButton">さらに3問</button>
@@ -2158,10 +2295,10 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-12-video-cleanup-01</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-19-adaptive-difficulty-02</p>
   </main>
 
-  <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
+  <script src="qualification-os-common.js?v=20260719-adaptive-02"></script>
   <script src="sharoshi-teacher-mode.js?v=20260710-teacher-beta-01"></script>
   <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
   <script src="sharoshi-video-learning-beta.js?v=20260712-video-cleanup-01"></script>
@@ -2169,10 +2306,10 @@ debug: loading</pre>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-12-video-cleanup-01";
+      var BUILD_VERSION = "2026-07-19-adaptive-difficulty-02";
       var COMMON = window.QualificationOSCommon || {};
       var QUALIFICATION_NAMESPACE = "sharoshi";
-      var DATA_URL = "sharoshi-intro-questions.json?v=20260710-github-onetap-01";
+      var DATA_URL = "sharoshi-intro-questions.json?v=20260719-adaptive-02";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
       var GITHUB_SYNC_CONFIG_KEY = "sharoshiGithubSyncConfigV1";
@@ -2214,6 +2351,15 @@ debug: loading</pre>
       ];
       var CHOICE_LABELS = ["A", "B", "C", "D", "E"];
       var DEFAULT_CHOICE_IDS = ["a", "b", "c", "d", "e"];
+      var REASONING_DIFFICULTY_LEVELS = COMMON.REASONING_DIFFICULTY_LEVELS || [
+        { id: 1, level: 1, name: "知識", label: "知識", description: "用語・数字・単一条件を直接確認します。" },
+        { id: 2, level: 2, name: "比較", label: "比較", description: "似た制度や対象者、期間の違いを比べます。" },
+        { id: 3, level: 3, name: "判断", label: "判断", description: "複数条件と原則・例外から適用を判断します。" },
+        { id: 4, level: 4, name: "事例", label: "事例", description: "具体的な事例で3つ以上の条件と制度を整理します。" },
+        { id: 5, level: 5, name: "複合", label: "複合", description: "複数制度・例外・時系列を2段階以上で判断します。" }
+      ];
+      var ADAPTIVE_SET_SIZE = Number(COMMON.ADAPTIVE_SET_SIZE) || 3;
+      var ADAPTIVE_STREAK_REQUIRED = Number(COMMON.ADAPTIVE_STREAK_REQUIRED) || 2;
       var STAGE_OFFICIAL_LINKS = [
         {
           label: "社会保険労務士試験オフィシャルサイト",
@@ -2288,12 +2434,16 @@ debug: loading</pre>
       ];
       var questionBank = [];
       var questionById = {};
+      var adaptiveDifficultyCatalog = null;
+      var adaptiveQuestionBank = [];
+      var lastAdaptiveShortage = null;
       var terms = [];
       var termMap = {};
       var stages = FALLBACK_STAGES.slice();
       var lastProgressReadAt = "";
       var lastProgressReadError = "";
       var lastStoredProgressSnapshot = null;
+      var adaptiveDifficultyNeedsStageMigration = false;
       var progress = readProgress();
       var stageFivePriorityMode = readStageFivePriorityMode();
       var syncStatusTimer = 0;
@@ -2306,6 +2456,11 @@ debug: loading</pre>
       var sessionStageId = null;
       var sessionStageDetail = null;
       var sessionStageFullMode = false;
+      var sessionDifficultyRecorded = false;
+      var sessionDifficultyAdjustment = null;
+      var sessionAnswerResults = [];
+      var sessionAdaptiveEligible = false;
+      var sessionRequestedReasoningLevel = null;
       var answered = false;
       var termsRendered = false;
       var dailyEmberIndex = 0;
@@ -2341,6 +2496,11 @@ debug: loading</pre>
       var homeStatus = document.getElementById("homeStatus");
       var dailyButton = document.getElementById("dailyButton");
       var challengeButton = document.getElementById("challengeButton");
+      var difficultyLevelLabel = document.getElementById("difficultyLevelLabel");
+      var difficultyLevelNote = document.getElementById("difficultyLevelNote");
+      var perfectSetStreakValue = document.getElementById("perfectSetStreakValue");
+      var adaptiveSetsRemainingValue = document.getElementById("adaptiveSetsRemainingValue");
+      var adaptiveDifficultyStatus = document.getElementById("adaptiveDifficultyStatus");
       var stageChallengeButton = document.getElementById("stageChallengeButton");
       var stageFullChallengeButton = document.getElementById("stageFullChallengeButton");
       var githubOwnerInput = document.getElementById("githubOwnerInput");
@@ -2411,6 +2571,12 @@ debug: loading</pre>
       var resultTitle = document.getElementById("resultTitle");
       var resultScore = document.getElementById("resultScore");
       var resultNote = document.getElementById("resultNote");
+      var resultAdaptiveSummary = document.getElementById("resultAdaptiveSummary");
+      var resultAdaptiveDifficulty = document.getElementById("resultAdaptiveDifficulty");
+      var resultAdaptiveDifficultyNote = document.getElementById("resultAdaptiveDifficultyNote");
+      var resultAdaptiveStreak = document.getElementById("resultAdaptiveStreak");
+      var resultAdaptiveVerdict = document.getElementById("resultAdaptiveVerdict");
+      var resultAdaptiveReason = document.getElementById("resultAdaptiveReason");
       var stage4Summary = document.getElementById("stage4Summary");
       var resultStatus = document.getElementById("resultStatus");
       var moreButton = document.getElementById("moreButton");
@@ -2568,6 +2734,80 @@ debug: loading</pre>
         }
       }
 
+      function getReasoningLevelDefinition(level) {
+        if (COMMON.getReasoningLevelDefinition) {
+          return COMMON.getReasoningLevelDefinition(level);
+        }
+        var normalized = Math.max(1, Math.min(5, Number(level) || 1));
+        return REASONING_DIFFICULTY_LEVELS[normalized - 1];
+      }
+
+      function normalizeAdaptiveDifficulty(raw, options) {
+        if (COMMON.normalizeAdaptiveDifficulty) {
+          return COMMON.normalizeAdaptiveDifficulty(raw, options);
+        }
+        var safe = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+        var initialLevel = Math.max(1, Math.min(5, Number(options && options.initialReasoningLevel) || 1));
+        return {
+          version: 2,
+          reasoningLevel: Math.max(1, Math.min(5, Number(safe.reasoningLevel) || initialLevel)),
+          perfectSetStreak: Math.max(0, Math.min(2, Number(safe.perfectSetStreak) || 0)),
+          recentSets: Array.isArray(safe.recentSets) ? safe.recentSets.slice(-10) : [],
+          lastSet: safe.lastSet && typeof safe.lastSet === "object" ? safe.lastSet : null,
+          lastIncreasedAt: typeof safe.lastIncreasedAt === "string" ? safe.lastIncreasedAt : "",
+          lastEvaluatedAt: typeof safe.lastEvaluatedAt === "string" ? safe.lastEvaluatedAt : "",
+          lastAdjustment: typeof safe.lastAdjustment === "string" ? safe.lastAdjustment : ""
+        };
+      }
+
+      function getInitialReasoningLevelForStage(stageLevel) {
+        if (stageLevel >= STAGE_FOUR_ID) {
+          return 3;
+        }
+        if (stageLevel >= STAGE_TWO_ID) {
+          return 2;
+        }
+        return 1;
+      }
+
+      function initializeAdaptiveDifficultyForCurrentStage() {
+        var currentStageId = getCurrentStageId();
+        var stored = progress.adaptiveDifficulty;
+        var initialLevel = currentStageId === STAGE_FIVE_ID
+          ? 3
+          : getInitialReasoningLevelForStage(currentStageId);
+
+        progress.adaptiveDifficulty = normalizeAdaptiveDifficulty(stored, {
+          initialReasoningLevel: adaptiveDifficultyNeedsStageMigration
+            ? initialLevel
+            : Number(stored && stored.reasoningLevel) || initialLevel
+        });
+        if (adaptiveDifficultyNeedsStageMigration) {
+          progress.adaptiveDifficulty.reasoningLevel = initialLevel;
+          progress.adaptiveDifficulty.perfectSetStreak = 0;
+          progress.adaptiveDifficulty.recentSets = [];
+          progress.adaptiveDifficulty.lastSet = null;
+        }
+        adaptiveDifficultyNeedsStageMigration = false;
+      }
+
+      function recordAdaptiveDifficultySet() {
+        var recorded;
+        if (!sessionAdaptiveEligible || sessionQuestions.length !== ADAPTIVE_SET_SIZE ||
+            !COMMON.recordAdaptiveDifficultySet) {
+          return null;
+        }
+
+        recorded = COMMON.recordAdaptiveDifficultySet(progress.adaptiveDifficulty, {
+          mode: sessionMode,
+          stageLevel: getCurrentStageId(),
+          answers: sessionAnswerResults,
+          completedAt: new Date().toISOString()
+        });
+        progress.adaptiveDifficulty = recorded.state;
+        return recorded.result;
+      }
+
       function defaultProgress() {
         return {
           totalAnswers: 0,
@@ -2618,6 +2858,7 @@ debug: loading</pre>
             understoodCorrectQuestionIds: [],
             unsureCorrectQuestionIds: [],
             guessedCorrectQuestionIds: [],
+            ambiguousQuestionIds: [],
             weakQuestionIds: [],
             achieved: false,
             lastRun: null
@@ -2628,10 +2869,12 @@ debug: loading</pre>
             understoodCorrectQuestionIds: [],
             unsureCorrectQuestionIds: [],
             guessedCorrectQuestionIds: [],
+            ambiguousQuestionIds: [],
             weakQuestionIds: [],
             achieved: false,
             lastRun: null
           },
+          adaptiveDifficulty: normalizeAdaptiveDifficulty(null),
           firekeeper: {
             lastShownDate: "",
             lastShownAt: "",
@@ -2690,6 +2933,7 @@ debug: loading</pre>
           understoodCorrectIds: uniqueStrings(raw.understoodCorrectIds),
           unsureCorrectIds: uniqueStrings(raw.unsureCorrectIds),
           guessedCorrectIds: uniqueStrings(raw.guessedCorrectIds),
+          ambiguousIds: uniqueStrings(raw.ambiguousIds),
           weakIds: uniqueStrings(raw.weakIds),
           pensionCorrectCount: Math.max(0, Number(raw.pensionCorrectCount) || 0),
           laborCorrectCount: Math.max(0, Number(raw.laborCorrectCount) || 0),
@@ -2718,6 +2962,9 @@ debug: loading</pre>
           ),
           guessedCorrectQuestionIds: uniqueStrings(
             uniqueStrings(safe.guessedCorrectQuestionIds).concat(lastRun ? lastRun.guessedCorrectIds : [])
+          ),
+          ambiguousQuestionIds: uniqueStrings(
+            uniqueStrings(safe.ambiguousQuestionIds).concat(lastRun ? lastRun.ambiguousIds : [])
           ),
           weakQuestionIds: uniqueStrings(
             uniqueStrings(safe.weakQuestionIds).concat(lastRun ? lastRun.weakIds : [])
@@ -2807,6 +3054,7 @@ debug: loading</pre>
             lastStoredProgressSnapshot = JSON.parse(JSON.stringify(stored));
           }
           if (!stored || typeof stored !== "object") {
+            adaptiveDifficultyNeedsStageMigration = true;
             return base;
           }
 
@@ -2835,9 +3083,14 @@ debug: loading</pre>
           base.stageProgress = normalizeStoredStageProgress(stored.stageProgress, base);
           base.stage4 = normalizeStage4Progress(stored.stage4);
           base.stage5 = normalizeStage4Progress(stored.stage5);
+          adaptiveDifficultyNeedsStageMigration = !stored.adaptiveDifficulty ||
+            Number(stored.adaptiveDifficulty.version) < 2 ||
+            !Number(stored.adaptiveDifficulty.reasoningLevel);
+          base.adaptiveDifficulty = normalizeAdaptiveDifficulty(stored.adaptiveDifficulty);
           base.firekeeper = normalizeFirekeeperProgress(stored.firekeeper);
         } catch (error) {
           lastProgressReadError = error && error.message ? error.message : "保存データの読み込みに失敗しました。";
+          adaptiveDifficultyNeedsStageMigration = true;
           return base;
         }
 
@@ -3430,6 +3683,7 @@ debug: loading</pre>
           ? lastStoredProgressSnapshot.stage4
           : null;
         var normalizedStage4 = normalizeStage4Progress(progress.stage4);
+        var adaptiveState = normalizeAdaptiveDifficulty(progress.adaptiveDifficulty);
         var syncMeta = readGitHubSyncMeta();
         var syncSnapshot = getSyncStateSnapshot();
         var info = {
@@ -3442,6 +3696,25 @@ debug: loading</pre>
           sessionQuestionIds: sessionQuestions.map(function (question) {
             return question.id;
           }),
+          sessionSelectedReasoningLevels: sessionQuestions.map(function (question) {
+            return Number(question.adaptiveReasoningLevel) || null;
+          }),
+          adaptiveDifficulty: adaptiveState,
+          perfectSetStreak: adaptiveState.perfectSetStreak,
+          lastSetPerfect: Boolean(adaptiveState.lastSet && adaptiveState.lastSet.perfect),
+          sessionAdaptiveEligible: sessionAdaptiveEligible,
+          sessionRequestedReasoningLevel: sessionRequestedReasoningLevel,
+          sessionAnswerCount: sessionAnswerResults.length,
+          sessionUnderstoodCount: sessionAnswerResults.filter(function (answer) {
+            return answer.correct &&
+              answer.understanding === "understood" &&
+              !answer.unsure &&
+              !answer.guessed &&
+              !answer.ambiguous &&
+              !answer.weak;
+          }).length,
+          sessionAnswerResults: sessionAnswerResults,
+          lastAdaptiveShortage: lastAdaptiveShortage,
           stage5PriorityMode: stageFivePriorityMode,
           stage5PriorityIds: STAGE_FIVE_PRIORITY_IDS,
           stage5PriorityIdsFound: priorityQuestions.map(function (question) {
@@ -3494,6 +3767,13 @@ debug: loading</pre>
             "buildVersion: " + BUILD_VERSION,
             "dataUrl: " + DATA_URL,
             "currentQuestionId: " + info.currentQuestionId,
+            "adaptiveDifficulty: " + info.adaptiveDifficulty.reasoningLevel + "/5",
+            "perfectSetStreak: " + info.perfectSetStreak + "/2",
+            "sessionAdaptiveEligible: " + info.sessionAdaptiveEligible,
+            "sessionRequestedReasoningLevel: " + info.sessionRequestedReasoningLevel,
+            "sessionAnswerCount: " + info.sessionAnswerCount,
+            "sessionUnderstoodCount: " + info.sessionUnderstoodCount,
+            "selectedReasoningLevels: " + info.sessionSelectedReasoningLevels.join(", "),
             "currentStage: " + info.currentStage,
             "highestUnlockedStage: " + info.highestUnlockedStage,
             "stage5PriorityMode: " + info.stage5PriorityMode,
@@ -3902,6 +4182,9 @@ debug: loading</pre>
           guessedCorrectQuestionIds: uniqueStrings(
             localSafe.guessedCorrectQuestionIds.concat(remoteSafe.guessedCorrectQuestionIds)
           ),
+          ambiguousQuestionIds: uniqueStrings(
+            localSafe.ambiguousQuestionIds.concat(remoteSafe.ambiguousQuestionIds)
+          ),
           weakQuestionIds: uniqueStrings(localSafe.weakQuestionIds.concat(remoteSafe.weakQuestionIds)),
           achieved: localSafe.achieved === true || remoteSafe.achieved === true,
           lastRun: remoteRunTime > localRunTime ? remoteSafe.lastRun : localSafe.lastRun
@@ -3923,6 +4206,24 @@ debug: loading</pre>
         return remoteDate > localDate
           ? { date: remoteDate, answers: Math.max(0, Number(remoteSafe.answers) || 0) }
           : { date: localDate, answers: Math.max(0, Number(localSafe.answers) || 0) };
+      }
+
+      function mergeAdaptiveDifficultySafely(localValue, remoteValue) {
+        var localSafe = normalizeAdaptiveDifficulty(localValue);
+        var remoteSafe = normalizeAdaptiveDifficulty(remoteValue);
+        var localTime = getTimeValue(localSafe.lastEvaluatedAt || localSafe.lastIncreasedAt);
+        var remoteTime = getTimeValue(remoteSafe.lastEvaluatedAt || remoteSafe.lastIncreasedAt);
+
+        if (remoteTime > localTime) {
+          return remoteSafe;
+        }
+        if (localTime > remoteTime) {
+          return localSafe;
+        }
+        if (remoteSafe.reasoningLevel !== localSafe.reasoningLevel) {
+          return remoteSafe.reasoningLevel > localSafe.reasoningLevel ? remoteSafe : localSafe;
+        }
+        return remoteSafe.perfectSetStreak > localSafe.perfectSetStreak ? remoteSafe : localSafe;
       }
 
       function buildSafeMergeCandidate(localPayload, remotePayload) {
@@ -3960,6 +4261,10 @@ debug: loading</pre>
         });
         merged.stage4 = mergeStageDetailSafely(localProgress.stage4, remoteProgress.stage4);
         merged.stage5 = mergeStageDetailSafely(localProgress.stage5, remoteProgress.stage5);
+        merged.adaptiveDifficulty = mergeAdaptiveDifficultySafely(
+          localProgress.adaptiveDifficulty,
+          remoteProgress.adaptiveDifficulty
+        );
         merged.firekeeper = normalizeFirekeeperProgress(
           getTimeValue(remoteProgress.lastStudyAt) > getTimeValue(localProgress.lastStudyAt)
             ? remoteProgress.firekeeper
@@ -4408,6 +4713,7 @@ debug: loading</pre>
             .concat(collectStageDetailIds("wrongQuestionIds"))
             .concat(collectStageDetailIds("unsureCorrectQuestionIds"))
             .concat(collectStageDetailIds("guessedCorrectQuestionIds"))
+            .concat(collectStageDetailIds("ambiguousQuestionIds"))
             .concat(collectStageDetailIds("weakQuestionIds"))
         );
       }
@@ -4491,6 +4797,7 @@ debug: loading</pre>
           understoodCorrectQuestionIds: collectStageDetailIds("understoodCorrectQuestionIds"),
           guessedCorrectQuestionIds: collectStageDetailIds("guessedCorrectQuestionIds"),
           uncertainCorrectQuestionIds: collectStageDetailIds("unsureCorrectQuestionIds"),
+          ambiguousQuestionIds: collectStageDetailIds("ambiguousQuestionIds"),
           weakQuestionIds: collectStageDetailIds("weakQuestionIds"),
           weakCategories: buildWeakCategorySummary(),
           totalAnswered: progress.totalAnswers,
@@ -4590,6 +4897,9 @@ debug: loading</pre>
         base.stageProgress = normalizeStoredStageProgress(stageProgressSource, base);
         base.stage4 = normalizeStage4Progress(source.stage4 || payload.stage4Result);
         base.stage5 = normalizeStage4Progress(source.stage5 || payload.stage5Result);
+        base.adaptiveDifficulty = normalizeAdaptiveDifficulty(
+          source.adaptiveDifficulty || payload.adaptiveDifficulty
+        );
         base.firekeeper = normalizeFirekeeperProgress(source.firekeeper || payload.firekeeper);
 
         return base;
@@ -4653,9 +4963,31 @@ debug: loading</pre>
 
       function applyImportedProgressPayload(payload, reason) {
         var syncAt = new Date().toISOString();
+        var currentAdaptiveDifficulty = normalizeAdaptiveDifficulty(progress.adaptiveDifficulty);
+        var extracted = extractLearningPayload(payload);
+        var source = isPlainObject(extracted) && isPlainObject(extracted.progress)
+          ? extracted.progress
+          : extracted;
+        var importedAdaptiveDifficulty = isPlainObject(source) && isPlainObject(source.adaptiveDifficulty)
+          ? source.adaptiveDifficulty
+          : isPlainObject(extracted) && isPlainObject(extracted.adaptiveDifficulty)
+            ? extracted.adaptiveDifficulty
+            : null;
 
         progress = normalizeImportedProgressPayload(payload);
         normalizeStageProgress();
+        if (!importedAdaptiveDifficulty) {
+          if (currentAdaptiveDifficulty.lastSet || currentAdaptiveDifficulty.lastEvaluatedAt) {
+            progress.adaptiveDifficulty = currentAdaptiveDifficulty;
+          } else {
+            adaptiveDifficultyNeedsStageMigration = true;
+            initializeAdaptiveDifficultyForCurrentStage();
+          }
+        } else if (Number(importedAdaptiveDifficulty.version) < 2 ||
+            !Number(importedAdaptiveDifficulty.reasoningLevel)) {
+          adaptiveDifficultyNeedsStageMigration = true;
+          initializeAdaptiveDifficultyForCurrentStage();
+        }
         progress.lastManualSyncAt = syncAt;
         saveProgress({ savedAt: syncAt });
         updateStats();
@@ -5348,6 +5680,44 @@ debug: loading</pre>
         renderLockedStages();
       }
 
+      function renderAdaptiveDifficultyStatus() {
+        var state = normalizeAdaptiveDifficulty(progress.adaptiveDifficulty);
+        var level = getReasoningLevelDefinition(state.reasoningLevel);
+        var levelName = level.label || level.name || "思考量" + state.reasoningLevel;
+        var remaining = state.reasoningLevel >= 5
+          ? 0
+          : Math.max(0, ADAPTIVE_STREAK_REQUIRED - state.perfectSetStreak);
+
+        progress.adaptiveDifficulty = state;
+        if (difficultyLevelLabel) {
+          difficultyLevelLabel.textContent = state.reasoningLevel + "/5";
+        }
+        if (difficultyLevelNote) {
+          difficultyLevelNote.textContent = levelName + "：" + level.description;
+        }
+        if (perfectSetStreakValue) {
+          perfectSetStreakValue.textContent =
+            state.perfectSetStreak + "/" + ADAPTIVE_STREAK_REQUIRED;
+        }
+        if (adaptiveSetsRemainingValue) {
+          adaptiveSetsRemainingValue.textContent = state.reasoningLevel >= 5
+            ? "最高難易度"
+            : "あと" + remaining + "セット";
+        }
+        if (adaptiveDifficultyStatus) {
+          if (state.lastIncreasedAt && state.lastIncreasedAt === state.lastEvaluatedAt) {
+            adaptiveDifficultyStatus.textContent =
+              "難易度が上がりました。次の問題から、より多くの条件判断が必要になります。";
+          } else if (state.reasoningLevel >= 5) {
+            adaptiveDifficultyStatus.textContent =
+              "最高難易度です。複数制度・例外・時系列を組み合わせて判断します。";
+          } else {
+            adaptiveDifficultyStatus.textContent =
+              "あと" + remaining + "セット完全理解で難易度が上がります。";
+          }
+        }
+      }
+
       function updateStats() {
         var playableQuestions = getPlayableQuestions();
         var playableQuestionIds = {};
@@ -5371,6 +5741,7 @@ debug: loading</pre>
         unseenCount.textContent = String(Math.max(0, playableQuestions.length - seenPlayableCount));
         wrongCount.textContent = String(getReviewFocusQuestionIds().length);
         mistakesButton.textContent = "間違えた問題 (" + progress.wrongQuestionIds.length + ")";
+        renderAdaptiveDifficultyStatus();
         updateSyncInfo();
         updateStageCard();
         currentStageId = getCurrentStageId();
@@ -5442,8 +5813,106 @@ debug: loading</pre>
         });
       }
 
+      function buildAdaptiveQuestionBank(data) {
+        var output = [];
+        var usedIds = {};
+        var catalog = data && data.adaptiveDifficultyCatalog;
+
+        Object.keys(catalog.levels || {}).sort().forEach(function (levelKey) {
+          var level = Number(levelKey);
+          (catalog.levels[levelKey] || []).forEach(function (entry, index) {
+            var source = questionById[entry.questionId];
+            var clone;
+            if (!source) {
+              throw new Error("適応難易度の問題IDを解決できません: " + entry.questionId);
+            }
+            if (usedIds[entry.questionId]) {
+              throw new Error("適応難易度の問題IDが重複しています: " + entry.questionId);
+            }
+            usedIds[entry.questionId] = true;
+            clone = Object.assign({}, source);
+            clone.adaptiveReasoningLevel = level;
+            clone.reasoningLevel = level;
+            clone.reasoningProfile = entry.reasoningProfile;
+            clone.adaptiveTopic = entry.topic || source.title || source.term || getCategoryText(source);
+            clone.equivalenceKey = entry.equivalenceKey || entry.questionId;
+            clone.adaptiveOrder = level + "-" + String(index + 1).padStart(2, "0");
+            clone.adaptiveSourceStage = getQuestionStage(source);
+            output.push(clone);
+          });
+        });
+
+        return output;
+      }
+
+      function selectAdaptiveDailyQuestions(limit) {
+        var state = normalizeAdaptiveDifficulty(progress.adaptiveDifficulty);
+        var currentStageId = getCurrentStageId();
+        var lastSetAnswers = state.lastSet && Array.isArray(state.lastSet.answers)
+          ? state.lastSet.answers
+          : [];
+        var recentIds = lastSetAnswers.map(function (answer) {
+          return answer.questionId;
+        });
+        var recentEquivalenceKeys = recentIds.map(function (questionId) {
+          var question = adaptiveQuestionBank.find(function (candidate) {
+            return candidate.id === questionId;
+          });
+          return question && (question.equivalenceKey || question.id);
+        }).filter(Boolean);
+        var eligible = adaptiveQuestionBank.filter(function (question) {
+          return Number(question.adaptiveSourceStage) <= currentStageId;
+        });
+        var selection = COMMON.selectAdaptiveReasoningQuestions
+          ? COMMON.selectAdaptiveReasoningQuestions(eligible, {
+            reasoningLevel: state.reasoningLevel,
+            count: limit,
+            recentQuestionIds: recentIds,
+            recentEquivalenceKeys: recentEquivalenceKeys,
+            seenQuestionIds: progress.seenQuestionIds
+          })
+          : { questions: [], shortage: {
+            requestedLevel: state.reasoningLevel,
+            requestedCount: limit,
+            availableCount: 0,
+            missingCount: limit
+          } };
+
+        if (selection.shortage) {
+          selection.shortage.topics = adaptiveQuestionBank.filter(function (question) {
+            return Number(question.adaptiveReasoningLevel) === state.reasoningLevel;
+          }).map(function (question) {
+            return question.adaptiveTopic;
+          }).filter(function (topic, index, topics) {
+            return topic && topics.indexOf(topic) === index;
+          });
+          selection.questions = [];
+        }
+        sessionRequestedReasoningLevel = state.reasoningLevel;
+        return selection;
+      }
+
+      function formatAdaptiveShortage(shortage) {
+        var topics = shortage && Array.isArray(shortage.topics)
+          ? shortage.topics.join("、")
+          : "";
+        return "適応難易度" + shortage.requestedLevel + "の問題が" +
+          shortage.requestedCount + "問必要ですが、現在の学習範囲では" +
+          shortage.availableCount + "問です。不足は" + shortage.missingCount + "問です。" +
+          (topics ? " 対象論点: " + topics : "");
+      }
+
       function selectDailyQuestions(limit) {
         var selected = [];
+        var adaptiveSelection;
+
+        if (sessionMode === "daily" && Number(limit) === ADAPTIVE_SET_SIZE) {
+          adaptiveSelection = selectAdaptiveDailyQuestions(limit);
+          lastAdaptiveShortage = adaptiveSelection.shortage || null;
+          return adaptiveSelection.questions;
+        }
+
+        lastAdaptiveShortage = null;
         var pool = getPlayableQuestions();
         var recent = progress.recentQuestionIds;
         var seen = progress.seenQuestionIds;
@@ -5572,6 +6041,7 @@ debug: loading</pre>
           understoodCorrectIds: [],
           unsureCorrectIds: [],
           guessedCorrectIds: [],
+          ambiguousIds: [],
           weakIds: [],
           pensionAnsweredCount: 0,
           pensionCorrectCount: 0,
@@ -5594,6 +6064,11 @@ debug: loading</pre>
         sessionStageId = null;
         sessionStageDetail = null;
         sessionStageFullMode = false;
+        sessionAnswerResults = [];
+        sessionAdaptiveEligible = false;
+        sessionDifficultyRecorded = false;
+        sessionDifficultyAdjustment = null;
+        sessionRequestedReasoningLevel = null;
         if (mode === "mistakes") {
           sessionQuestions = selectMistakeQuestions(limit);
         } else if (mode === "firekeeper") {
@@ -5616,6 +6091,11 @@ debug: loading</pre>
         }
         sessionIndex = 0;
         sessionCorrect = 0;
+        sessionAdaptiveEligible = mode === "daily" &&
+          sessionQuestions.length === ADAPTIVE_SET_SIZE &&
+          sessionQuestions.every(function (question) {
+            return Number(question.adaptiveReasoningLevel) === sessionRequestedReasoningLevel;
+          });
 
         if (!sessionQuestions.length) {
           showOnly("home");
@@ -5623,6 +6103,8 @@ debug: loading</pre>
             showStatus(homeStatus, "直前の問題は連続出題しません。少し時間を空けて復習しましょう。");
           } else if (mode === "mistakes") {
             showStatus(homeStatus, "間違えた問題はまだありません。");
+          } else if (lastAdaptiveShortage) {
+            showStatus(homeStatus, formatAdaptiveShortage(lastAdaptiveShortage));
           } else {
             showStatus(homeStatus, "問題を読み込めませんでした。");
           }
@@ -5802,6 +6284,9 @@ debug: loading</pre>
           getCategoryText(question) + (questionTypeLabel ? " / " + questionTypeLabel : "");
         if (questionDebugLine) {
           questionDebugLine.textContent = "questionId: " + question.id +
+            (question.adaptiveReasoningLevel
+              ? " / adaptiveDifficulty: " + question.adaptiveReasoningLevel
+              : "") +
             (STAGE_FIVE_PRIORITY_IDS.indexOf(question.id) !== -1 ? " / 高難度化確認対象" : "");
         }
         questionText.textContent = getDisplayQuestionText(question);
@@ -5939,6 +6424,7 @@ debug: loading</pre>
           detail.understoodCorrectQuestionIds = withoutId(detail.understoodCorrectQuestionIds, question.id);
           detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
           detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
+          detail.ambiguousQuestionIds = withoutId(detail.ambiguousQuestionIds, question.id);
         }
         progress[detailKey] = detail;
 
@@ -5976,32 +6462,115 @@ debug: loading</pre>
         }
       }
 
+      function getSessionAnswerResult(questionId) {
+        return sessionAnswerResults.find(function (result) {
+          return result.questionId === questionId;
+        }) || null;
+      }
+
+      function updateSessionUnderstanding(question, type) {
+        var result = getSessionAnswerResult(question.id);
+        if (!result) {
+          return;
+        }
+
+        result.understanding = result.correct ? "" : "incorrect";
+        result.unsure = false;
+        result.guessed = false;
+        result.ambiguous = false;
+        result.weak = false;
+        if (type === "understood" && result.correct) {
+          result.understanding = "understood";
+        } else if (type === "unsure" && result.correct) {
+          result.understanding = "unsure";
+          result.unsure = true;
+        } else if (type === "guessed" && result.correct) {
+          result.understanding = "guess";
+          result.guessed = true;
+        } else if (type === "ambiguous") {
+          result.ambiguous = true;
+        } else if (type === "weak") {
+          result.weak = true;
+        }
+      }
+
+      function clearStageReflection(detail, questionId) {
+        if (!detail) {
+          return;
+        }
+        detail.understoodCorrectQuestionIds = withoutId(detail.understoodCorrectQuestionIds, questionId);
+        detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, questionId);
+        detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, questionId);
+        detail.ambiguousQuestionIds = withoutId(detail.ambiguousQuestionIds, questionId);
+        detail.weakQuestionIds = withoutId(detail.weakQuestionIds, questionId);
+        ["understoodCorrectIds", "unsureCorrectIds", "guessedCorrectIds", "ambiguousIds", "weakIds"].forEach(function (key) {
+          removeSessionStage4Id(key, questionId);
+        });
+      }
+
+      function applyStageReflection(detail, questionId, type) {
+        clearStageReflection(detail, questionId);
+        if (!detail) {
+          return;
+        }
+        if (type === "understood") {
+          detail.understoodCorrectQuestionIds = addUniqueId(detail.understoodCorrectQuestionIds, questionId);
+          addSessionStage4Id("understoodCorrectIds", questionId);
+        } else if (type === "unsure") {
+          detail.unsureCorrectQuestionIds = addUniqueId(detail.unsureCorrectQuestionIds, questionId);
+          addSessionStage4Id("unsureCorrectIds", questionId);
+        } else if (type === "guessed") {
+          detail.guessedCorrectQuestionIds = addUniqueId(detail.guessedCorrectQuestionIds, questionId);
+          addSessionStage4Id("guessedCorrectIds", questionId);
+        } else if (type === "ambiguous") {
+          detail.ambiguousQuestionIds = addUniqueId(detail.ambiguousQuestionIds, questionId);
+          addSessionStage4Id("ambiguousIds", questionId);
+        } else if (type === "weak") {
+          detail.weakQuestionIds = addUniqueId(detail.weakQuestionIds, questionId);
+          addSessionStage4Id("weakIds", questionId);
+        }
+      }
+
       function updateReflectionButtons(question) {
         var stageId = getQuestionStage(question);
         var detail = ensureStageDetailProgress(stageId);
-        var isCorrect = detail &&
-          detail.correctQuestionIds.indexOf(question.id) !== -1;
+        var sessionResult = getSessionAnswerResult(question.id);
+        var isCorrect = sessionResult
+          ? sessionResult.correct
+          : Boolean(detail && detail.correctQuestionIds.indexOf(question.id) !== -1);
         var buttons = reflectionActions.querySelectorAll(".reflection-button");
 
         buttons.forEach(function (button) {
           var type = button.getAttribute("data-reflection");
           var active = false;
 
-          button.hidden = type === "understood" && stageId !== STAGE_FIVE_ID;
+          button.hidden = false;
           if (type === "understood") {
-            active = detail.understoodCorrectQuestionIds.indexOf(question.id) !== -1;
+            active = sessionResult
+              ? sessionResult.understanding === "understood"
+              : Boolean(detail && detail.understoodCorrectQuestionIds.indexOf(question.id) !== -1);
             button.disabled = !isCorrect;
           } else if (type === "unsure") {
-            active = detail.unsureCorrectQuestionIds.indexOf(question.id) !== -1;
+            active = sessionResult
+              ? sessionResult.unsure
+              : Boolean(detail && detail.unsureCorrectQuestionIds.indexOf(question.id) !== -1);
             button.disabled = !isCorrect;
           } else if (type === "guessed") {
-            active = detail.guessedCorrectQuestionIds.indexOf(question.id) !== -1;
+            active = sessionResult
+              ? sessionResult.guessed
+              : Boolean(detail && detail.guessedCorrectQuestionIds.indexOf(question.id) !== -1);
             button.disabled = !isCorrect;
+          } else if (type === "ambiguous") {
+            active = sessionResult
+              ? sessionResult.ambiguous
+              : Boolean(detail && detail.ambiguousQuestionIds.indexOf(question.id) !== -1);
+            button.disabled = false;
           } else if (type === "weak") {
-            active = detail.weakQuestionIds.indexOf(question.id) !== -1;
+            active = sessionResult
+              ? sessionResult.weak
+              : Boolean(detail && detail.weakQuestionIds.indexOf(question.id) !== -1);
             button.disabled = false;
           }
-
           button.classList.toggle("is-active", active);
         });
       }
@@ -6015,59 +6584,41 @@ debug: loading</pre>
         var stageId;
         var detailKey;
         var detail;
+        var sessionResult;
         var isCorrect;
+        var messages = {
+          understood: "理解して正解として記録しました。",
+          unsure: "迷って正解として記録しました。",
+          guessed: "勘で正解として記録しました。",
+          ambiguous: "曖昧だった問題として記録しました。",
+          weak: "苦手問題として記録しました。"
+        };
 
         if (!question) {
           return;
         }
-
         stageId = getQuestionStage(question);
         detailKey = getStageDetailKey(stageId);
-        if (!detailKey) {
-          return;
-        }
-
-        detail = ensureStageDetailProgress(stageId);
-        isCorrect = detail.correctQuestionIds.indexOf(question.id) !== -1;
+        detail = detailKey ? ensureStageDetailProgress(stageId) : null;
+        sessionResult = getSessionAnswerResult(question.id);
+        isCorrect = sessionResult
+          ? sessionResult.correct
+          : Boolean(detail && detail.correctQuestionIds.indexOf(question.id) !== -1);
 
         if ((type === "understood" || type === "unsure" || type === "guessed") && !isCorrect) {
           showReflectionStatus("理解して正解・迷って正解・勘で正解は、正解した問題だけに記録できます。");
           return;
         }
 
-        if (type === "understood") {
-          detail.understoodCorrectQuestionIds = addUniqueId(detail.understoodCorrectQuestionIds, question.id);
-          detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
-          detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
-          addSessionStage4Id("understoodCorrectIds", question.id);
-          removeSessionStage4Id("unsureCorrectIds", question.id);
-          removeSessionStage4Id("guessedCorrectIds", question.id);
-          showReflectionStatus("理解して正解として記録しました。");
-        } else if (type === "unsure") {
-          detail.understoodCorrectQuestionIds = withoutId(detail.understoodCorrectQuestionIds, question.id);
-          detail.unsureCorrectQuestionIds = addUniqueId(detail.unsureCorrectQuestionIds, question.id);
-          detail.guessedCorrectQuestionIds = withoutId(detail.guessedCorrectQuestionIds, question.id);
-          removeSessionStage4Id("understoodCorrectIds", question.id);
-          addSessionStage4Id("unsureCorrectIds", question.id);
-          removeSessionStage4Id("guessedCorrectIds", question.id);
-          showReflectionStatus("迷って正解として記録しました。");
-        } else if (type === "guessed") {
-          detail.understoodCorrectQuestionIds = withoutId(detail.understoodCorrectQuestionIds, question.id);
-          detail.guessedCorrectQuestionIds = addUniqueId(detail.guessedCorrectQuestionIds, question.id);
-          detail.unsureCorrectQuestionIds = withoutId(detail.unsureCorrectQuestionIds, question.id);
-          removeSessionStage4Id("understoodCorrectIds", question.id);
-          addSessionStage4Id("guessedCorrectIds", question.id);
-          removeSessionStage4Id("unsureCorrectIds", question.id);
-          showReflectionStatus("勘で正解として記録しました。");
-        } else if (type === "weak") {
-          detail.weakQuestionIds = addUniqueId(detail.weakQuestionIds, question.id);
-          addSessionStage4Id("weakIds", question.id);
-          showReflectionStatus("苦手問題として記録しました。");
+        updateSessionUnderstanding(question, type);
+        applyStageReflection(detail, question.id, type);
+        if (detailKey && detail) {
+          progress[detailKey] = detail;
         }
-
-        progress[detailKey] = detail;
+        showReflectionStatus(messages[type] || "");
         saveProgress();
         updateReflectionButtons(question);
+        renderDebugInfo();
         renderTeacherMode(question, {
           trigger: type,
           isCorrect: isCorrect,
@@ -6078,7 +6629,25 @@ debug: loading</pre>
       }
 
       function recordAnswer(question, isCorrect) {
+        var detail;
+        var sessionResult;
+
         normalizeDailyCount();
+        sessionAnswerResults = sessionAnswerResults.filter(function (result) {
+          return result.questionId !== question.id;
+        });
+        sessionResult = {
+          questionId: question.id,
+          correct: isCorrect,
+          understanding: isCorrect ? "understood" : "incorrect",
+          unsure: false,
+          guessed: false,
+          ambiguous: false,
+          weak: false,
+          reasoningLevel: Number(question.adaptiveReasoningLevel) ||
+            normalizeAdaptiveDifficulty(progress.adaptiveDifficulty).reasoningLevel
+        };
+        sessionAnswerResults.push(sessionResult);
         progress.totalAnswers += 1;
         progress.daily.answers += 1;
         markLearningActivity(sessionMode === "firekeeper" ? "firekeeper_one_question" : "answer", { save: false });
@@ -6089,6 +6658,8 @@ debug: loading</pre>
         if (isCorrect) {
           progress.correctAnswers += 1;
           recordCorrectReview(question.id);
+          detail = ensureStageDetailProgress(getQuestionStage(question));
+          applyStageReflection(detail, question.id, "understood");
         } else {
           recordWrong(question.id);
         }
@@ -6096,6 +6667,7 @@ debug: loading</pre>
         saveProgress();
         updateStats();
         logProgressDebug("answer saved");
+        return sessionResult;
       }
 
       function getWeakCategories() {
@@ -6206,13 +6778,17 @@ debug: loading</pre>
 
       function renderStage4Reflection(question) {
         var stageId = getQuestionStage(question);
-        if (!getStageDetailKey(stageId)) {
+        if (!getStageDetailKey(stageId) && !sessionAdaptiveEligible) {
           stage4Reflection.hidden = true;
           return;
         }
 
-        ensureStageDetailProgress(stageId);
-        reflectionTitle.textContent = "ステージ" + stageId + "の理解記録";
+        if (getStageDetailKey(stageId)) {
+          ensureStageDetailProgress(stageId);
+        }
+        reflectionTitle.textContent = sessionAdaptiveEligible
+          ? "適応難易度の理解記録"
+          : "ステージ" + stageId + "の理解記録";
         stage4Reflection.hidden = false;
         showReflectionStatus("");
         updateReflectionButtons(question);
@@ -6235,6 +6811,7 @@ debug: loading</pre>
         var hadTeacherPriorWrong = hasTeacherPriorWrong(question);
         var hadTeacherLowUnderstanding = hasTeacherLowUnderstanding(question);
         var hadTeacherMastered = isTeacherMastered(question);
+        var sessionResult;
 
         buttons.forEach(function (button) {
           button.disabled = true;
@@ -6272,8 +6849,17 @@ debug: loading</pre>
         if (isCorrect) {
           sessionCorrect += 1;
         }
-        recordAnswer(question, isCorrect);
+        sessionResult = recordAnswer(question, isCorrect);
         renderStage4Reflection(question);
+        if (sessionAdaptiveEligible && sessionResult &&
+            sessionResult.correct &&
+            sessionResult.understanding === "understood" &&
+            !sessionResult.unsure &&
+            !sessionResult.guessed &&
+            !sessionResult.ambiguous &&
+            !sessionResult.weak) {
+          showReflectionStatus("理解して正解として記録しました");
+        }
         renderTeacherMode(question, {
           trigger: isCorrect
             ? hadTeacherMastered ? "understood" : hadTeacherLowUnderstanding ? "low-understanding" : "answered"
@@ -6309,6 +6895,7 @@ debug: loading</pre>
           understoodCorrectIds: uniqueStrings(detail.understoodCorrectIds),
           unsureCorrectIds: uniqueStrings(detail.unsureCorrectIds),
           guessedCorrectIds: uniqueStrings(detail.guessedCorrectIds),
+          ambiguousIds: uniqueStrings(detail.ambiguousIds),
           weakIds: uniqueStrings(detail.weakIds),
           pensionAnsweredCount: detail.pensionAnsweredCount,
           pensionCorrectCount: detail.pensionCorrectCount,
@@ -6350,6 +6937,7 @@ debug: loading</pre>
           "理解して正解の問題ID: " + formatIdList(run.understoodCorrectIds),
           "迷って正解の問題ID: " + formatIdList(run.unsureCorrectIds),
           "勘で正解の問題ID: " + formatIdList(run.guessedCorrectIds),
+          "曖昧だった問題ID: " + formatIdList(run.ambiguousIds),
           "不正解の問題ID: " + formatIdList(run.wrongIds),
           "苦手登録した問題ID: " + formatIdList(run.weakIds),
           "年金カテゴリの正答数: " + run.pensionCorrectCount,
@@ -6377,14 +6965,59 @@ debug: loading</pre>
         stage4Summary.textContent = lines.join("\n");
       }
 
+      function renderAdaptiveResultSummary() {
+        var state = normalizeAdaptiveDifficulty(progress.adaptiveDifficulty);
+        var level = getReasoningLevelDefinition(state.reasoningLevel);
+        var levelName = level.label || level.name || "思考量" + state.reasoningLevel;
+        var result = sessionDifficultyAdjustment;
+
+        resultAdaptiveSummary.hidden = !result;
+        if (!result) {
+          return;
+        }
+        resultAdaptiveDifficulty.textContent = state.reasoningLevel + "/5";
+        resultAdaptiveDifficultyNote.textContent = levelName + "：" + level.description;
+        resultAdaptiveStreak.textContent =
+          state.perfectSetStreak + "/" + ADAPTIVE_STREAK_REQUIRED;
+
+        if (result.changed) {
+          resultAdaptiveVerdict.textContent = "難易度アップ";
+          resultAdaptiveReason.textContent =
+            "難易度が上がりました。次の問題から、より多くの条件判断が必要になります。";
+        } else if (result.perfect) {
+          resultAdaptiveVerdict.textContent = "完全理解";
+          resultAdaptiveReason.textContent =
+            "完全理解セットとして記録しました。あと" +
+            result.remainingSets + "セット完全理解で難易度が上がります。";
+        } else {
+          resultAdaptiveVerdict.textContent = "今回は維持";
+          resultAdaptiveReason.textContent =
+            "完全理解セットにならなかった理由：" +
+            (result.reasons && result.reasons.length
+              ? result.reasons.join("、")
+              : "回答状態を確認できませんでした") +
+            "。適応難易度は下げず、現在の難易度を維持します。";
+        }
+      }
+
       function showResult() {
         var stageRun = null;
+
+        if (!sessionDifficultyRecorded) {
+          sessionDifficultyAdjustment = recordAdaptiveDifficultySet();
+          sessionDifficultyRecorded = true;
+          if (sessionDifficultyAdjustment) {
+            saveProgress();
+            renderAdaptiveDifficultyStatus();
+          }
+        }
 
         showOnly("result");
         resultTitle.textContent = sessionQuestions.length + "問終了";
         resultScore.textContent = sessionCorrect + " / " + sessionQuestions.length + " 正解";
         stage4Summary.hidden = true;
         stage4Summary.textContent = "";
+        resultAdaptiveSummary.hidden = true;
         moreButton.hidden = false;
         reviewButton.hidden = false;
         finishButton.hidden = false;
@@ -6418,6 +7051,7 @@ debug: loading</pre>
               ? "似た制度をまとめて見比べるほど、混同がほどけていきます。"
               : "今日の小さな積み重ねが、本格学習の土台になります。";
         }
+        renderAdaptiveResultSummary();
         reviewButton.disabled = progress.wrongQuestionIds.length === 0;
         showStatus(resultStatus, progress.wrongQuestionIds.length === 0
           ? "現在、復習待ちの問題はありません。"
@@ -6477,6 +7111,91 @@ debug: loading</pre>
         termsRendered = true;
       }
 
+      function validateAdaptiveDifficultyData(data) {
+        var catalog = data && data.adaptiveDifficultyCatalog;
+        var sourceById = {};
+        var usedIds = {};
+        var averages = {};
+
+        if (!catalog || Number(catalog.setSize) !== ADAPTIVE_SET_SIZE ||
+            Number(catalog.perfectSetsToIncrease) !== ADAPTIVE_STREAK_REQUIRED ||
+            !catalog.levels || typeof catalog.levels !== "object") {
+          throw new Error("適応難易度の3問セット定義が不足しています。");
+        }
+        (data.questions || []).forEach(function (question) {
+          sourceById[question.id] = question;
+        });
+
+        [1, 2, 3, 4, 5].forEach(function (level) {
+          var entries = catalog.levels[String(level)];
+          var totals = {
+            conditionCount: 0,
+            comparisonCount: 0,
+            judgmentSteps: 0
+          };
+          if (!Array.isArray(entries) || entries.length < ADAPTIVE_SET_SIZE * ADAPTIVE_STREAK_REQUIRED) {
+            throw new Error("適応難易度" + level + "は、重複なし2セット分の6問が必要です。");
+          }
+          entries.forEach(function (entry) {
+            var source = sourceById[entry.questionId];
+            var profile = entry.reasoningProfile;
+            var factorCount = profile && Array.isArray(profile.factors) ? profile.factors.length : 0;
+
+            if (!source || usedIds[entry.questionId]) {
+              throw new Error("適応難易度の問題IDが不足または重複しています: " + entry.questionId);
+            }
+            usedIds[entry.questionId] = true;
+            if (!profile || Number(profile.level) !== level ||
+                profile.requiresQualificationKnowledge !== true) {
+              throw new Error("適応難易度" + level + "の思考量データが不足しています: " + entry.questionId);
+            }
+            if (level === 1 && (Number(profile.conditionCount) > 1 ||
+                Number(profile.comparisonCount) > 0 ||
+                Number(profile.judgmentSteps) > 1)) {
+              throw new Error("難易度1が直接知識確認の範囲を超えています: " + entry.questionId);
+            }
+            if (level === 2 && (Number(profile.conditionCount) < 1 ||
+                Number(profile.conditionCount) > 2 ||
+                Number(profile.comparisonCount) < 1)) {
+              throw new Error("難易度2の比較条件が不足しています: " + entry.questionId);
+            }
+            if (level === 3 && (Number(profile.conditionCount) < 2 ||
+                Number(profile.judgmentSteps) < 2 ||
+                factorCount < 2)) {
+              throw new Error("難易度3の条件判断が不足しています: " + entry.questionId);
+            }
+            if (level === 4 && (Number(profile.conditionCount) < 3 ||
+                Number(profile.judgmentSteps) < 3 ||
+                factorCount < 2 ||
+                profile.requiresOptionComparison !== true ||
+                profile.hasDistractorInformation !== true)) {
+              throw new Error("難易度4の事例判断条件が不足しています: " + entry.questionId);
+            }
+            if (level === 5 && (Number(profile.conditionCount) < 3 ||
+                Number(profile.judgmentSteps) < 3 ||
+                Number(profile.knowledgeCount) < 2 ||
+                factorCount < 3)) {
+              throw new Error("難易度5の複合判断条件が不足しています: " + entry.questionId);
+            }
+            Object.keys(totals).forEach(function (key) {
+              totals[key] += Number(profile[key]) || 0;
+            });
+          });
+          averages[level] = {
+            conditionCount: totals.conditionCount / entries.length,
+            comparisonCount: totals.comparisonCount / entries.length,
+            judgmentSteps: totals.judgmentSteps / entries.length
+          };
+        });
+
+        ["conditionCount", "comparisonCount", "judgmentSteps"].forEach(function (key) {
+          if (averages[4][key] <= averages[3][key]) {
+            throw new Error("難易度3から4で" + key + "が増えていません。");
+          }
+        });
+        adaptiveDifficultyCatalog = catalog;
+      }
+
       function validateData(data) {
         if (!data || !Array.isArray(data.terms) || !Array.isArray(data.questions) ||
             !Array.isArray(data.stages)) {
@@ -6488,6 +7207,7 @@ debug: loading</pre>
         if (data.stages.length !== STAGE_TOTAL) {
           throw new Error("ステージ定義は5件必要です。");
         }
+        validateAdaptiveDifficultyData(data);
 
         data.stages.forEach(function (stage) {
           if (typeof stage.id !== "number" || stage.id < 1 || stage.id > STAGE_TOTAL ||
@@ -6757,7 +7477,9 @@ debug: loading</pre>
           questionBank.forEach(function (question) {
             questionById[question.id] = question;
           });
+          adaptiveQuestionBank = buildAdaptiveQuestionBank(data);
 	          normalizeStageProgress();
+	          initializeAdaptiveDifficultyForCurrentStage();
 	          saveProgress({ preserveSavedAt: true });
 	          updateStats();
 	          logProgressDebug("data loaded");

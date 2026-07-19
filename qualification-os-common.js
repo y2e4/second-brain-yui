@@ -22,6 +22,46 @@
     { id: 4, name: "判断", difficulty: "判断問題" },
     { id: 5, name: "実戦", difficulty: "本試験レベル" }
   ];
+  var REASONING_DIFFICULTY_LEVELS = [
+    {
+      id: 1,
+      level: 1,
+      name: "知識",
+      label: "知識",
+      description: "用語・数字・単一条件を直接確認します。"
+    },
+    {
+      id: 2,
+      level: 2,
+      name: "比較",
+      label: "比較",
+      description: "似た制度や対象者、期間の違いを比べます。"
+    },
+    {
+      id: 3,
+      level: 3,
+      name: "判断",
+      label: "判断",
+      description: "複数条件と原則・例外から適用を判断します。"
+    },
+    {
+      id: 4,
+      level: 4,
+      name: "事例",
+      label: "事例",
+      description: "具体的な事例で3つ以上の条件と制度を整理します。"
+    },
+    {
+      id: 5,
+      level: 5,
+      name: "複合",
+      label: "複合",
+      description: "複数制度・例外・時系列を2段階以上で判断します。"
+    }
+  ];
+  var ADAPTIVE_SET_SIZE = 3;
+  var ADAPTIVE_STREAK_REQUIRED = 2;
+  var ADAPTIVE_HISTORY_LIMIT = 10;
 
   function isPlainObject(value) {
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -440,9 +480,225 @@
     return envelope;
   }
 
+  function clampNumber(value, minimum, maximum, fallback) {
+    var number = Number(value);
+    if (!Number.isFinite(number)) {
+      number = Number(fallback);
+    }
+    return Math.max(minimum, Math.min(maximum, number));
+  }
+
+  function getReasoningLevelDefinition(level) {
+    return REASONING_DIFFICULTY_LEVELS[
+      clampNumber(level, 1, REASONING_DIFFICULTY_LEVELS.length, 1) - 1
+    ];
+  }
+
+  function normalizeAdaptiveAnswer(raw) {
+    var safe = isPlainObject(raw) ? raw : {};
+    return {
+      questionId: typeof safe.questionId === "string" ? safe.questionId : "",
+      correct: safe.correct === true,
+      understanding: typeof safe.understanding === "string" ? safe.understanding : "",
+      unsure: safe.unsure === true,
+      guessed: safe.guessed === true,
+      ambiguous: safe.ambiguous === true,
+      weak: safe.weak === true,
+      reasoningLevel: clampNumber(safe.reasoningLevel, 1, 5, 1)
+    };
+  }
+
+  function normalizeAdaptiveSet(raw) {
+    var safe = isPlainObject(raw) ? raw : {};
+    var answers = (Array.isArray(safe.answers) ? safe.answers : []).map(normalizeAdaptiveAnswer);
+    return {
+      mode: typeof safe.mode === "string" ? safe.mode : "daily",
+      stageLevel: clampNumber(safe.stageLevel, 1, 5, 1),
+      reasoningLevel: clampNumber(safe.reasoningLevel, 1, 5, 1),
+      answers: answers,
+      perfect: safe.perfect === true,
+      completedAt: typeof safe.completedAt === "string" ? safe.completedAt : ""
+    };
+  }
+
+  function normalizeAdaptiveDifficulty(raw, options) {
+    var safe = isPlainObject(raw) ? raw : {};
+    var settings = isPlainObject(options) ? options : {};
+    var initialLevel = clampNumber(settings.initialReasoningLevel, 1, 5, 1);
+    var recentSets = (Array.isArray(safe.recentSets) ? safe.recentSets : [])
+      .map(normalizeAdaptiveSet)
+      .slice(-ADAPTIVE_HISTORY_LIMIT);
+
+    return {
+      version: 2,
+      reasoningLevel: clampNumber(safe.reasoningLevel, 1, 5, initialLevel),
+      perfectSetStreak: clampNumber(safe.perfectSetStreak, 0, ADAPTIVE_STREAK_REQUIRED, 0),
+      recentSets: recentSets,
+      lastSet: isPlainObject(safe.lastSet) ? normalizeAdaptiveSet(safe.lastSet) : null,
+      lastIncreasedAt: typeof safe.lastIncreasedAt === "string" ? safe.lastIncreasedAt : "",
+      lastEvaluatedAt: typeof safe.lastEvaluatedAt === "string" ? safe.lastEvaluatedAt : "",
+      lastAdjustment: typeof safe.lastAdjustment === "string" ? safe.lastAdjustment : ""
+    };
+  }
+
+  function isPerfectUnderstandingSet(answers) {
+    var normalized = (Array.isArray(answers) ? answers : []).map(normalizeAdaptiveAnswer);
+    return normalized.length === ADAPTIVE_SET_SIZE && normalized.every(function (answer) {
+      return answer.correct &&
+        answer.understanding === "understood" &&
+        !answer.unsure &&
+        !answer.guessed &&
+        !answer.ambiguous &&
+        !answer.weak;
+    });
+  }
+
+  function getImperfectSetReasons(answers) {
+    var normalized = (Array.isArray(answers) ? answers : []).map(normalizeAdaptiveAnswer);
+    var reasons = [];
+
+    if (normalized.length !== ADAPTIVE_SET_SIZE) {
+      reasons.push("3問の回答記録がそろっていません");
+    }
+    if (normalized.some(function (answer) { return !answer.correct; })) {
+      reasons.push("不正解がありました");
+    }
+    if (normalized.some(function (answer) { return answer.unsure; })) {
+      reasons.push("迷って正解がありました");
+    }
+    if (normalized.some(function (answer) { return answer.guessed; })) {
+      reasons.push("勘で正解がありました");
+    }
+    if (normalized.some(function (answer) { return answer.ambiguous; })) {
+      reasons.push("曖昧だった問題がありました");
+    }
+    if (normalized.some(function (answer) { return answer.weak; })) {
+      reasons.push("苦手登録がありました");
+    }
+    if (normalized.some(function (answer) {
+      return answer.correct && answer.understanding !== "understood";
+    }) && !reasons.some(function (reason) {
+      return /迷って|勘で|曖昧|苦手/.test(reason);
+    })) {
+      reasons.push("理解状態を確認できない正解がありました");
+    }
+    return reasons;
+  }
+
+  function recordAdaptiveDifficultySet(rawState, rawSet) {
+    var state = normalizeAdaptiveDifficulty(rawState);
+    var safeSet = isPlainObject(rawSet) ? rawSet : {};
+    var completedAt = typeof safeSet.completedAt === "string" && safeSet.completedAt
+      ? safeSet.completedAt
+      : new Date().toISOString();
+    var answers = (Array.isArray(safeSet.answers) ? safeSet.answers : [])
+      .map(normalizeAdaptiveAnswer);
+    var previousLevel = state.reasoningLevel;
+    var perfect = isPerfectUnderstandingSet(answers);
+    var changed = false;
+    var snapshot;
+
+    if (perfect) {
+      state.perfectSetStreak += 1;
+      if (state.perfectSetStreak >= ADAPTIVE_STREAK_REQUIRED && state.reasoningLevel < 5) {
+        state.reasoningLevel += 1;
+        state.perfectSetStreak = 0;
+        state.lastIncreasedAt = completedAt;
+        changed = true;
+      }
+    } else {
+      state.perfectSetStreak = 0;
+    }
+
+    snapshot = {
+      mode: typeof safeSet.mode === "string" ? safeSet.mode : "daily",
+      stageLevel: clampNumber(safeSet.stageLevel, 1, 5, 1),
+      reasoningLevel: previousLevel,
+      answers: answers,
+      perfect: perfect,
+      completedAt: completedAt
+    };
+    state.lastSet = snapshot;
+    state.recentSets = state.recentSets.concat([snapshot]).slice(-ADAPTIVE_HISTORY_LIMIT);
+    state.lastEvaluatedAt = completedAt;
+    state.lastAdjustment = changed ? "increase" : perfect ? "perfect-set" : "not-perfect";
+
+    return {
+      state: state,
+      result: {
+        perfect: perfect,
+        changed: changed,
+        previousLevel: previousLevel,
+        currentLevel: state.reasoningLevel,
+        perfectSetStreak: state.perfectSetStreak,
+        remainingSets: state.reasoningLevel >= 5
+          ? 0
+          : Math.max(0, ADAPTIVE_STREAK_REQUIRED - state.perfectSetStreak),
+        reasons: perfect ? [] : getImperfectSetReasons(answers),
+        completedAt: completedAt
+      }
+    };
+  }
+
+  function selectAdaptiveReasoningQuestions(pool, options) {
+    var settings = isPlainObject(options) ? options : {};
+    var requestedLevel = clampNumber(settings.reasoningLevel, 1, 5, 1);
+    var requestedCount = Math.max(1, Number(settings.count) || ADAPTIVE_SET_SIZE);
+    var recentIds = uniqueStrings(settings.recentQuestionIds);
+    var recentEquivalenceKeys = uniqueStrings(settings.recentEquivalenceKeys);
+    var seenIds = uniqueStrings(settings.seenQuestionIds);
+    var exactLevel = (Array.isArray(pool) ? pool : []).filter(function (question) {
+      return Number(question && (
+        question.adaptiveReasoningLevel ||
+        question.reasoningLevel ||
+        question.reasoningProfile && question.reasoningProfile.level
+      )) === requestedLevel;
+    });
+    var preferred = exactLevel.filter(function (question) {
+      return recentIds.indexOf(question.id) === -1 &&
+        recentEquivalenceKeys.indexOf(question.equivalenceKey || question.id) === -1;
+    });
+    var deferred = exactLevel.filter(function (question) {
+      return preferred.indexOf(question) === -1;
+    });
+
+    function sortQuestions(list) {
+      return list.slice().sort(function (left, right) {
+        var leftSeen = seenIds.indexOf(left.id) !== -1;
+        var rightSeen = seenIds.indexOf(right.id) !== -1;
+        if (leftSeen !== rightSeen) {
+          return leftSeen ? 1 : -1;
+        }
+        return String(left.adaptiveOrder || left.id || "").localeCompare(
+          String(right.adaptiveOrder || right.id || "")
+        );
+      });
+    }
+
+    if (exactLevel.length < requestedCount) {
+      return {
+        questions: [],
+        shortage: {
+          requestedLevel: requestedLevel,
+          requestedCount: requestedCount,
+          availableCount: exactLevel.length,
+          missingCount: requestedCount - exactLevel.length
+        }
+      };
+    }
+
+    return {
+      questions: sortQuestions(preferred).concat(sortQuestions(deferred)).slice(0, requestedCount),
+      shortage: null
+    };
+  }
+
   global.QualificationOSCommon = {
     STAGES: STAGES,
     DEFAULT_EMBERS: DEFAULT_EMBERS,
+    REASONING_DIFFICULTY_LEVELS: REASONING_DIFFICULTY_LEVELS,
+    ADAPTIVE_SET_SIZE: ADAPTIVE_SET_SIZE,
+    ADAPTIVE_STREAK_REQUIRED: ADAPTIVE_STREAK_REQUIRED,
     cloneJson: cloneJson,
     uniqueStrings: uniqueStrings,
     todayKey: todayKey,
@@ -454,6 +710,12 @@
     looksLikeLearningPayload: looksLikeLearningPayload,
     extractLearningPayload: extractLearningPayload,
     getPayloadUpdatedAt: getPayloadUpdatedAt,
-    upsertLearningPayload: upsertLearningPayload
+    upsertLearningPayload: upsertLearningPayload,
+    getReasoningLevelDefinition: getReasoningLevelDefinition,
+    normalizeAdaptiveDifficulty: normalizeAdaptiveDifficulty,
+    isPerfectUnderstandingSet: isPerfectUnderstandingSet,
+    getImperfectSetReasons: getImperfectSetReasons,
+    recordAdaptiveDifficultySet: recordAdaptiveDifficultySet,
+    selectAdaptiveReasoningQuestions: selectAdaptiveReasoningQuestions
   };
 }(window));

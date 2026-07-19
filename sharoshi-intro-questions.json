@@ -56,6 +56,474 @@
       "completionWeakAccuracy": 70
     }
   ],
+  "adaptiveDifficultyCatalog": {
+    "version": 1,
+    "setSize": 3,
+    "perfectSetsToIncrease": 2,
+    "rule": "3問すべてを理解して正解したセットが2回連続したときだけ、次の3問から思考量を1段階上げる。",
+    "levels": {
+      "1": [
+        {
+          "questionId": "question-001",
+          "topic": "労働者",
+          "equivalenceKey": "worker-definition",
+          "reasoningProfile": {
+            "level": 1,
+            "conditionCount": 0,
+            "comparisonCount": 0,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["target_difference"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "question-002",
+          "topic": "使用者",
+          "equivalenceKey": "employer-definition",
+          "reasoningProfile": {
+            "level": 1,
+            "conditionCount": 0,
+            "comparisonCount": 0,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["target_difference"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "question-003",
+          "topic": "労働契約",
+          "equivalenceKey": "labor-contract-definition",
+          "reasoningProfile": {
+            "level": 1,
+            "conditionCount": 0,
+            "comparisonCount": 0,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["basic_requirement"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "question-004",
+          "topic": "就業規則",
+          "equivalenceKey": "work-rules-definition",
+          "reasoningProfile": {
+            "level": 1,
+            "conditionCount": 0,
+            "comparisonCount": 0,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["basic_requirement"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "question-005",
+          "topic": "賃金",
+          "equivalenceKey": "wage-definition",
+          "reasoningProfile": {
+            "level": 1,
+            "conditionCount": 0,
+            "comparisonCount": 0,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["basic_requirement"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "question-006",
+          "topic": "法定労働時間",
+          "equivalenceKey": "statutory-working-hours",
+          "reasoningProfile": {
+            "level": 1,
+            "conditionCount": 1,
+            "comparisonCount": 0,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["number_or_period"],
+            "requiresQualificationKnowledge": true
+          }
+        }
+      ],
+      "2": [
+        {
+          "questionId": "stage2-question-001",
+          "topic": "所定労働時間と法定労働時間",
+          "equivalenceKey": "scheduled-vs-statutory-hours",
+          "reasoningProfile": {
+            "level": 2,
+            "conditionCount": 1,
+            "comparisonCount": 1,
+            "judgmentSteps": 1,
+            "knowledgeCount": 2,
+            "factors": ["similar_system_comparison", "number_or_period"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage2-question-003",
+          "topic": "6時間と休憩",
+          "equivalenceKey": "break-six-hours-boundary",
+          "reasoningProfile": {
+            "level": 2,
+            "conditionCount": 1,
+            "comparisonCount": 1,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["number_or_period"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage2-question-004",
+          "topic": "8時間と休憩",
+          "equivalenceKey": "break-eight-hours-boundary",
+          "reasoningProfile": {
+            "level": 2,
+            "conditionCount": 1,
+            "comparisonCount": 1,
+            "judgmentSteps": 1,
+            "knowledgeCount": 1,
+            "factors": ["number_or_period"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage2-question-006",
+          "topic": "36協定と上限",
+          "equivalenceKey": "article-36-limits",
+          "reasoningProfile": {
+            "level": 2,
+            "conditionCount": 1,
+            "comparisonCount": 1,
+            "judgmentSteps": 1,
+            "knowledgeCount": 2,
+            "factors": ["principle_exception", "similar_system_comparison"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage2-question-010",
+          "topic": "年5日時季指定義務",
+          "equivalenceKey": "paid-leave-five-days-target",
+          "reasoningProfile": {
+            "level": 2,
+            "conditionCount": 2,
+            "comparisonCount": 1,
+            "judgmentSteps": 1,
+            "knowledgeCount": 2,
+            "factors": ["target_difference", "number_or_period"],
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage2-question-011",
+          "topic": "管理監督者と年休",
+          "equivalenceKey": "manager-paid-leave-duty",
+          "reasoningProfile": {
+            "level": 2,
+            "conditionCount": 2,
+            "comparisonCount": 1,
+            "judgmentSteps": 1,
+            "knowledgeCount": 2,
+            "factors": ["target_difference", "principle_exception"],
+            "requiresQualificationKnowledge": true
+          }
+        }
+      ],
+      "3": [
+        {
+          "questionId": "stage4-question-002",
+          "topic": "退職と未払い残業代",
+          "equivalenceKey": "retirement-unpaid-overtime",
+          "reasoningProfile": {
+            "level": 3,
+            "conditionCount": 3,
+            "comparisonCount": 2,
+            "judgmentSteps": 2,
+            "knowledgeCount": 2,
+            "factors": ["multiple_conditions", "timeline", "similar_system_comparison"],
+            "requiresOptionComparison": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage4-question-003",
+          "topic": "業務災害と健康保険",
+          "equivalenceKey": "work-injury-workers-comp-vs-health",
+          "reasoningProfile": {
+            "level": 3,
+            "conditionCount": 3,
+            "comparisonCount": 2,
+            "judgmentSteps": 2,
+            "knowledgeCount": 2,
+            "factors": ["multiple_conditions", "principle_exception", "case_application"],
+            "requiresOptionComparison": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage4-question-004",
+          "topic": "健康保険と厚生年金",
+          "equivalenceKey": "health-pension-enrollment",
+          "reasoningProfile": {
+            "level": 3,
+            "conditionCount": 3,
+            "comparisonCount": 2,
+            "judgmentSteps": 2,
+            "knowledgeCount": 2,
+            "factors": ["multiple_conditions", "similar_system_comparison", "case_application"],
+            "requiresOptionComparison": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage4-question-005",
+          "topic": "退職後の年金種別",
+          "equivalenceKey": "employee-to-self-employed-pension",
+          "reasoningProfile": {
+            "level": 3,
+            "conditionCount": 3,
+            "comparisonCount": 2,
+            "judgmentSteps": 2,
+            "knowledgeCount": 2,
+            "factors": ["multiple_conditions", "target_difference", "case_application"],
+            "requiresOptionComparison": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage4-question-006",
+          "topic": "障害年金と初診日",
+          "equivalenceKey": "disability-pension-first-visit",
+          "reasoningProfile": {
+            "level": 3,
+            "conditionCount": 3,
+            "comparisonCount": 2,
+            "judgmentSteps": 2,
+            "knowledgeCount": 2,
+            "factors": ["multiple_conditions", "timeline", "case_application"],
+            "requiresOptionComparison": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage4-question-008",
+          "topic": "年休権と時季変更",
+          "equivalenceKey": "paid-leave-right-vs-timing-change",
+          "reasoningProfile": {
+            "level": 3,
+            "conditionCount": 3,
+            "comparisonCount": 2,
+            "judgmentSteps": 2,
+            "knowledgeCount": 2,
+            "factors": ["multiple_conditions", "principle_exception", "case_application"],
+            "requiresOptionComparison": true,
+            "requiresQualificationKnowledge": true
+          }
+        }
+      ],
+      "4": [
+        {
+          "questionId": "stage4-question-001",
+          "topic": "長時間労働と健康管理",
+          "equivalenceKey": "long-hours-agreement-pay-health",
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 5,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-014",
+          "topic": "法定時間外労働と休憩",
+          "equivalenceKey": "overtime-break-article36",
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 6,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "number_or_period", "similar_system_comparison", "case_application"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-019",
+          "topic": "業務災害の初動判断",
+          "equivalenceKey": "work-injury-initial-system-choice",
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 5,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-034",
+          "topic": "傷病手当金",
+          "equivalenceKey": "sickness-allowance-wait-and-wage",
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 6,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "number_or_period", "principle_exception", "case_application"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-041",
+          "topic": "障害厚生年金",
+          "equivalenceKey": "disability-pension-first-visit-timeline",
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 5,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "target_difference", "timeline", "case_application"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-051",
+          "topic": "第3号被保険者",
+          "equivalenceKey": "dependent-spouse-pension-category",
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 6,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "target_difference", "number_or_period", "case_application"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        }
+      ],
+      "5": [
+        {
+          "questionId": "stage5-question-024",
+          "topic": "基本手当の受給要件",
+          "equivalenceKey": "unemployment-basic-allowance-eligibility",
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "target_difference", "number_or_period", "principle_exception", "case_application"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-039",
+          "topic": "国民年金と厚生年金の加入期間",
+          "equivalenceKey": "pension-membership-period-layers",
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "target_difference", "number_or_period", "timeline", "knowledge_combination"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-063",
+          "topic": "育児休業と社会保険",
+          "equivalenceKey": "childcare-leave-benefit-and-premium",
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "target_difference", "principle_exception", "timeline", "knowledge_combination"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-061",
+          "topic": "長時間労働と給付制度",
+          "equivalenceKey": "long-hours-health-cross-system",
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 3,
+            "knowledgeCount": 4,
+            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application", "knowledge_combination"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-064",
+          "topic": "業務災害の横断判断",
+          "equivalenceKey": "work-injury-cross-system-sequence",
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 3,
+            "knowledgeCount": 4,
+            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application", "timeline", "knowledge_combination"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "stage5-question-068",
+          "topic": "死亡と遺族給付",
+          "equivalenceKey": "death-survivor-cross-system",
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 5,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application", "knowledge_combination"],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        }
+      ]
+    }
+  },
   "terms": [
     {
       "id": "term-001",
