@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#160e0a">
+  <title>火種OS｜今週の火種</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #100a07;
+      --panel: rgba(31, 20, 14, 0.94);
+      --panel-soft: rgba(54, 34, 23, 0.58);
+      --text: #fff8e8;
+      --muted: #cbbba8;
+      --gold: #f4cb70;
+      --ember: #ff7a32;
+      --line: rgba(244, 203, 112, 0.22);
+      --danger: #ffb7a2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 280px;
+      margin: 0;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(255, 122, 50, 0.22), transparent 36rem),
+        linear-gradient(180deg, #1b100a, var(--bg) 36rem);
+    }
+
+    button, input, textarea { font: inherit; }
+
+    button, summary { cursor: pointer; }
+
+    .app {
+      width: min(100% - 28px, 680px);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 34px;
+    }
+
+    .brand {
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .back-link {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-underline-offset: 3px;
+    }
+
+    .hero { margin-bottom: 26px; }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--ember);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 8vw, 42px);
+      line-height: 1.25;
+    }
+
+    .intro {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .current-card, .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, .32);
+    }
+
+    .current-card {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(22px, 6vw, 34px);
+    }
+
+    .current-card::before {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: linear-gradient(var(--gold), var(--ember));
+      content: "";
+    }
+
+    .current-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .current-label {
+      margin: 0;
+      color: var(--gold);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .week-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .main-ember {
+      margin: 28px 0 26px;
+      font-size: clamp(23px, 6vw, 32px);
+      font-weight: 900;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .theme-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      line-height: 1.7;
+    }
+
+    .theme-label { color: var(--muted); font-weight: 700; }
+    .theme-text { color: var(--gold); font-weight: 900; }
+
+    .support-details {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--panel-soft);
+    }
+
+    .support-details summary {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .support-text {
+      margin: 12px 0 0;
+      line-height: 1.8;
+    }
+
+    .panel {
+      margin-top: 24px;
+      padding: clamp(20px, 5vw, 28px);
+    }
+
+    .panel h2 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    .panel-note {
+      margin: 8px 0 22px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .field { display: block; margin-top: 16px; }
+    .field span { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 800; }
+
+    input, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      color: var(--text);
+      border: 1px solid rgba(244, 203, 112, .28);
+      border-radius: 10px;
+      outline: none;
+      background: rgba(10, 7, 5, .72);
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(244, 203, 112, .12);
+    }
+
+    textarea { min-height: 86px; resize: vertical; line-height: 1.6; }
+
+    .candidate-grid { display: grid; gap: 12px; }
+    .candidate-grid .field { margin-top: 0; }
+
+    .divider { height: 1px; margin: 24px 0 6px; background: var(--line); }
+
+    .save-button {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 22px;
+      color: #241307;
+      font-weight: 900;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #ffe9a6, #e9a23b);
+    }
+
+    .form-status {
+      min-height: 1.5em;
+      margin: 10px 0 0;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .history-list { display: grid; gap: 12px; margin-top: 18px; }
+
+    .history-empty { color: var(--muted); font-size: 14px; }
+
+    .history-item {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(10, 7, 5, .42);
+    }
+
+    .history-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .active-badge {
+      color: #231207;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--gold);
+      font-weight: 900;
+    }
+
+    .history-main { margin: 12px 0 6px; font-weight: 900; line-height: 1.7; }
+    .history-theme { margin: 0; color: var(--gold); font-size: 13px; }
+
+    .activate-button {
+      margin-top: 13px;
+      padding: 8px 12px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel-soft);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    @media (min-width: 560px) {
+      .candidate-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 360px) {
+      .app { width: min(100% - 20px, 680px); }
+      .topbar { align-items: flex-start; }
+      .theme-row { grid-template-columns: 1fr; gap: 2px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <nav class="topbar" aria-label="OS切替">
+      <span class="brand">火種OS</span>
+      <a class="back-link" href="index.html">365日名言集・既存画面へ</a>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">WEEKLY EMBER</p>
+      <h1>翌週の自分へ、火を渡す。</h1>
+      <p class="intro">今週を生きた自分の言葉から、行動へ戻るための一つを選びます。</p>
+    </header>
+
+    <section class="current-card" aria-labelledby="current-title">
+      <div class="current-head">
+        <h2 class="current-label" id="current-title">今週の火種</h2>
+        <span class="week-label" id="currentWeek"></span>
+      </div>
+      <p class="main-ember" id="currentMain" aria-live="polite"></p>
+      <div class="theme-row">
+        <span class="theme-label">テーマ：</span>
+        <span class="theme-text" id="currentTheme"></span>
+      </div>
+      <details class="support-details">
+        <summary>補助火種を確認する</summary>
+        <p class="support-text" id="currentSupport"></p>
+      </details>
+    </section>
+
+    <section class="panel" aria-labelledby="review-title">
+      <h2 id="review-title">週末レビュー</h2>
+      <p class="panel-note">候補は選ぶためだけに使います。保存されるのは、主火種・補助火種・テーマの各1つです。</p>
+      <form id="reviewForm">
+        <label class="field">
+          <span>対象週</span>
+          <input id="weekInput" type="date" required aria-describedby="week-help">
+        </label>
+        <p class="panel-note" id="week-help">入力した日を含む月曜日〜日曜日を対象週として保存します。</p>
+
+        <div class="candidate-grid">
+          <label class="field"><span>火種候補1</span><textarea id="candidate1"></textarea></label>
+          <label class="field"><span>火種候補2</span><textarea id="candidate2"></textarea></label>
+          <label class="field"><span>火種候補3</span><textarea id="candidate3"></textarea></label>
+        </div>
+
+        <div class="divider"></div>
+        <label class="field"><span>主火種</span><textarea id="mainInput" required></textarea></label>
+        <label class="field"><span>補助火種</span><textarea id="supportInput" required></textarea></label>
+        <label class="field"><span>テーマ</span><input id="themeInput" type="text" required></label>
+        <button class="save-button" type="submit">この火種を翌週へ渡す</button>
+        <p class="form-status" id="formStatus" role="status"></p>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="history-title">
+      <h2 id="history-title">過去の火種</h2>
+      <p class="panel-note">火種は消さずに残します。必要な週は、もう一度「使用中」に戻せます。</p>
+      <div class="history-list" id="historyList"></div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var STORE_KEY = "hinotaneYuiWeekendEmbersV1";
+      var INITIAL_EMBER = {
+        id: "weekend-ember-2026-07-13",
+        weekStart: "2026-07-13",
+        weekEnd: "2026-07-19",
+        mainEmber: "希望と期待を、自分の人生から自分で奪わない。",
+        supportEmber: "手段は変わっても、変われる未来への期待は残る。",
+        theme: "未来を自分で閉じない",
+        createdAt: "2026-07-19T00:00:00+09:00",
+        isActive: true,
+        source: { type: "weekly-dialogue", referenceId: null },
+        quoteVault: { status: "not-linked", quoteId: null }
+      };
+
+      var currentWeek = document.getElementById("currentWeek");
+      var currentMain = document.getElementById("currentMain");
+      var currentSupport = document.getElementById("currentSupport");
+      var currentTheme = document.getElementById("currentTheme");
+      var historyList = document.getElementById("historyList");
+      var reviewForm = document.getElementById("reviewForm");
+      var weekInput = document.getElementById("weekInput");
+      var mainInput = document.getElementById("mainInput");
+      var supportInput = document.getElementById("supportInput");
+      var themeInput = document.getElementById("themeInput");
+      var formStatus = document.getElementById("formStatus");
+
+      function cloneInitialEmber() {
+        return JSON.parse(JSON.stringify(INITIAL_EMBER));
+      }
+
+      function getDefaultStore() {
+        return { version: 1, activeEmberId: INITIAL_EMBER.id, embers: [cloneInitialEmber()] };
+      }
+
+      function normalizeStore(store) {
+        if (!store || store.version !== 1 || !Array.isArray(store.embers)) return getDefaultStore();
+        store.embers = store.embers.filter(function (ember) {
+          return ember && ember.id && ember.weekStart && ember.mainEmber && ember.supportEmber && ember.theme;
+        });
+        if (!store.embers.length) return getDefaultStore();
+        var activeExists = store.embers.some(function (ember) { return ember.id === store.activeEmberId; });
+        if (!activeExists) store.activeEmberId = store.embers[0].id;
+        store.embers.forEach(function (ember) { ember.isActive = ember.id === store.activeEmberId; });
+        return store;
+      }
+
+      function loadStore() {
+        try {
+          var raw = localStorage.getItem(STORE_KEY);
+          if (!raw) {
+            var initial = getDefaultStore();
+            saveStore(initial);
+            return initial;
+          }
+          return normalizeStore(JSON.parse(raw));
+        } catch (error) {
+          return getDefaultStore();
+        }
+      }
+
+      function saveStore(store) {
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify(store));
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function parseDate(value) {
+        var parts = value.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+
+      function dateKey(date) {
+        return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+      }
+
+      function getWeekRange(value) {
+        var selected = parseDate(value);
+        var offset = (selected.getDay() + 6) % 7;
+        var start = new Date(selected);
+        start.setDate(selected.getDate() - offset);
+        var end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        return { start: dateKey(start), end: dateKey(end) };
+      }
+
+      function formatDate(value) {
+        var date = parseDate(value);
+        return (date.getMonth() + 1) + "月" + date.getDate() + "日";
+      }
+
+      function formatWeek(ember) {
+        return formatDate(ember.weekStart) + "〜" + formatDate(ember.weekEnd);
+      }
+
+      function createId(weekStart) {
+        return "weekend-ember-" + weekStart + "-" + Date.now().toString(36);
+      }
+
+      function getActiveEmber(store) {
+        return store.embers.find(function (ember) { return ember.id === store.activeEmberId; }) || store.embers[0];
+      }
+
+      function renderCurrent(store) {
+        var active = getActiveEmber(store);
+        currentWeek.textContent = formatWeek(active);
+        currentMain.textContent = active.mainEmber;
+        currentSupport.textContent = active.supportEmber;
+        currentTheme.textContent = active.theme;
+      }
+
+      function makeTextElement(tag, className, text) {
+        var element = document.createElement(tag);
+        element.className = className;
+        element.textContent = text;
+        return element;
+      }
+
+      function renderHistory(store) {
+        historyList.textContent = "";
+        var sorted = store.embers.slice().sort(function (a, b) { return b.weekStart.localeCompare(a.weekStart); });
+        if (!sorted.length) {
+          historyList.appendChild(makeTextElement("p", "history-empty", "保存された火種はまだありません。"));
+          return;
+        }
+
+        sorted.forEach(function (ember) {
+          var item = document.createElement("article");
+          item.className = "history-item";
+          var meta = document.createElement("div");
+          meta.className = "history-meta";
+          meta.appendChild(makeTextElement("span", "", formatWeek(ember)));
+          if (ember.id === store.activeEmberId) meta.appendChild(makeTextElement("span", "active-badge", "使用中"));
+          item.appendChild(meta);
+          item.appendChild(makeTextElement("p", "history-main", ember.mainEmber));
+          item.appendChild(makeTextElement("p", "history-theme", "テーマ：" + ember.theme));
+
+          if (ember.id !== store.activeEmberId) {
+            var button = makeTextElement("button", "activate-button", "この火種を使用中にする");
+            button.type = "button";
+            button.addEventListener("click", function () { activateEmber(ember.id); });
+            item.appendChild(button);
+          }
+          historyList.appendChild(item);
+        });
+      }
+
+      function render(store) {
+        renderCurrent(store);
+        renderHistory(store);
+      }
+
+      function activateEmber(id) {
+        var store = loadStore();
+        store.activeEmberId = id;
+        store.embers.forEach(function (ember) { ember.isActive = ember.id === id; });
+        if (saveStore(store)) {
+          render(store);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+
+      function fillFromCandidate(event) {
+        var value = event.target.value.trim();
+        if (value && !mainInput.value.trim()) mainInput.value = value;
+      }
+
+      document.getElementById("candidate1").addEventListener("change", fillFromCandidate);
+      document.getElementById("candidate2").addEventListener("change", fillFromCandidate);
+      document.getElementById("candidate3").addEventListener("change", fillFromCandidate);
+
+      reviewForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var range = getWeekRange(weekInput.value);
+        var store = loadStore();
+        var existing = store.embers.find(function (ember) { return ember.weekStart === range.start; });
+        var record = {
+          id: existing ? existing.id : createId(range.start),
+          weekStart: range.start,
+          weekEnd: range.end,
+          mainEmber: mainInput.value.trim(),
+          supportEmber: supportInput.value.trim(),
+          theme: themeInput.value.trim(),
+          createdAt: existing ? existing.createdAt : new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          isActive: true,
+          source: existing && existing.source ? existing.source : { type: "weekly-dialogue", referenceId: null },
+          quoteVault: existing && existing.quoteVault ? existing.quoteVault : { status: "not-linked", quoteId: null }
+        };
+
+        store.embers = store.embers.filter(function (ember) { return ember.id !== record.id; });
+        store.embers.push(record);
+        store.activeEmberId = record.id;
+        store.embers.forEach(function (ember) { ember.isActive = ember.id === record.id; });
+
+        if (!saveStore(store)) {
+          formStatus.textContent = "保存できませんでした。ブラウザの保存設定を確認してください。";
+          return;
+        }
+
+        render(store);
+        formStatus.textContent = "今週の火種として保存しました。候補は保存していません。";
+        document.getElementById("candidate1").value = "";
+        document.getElementById("candidate2").value = "";
+        document.getElementById("candidate3").value = "";
+      });
+
+      var store = loadStore();
+      var active = getActiveEmber(store);
+      weekInput.value = active.weekStart;
+      mainInput.value = active.mainEmber;
+      supportInput.value = active.supportEmber;
+      themeInput.value = active.theme;
+      render(store);
+    }());
+  </script>
+</body>
+</html>
