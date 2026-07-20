@@ -1840,10 +1840,10 @@
       <div class="ember-mark" aria-hidden="true"></div>
       <h1>社労士クイズOS</h1>
       <p class="tagline">基礎から実戦まで、社労士試験の判断力を育てる学習OS。毎日少しずつ、合格に必要な知識と解き方を積み上げる。</p>
-      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-19-adaptive-difficulty-02</p>
+      <p class="build-version build-version-top" id="buildVersionTopLabel">buildVersion: 2026-07-20-reasoning-depth-01</p>
       <details class="debug-summary-details" id="debugSummaryDetails" hidden>
         <summary id="debugSummaryToggle">▶ デバッグ情報</summary>
-        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-19-adaptive-difficulty-02
+        <pre class="debug-summary-top" id="debugSummaryTop">buildVersion: 2026-07-20-reasoning-depth-01
 debug: loading</pre>
       </details>
     </header>
@@ -2295,10 +2295,10 @@ debug: loading</pre>
         <pre class="debug-info" id="debugInfoText">デバッグ情報を読み込み中です。</pre>
       </div>
     </details>
-    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-19-adaptive-difficulty-02</p>
+    <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-20-reasoning-depth-01</p>
   </main>
 
-  <script src="qualification-os-common.js?v=20260719-adaptive-02"></script>
+  <script src="qualification-os-common.js?v=20260720-reasoning-depth-01"></script>
   <script src="sharoshi-teacher-mode.js?v=20260710-teacher-beta-01"></script>
   <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
   <script src="sharoshi-video-learning-beta.js?v=20260712-video-cleanup-01"></script>
@@ -2306,10 +2306,10 @@ debug: loading</pre>
     (function () {
       "use strict";
 
-      var BUILD_VERSION = "2026-07-19-adaptive-difficulty-02";
+      var BUILD_VERSION = "2026-07-20-reasoning-depth-01";
       var COMMON = window.QualificationOSCommon || {};
       var QUALIFICATION_NAMESPACE = "sharoshi";
-      var DATA_URL = "sharoshi-intro-questions.json?v=20260719-adaptive-02";
+      var DATA_URL = "sharoshi-intro-questions.json?v=20260720-reasoning-depth-01";
       var STORAGE_KEY = "sharoshiIntroProgressV1";
       var STAGE_FIVE_PRIORITY_MODE_KEY = "sharoshiStage5PriorityModeV1";
       var GITHUB_SYNC_CONFIG_KEY = "sharoshiGithubSyncConfigV1";
@@ -3152,6 +3152,15 @@ debug: loading</pre>
         return "";
       }
 
+      function getRequiredConditionCount(question) {
+        var listedCount = question && Array.isArray(question.requiredConditions)
+          ? question.requiredConditions.length
+          : 0;
+        var profileCount = Number(question && question.reasoningProfile &&
+          question.reasoningProfile.conditionCount) || 0;
+        return Math.max(listedCount, profileCount);
+      }
+
       function isStageReviewTarget(questionId) {
         var detail = normalizeStage4Progress(progress.stage5);
         return progress.wrongQuestionIds.indexOf(questionId) !== -1 ||
@@ -3167,7 +3176,9 @@ debug: loading</pre>
             isStageReviewTarget(question.id)) {
           return question.reviewPrompt;
         }
-        return question.statement;
+        return typeof question.statement === "string" && question.statement
+          ? question.statement
+          : typeof question.question === "string" ? question.question : "";
       }
 
       function getQuestionTags(question) {
@@ -3693,6 +3704,19 @@ debug: loading</pre>
           storageKey: STORAGE_KEY,
           currentQuestionId: currentQuestion ? currentQuestion.id : "",
           currentQuestionStage: currentQuestion ? getQuestionStage(currentQuestion) : "",
+          currentQuestionDifficulty: currentQuestion
+            ? Number(currentQuestion.difficulty || currentQuestion.adaptiveReasoningLevel) || ""
+            : "",
+          currentQuestionThinkingLevel: currentQuestion
+            ? String(currentQuestion.thinkingLevel || "")
+            : "",
+          currentQuestionType: currentQuestion
+            ? String(currentQuestion.questionType || currentQuestion.type || "")
+            : "",
+          currentQuestionSelectionReason: currentQuestion
+            ? String(currentQuestion.adaptiveSelectionReason || "")
+            : "",
+          currentQuestionRequiredConditionCount: getRequiredConditionCount(currentQuestion),
           sessionQuestionIds: sessionQuestions.map(function (question) {
             return question.id;
           }),
@@ -3768,6 +3792,11 @@ debug: loading</pre>
             "dataUrl: " + DATA_URL,
             "currentQuestionId: " + info.currentQuestionId,
             "adaptiveDifficulty: " + info.adaptiveDifficulty.reasoningLevel + "/5",
+            "questionDifficulty: " + info.currentQuestionDifficulty,
+            "thinkingLevel: " + info.currentQuestionThinkingLevel,
+            "questionType: " + info.currentQuestionType,
+            "selectionReason: " + info.currentQuestionSelectionReason,
+            "requiredConditionCount: " + info.currentQuestionRequiredConditionCount,
             "perfectSetStreak: " + info.perfectSetStreak + "/2",
             "sessionAdaptiveEligible: " + info.sessionAdaptiveEligible,
             "sessionRequestedReasoningLevel: " + info.sessionRequestedReasoningLevel,
@@ -5817,11 +5846,16 @@ debug: loading</pre>
         var output = [];
         var usedIds = {};
         var catalog = data && data.adaptiveDifficultyCatalog;
+        var sourceById = Object.assign({}, questionById);
+
+        (data.adaptiveReasoningQuestions || []).forEach(function (question) {
+          sourceById[question.id] = question;
+        });
 
         Object.keys(catalog.levels || {}).sort().forEach(function (levelKey) {
           var level = Number(levelKey);
           (catalog.levels[levelKey] || []).forEach(function (entry, index) {
-            var source = questionById[entry.questionId];
+            var source = sourceById[entry.questionId];
             var clone;
             if (!source) {
               throw new Error("適応難易度の問題IDを解決できません: " + entry.questionId);
@@ -5833,7 +5867,23 @@ debug: loading</pre>
             clone = Object.assign({}, source);
             clone.adaptiveReasoningLevel = level;
             clone.reasoningLevel = level;
-            clone.reasoningProfile = entry.reasoningProfile;
+            clone.reasoningProfile = entry.reasoningProfile || source.reasoningProfile;
+            clone.memoryTip = source.memoryTip || source.memory || "";
+            clone.thinkingLevel = entry.thinkingLevel || source.thinkingLevel ||
+              (level === 1 ? "recall" : level === 2 ? "comparison" : "");
+            clone.questionType = entry.questionType || source.questionType ||
+              (Array.isArray(source.choices) ? "multiple_choice" : "true_false");
+            clone.selectionBucket = entry.selectionBucket || source.selectionBucket ||
+              clone.thinkingLevel;
+            clone.requiredConditions = entry.requiredConditions || source.requiredConditions || [];
+            clone.conceptIds = entry.conceptIds || source.conceptIds || [];
+            clone.hasException = entry.hasException === undefined
+              ? Boolean(source.hasException)
+              : Boolean(entry.hasException);
+            clone.scenarioType = entry.scenarioType || source.scenarioType || "";
+            clone.estimatedReasoningSteps = Number(
+              entry.estimatedReasoningSteps || source.estimatedReasoningSteps || 0
+            );
             clone.adaptiveTopic = entry.topic || source.title || source.term || getCategoryText(source);
             clone.equivalenceKey = entry.equivalenceKey || entry.questionId;
             clone.adaptiveOrder = level + "-" + String(index + 1).padStart(2, "0");
@@ -6286,6 +6336,16 @@ debug: loading</pre>
           questionDebugLine.textContent = "questionId: " + question.id +
             (question.adaptiveReasoningLevel
               ? " / adaptiveDifficulty: " + question.adaptiveReasoningLevel
+              : "") +
+            (question.thinkingLevel
+              ? " / thinkingLevel: " + question.thinkingLevel
+              : "") +
+            (question.questionType
+              ? " / questionType: " + question.questionType
+              : "") +
+            " / requiredConditions: " + getRequiredConditionCount(question) +
+            (question.adaptiveSelectionReason
+              ? " / selectionReason: " + question.adaptiveSelectionReason
               : "") +
             (STAGE_FIVE_PRIORITY_IDS.indexOf(question.id) !== -1 ? " / 高難度化確認対象" : "");
         }
@@ -7116,6 +7176,9 @@ debug: loading</pre>
         var sourceById = {};
         var usedIds = {};
         var averages = {};
+        var adaptiveQuestions = Array.isArray(data && data.adaptiveReasoningQuestions)
+          ? data.adaptiveReasoningQuestions
+          : [];
 
         if (!catalog || Number(catalog.setSize) !== ADAPTIVE_SET_SIZE ||
             Number(catalog.perfectSetsToIncrease) !== ADAPTIVE_STREAK_REQUIRED ||
@@ -7123,6 +7186,12 @@ debug: loading</pre>
           throw new Error("適応難易度の3問セット定義が不足しています。");
         }
         (data.questions || []).forEach(function (question) {
+          sourceById[question.id] = question;
+        });
+        adaptiveQuestions.forEach(function (question) {
+          if (!question.id || sourceById[question.id]) {
+            throw new Error("適応難易度専用の問題IDが不足または重複しています。");
+          }
           sourceById[question.id] = question;
         });
 
@@ -7138,7 +7207,7 @@ debug: loading</pre>
           }
           entries.forEach(function (entry) {
             var source = sourceById[entry.questionId];
-            var profile = entry.reasoningProfile;
+            var profile = entry.reasoningProfile || source && source.reasoningProfile;
             var factorCount = profile && Array.isArray(profile.factors) ? profile.factors.length : 0;
 
             if (!source || usedIds[entry.questionId]) {
@@ -7148,6 +7217,19 @@ debug: loading</pre>
             if (!profile || Number(profile.level) !== level ||
                 profile.requiresQualificationKnowledge !== true) {
               throw new Error("適応難易度" + level + "の思考量データが不足しています: " + entry.questionId);
+            }
+            if (level >= 3 && (
+                !source.thinkingLevel ||
+                !source.questionType ||
+                !Array.isArray(source.requiredConditions) ||
+                source.requiredConditions.length < (level === 3 ? 2 : 3) ||
+                !Array.isArray(source.conceptIds) ||
+                !source.conceptIds.length ||
+                Number(source.estimatedReasoningSteps) < (level === 3 ? 2 : 3) ||
+                !Array.isArray(source.choices) ||
+                source.choices.length < 4
+              )) {
+              throw new Error("難易度" + level + "の実問題に思考量属性が不足しています: " + entry.questionId);
             }
             if (level === 1 && (Number(profile.conditionCount) > 1 ||
                 Number(profile.comparisonCount) > 0 ||
@@ -7191,6 +7273,9 @@ debug: loading</pre>
         ["conditionCount", "comparisonCount", "judgmentSteps"].forEach(function (key) {
           if (averages[4][key] <= averages[3][key]) {
             throw new Error("難易度3から4で" + key + "が増えていません。");
+          }
+          if (averages[5][key] <= averages[4][key]) {
+            throw new Error("難易度4から5で" + key + "が増えていません。");
           }
         });
         adaptiveDifficultyCatalog = catalog;

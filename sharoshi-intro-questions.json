@@ -57,7 +57,7 @@
     }
   ],
   "adaptiveDifficultyCatalog": {
-    "version": 1,
+    "version": 2,
     "setSize": 3,
     "perfectSetsToIncrease": 2,
     "rule": "3問すべてを理解して正解したセットが2回連続したときだけ、次の3問から思考量を1段階上げる。",
@@ -73,7 +73,9 @@
             "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["target_difference"],
+            "factors": [
+              "target_difference"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
@@ -87,7 +89,9 @@
             "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["target_difference"],
+            "factors": [
+              "target_difference"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
@@ -101,7 +105,9 @@
             "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["basic_requirement"],
+            "factors": [
+              "basic_requirement"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
@@ -115,7 +121,9 @@
             "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["basic_requirement"],
+            "factors": [
+              "basic_requirement"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
@@ -129,7 +137,9 @@
             "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["basic_requirement"],
+            "factors": [
+              "basic_requirement"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
@@ -143,7 +153,9 @@
             "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["number_or_period"],
+            "factors": [
+              "number_or_period"
+            ],
             "requiresQualificationKnowledge": true
           }
         }
@@ -159,49 +171,76 @@
             "comparisonCount": 1,
             "judgmentSteps": 1,
             "knowledgeCount": 2,
-            "factors": ["similar_system_comparison", "number_or_period"],
+            "factors": [
+              "similar_system_comparison",
+              "number_or_period"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage2-question-003",
+          "questionId": "question-008",
           "topic": "6時間と休憩",
-          "equivalenceKey": "break-six-hours-boundary",
+          "equivalenceKey": "break-basic-rule",
+          "thinkingLevel": "recall",
+          "questionType": "true_false",
+          "selectionBucket": "recall",
+          "requiredConditions": [
+            "1日の労働時間"
+          ],
           "reasoningProfile": {
             "level": 2,
             "conditionCount": 1,
-            "comparisonCount": 1,
+            "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["number_or_period"],
+            "factors": [
+              "number_or_period"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage2-question-004",
-          "topic": "8時間と休憩",
-          "equivalenceKey": "break-eight-hours-boundary",
+          "questionId": "question-009",
+          "topic": "法定休日",
+          "equivalenceKey": "statutory-holiday-basic-rule",
+          "thinkingLevel": "recall",
+          "questionType": "true_false",
+          "selectionBucket": "recall",
+          "requiredConditions": [
+            "休日の付与頻度"
+          ],
           "reasoningProfile": {
             "level": 2,
             "conditionCount": 1,
-            "comparisonCount": 1,
+            "comparisonCount": 0,
             "judgmentSteps": 1,
             "knowledgeCount": 1,
-            "factors": ["number_or_period"],
+            "factors": [
+              "number_or_period"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage2-question-006",
-          "topic": "36協定と上限",
-          "equivalenceKey": "article-36-limits",
+          "questionId": "question-010",
+          "topic": "時間外労働",
+          "equivalenceKey": "overtime-basic-definition",
+          "thinkingLevel": "recall",
+          "questionType": "true_false",
+          "selectionBucket": "recall",
+          "requiredConditions": [
+            "法定労働時間を超えたか"
+          ],
           "reasoningProfile": {
             "level": 2,
             "conditionCount": 1,
-            "comparisonCount": 1,
+            "comparisonCount": 0,
             "judgmentSteps": 1,
-            "knowledgeCount": 2,
-            "factors": ["principle_exception", "similar_system_comparison"],
+            "knowledgeCount": 1,
+            "factors": [
+              "basic_requirement"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
@@ -215,7 +254,10 @@
             "comparisonCount": 1,
             "judgmentSteps": 1,
             "knowledgeCount": 2,
-            "factors": ["target_difference", "number_or_period"],
+            "factors": [
+              "target_difference",
+              "number_or_period"
+            ],
             "requiresQualificationKnowledge": true
           }
         },
@@ -229,195 +271,456 @@
             "comparisonCount": 1,
             "judgmentSteps": 1,
             "knowledgeCount": 2,
-            "factors": ["target_difference", "principle_exception"],
+            "factors": [
+              "target_difference",
+              "principle_exception"
+            ],
             "requiresQualificationKnowledge": true
           }
         }
       ],
       "3": [
         {
-          "questionId": "stage4-question-002",
-          "topic": "退職と未払い残業代",
-          "equivalenceKey": "retirement-unpaid-overtime",
+          "questionId": "adaptive-d3-worktime-01",
+          "topic": "所定外労働と法定時間外労働",
+          "equivalenceKey": "adaptive-d3-worktime-01",
+          "thinkingLevel": "multi_condition",
+          "questionType": "comparison",
+          "selectionBucket": "comparison",
+          "requiredConditions": [
+            "所定労働時間7時間30分",
+            "実労働時間8時間",
+            "1日8時間の法定労働時間"
+          ],
+          "conceptIds": [
+            "scheduled-working-hours",
+            "statutory-working-hours"
+          ],
+          "hasException": false,
+          "scenarioType": "employee_schedule",
+          "estimatedReasoningSteps": 2,
           "reasoningProfile": {
             "level": 3,
             "conditionCount": 3,
             "comparisonCount": 2,
             "judgmentSteps": 2,
             "knowledgeCount": 2,
-            "factors": ["multiple_conditions", "timeline", "similar_system_comparison"],
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "similar_system_comparison"
+            ],
             "requiresOptionComparison": true,
+            "hasDistractorInformation": false,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage4-question-003",
-          "topic": "業務災害と健康保険",
-          "equivalenceKey": "work-injury-workers-comp-vs-health",
+          "questionId": "adaptive-d3-break-01",
+          "topic": "6時間境界と休憩",
+          "equivalenceKey": "adaptive-d3-break-01",
+          "thinkingLevel": "comparison",
+          "questionType": "comparison",
+          "selectionBucket": "comparison",
+          "requiredConditions": [
+            "Aの労働時間6時間",
+            "Bの労働時間6時間10分",
+            "6時間を超える場合の休憩"
+          ],
+          "conceptIds": [
+            "break-six-hours",
+            "working-time"
+          ],
+          "hasException": false,
+          "scenarioType": "employee_comparison",
+          "estimatedReasoningSteps": 2,
           "reasoningProfile": {
             "level": 3,
             "conditionCount": 3,
             "comparisonCount": 2,
             "judgmentSteps": 2,
             "knowledgeCount": 2,
-            "factors": ["multiple_conditions", "principle_exception", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "similar_system_comparison"
+            ],
             "requiresOptionComparison": true,
+            "hasDistractorInformation": false,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage4-question-004",
-          "topic": "健康保険と厚生年金",
-          "equivalenceKey": "health-pension-enrollment",
+          "questionId": "adaptive-d3-leave-01",
+          "topic": "年休発生と時季変更",
+          "equivalenceKey": "adaptive-d3-leave-01",
+          "thinkingLevel": "case_judgment",
+          "questionType": "case",
+          "selectionBucket": "case_judgment",
+          "requiredConditions": [
+            "継続勤務7か月",
+            "出勤率82％",
+            "事業の正常な運営を妨げない"
+          ],
+          "conceptIds": [
+            "paid-leave-eligibility",
+            "timing-change-right"
+          ],
+          "hasException": true,
+          "scenarioType": "employee_request",
+          "estimatedReasoningSteps": 2,
           "reasoningProfile": {
             "level": 3,
             "conditionCount": 3,
             "comparisonCount": 2,
             "judgmentSteps": 2,
             "knowledgeCount": 2,
-            "factors": ["multiple_conditions", "similar_system_comparison", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "principle_exception",
+              "case_application"
+            ],
             "requiresOptionComparison": true,
+            "hasDistractorInformation": false,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage4-question-005",
-          "topic": "退職後の年金種別",
-          "equivalenceKey": "employee-to-self-employed-pension",
+          "questionId": "adaptive-d3-leave-02",
+          "topic": "法定年休と有利な上乗せ",
+          "equivalenceKey": "adaptive-d3-leave-02",
+          "thinkingLevel": "multi_condition",
+          "questionType": "multi_condition",
+          "selectionBucket": "multi_condition",
+          "requiredConditions": [
+            "継続勤務6か月",
+            "出勤率79％",
+            "就業規則による10日の付与"
+          ],
+          "conceptIds": [
+            "paid-leave-eligibility",
+            "favorable-work-rule"
+          ],
+          "hasException": true,
+          "scenarioType": "work_rule",
+          "estimatedReasoningSteps": 2,
           "reasoningProfile": {
             "level": 3,
             "conditionCount": 3,
             "comparisonCount": 2,
             "judgmentSteps": 2,
             "knowledgeCount": 2,
-            "factors": ["multiple_conditions", "target_difference", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "principle_exception"
+            ],
             "requiresOptionComparison": true,
+            "hasDistractorInformation": false,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage4-question-006",
-          "topic": "障害年金と初診日",
-          "equivalenceKey": "disability-pension-first-visit",
+          "questionId": "adaptive-d3-leave-03",
+          "topic": "管理監督者と年5日時季指定",
+          "equivalenceKey": "adaptive-d3-leave-03",
+          "thinkingLevel": "multi_condition",
+          "questionType": "multi_condition",
+          "selectionBucket": "multi_condition",
+          "requiredConditions": [
+            "管理監督者",
+            "法定付与10日",
+            "本人請求2日",
+            "計画年休1日"
+          ],
+          "conceptIds": [
+            "paid-leave-five-days",
+            "manager-supervisor"
+          ],
+          "hasException": true,
+          "scenarioType": "leave_management",
+          "estimatedReasoningSteps": 2,
           "reasoningProfile": {
             "level": 3,
-            "conditionCount": 3,
+            "conditionCount": 4,
             "comparisonCount": 2,
             "judgmentSteps": 2,
             "knowledgeCount": 2,
-            "factors": ["multiple_conditions", "timeline", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "target_difference",
+              "number_or_period",
+              "principle_exception"
+            ],
             "requiresOptionComparison": true,
+            "hasDistractorInformation": false,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage4-question-008",
-          "topic": "年休権と時季変更",
-          "equivalenceKey": "paid-leave-right-vs-timing-change",
+          "questionId": "adaptive-d3-worktime-02",
+          "topic": "36協定と割増賃金",
+          "equivalenceKey": "adaptive-d3-worktime-02",
+          "thinkingLevel": "multi_condition",
+          "questionType": "multi_condition",
+          "selectionBucket": "multi_condition",
+          "requiredConditions": [
+            "実労働9時間",
+            "36協定未届",
+            "割増賃金支払予定"
+          ],
+          "conceptIds": [
+            "article-36-agreement",
+            "overtime-premium"
+          ],
+          "hasException": true,
+          "scenarioType": "compliance_check",
+          "estimatedReasoningSteps": 2,
           "reasoningProfile": {
             "level": 3,
             "conditionCount": 3,
             "comparisonCount": 2,
             "judgmentSteps": 2,
             "knowledgeCount": 2,
-            "factors": ["multiple_conditions", "principle_exception", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "principle_exception",
+              "similar_system_comparison"
+            ],
             "requiresOptionComparison": true,
+            "hasDistractorInformation": false,
             "requiresQualificationKnowledge": true
           }
         }
       ],
       "4": [
         {
-          "questionId": "stage4-question-001",
-          "topic": "長時間労働と健康管理",
-          "equivalenceKey": "long-hours-agreement-pay-health",
+          "questionId": "adaptive-d4-worktime-01",
+          "topic": "実労働時間・休憩・法定時間外",
+          "equivalenceKey": "adaptive-d4-worktime-01",
+          "thinkingLevel": "case_judgment",
+          "questionType": "case",
+          "selectionBucket": "case_judgment",
+          "requiredConditions": [
+            "9時から19時",
+            "休憩45分",
+            "実労働9時間15分",
+            "8時間超の休憩1時間",
+            "法定時間外1時間15分"
+          ],
+          "conceptIds": [
+            "working-time",
+            "break-eight-hours",
+            "statutory-overtime"
+          ],
+          "hasException": false,
+          "scenarioType": "workplace_case",
+          "estimatedReasoningSteps": 3,
           "reasoningProfile": {
             "level": 4,
             "conditionCount": 5,
             "comparisonCount": 3,
             "judgmentSteps": 3,
             "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "similar_system_comparison",
+              "case_application"
+            ],
             "requiresOptionComparison": true,
             "hasDistractorInformation": true,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage5-question-014",
-          "topic": "法定時間外労働と休憩",
-          "equivalenceKey": "overtime-break-article36",
-          "reasoningProfile": {
-            "level": 4,
-            "conditionCount": 6,
-            "comparisonCount": 3,
-            "judgmentSteps": 3,
-            "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "number_or_period", "similar_system_comparison", "case_application"],
-            "requiresOptionComparison": true,
-            "hasDistractorInformation": true,
-            "requiresQualificationKnowledge": true
-          }
-        },
-        {
-          "questionId": "stage5-question-019",
-          "topic": "業務災害の初動判断",
-          "equivalenceKey": "work-injury-initial-system-choice",
-          "reasoningProfile": {
-            "level": 4,
-            "conditionCount": 5,
-            "comparisonCount": 3,
-            "judgmentSteps": 3,
-            "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application"],
-            "requiresOptionComparison": true,
-            "hasDistractorInformation": true,
-            "requiresQualificationKnowledge": true
-          }
-        },
-        {
-          "questionId": "stage5-question-034",
-          "topic": "傷病手当金",
-          "equivalenceKey": "sickness-allowance-wait-and-wage",
-          "reasoningProfile": {
-            "level": 4,
-            "conditionCount": 6,
-            "comparisonCount": 3,
-            "judgmentSteps": 3,
-            "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "number_or_period", "principle_exception", "case_application"],
-            "requiresOptionComparison": true,
-            "hasDistractorInformation": true,
-            "requiresQualificationKnowledge": true
-          }
-        },
-        {
-          "questionId": "stage5-question-041",
-          "topic": "障害厚生年金",
-          "equivalenceKey": "disability-pension-first-visit-timeline",
+          "questionId": "adaptive-d4-worktime-02",
+          "topic": "週40時間内でも生じる1日時間外",
+          "equivalenceKey": "adaptive-d4-worktime-02",
+          "thinkingLevel": "case_judgment",
+          "questionType": "case",
+          "selectionBucket": "case_judgment",
+          "requiredConditions": [
+            "週4日勤務",
+            "各日実労働10時間",
+            "週合計40時間",
+            "変形労働時間制なし",
+            "36協定なし"
+          ],
+          "conceptIds": [
+            "daily-eight-hours",
+            "weekly-forty-hours",
+            "article-36-agreement"
+          ],
+          "hasException": true,
+          "scenarioType": "weekly_schedule",
+          "estimatedReasoningSteps": 3,
           "reasoningProfile": {
             "level": 4,
             "conditionCount": 5,
             "comparisonCount": 3,
             "judgmentSteps": 3,
             "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "target_difference", "timeline", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "principle_exception",
+              "case_application"
+            ],
             "requiresOptionComparison": true,
             "hasDistractorInformation": true,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage5-question-051",
-          "topic": "第3号被保険者",
-          "equivalenceKey": "dependent-spouse-pension-category",
+          "questionId": "adaptive-d4-worktime-03",
+          "topic": "残業命令・36協定・割増賃金",
+          "equivalenceKey": "adaptive-d4-worktime-03",
+          "thinkingLevel": "multi_condition",
+          "questionType": "multi_condition",
+          "selectionBucket": "multi_condition",
+          "requiredConditions": [
+            "労働契約上の残業根拠",
+            "36協定未届",
+            "実労働9時間",
+            "割増賃金支払済み"
+          ],
+          "conceptIds": [
+            "overtime-order",
+            "article-36-agreement",
+            "overtime-premium"
+          ],
+          "hasException": true,
+          "scenarioType": "compliance_audit",
+          "estimatedReasoningSteps": 3,
           "reasoningProfile": {
             "level": 4,
-            "conditionCount": 6,
+            "conditionCount": 4,
             "comparisonCount": 3,
             "judgmentSteps": 3,
             "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "target_difference", "number_or_period", "case_application"],
+            "factors": [
+              "multiple_conditions",
+              "principle_exception",
+              "similar_system_comparison",
+              "case_application"
+            ],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "adaptive-d4-leave-01",
+          "topic": "年5日取得済み後の時季指定",
+          "equivalenceKey": "adaptive-d4-leave-01",
+          "thinkingLevel": "case_judgment",
+          "questionType": "case",
+          "selectionBucket": "case_judgment",
+          "requiredConditions": [
+            "法定付与10日",
+            "本人請求4日",
+            "計画年休1日",
+            "取得合計5日",
+            "追加時季指定"
+          ],
+          "conceptIds": [
+            "paid-leave-five-days",
+            "employer-designation"
+          ],
+          "hasException": true,
+          "scenarioType": "leave_management",
+          "estimatedReasoningSteps": 3,
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 5,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "principle_exception",
+              "case_application"
+            ],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "adaptive-d4-leave-02",
+          "topic": "取得済み日数と残りの時季指定",
+          "equivalenceKey": "adaptive-d4-leave-02",
+          "thinkingLevel": "multi_condition",
+          "questionType": "multi_condition",
+          "selectionBucket": "multi_condition",
+          "requiredConditions": [
+            "法定付与12日",
+            "本人請求1日",
+            "計画年休2日",
+            "経過10か月",
+            "残り期間2か月"
+          ],
+          "conceptIds": [
+            "paid-leave-five-days",
+            "designation-deadline"
+          ],
+          "hasException": true,
+          "scenarioType": "deadline_judgment",
+          "estimatedReasoningSteps": 3,
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 5,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "timeline",
+              "case_application"
+            ],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "adaptive-d4-leave-03",
+          "topic": "事業運営と年休時季変更",
+          "equivalenceKey": "adaptive-d4-leave-03",
+          "thinkingLevel": "composite_judgment",
+          "questionType": "composite",
+          "selectionBucket": "composite_judgment",
+          "requiredConditions": [
+            "年休権発生済み",
+            "同日請求3人",
+            "代替要員なし",
+            "業務停止の具体的見込み",
+            "近接日の代替提案"
+          ],
+          "conceptIds": [
+            "paid-leave-right",
+            "timing-change-right",
+            "business-operation"
+          ],
+          "hasException": true,
+          "scenarioType": "workplace_staffing",
+          "estimatedReasoningSteps": 3,
+          "reasoningProfile": {
+            "level": 4,
+            "conditionCount": 5,
+            "comparisonCount": 3,
+            "judgmentSteps": 3,
+            "knowledgeCount": 3,
+            "factors": [
+              "multiple_conditions",
+              "principle_exception",
+              "case_application",
+              "knowledge_combination"
+            ],
             "requiresOptionComparison": true,
             "hasDistractorInformation": true,
             "requiresQualificationKnowledge": true
@@ -426,101 +729,287 @@
       ],
       "5": [
         {
-          "questionId": "stage5-question-024",
-          "topic": "基本手当の受給要件",
-          "equivalenceKey": "unemployment-basic-allowance-eligibility",
+          "questionId": "adaptive-d5-worktime-01",
+          "topic": "二人の労働時間と休憩",
+          "equivalenceKey": "adaptive-d5-worktime-01",
+          "thinkingLevel": "composite_judgment",
+          "questionType": "composite",
+          "selectionBucket": "composite_judgment",
+          "requiredConditions": [
+            "Aの拘束9時間30分",
+            "Aの休憩45分",
+            "Bの拘束8時間45分",
+            "Bの休憩45分",
+            "1日8時間",
+            "休憩境界"
+          ],
+          "conceptIds": [
+            "working-time",
+            "break-six-hours",
+            "break-eight-hours",
+            "statutory-overtime"
+          ],
+          "hasException": false,
+          "scenarioType": "multi_employee_case",
+          "estimatedReasoningSteps": 4,
           "reasoningProfile": {
             "level": 5,
             "conditionCount": 6,
             "comparisonCount": 4,
-            "judgmentSteps": 3,
-            "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "target_difference", "number_or_period", "principle_exception", "case_application"],
-            "requiresOptionComparison": true,
-            "hasDistractorInformation": true,
-            "requiresQualificationKnowledge": true
-          }
-        },
-        {
-          "questionId": "stage5-question-039",
-          "topic": "国民年金と厚生年金の加入期間",
-          "equivalenceKey": "pension-membership-period-layers",
-          "reasoningProfile": {
-            "level": 5,
-            "conditionCount": 6,
-            "comparisonCount": 4,
-            "judgmentSteps": 3,
-            "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "target_difference", "number_or_period", "timeline", "knowledge_combination"],
-            "requiresOptionComparison": true,
-            "hasDistractorInformation": true,
-            "requiresQualificationKnowledge": true
-          }
-        },
-        {
-          "questionId": "stage5-question-063",
-          "topic": "育児休業と社会保険",
-          "equivalenceKey": "childcare-leave-benefit-and-premium",
-          "reasoningProfile": {
-            "level": 5,
-            "conditionCount": 6,
-            "comparisonCount": 4,
-            "judgmentSteps": 3,
-            "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "target_difference", "principle_exception", "timeline", "knowledge_combination"],
-            "requiresOptionComparison": true,
-            "hasDistractorInformation": true,
-            "requiresQualificationKnowledge": true
-          }
-        },
-        {
-          "questionId": "stage5-question-061",
-          "topic": "長時間労働と給付制度",
-          "equivalenceKey": "long-hours-health-cross-system",
-          "reasoningProfile": {
-            "level": 5,
-            "conditionCount": 6,
-            "comparisonCount": 4,
-            "judgmentSteps": 3,
+            "judgmentSteps": 4,
             "knowledgeCount": 4,
-            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application", "knowledge_combination"],
+            "factors": [
+              "multiple_conditions",
+              "number_or_period",
+              "similar_system_comparison",
+              "case_application",
+              "knowledge_combination"
+            ],
             "requiresOptionComparison": true,
             "hasDistractorInformation": true,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage5-question-064",
-          "topic": "業務災害の横断判断",
-          "equivalenceKey": "work-injury-cross-system-sequence",
+          "questionId": "adaptive-d5-worktime-02",
+          "topic": "36協定の範囲と割増賃金",
+          "equivalenceKey": "adaptive-d5-worktime-02",
+          "thinkingLevel": "composite_judgment",
+          "questionType": "composite",
+          "selectionBucket": "composite_judgment",
+          "requiredConditions": [
+            "36協定届出済み",
+            "協定上限月30時間",
+            "実績月35時間",
+            "割増賃金支払済み",
+            "契約上の残業根拠"
+          ],
+          "conceptIds": [
+            "article-36-agreement",
+            "agreement-limit",
+            "overtime-premium",
+            "overtime-order"
+          ],
+          "hasException": true,
+          "scenarioType": "compliance_audit",
+          "estimatedReasoningSteps": 4,
           "reasoningProfile": {
             "level": 5,
             "conditionCount": 6,
             "comparisonCount": 4,
-            "judgmentSteps": 3,
+            "judgmentSteps": 4,
             "knowledgeCount": 4,
-            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application", "timeline", "knowledge_combination"],
+            "factors": [
+              "multiple_conditions",
+              "principle_exception",
+              "timeline",
+              "case_application",
+              "knowledge_combination"
+            ],
             "requiresOptionComparison": true,
             "hasDistractorInformation": true,
             "requiresQualificationKnowledge": true
           }
         },
         {
-          "questionId": "stage5-question-068",
-          "topic": "死亡と遺族給付",
-          "equivalenceKey": "death-survivor-cross-system",
+          "questionId": "adaptive-d5-leave-01",
+          "topic": "管理監督者の年休取得義務",
+          "equivalenceKey": "adaptive-d5-leave-01",
+          "thinkingLevel": "composite_judgment",
+          "questionType": "explanation",
+          "selectionBucket": "explanation",
+          "requiredConditions": [
+            "管理監督者",
+            "法定付与10日",
+            "本人請求2日",
+            "計画年休1日",
+            "年5日義務",
+            "労働時間規制との区別"
+          ],
+          "conceptIds": [
+            "manager-supervisor",
+            "paid-leave-five-days",
+            "working-time-exemption"
+          ],
+          "hasException": true,
+          "scenarioType": "reason_selection",
+          "estimatedReasoningSteps": 4,
           "reasoningProfile": {
             "level": 5,
-            "conditionCount": 5,
-            "comparisonCount": 3,
-            "judgmentSteps": 3,
-            "knowledgeCount": 3,
-            "factors": ["multiple_conditions", "principle_exception", "similar_system_comparison", "case_application", "knowledge_combination"],
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 4,
+            "knowledgeCount": 4,
+            "factors": [
+              "multiple_conditions",
+              "target_difference",
+              "principle_exception",
+              "case_application",
+              "knowledge_combination"
+            ],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "adaptive-d5-leave-02",
+          "topic": "比例付与と年5日時季指定",
+          "equivalenceKey": "adaptive-d5-leave-02",
+          "thinkingLevel": "case_judgment",
+          "questionType": "case",
+          "selectionBucket": "case_judgment",
+          "requiredConditions": [
+            "週4日",
+            "週28時間",
+            "継続勤務6か月",
+            "出勤率85％",
+            "比例付与7日",
+            "年5日義務の10日基準"
+          ],
+          "conceptIds": [
+            "proportional-paid-leave",
+            "paid-leave-five-days"
+          ],
+          "hasException": true,
+          "scenarioType": "part_time_employee",
+          "estimatedReasoningSteps": 4,
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 4,
+            "knowledgeCount": 4,
+            "factors": [
+              "multiple_conditions",
+              "target_difference",
+              "number_or_period",
+              "principle_exception",
+              "case_application",
+              "knowledge_combination"
+            ],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "adaptive-d5-leave-03",
+          "topic": "週所定時間と通常付与",
+          "equivalenceKey": "adaptive-d5-leave-03",
+          "thinkingLevel": "composite_judgment",
+          "questionType": "composite",
+          "selectionBucket": "composite_judgment",
+          "requiredConditions": [
+            "週4日",
+            "週31時間",
+            "継続勤務6か月",
+            "出勤率82％",
+            "通常付与10日",
+            "年5日義務"
+          ],
+          "conceptIds": [
+            "regular-paid-leave",
+            "proportional-paid-leave",
+            "paid-leave-five-days"
+          ],
+          "hasException": true,
+          "scenarioType": "part_time_boundary",
+          "estimatedReasoningSteps": 4,
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 4,
+            "knowledgeCount": 4,
+            "factors": [
+              "multiple_conditions",
+              "target_difference",
+              "number_or_period",
+              "principle_exception",
+              "knowledge_combination"
+            ],
+            "requiresOptionComparison": true,
+            "hasDistractorInformation": true,
+            "requiresQualificationKnowledge": true
+          }
+        },
+        {
+          "questionId": "adaptive-d5-leave-04",
+          "topic": "比例付与が10日に達する場合",
+          "equivalenceKey": "adaptive-d5-leave-04",
+          "thinkingLevel": "case_judgment",
+          "questionType": "case",
+          "selectionBucket": "case_judgment",
+          "requiredConditions": [
+            "週4日",
+            "週28時間",
+            "継続勤務3年6か月",
+            "出勤率84％",
+            "今回付与10日",
+            "本人1日・計画2日"
+          ],
+          "conceptIds": [
+            "proportional-paid-leave",
+            "paid-leave-five-days",
+            "designation-balance"
+          ],
+          "hasException": true,
+          "scenarioType": "long_term_part_time",
+          "estimatedReasoningSteps": 4,
+          "reasoningProfile": {
+            "level": 5,
+            "conditionCount": 6,
+            "comparisonCount": 4,
+            "judgmentSteps": 4,
+            "knowledgeCount": 4,
+            "factors": [
+              "multiple_conditions",
+              "target_difference",
+              "number_or_period",
+              "timeline",
+              "case_application",
+              "knowledge_combination"
+            ],
             "requiresOptionComparison": true,
             "hasDistractorInformation": true,
             "requiresQualificationKnowledge": true
           }
         }
+      ]
+    },
+    "thinkingDefinition": {
+      "1": "recall",
+      "2": "comparison",
+      "3": "multi_condition",
+      "4": "case_judgment",
+      "5": "composite_judgment"
+    },
+    "selectionRatios": {
+      "1": [
+        "recall",
+        "recall",
+        "recall"
+      ],
+      "2": [
+        "recall",
+        "comparison",
+        "comparison"
+      ],
+      "3": [
+        "comparison",
+        "multi_condition",
+        "case_judgment"
+      ],
+      "4": [
+        "multi_condition",
+        "case_judgment",
+        "composite_judgment"
+      ],
+      "5": [
+        "case_judgment",
+        "composite_judgment",
+        "explanation"
       ]
     }
   },
@@ -5811,6 +6300,1330 @@
       "sourceTitle": "厚生労働省",
       "sourceUrl": "https://www.mhlw.go.jp/",
       "verifiedAt": "2026-07-07"
+    }
+  ],
+  "adaptiveReasoningQuestions": [
+    {
+      "id": "adaptive-d3-worktime-01",
+      "stage": 3,
+      "title": "所定外労働と法定時間外労働",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 3,
+      "thinkingLevel": "multi_condition",
+      "questionType": "comparison",
+      "questionTypeLabel": "比較問題",
+      "selectionBucket": "comparison",
+      "requiredConditions": [
+        "所定労働時間7時間30分",
+        "実労働時間8時間",
+        "1日8時間の法定労働時間"
+      ],
+      "conceptIds": [
+        "scheduled-working-hours",
+        "statutory-working-hours"
+      ],
+      "hasException": false,
+      "scenarioType": "employee_schedule",
+      "estimatedReasoningSteps": 2,
+      "term": "所定外労働と法定時間外労働",
+      "question": "A社の所定労働時間は9時から17時30分まで、休憩1時間である。ある日18時まで勤務し、その週の総労働時間は40時間を超えていない。変形労働時間制は採用していない。この日の30分をどう整理するのが適切か。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "所定労働時間を超えたため、30分すべてが直ちに法定時間外労働となる。"
+        },
+        {
+          "id": "b",
+          "text": "所定外労働ではあるが実労働は8時間なので、この日の1日基準では法定時間外労働は生じない。"
+        },
+        {
+          "id": "c",
+          "text": "週40時間以内なら、実労働が1日8時間を超えても法定時間外労働にはならない。"
+        },
+        {
+          "id": "d",
+          "text": "所定労働時間を超えても、就業規則に残業規定があれば労働時間として扱わない。"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "正解肢の整理では、所定7時間30分を超えた30分は所定外労働ですが、実労働は8時間ちょうどなので1日基準の法定時間外ではありません。別の誤答肢は所定外と法定外の混同、別の誤答肢は1日8時間基準の見落とし、別の誤答肢は実労働時間を就業規則で消せるとした点が誤りです。判断ポイントは、所定時間と法定時間を別々に計算することです。",
+      "trap": "所定外イコール法定時間外ではない。",
+      "memory": "所定を超えた後、1日8時間・週40時間をもう一度見る。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 3,
+        "conditionCount": 3,
+        "comparisonCount": 2,
+        "judgmentSteps": 2,
+        "knowledgeCount": 2,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "similar_system_comparison"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": false,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d3-break-01",
+      "stage": 3,
+      "title": "6時間境界と休憩",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 3,
+      "thinkingLevel": "comparison",
+      "questionType": "comparison",
+      "questionTypeLabel": "比較問題",
+      "selectionBucket": "comparison",
+      "requiredConditions": [
+        "Aの労働時間6時間",
+        "Bの労働時間6時間10分",
+        "6時間を超える場合の休憩"
+      ],
+      "conceptIds": [
+        "break-six-hours",
+        "working-time"
+      ],
+      "hasException": false,
+      "scenarioType": "employee_comparison",
+      "estimatedReasoningSteps": 2,
+      "term": "6時間境界と休憩",
+      "question": "同じ事業場で、Aは実労働6時間、Bは実労働6時間10分のシフトに入り、いずれにも休憩が設定されていない。労働基準法上の休憩について、両者の組合せとして正しいものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "A・Bともに45分以上の休憩が必要である。"
+        },
+        {
+          "id": "b",
+          "text": "Aには30分、Bには45分以上の休憩が必要である。"
+        },
+        {
+          "id": "c",
+          "text": "Aには休憩不要だが、Bには1時間以上の休憩が必要である。"
+        },
+        {
+          "id": "d",
+          "text": "Aは法定休憩不要だが、Bには45分以上の休憩が必要である。"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "正解肢の整理では、6時間ちょうどには法定休憩の規定はかからず、6時間を超えるBには45分以上が必要です。誤答肢は、境界を『以上』と読み違えるか、必要な休憩時間を取り違えています。判断ポイントは『6時間を超える』という語尾です。",
+      "trap": "6時間以上ではなく、6時間を超える場合。",
+      "memory": "6時間超で45分、8時間超で1時間。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 3,
+        "conditionCount": 3,
+        "comparisonCount": 2,
+        "judgmentSteps": 2,
+        "knowledgeCount": 2,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "similar_system_comparison"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": false,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d3-leave-01",
+      "stage": 3,
+      "title": "年休発生と時季変更",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 3,
+      "thinkingLevel": "case_judgment",
+      "questionType": "case",
+      "questionTypeLabel": "事例判断問題",
+      "selectionBucket": "case_judgment",
+      "requiredConditions": [
+        "継続勤務7か月",
+        "出勤率82％",
+        "事業の正常な運営を妨げない"
+      ],
+      "conceptIds": [
+        "paid-leave-eligibility",
+        "timing-change-right"
+      ],
+      "hasException": true,
+      "scenarioType": "employee_request",
+      "estimatedReasoningSteps": 2,
+      "term": "年休発生と時季変更",
+      "question": "Bは入社後7か月勤務し、最初の6か月の出勤率は82％だった。Bが年休取得日を請求したところ、会社は繁忙期であることだけを理由に拒否したが、その日に休んでも事業の正常な運営は妨げられない。最も適切な結論はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "勤務1年未満なので年休権は発生していない。"
+        },
+        {
+          "id": "b",
+          "text": "出勤率が90％未満なので年休権は発生していない。"
+        },
+        {
+          "id": "c",
+          "text": "年休権は発生しており、この事情だけでは会社は請求時季を変更できない。"
+        },
+        {
+          "id": "d",
+          "text": "年休権は発生しているが、繁忙期なら会社は理由を示さず取得自体を拒否できる。"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "正解肢の整理では、6か月継続勤務と8割以上出勤を満たします。時季変更は、請求時季の取得が事業の正常な運営を妨げる場合の例外です。誤答肢は、発生要件の数字を誤るか、時季変更と権利の否定を混同しています。判断ポイントは、先に権利発生、次に例外の順で見ることです。",
+      "trap": "繁忙期という言葉だけで時季変更を認めない。",
+      "memory": "6か月・8割を確認し、その後に正常な運営への支障を見る。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 3,
+        "conditionCount": 3,
+        "comparisonCount": 2,
+        "judgmentSteps": 2,
+        "knowledgeCount": 2,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "principle_exception",
+          "case_application"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": false,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d3-leave-02",
+      "stage": 3,
+      "title": "法定年休と有利な上乗せ",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 3,
+      "thinkingLevel": "multi_condition",
+      "questionType": "multi_condition",
+      "questionTypeLabel": "複数条件問題",
+      "selectionBucket": "multi_condition",
+      "requiredConditions": [
+        "継続勤務6か月",
+        "出勤率79％",
+        "就業規則による10日の付与"
+      ],
+      "conceptIds": [
+        "paid-leave-eligibility",
+        "favorable-work-rule"
+      ],
+      "hasException": true,
+      "scenarioType": "work_rule",
+      "estimatedReasoningSteps": 2,
+      "term": "法定年休と有利な上乗せ",
+      "question": "Cは入社後6か月勤務したが出勤率は79％だった。会社の就業規則は、出勤率にかかわらず入社6か月後に10日の有給休暇を与えると定めている。法定年休と会社独自の取扱いを分けた説明として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "法定要件を満たさないため、会社独自の有給休暇も付与してはならない。"
+        },
+        {
+          "id": "b",
+          "text": "法定の付与義務は生じないが、就業規則による有利な10日の付与は認められる。"
+        },
+        {
+          "id": "c",
+          "text": "6か月勤務だけで法律上当然に10日の年休が発生する。"
+        },
+        {
+          "id": "d",
+          "text": "就業規則の10日は法定年休と同じなので、出勤率79％でも法定義務を履行したことになる。"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "正解肢の整理では、79％は法定の8割以上を満たしませんが、法律を上回る有利な休暇を就業規則で与えることはできます。別の誤答肢は最低基準を上限と誤解し、別の誤答肢は出勤率を無視し、別の誤答肢は法定義務と会社独自制度を同一視しています。判断ポイントは、法定最低基準と上乗せを分けることです。",
+      "trap": "法定要件を満たさないことと、有利な上乗せ禁止は別。",
+      "memory": "法律は最低基準。会社の有利な上乗せは別に判断する。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 3,
+        "conditionCount": 3,
+        "comparisonCount": 2,
+        "judgmentSteps": 2,
+        "knowledgeCount": 2,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "principle_exception"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": false,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d3-leave-03",
+      "stage": 3,
+      "title": "管理監督者と年5日時季指定",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 3,
+      "thinkingLevel": "multi_condition",
+      "questionType": "multi_condition",
+      "questionTypeLabel": "複数条件問題",
+      "selectionBucket": "multi_condition",
+      "requiredConditions": [
+        "管理監督者",
+        "法定付与10日",
+        "本人請求2日",
+        "計画年休1日"
+      ],
+      "conceptIds": [
+        "paid-leave-five-days",
+        "manager-supervisor"
+      ],
+      "hasException": true,
+      "scenarioType": "leave_management",
+      "estimatedReasoningSteps": 2,
+      "term": "管理監督者と年5日時季指定",
+      "question": "管理監督者Dには基準日に法定年休10日が付与された。基準日から10か月の間に、本人の請求で2日、労使協定による計画年休で1日を取得している。使用者が基準日から1年以内に行うべき対応として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "管理監督者には年休規定が適用されないため、追加対応は不要である。"
+        },
+        {
+          "id": "b",
+          "text": "本人請求分だけを控除し、残る3日を時季指定する。"
+        },
+        {
+          "id": "c",
+          "text": "本人請求分と計画年休分を控除し、残る2日を時季指定して取得させる。"
+        },
+        {
+          "id": "d",
+          "text": "10日を付与した時点で義務は完了し、取得日数は問われない。"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "正解肢の整理では、管理監督者も、法定付与日数が10日以上なら年5日取得義務の対象です。本人請求2日と計画年休1日を控除し、残り2日を取得させます。別の誤答肢は適用範囲、別の誤答肢は控除対象、別の誤答肢は付与と取得を混同しています。",
+      "trap": "管理監督者の労働時間規制の扱いを年休へ広げない。",
+      "memory": "管理監督者も年休対象。5日から本人取得と計画年休を引く。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 3,
+        "conditionCount": 4,
+        "comparisonCount": 2,
+        "judgmentSteps": 2,
+        "knowledgeCount": 2,
+        "factors": [
+          "multiple_conditions",
+          "target_difference",
+          "number_or_period",
+          "principle_exception"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": false,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d3-worktime-02",
+      "stage": 3,
+      "title": "36協定と割増賃金",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 3,
+      "thinkingLevel": "multi_condition",
+      "questionType": "multi_condition",
+      "questionTypeLabel": "複数条件問題",
+      "selectionBucket": "multi_condition",
+      "requiredConditions": [
+        "実労働9時間",
+        "36協定未届",
+        "割増賃金支払予定"
+      ],
+      "conceptIds": [
+        "article-36-agreement",
+        "overtime-premium"
+      ],
+      "hasException": true,
+      "scenarioType": "compliance_check",
+      "estimatedReasoningSteps": 2,
+      "term": "36協定と割増賃金",
+      "question": "E社は変形労働時間制を採用しておらず、36協定も届け出ていない。ある日、従業員を実労働9時間勤務させ、1時間分の時間外割増賃金は支払う予定である。法令上の整理として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "割増賃金を支払っても、法定時間外労働には事前の36協定の締結・届出が別に必要である。"
+        },
+        {
+          "id": "b",
+          "text": "割増賃金を支払えば、36協定がなくても1日8時間の規制違反は生じない。"
+        },
+        {
+          "id": "c",
+          "text": "36協定がなければ時間外割増賃金の支払義務も消える。"
+        },
+        {
+          "id": "d",
+          "text": "本人が同意すれば、36協定と割増賃金のどちらも不要となる。"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "正解肢の整理では、法定時間外労働をさせるための36協定と、実際に時間外労働をさせた場合の割増賃金は別の論点です。別の誤答肢は賃金で手続違反が消えるとし、別の誤答肢は違法な時間外労働でも賃金義務が残る点を誤り、別の誤答肢は個別同意を法定手続の代わりにしています。",
+      "trap": "残業代を払うことと、残業させる手続を分ける。",
+      "memory": "36協定は入口、割増賃金は実際に働かせた結果。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 3,
+        "conditionCount": 3,
+        "comparisonCount": 2,
+        "judgmentSteps": 2,
+        "knowledgeCount": 2,
+        "factors": [
+          "multiple_conditions",
+          "principle_exception",
+          "similar_system_comparison"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": false,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d4-worktime-01",
+      "stage": 3,
+      "title": "実労働時間・休憩・法定時間外",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 4,
+      "thinkingLevel": "case_judgment",
+      "questionType": "case",
+      "questionTypeLabel": "事例判断問題",
+      "selectionBucket": "case_judgment",
+      "requiredConditions": [
+        "9時から19時",
+        "休憩45分",
+        "実労働9時間15分",
+        "8時間超の休憩1時間",
+        "法定時間外1時間15分"
+      ],
+      "conceptIds": [
+        "working-time",
+        "break-eight-hours",
+        "statutory-overtime"
+      ],
+      "hasException": false,
+      "scenarioType": "workplace_case",
+      "estimatedReasoningSteps": 3,
+      "term": "実労働時間・休憩・法定時間外",
+      "question": "F社では9時から17時30分まで、休憩45分を所定としている。ある日19時まで勤務させ、追加休憩は与えなかった。変形労働時間制はなく、週40時間超の有無は別途確認する。この日の労働時間と休憩の整理として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "所定を超えた1時間30分すべてが法定時間外だが、所定の45分休憩で足りる。"
+        },
+        {
+          "id": "b",
+          "text": "実労働は8時間45分で、法定時間外45分と追加休憩15分だけを確認する。"
+        },
+        {
+          "id": "c",
+          "text": "実労働は9時間15分で、法定時間外1時間15分に加え、休憩を合計1時間以上与えたか確認する。"
+        },
+        {
+          "id": "d",
+          "text": "週40時間を超えなければ、1日8時間超も休憩不足も問題にならない。"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "正解肢の整理では、拘束10時間から休憩45分を引くと実労働9時間15分で、1日8時間超は1時間15分です。8時間を超えるため休憩は合計1時間以上必要です。別の誤答肢は所定外と法定外、別の誤答肢は実労働計算、別の誤答肢は1日基準と休憩規制を誤っています。判断ポイントは、拘束時間、休憩、実労働、法定外の順に計算することです。",
+      "trap": "所定終了時刻から残業時間だけを数えない。",
+      "memory": "拘束時間から休憩を引き、8時間超と休憩基準を別々に判定。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 4,
+        "conditionCount": 5,
+        "comparisonCount": 3,
+        "judgmentSteps": 3,
+        "knowledgeCount": 3,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "similar_system_comparison",
+          "case_application"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d4-worktime-02",
+      "stage": 3,
+      "title": "週40時間内でも生じる1日時間外",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 4,
+      "thinkingLevel": "case_judgment",
+      "questionType": "case",
+      "questionTypeLabel": "事例判断問題",
+      "selectionBucket": "case_judgment",
+      "requiredConditions": [
+        "週4日勤務",
+        "各日実労働10時間",
+        "週合計40時間",
+        "変形労働時間制なし",
+        "36協定なし"
+      ],
+      "conceptIds": [
+        "daily-eight-hours",
+        "weekly-forty-hours",
+        "article-36-agreement"
+      ],
+      "hasException": true,
+      "scenarioType": "weekly_schedule",
+      "estimatedReasoningSteps": 3,
+      "term": "週40時間内でも生じる1日時間外",
+      "question": "G社は変形労働時間制を採用せず、36協定もない。従業員を週4日、各日実労働10時間勤務させ、週合計は40時間である。会社は「週40時間以内なので時間外労働ではない」と説明した。この説明への評価として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "週合計40時間以内なので、各日の勤務時間にかかわらず法定時間外はない。"
+        },
+        {
+          "id": "b",
+          "text": "各日2時間は1日8時間を超えるため法定時間外となり、36協定と割増賃金を別々に確認する。"
+        },
+        {
+          "id": "c",
+          "text": "週4日勤務なら、各日10時間まで自動的に法定労働時間内となる。"
+        },
+        {
+          "id": "d",
+          "text": "割増賃金だけ支払えば、変形労働時間制や36協定がなくても適法となる。"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "正解肢の整理では、原則は1日8時間と週40時間の両方を満たす必要があります。週合計が40時間でも、各日2時間は法定時間外です。誤答肢は、週基準だけで日基準を消すか、割増賃金と時間外労働の手続を混同しています。判断ポイントは、日と週を独立して確認することです。",
+      "trap": "週40時間に収まるという情報だけで日単位を飛ばさない。",
+      "memory": "1日8時間と週40時間は両方確認。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 4,
+        "conditionCount": 5,
+        "comparisonCount": 3,
+        "judgmentSteps": 3,
+        "knowledgeCount": 3,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "principle_exception",
+          "case_application"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d4-worktime-03",
+      "stage": 3,
+      "title": "残業命令・36協定・割増賃金",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 4,
+      "thinkingLevel": "multi_condition",
+      "questionType": "multi_condition",
+      "questionTypeLabel": "複数条件問題",
+      "selectionBucket": "multi_condition",
+      "requiredConditions": [
+        "労働契約上の残業根拠",
+        "36協定未届",
+        "実労働9時間",
+        "割増賃金支払済み"
+      ],
+      "conceptIds": [
+        "overtime-order",
+        "article-36-agreement",
+        "overtime-premium"
+      ],
+      "hasException": true,
+      "scenarioType": "compliance_audit",
+      "estimatedReasoningSteps": 3,
+      "term": "残業命令・36協定・割増賃金",
+      "question": "H社の就業規則には業務上必要な残業を命じる規定があり、従業員も残業に応じた。ところが36協定は未届のまま実労働9時間勤務させ、1時間分の割増賃金は支払った。法的論点の組合せとして最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "就業規則の根拠があるため36協定は不要だが、割増賃金だけは必要である。"
+        },
+        {
+          "id": "b",
+          "text": "本人が応じたため36協定は不要で、割増賃金の支払いにより全て適法となる。"
+        },
+        {
+          "id": "c",
+          "text": "36協定がない時間外労働には割増賃金を支払ってはならない。"
+        },
+        {
+          "id": "d",
+          "text": "残業命令の契約上の根拠、36協定の締結・届出、割増賃金をそれぞれ別の論点として確認する。"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "正解肢の整理では、残業命令の契約上の根拠があっても、法定時間外労働には36協定が必要で、実際に働かせた時間には割増賃金も必要です。誤答肢は、就業規則や同意で36協定を代替するか、違法な時間外労働なら賃金義務もなくなると誤解しています。",
+      "trap": "一つの条件を満たしても、別の法的要件は消えない。",
+      "memory": "命令根拠、36協定、割増賃金を三段に分ける。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 4,
+        "conditionCount": 4,
+        "comparisonCount": 3,
+        "judgmentSteps": 3,
+        "knowledgeCount": 3,
+        "factors": [
+          "multiple_conditions",
+          "principle_exception",
+          "similar_system_comparison",
+          "case_application"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d4-leave-01",
+      "stage": 3,
+      "title": "年5日取得済み後の時季指定",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 4,
+      "thinkingLevel": "case_judgment",
+      "questionType": "case",
+      "questionTypeLabel": "事例判断問題",
+      "selectionBucket": "case_judgment",
+      "requiredConditions": [
+        "法定付与10日",
+        "本人請求4日",
+        "計画年休1日",
+        "取得合計5日",
+        "追加時季指定"
+      ],
+      "conceptIds": [
+        "paid-leave-five-days",
+        "employer-designation"
+      ],
+      "hasException": true,
+      "scenarioType": "leave_management",
+      "estimatedReasoningSteps": 3,
+      "term": "年5日取得済み後の時季指定",
+      "question": "Iには基準日に法定年休10日が付与され、基準日から8か月で本人請求4日と計画年休1日を取得した。使用者は年5日義務への対応として、さらに1日を一方的に時季指定しようとしている。最も適切な整理はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "既に合計5日を取得しているため、年5日義務を理由とする追加の時季指定は必要なく、行うこともできない。"
+        },
+        {
+          "id": "b",
+          "text": "本人請求分は5日に算入せず、計画年休1日だけを控除して4日を指定する。"
+        },
+        {
+          "id": "c",
+          "text": "計画年休分は5日に算入せず、本人請求4日だけを控除して1日を指定する。"
+        },
+        {
+          "id": "d",
+          "text": "10日付与された全員に、取得状況に関係なく毎年5日を使用者が指定する。"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "正解肢の整理では、本人請求4日と計画年休1日で5日に達しているため、使用者による追加指定は不要で、年5日義務を根拠には指定できません。誤答肢は、控除対象を片方だけにするか、取得実績を無視しています。判断ポイントは、取得方法別の日数を合算することです。",
+      "trap": "使用者指定だけが年5日の達成方法ではない。",
+      "memory": "本人請求・計画年休・使用者指定の合計で5日を見る。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 4,
+        "conditionCount": 5,
+        "comparisonCount": 3,
+        "judgmentSteps": 3,
+        "knowledgeCount": 3,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "principle_exception",
+          "case_application"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d4-leave-02",
+      "stage": 3,
+      "title": "取得済み日数と残りの時季指定",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 4,
+      "thinkingLevel": "multi_condition",
+      "questionType": "multi_condition",
+      "questionTypeLabel": "複数条件問題",
+      "selectionBucket": "multi_condition",
+      "requiredConditions": [
+        "法定付与12日",
+        "本人請求1日",
+        "計画年休2日",
+        "経過10か月",
+        "残り期間2か月"
+      ],
+      "conceptIds": [
+        "paid-leave-five-days",
+        "designation-deadline"
+      ],
+      "hasException": true,
+      "scenarioType": "deadline_judgment",
+      "estimatedReasoningSteps": 3,
+      "term": "取得済み日数と残りの時季指定",
+      "question": "Jには基準日に法定年休12日が付与された。基準日から10か月までに本人請求で1日、計画年休で2日を取得し、使用者指定はない。基準日から1年までの残り2か月に使用者が行う対応として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "本人請求分だけを控除し、残り4日を時季指定する。"
+        },
+        {
+          "id": "b",
+          "text": "計画年休分だけを控除し、残り3日を時季指定する。"
+        },
+        {
+          "id": "c",
+          "text": "本人請求分と計画年休分を控除し、残り2日を時季指定して取得させる。"
+        },
+        {
+          "id": "d",
+          "text": "12日を付与済みなので、実際に取得させる義務はない。"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "正解肢の整理では、年5日から本人請求1日と計画年休2日を控除し、残り2日を基準日から1年以内に取得させます。誤答肢は、控除対象を一部落とすか、付与と取得を混同しています。判断ポイントは、対象者、取得済み内訳、残日数、期限の順です。",
+      "trap": "付与日数12日から引くのではなく、取得義務5日から引く。",
+      "memory": "5日マイナス本人取得マイナス計画年休。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 4,
+        "conditionCount": 5,
+        "comparisonCount": 3,
+        "judgmentSteps": 3,
+        "knowledgeCount": 3,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "timeline",
+          "case_application"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d4-leave-03",
+      "stage": 3,
+      "title": "事業運営と年休時季変更",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 4,
+      "thinkingLevel": "composite_judgment",
+      "questionType": "composite",
+      "questionTypeLabel": "複合判断問題",
+      "selectionBucket": "composite_judgment",
+      "requiredConditions": [
+        "年休権発生済み",
+        "同日請求3人",
+        "代替要員なし",
+        "業務停止の具体的見込み",
+        "近接日の代替提案"
+      ],
+      "conceptIds": [
+        "paid-leave-right",
+        "timing-change-right",
+        "business-operation"
+      ],
+      "hasException": true,
+      "scenarioType": "workplace_staffing",
+      "estimatedReasoningSteps": 3,
+      "term": "事業運営と年休時季変更",
+      "question": "小規模店舗の必須業務を担当する3人全員が同じ日に年休を請求した。代替要員を確保できず、その日に全員が休むと店舗運営が止まる具体的事情がある。会社は取得自体を否定せず、近接する別日を提案した。最も適切な評価はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "繁忙を主張すれば具体的事情がなくても、会社は年休権を消滅させられる。"
+        },
+        {
+          "id": "b",
+          "text": "事業の正常な運営を妨げる具体的事情を踏まえ、他の時季への変更として検討する余地がある。"
+        },
+        {
+          "id": "c",
+          "text": "3人同時の請求であっても、使用者には時季変更を検討する余地が一切ない。"
+        },
+        {
+          "id": "d",
+          "text": "代替日を示せば、事業運営への支障を確認せず常に時季変更できる。"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "正解肢の整理では、時季変更は年休権の否定ではなく、事業の正常な運営を妨げる場合に他の時季へ変更する例外です。誤答肢は、具体的支障の確認を省くか、法定の例外を否定しています。判断ポイントは、権利発生、具体的支障、変更先の順に分けることです。",
+      "trap": "繁忙という抽象語だけでも、代替日を示すだけでも足りない。",
+      "memory": "権利は残る。具体的な支障があるときだけ時季を動かす。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 4,
+        "conditionCount": 5,
+        "comparisonCount": 3,
+        "judgmentSteps": 3,
+        "knowledgeCount": 3,
+        "factors": [
+          "multiple_conditions",
+          "principle_exception",
+          "case_application",
+          "knowledge_combination"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d5-worktime-01",
+      "stage": 3,
+      "title": "二人の労働時間と休憩",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 5,
+      "thinkingLevel": "composite_judgment",
+      "questionType": "composite",
+      "questionTypeLabel": "複合判断問題",
+      "selectionBucket": "composite_judgment",
+      "requiredConditions": [
+        "Aの拘束9時間30分",
+        "Aの休憩45分",
+        "Bの拘束8時間45分",
+        "Bの休憩45分",
+        "1日8時間",
+        "休憩境界"
+      ],
+      "conceptIds": [
+        "working-time",
+        "break-six-hours",
+        "break-eight-hours",
+        "statutory-overtime"
+      ],
+      "hasException": false,
+      "scenarioType": "multi_employee_case",
+      "estimatedReasoningSteps": 4,
+      "term": "二人の労働時間と休憩",
+      "question": "変形労働時間制のない事業場で、Aは9時から18時30分まで勤務し休憩45分、Bは9時から17時45分まで勤務し休憩45分だった。週40時間超の有無は別途確認する。1日単位の法定時間外労働と休憩を正しく組み合わせたものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Aは法定時間外45分で休憩も足りる。Bは法定時間外なしだが休憩1時間が必要。"
+        },
+        {
+          "id": "b",
+          "text": "Aは法定時間外1時間30分で休憩15分不足。Bは法定時間外45分で休憩は足りる。"
+        },
+        {
+          "id": "c",
+          "text": "A・Bとも拘束時間が8時間を超えるため、法定時間外と休憩不足が生じる。"
+        },
+        {
+          "id": "d",
+          "text": "Aは実労働8時間45分で法定時間外45分かつ休憩15分不足。Bは実労働8時間で法定時間外なし、休憩45分で足りる。"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "正解肢の整理では、労働者Aは9時間30分から45分を引いて実労働8時間45分、労働者Bは8時間45分から45分を引いて実労働8時間です。Aだけが1日8時間を45分超え、8時間超なので休憩は合計1時間必要です。Bは8時間ちょうどで、45分休憩が法定基準を満たします。誤答肢は拘束時間と実労働時間、または休憩の境界を取り違えています。判断ポイントは、二人を別々に実労働へ直してから二つの境界を当てることです。",
+      "trap": "拘束時間と実労働時間を混同しない。",
+      "memory": "各人ごとに拘束マイナス休憩、その後8時間と休憩境界。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 5,
+        "conditionCount": 6,
+        "comparisonCount": 4,
+        "judgmentSteps": 4,
+        "knowledgeCount": 4,
+        "factors": [
+          "multiple_conditions",
+          "number_or_period",
+          "similar_system_comparison",
+          "case_application",
+          "knowledge_combination"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d5-worktime-02",
+      "stage": 3,
+      "title": "36協定の範囲と割増賃金",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 5,
+      "thinkingLevel": "composite_judgment",
+      "questionType": "composite",
+      "questionTypeLabel": "複合判断問題",
+      "selectionBucket": "composite_judgment",
+      "requiredConditions": [
+        "36協定届出済み",
+        "協定上限月30時間",
+        "実績月35時間",
+        "割増賃金支払済み",
+        "契約上の残業根拠"
+      ],
+      "conceptIds": [
+        "article-36-agreement",
+        "agreement-limit",
+        "overtime-premium",
+        "overtime-order"
+      ],
+      "hasException": true,
+      "scenarioType": "compliance_audit",
+      "estimatedReasoningSteps": 4,
+      "term": "36協定の範囲と割増賃金",
+      "question": "K社は36協定を届け出ており、月の延長時間を30時間と定めている。就業規則には残業命令の根拠があり、ある月に35時間の法定時間外労働をさせ、割増賃金は全額支払った。法令上の評価として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "割増賃金を全額支払ったため、協定で定めた30時間を超えた点も問題にならない。"
+        },
+        {
+          "id": "b",
+          "text": "割増賃金の支払義務は履行しても、協定で定めた延長時間を超えた点は別に問題となる。"
+        },
+        {
+          "id": "c",
+          "text": "36協定を一度届け出れば、協定に定めた時間数を超えても本人同意だけで適法となる。"
+        },
+        {
+          "id": "d",
+          "text": "協定時間を超えた5時間については違法なので、割増賃金を支払う必要がない。"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "正解肢の整理では、36協定は無制限の免許ではなく、協定で定めた範囲内で時間外労働を可能にするものです。割増賃金を支払っても協定範囲超過は別問題です。誤答肢は、協定の範囲を無視するか、法違反なら実労働への賃金義務も消えると誤解しています。判断ポイントは、命令根拠、協定範囲、実績、賃金を分けることです。",
+      "trap": "36協定あり、残業代支払済み、だけで適法と決めない。",
+      "memory": "協定の有無だけでなく、協定内か、賃金を払ったかまで別判定。",
+      "sourceType": "official",
+      "sourceTitle": "労働時間・休日｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/roudouzikan/index.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 5,
+        "conditionCount": 6,
+        "comparisonCount": 4,
+        "judgmentSteps": 4,
+        "knowledgeCount": 4,
+        "factors": [
+          "multiple_conditions",
+          "principle_exception",
+          "timeline",
+          "case_application",
+          "knowledge_combination"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d5-leave-01",
+      "stage": 3,
+      "title": "管理監督者の年休取得義務",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 5,
+      "thinkingLevel": "composite_judgment",
+      "questionType": "explanation",
+      "questionTypeLabel": "理由選択問題",
+      "selectionBucket": "explanation",
+      "requiredConditions": [
+        "管理監督者",
+        "法定付与10日",
+        "本人請求2日",
+        "計画年休1日",
+        "年5日義務",
+        "労働時間規制との区別"
+      ],
+      "conceptIds": [
+        "manager-supervisor",
+        "paid-leave-five-days",
+        "working-time-exemption"
+      ],
+      "hasException": true,
+      "scenarioType": "reason_selection",
+      "estimatedReasoningSteps": 4,
+      "term": "管理監督者の年休取得義務",
+      "question": "管理監督者Lには法定年休10日が付与され、本人請求2日と計画年休1日を取得した。会社は「管理監督者は労働時間規制の扱いが異なるため、年5日取得義務も対象外」と説明した。この説明が誤りである理由として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "管理監督者には労働時間規制も年休規定もすべて通常労働者と同一に適用されるから。"
+        },
+        {
+          "id": "b",
+          "text": "管理監督者は本人請求分を年5日の取得日数へ算入できないから。"
+        },
+        {
+          "id": "c",
+          "text": "労働時間・休憩・休日の適用関係と年休の適用関係は別で、管理監督者も年5日義務の対象になり、残り2日の取得が必要だから。"
+        },
+        {
+          "id": "d",
+          "text": "管理監督者には年休を10日ではなく一律20日付与しなければならないから。"
+        }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "正解肢の整理では、管理監督者について労働時間等の扱いが異なることを、そのまま年休へ広げることはできません。法定年休10日以上の付与を受ける管理監督者も対象で、本人請求2日と計画年休1日を控除した残り2日が必要です。別の誤答肢は適用関係を全て同一とし、別の誤答肢は控除を否定し、別の誤答肢は付与日数を誤っています。",
+      "trap": "一つの適用除外を別制度へ横滑りさせない。",
+      "memory": "管理監督者でも年休は別判定。取得済みを5日から引く。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 5,
+        "conditionCount": 6,
+        "comparisonCount": 4,
+        "judgmentSteps": 4,
+        "knowledgeCount": 4,
+        "factors": [
+          "multiple_conditions",
+          "target_difference",
+          "principle_exception",
+          "case_application",
+          "knowledge_combination"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d5-leave-02",
+      "stage": 3,
+      "title": "比例付与と年5日時季指定",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 5,
+      "thinkingLevel": "case_judgment",
+      "questionType": "case",
+      "questionTypeLabel": "事例判断問題",
+      "selectionBucket": "case_judgment",
+      "requiredConditions": [
+        "週4日",
+        "週28時間",
+        "継続勤務6か月",
+        "出勤率85％",
+        "比例付与7日",
+        "年5日義務の10日基準"
+      ],
+      "conceptIds": [
+        "proportional-paid-leave",
+        "paid-leave-five-days"
+      ],
+      "hasException": true,
+      "scenarioType": "part_time_employee",
+      "estimatedReasoningSteps": 4,
+      "term": "比例付与と年5日時季指定",
+      "question": "Mは週4日・週28時間勤務で、入社後6か月継続勤務し出勤率85％だった。会社は「6か月・8割を満たす全員に年休10日を付与し、年5日を指定する」としている。Mの初回法定付与と年5日時季指定義務の整理として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "比例付与で7日となり、法定付与が10日未満なので年5日時季指定義務の対象外となる。"
+        },
+        {
+          "id": "b",
+          "text": "比例付与で7日だが、6か月・8割を満たすため年5日時季指定義務の対象となる。"
+        },
+        {
+          "id": "c",
+          "text": "週4日でも週20時間以上なので通常付与10日となり、年5日時季指定義務の対象となる。"
+        },
+        {
+          "id": "d",
+          "text": "週30時間未満なので法定年休は発生せず、時季指定義務も生じない。"
+        }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "正解肢の整理では、週4日かつ週30時間未満のMは比例付与の対象で、初回は7日です。年5日時季指定義務は法定付与日数が10日以上の労働者が対象です。別の誤答肢は発生要件と時季指定対象を混同し、別の誤答肢は30時間基準を20時間へ変え、別の誤答肢は比例付与そのものを否定しています。",
+      "trap": "年休発生要件を満たすことと、10日以上付与されることを分ける。",
+      "memory": "比例付与日数を出してから、10日以上かを見る。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 5,
+        "conditionCount": 6,
+        "comparisonCount": 4,
+        "judgmentSteps": 4,
+        "knowledgeCount": 4,
+        "factors": [
+          "multiple_conditions",
+          "target_difference",
+          "number_or_period",
+          "principle_exception",
+          "case_application",
+          "knowledge_combination"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d5-leave-03",
+      "stage": 3,
+      "title": "週所定時間と通常付与",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 5,
+      "thinkingLevel": "composite_judgment",
+      "questionType": "composite",
+      "questionTypeLabel": "複合判断問題",
+      "selectionBucket": "composite_judgment",
+      "requiredConditions": [
+        "週4日",
+        "週31時間",
+        "継続勤務6か月",
+        "出勤率82％",
+        "通常付与10日",
+        "年5日義務"
+      ],
+      "conceptIds": [
+        "regular-paid-leave",
+        "proportional-paid-leave",
+        "paid-leave-five-days"
+      ],
+      "hasException": true,
+      "scenarioType": "part_time_boundary",
+      "estimatedReasoningSteps": 4,
+      "term": "週所定時間と通常付与",
+      "question": "Nは週4日勤務だが週所定労働時間は31時間で、入社後6か月継続勤務し出勤率82％だった。会社は週4日勤務であることだけを見て比例付与7日と判断した。初回付与日数と年5日時季指定義務の整理として最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "週4日なので勤務時間に関係なく比例付与7日で、時季指定義務の対象外となる。"
+        },
+        {
+          "id": "b",
+          "text": "週31時間でも正社員でなければ比例付与7日となり、時季指定義務の対象外となる。"
+        },
+        {
+          "id": "c",
+          "text": "通常付与10日となるが、週5日未満なので年5日時季指定義務だけは対象外となる。"
+        },
+        {
+          "id": "d",
+          "text": "週30時間以上なので通常付与10日となり、法定付与10日以上として年5日時季指定義務の対象となる。"
+        }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "正解肢の整理では、比例付与は週所定労働時間30時間未満などの要件で判断します。Nは31時間なので通常付与10日となり、年5日時季指定義務の対象です。誤答肢は、週日数や雇用名称だけで決めるか、10日以上の対象要件へ週5日という条件を追加しています。",
+      "trap": "週4日だけを見ず、週30時間未満かを先に確認。",
+      "memory": "比例付与は日数と30時間未満をセットで見る。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 5,
+        "conditionCount": 6,
+        "comparisonCount": 4,
+        "judgmentSteps": 4,
+        "knowledgeCount": 4,
+        "factors": [
+          "multiple_conditions",
+          "target_difference",
+          "number_or_period",
+          "principle_exception",
+          "knowledge_combination"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
+    },
+    {
+      "id": "adaptive-d5-leave-04",
+      "stage": 3,
+      "title": "比例付与が10日に達する場合",
+      "category": [
+        "労働基準法",
+        "適応難易度"
+      ],
+      "type": "single_choice",
+      "difficulty": 5,
+      "thinkingLevel": "case_judgment",
+      "questionType": "case",
+      "questionTypeLabel": "事例判断問題",
+      "selectionBucket": "case_judgment",
+      "requiredConditions": [
+        "週4日",
+        "週28時間",
+        "継続勤務3年6か月",
+        "出勤率84％",
+        "今回付与10日",
+        "本人1日・計画2日"
+      ],
+      "conceptIds": [
+        "proportional-paid-leave",
+        "paid-leave-five-days",
+        "designation-balance"
+      ],
+      "hasException": true,
+      "scenarioType": "long_term_part_time",
+      "estimatedReasoningSteps": 4,
+      "term": "比例付与が10日に達する場合",
+      "question": "Oは週4日・週28時間勤務を3年6か月継続し、直近1年の出勤率は84％だった。今回の法定比例付与は10日で、その後本人請求1日と計画年休2日を取得した。年5日時季指定義務について最も適切なものはどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "短時間労働者は付与日数にかかわらず年5日時季指定義務の対象外である。"
+        },
+        {
+          "id": "b",
+          "text": "今回の法定付与が10日なので対象となり、取得済み3日を控除した残り2日を取得させる。"
+        },
+        {
+          "id": "c",
+          "text": "比例付与である以上、10日付与されても使用者指定は5日全て行えない。"
+        },
+        {
+          "id": "d",
+          "text": "本人請求と計画年休は控除せず、さらに5日を使用者が指定する。"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "正解肢の整理では、短時間労働者でも、その基準日に法定年休が10日以上付与されれば対象です。本人請求1日と計画年休2日を控除し、残り2日を取得させます。誤答肢は、比例付与を一律対象外とするか、取得済み日数を無視しています。判断ポイントは、雇用形態ではなく今回の法定付与日数から入ることです。",
+      "trap": "比例付与だから対象外、と固定しない。",
+      "memory": "短時間でも今回10日なら対象。5日から取得済みを引く。",
+      "sourceType": "official",
+      "sourceTitle": "年次有給休暇の時季指定｜厚生労働省",
+      "sourceUrl": "https://hatarakikatakaikaku.mhlw.go.jp/salaried.html",
+      "verifiedAt": "2026-07-20",
+      "reasoningProfile": {
+        "level": 5,
+        "conditionCount": 6,
+        "comparisonCount": 4,
+        "judgmentSteps": 4,
+        "knowledgeCount": 4,
+        "factors": [
+          "multiple_conditions",
+          "target_difference",
+          "number_or_period",
+          "timeline",
+          "case_application",
+          "knowledge_combination"
+        ],
+        "requiresOptionComparison": true,
+        "hasDistractorInformation": true,
+        "requiresQualificationKnowledge": true
+      }
     }
   ]
 }

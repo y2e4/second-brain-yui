@@ -16,7 +16,10 @@ vm.runInContext(commonSource, context);
 
 const common = context.window.QualificationOSCommon;
 const catalog = data.adaptiveDifficultyCatalog;
-const questionById = Object.fromEntries(data.questions.map((question) => [question.id, question]));
+const questionById = Object.fromEntries(
+  data.questions.concat(data.adaptiveReasoningQuestions || [])
+    .map((question) => [question.id, question])
+);
 
 function understood(questionId, level) {
   return {
@@ -108,13 +111,25 @@ assert.equal(new Set(allCatalogIds).size, allCatalogIds.length);
 Object.values(catalog.levels).forEach((entries) => assert.equal(entries.length, 6));
 
 const adaptivePool = Object.entries(catalog.levels).flatMap(([level, entries]) =>
-  entries.map((entry, index) => ({
-    ...questionById[entry.questionId],
-    adaptiveReasoningLevel: Number(level),
-    reasoningProfile: entry.reasoningProfile,
-    equivalenceKey: entry.equivalenceKey,
-    adaptiveOrder: `${level}-${String(index + 1).padStart(2, "0")}`
-  }))
+  entries.map((entry, index) => {
+    const source = questionById[entry.questionId];
+    const thinkingLevel = entry.thinkingLevel || source.thinkingLevel ||
+      (Number(level) === 1 ? "recall" : Number(level) === 2 ? "comparison" : "");
+    return {
+      ...source,
+      adaptiveReasoningLevel: Number(level),
+      reasoningProfile: entry.reasoningProfile,
+      thinkingLevel,
+      questionType: entry.questionType || source.questionType ||
+        (Array.isArray(source.choices) ? "multiple_choice" : "true_false"),
+      selectionBucket: entry.selectionBucket || source.selectionBucket || thinkingLevel,
+      requiredConditions: entry.requiredConditions || source.requiredConditions,
+      estimatedReasoningSteps: entry.estimatedReasoningSteps ||
+        source.estimatedReasoningSteps,
+      equivalenceKey: entry.equivalenceKey,
+      adaptiveOrder: `${level}-${String(index + 1).padStart(2, "0")}`
+    };
+  })
 );
 
 const level3First = common.selectAdaptiveReasoningQuestions(adaptivePool, {
@@ -144,6 +159,47 @@ const level4 = common.selectAdaptiveReasoningQuestions(adaptivePool, {
   count: 3
 });
 assert.ok(level4.questions.every((question) => question.adaptiveReasoningLevel === 4));
+assert.deepEqual(
+  Array.from(level4.questions, (question) => question.selectionBucket),
+  ["multi_condition", "case_judgment", "composite_judgment"]
+);
+assert.ok(level4.questions.every((question) =>
+  question.choices.length === 4 &&
+  question.requiredConditions.length >= 3 &&
+  question.estimatedReasoningSteps >= 3
+));
+
+const level2 = common.selectAdaptiveReasoningQuestions(adaptivePool, {
+  reasoningLevel: 2,
+  count: 3
+});
+assert.deepEqual(
+  Array.from(level2.questions, (question) => question.selectionBucket),
+  ["recall", "comparison", "comparison"]
+);
+assert.ok(level2.questions.every((question) =>
+  !question.thinkingLevel || ["recall", "comparison"].includes(question.thinkingLevel)
+));
+assert.ok(level2.questions.every((question) =>
+  !question.adaptiveSelectionReason.includes("判断条件0件")
+));
+assert.ok(level4.questions.every((question) =>
+  question.thinkingLevel !== "recall" &&
+  question.questionType !== "true_false"
+));
+
+const level5 = common.selectAdaptiveReasoningQuestions(adaptivePool, {
+  reasoningLevel: 5,
+  count: 3
+});
+assert.deepEqual(
+  Array.from(level5.questions, (question) => question.selectionBucket),
+  ["case_judgment", "composite_judgment", "explanation"]
+);
+assert.ok(level5.questions.every((question) =>
+  question.requiredConditions.length >= 3 &&
+  question.adaptiveSelectionReason.includes("必要な判断条件")
+));
 
 function average(level, key) {
   const entries = catalog.levels[String(level)];
@@ -162,4 +218,4 @@ assert.ok(html.includes('new URLSearchParams(window.location.search).get("debug"
 assert.ok(html.includes('id="resultAdaptiveSummary"'));
 assert.ok(!html.includes("undefined："));
 
-console.log("adaptive difficulty tests: 6 scenarios passed");
+console.log("adaptive difficulty tests: 9 scenarios passed");

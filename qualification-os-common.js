@@ -62,6 +62,20 @@
   var ADAPTIVE_SET_SIZE = 3;
   var ADAPTIVE_STREAK_REQUIRED = 2;
   var ADAPTIVE_HISTORY_LIMIT = 10;
+  var ADAPTIVE_THINKING_RANKS = {
+    recall: 1,
+    comparison: 2,
+    multi_condition: 3,
+    case_judgment: 4,
+    composite_judgment: 5
+  };
+  var ADAPTIVE_SELECTION_PATTERNS = {
+    1: ["recall", "recall", "recall"],
+    2: ["recall", "comparison", "comparison"],
+    3: ["comparison", "multi_condition", "case_judgment"],
+    4: ["multi_condition", "case_judgment", "composite_judgment"],
+    5: ["case_judgment", "composite_judgment", "explanation"]
+  };
 
   function isPlainObject(value) {
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -654,13 +668,42 @@
         question.reasoningProfile && question.reasoningProfile.level
       )) === requestedLevel;
     });
-    var preferred = exactLevel.filter(function (question) {
+
+    function getRequiredConditionCount(question) {
+      var listedCount = Array.isArray(question && question.requiredConditions)
+        ? question.requiredConditions.length
+        : 0;
+      var profileCount = Number(question && question.reasoningProfile &&
+        question.reasoningProfile.conditionCount) || 0;
+      return Math.max(listedCount, profileCount);
+    }
+
+    var eligible = exactLevel.filter(function (question) {
+      var choices = Array.isArray(question && question.choices) ? question.choices : [];
+      var requiredConditions = getRequiredConditionCount(question);
+      var reasoningSteps = Number(question && question.estimatedReasoningSteps) ||
+        Number(question && question.reasoningProfile &&
+          question.reasoningProfile.judgmentSteps) || 0;
+      var thinkingLevel = String(question && question.thinkingLevel || "");
+      var thinkingRank = ADAPTIVE_THINKING_RANKS[thinkingLevel] || requestedLevel;
+
+      if (requestedLevel < 3) {
+        return true;
+      }
+      return choices.length >= 4 &&
+        String(question.questionType || question.type || "") !== "true_false" &&
+        thinkingRank >= requestedLevel - 1 &&
+        requiredConditions >= (requestedLevel === 3 ? 2 : 3) &&
+        reasoningSteps >= (requestedLevel === 3 ? 2 : 3);
+    });
+    var preferred = eligible.filter(function (question) {
       return recentIds.indexOf(question.id) === -1 &&
         recentEquivalenceKeys.indexOf(question.equivalenceKey || question.id) === -1;
     });
-    var deferred = exactLevel.filter(function (question) {
+    var deferred = eligible.filter(function (question) {
       return preferred.indexOf(question) === -1;
     });
+    var selectionPattern = ADAPTIVE_SELECTION_PATTERNS[requestedLevel] || [];
 
     function sortQuestions(list) {
       return list.slice().sort(function (left, right) {
@@ -675,21 +718,78 @@
       });
     }
 
-    if (exactLevel.length < requestedCount) {
+    function getBucket(question) {
+      return String(question && (
+        question.selectionBucket ||
+        question.questionType ||
+        question.thinkingLevel
+      ) || "");
+    }
+
+    function takeQuestion(available, bucket, selected) {
+      var index = available.findIndex(function (question) {
+        return getBucket(question) === bucket;
+      });
+      var question;
+
+      if (index === -1) {
+        return false;
+      }
+      question = available.splice(index, 1)[0];
+      selected.push(Object.assign({}, question, {
+        adaptiveSelectionReason: "適応難易度" + requestedLevel + "の" +
+          bucket + "枠。必要な判断条件" +
+          getRequiredConditionCount(question) + "件。"
+      }));
+      return true;
+    }
+
+    function selectFrom(available, selected) {
+      selectionPattern.slice(0, requestedCount).forEach(function (bucket) {
+        if (selected.length < requestedCount) {
+          takeQuestion(available, bucket, selected);
+        }
+      });
+      while (selected.length < requestedCount && available.length) {
+        var question = available.shift();
+        selected.push(Object.assign({}, question, {
+          adaptiveSelectionReason: "適応難易度" + requestedLevel +
+            "の思考条件を満たす補完枠。必要な判断条件" +
+            getRequiredConditionCount(question) + "件。"
+        }));
+      }
+    }
+
+    if (eligible.length < requestedCount) {
       return {
         questions: [],
         shortage: {
           requestedLevel: requestedLevel,
           requestedCount: requestedCount,
-          availableCount: exactLevel.length,
-          missingCount: requestedCount - exactLevel.length
+          availableCount: eligible.length,
+          missingCount: requestedCount - eligible.length,
+          excludedCount: exactLevel.length - eligible.length
         }
       };
     }
 
+    var selected = [];
+    selectFrom(sortQuestions(preferred), selected);
+    if (selected.length < requestedCount) {
+      selectFrom(sortQuestions(deferred).filter(function (question) {
+        return !selected.some(function (item) {
+          return item.id === question.id;
+        });
+      }), selected);
+    }
+
     return {
-      questions: sortQuestions(preferred).concat(sortQuestions(deferred)).slice(0, requestedCount),
-      shortage: null
+      questions: selected.slice(0, requestedCount),
+      shortage: null,
+      requestedLevel: requestedLevel,
+      eligibleCount: eligible.length,
+      excludedCount: exactLevel.length - eligible.length,
+      selectionPattern: selectionPattern.slice(0, requestedCount)
     };
   }
 
