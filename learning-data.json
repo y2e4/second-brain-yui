@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-19T12:43:57.673Z",
+  "updatedAt": "2026-07-20T23:02:36.695Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,15 +10,14 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-07-19T12:43:57.673Z",
+    "exportedAt": "2026-07-20T23:02:36.695Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
       1,
       2,
       3,
-      4,
-      5
+      4
     ],
     "answeredQuestionIds": [
       "question-027",
@@ -200,38 +199,7 @@
         "answerCount": 54,
         "correctCount": 53,
         "accuracy": 98,
-        "answeredQuestionIds": [
-          "question-027",
-          "question-004",
-          "question-023",
-          "question-010",
-          "question-008",
-          "question-018",
-          "question-009",
-          "question-026",
-          "question-015",
-          "question-006",
-          "question-012",
-          "question-014",
-          "question-022",
-          "question-013",
-          "question-021",
-          "question-025",
-          "question-001",
-          "question-003",
-          "question-019",
-          "question-002",
-          "question-017",
-          "question-007",
-          "question-016",
-          "question-028",
-          "question-024",
-          "question-011",
-          "question-005",
-          "question-030",
-          "question-020",
-          "question-029"
-        ],
+        "answeredQuestionIds": [],
         "unlocked": true,
         "achieved": true
       },
@@ -240,38 +208,7 @@
         "answerCount": 54,
         "correctCount": 52,
         "accuracy": 96,
-        "answeredQuestionIds": [
-          "stage2-question-016",
-          "stage2-question-030",
-          "stage2-question-009",
-          "stage2-question-023",
-          "stage2-question-022",
-          "stage2-question-024",
-          "stage2-question-002",
-          "stage2-question-012",
-          "stage2-question-018",
-          "stage2-question-017",
-          "stage2-question-004",
-          "stage2-question-020",
-          "stage2-question-008",
-          "stage2-question-027",
-          "stage2-question-029",
-          "stage2-question-025",
-          "stage2-question-014",
-          "stage2-question-007",
-          "stage2-question-011",
-          "stage2-question-001",
-          "stage2-question-021",
-          "stage2-question-003",
-          "stage2-question-010",
-          "stage2-question-006",
-          "stage2-question-019",
-          "stage2-question-015",
-          "stage2-question-013",
-          "stage2-question-028",
-          "stage2-question-005",
-          "stage2-question-026"
-        ],
+        "answeredQuestionIds": [],
         "unlocked": true,
         "achieved": true
       },
@@ -280,38 +217,7 @@
         "answerCount": 51,
         "correctCount": 50,
         "accuracy": 98,
-        "answeredQuestionIds": [
-          "stage3-question-016",
-          "stage3-question-018",
-          "stage3-question-024",
-          "stage3-question-020",
-          "stage3-question-029",
-          "stage3-question-010",
-          "stage3-question-009",
-          "stage3-question-005",
-          "stage3-question-011",
-          "stage3-question-026",
-          "stage3-question-015",
-          "stage3-question-002",
-          "stage3-question-023",
-          "stage3-question-022",
-          "stage3-question-004",
-          "stage3-question-006",
-          "stage3-question-025",
-          "stage3-question-012",
-          "stage3-question-030",
-          "stage3-question-014",
-          "stage3-question-017",
-          "stage3-question-013",
-          "stage3-question-001",
-          "stage3-question-008",
-          "stage3-question-021",
-          "stage3-question-028",
-          "stage3-question-003",
-          "stage3-question-019",
-          "stage3-question-027",
-          "stage3-question-007"
-        ],
+        "answeredQuestionIds": [],
         "unlocked": true,
         "achieved": true
       },
@@ -320,20 +226,7 @@
         "answerCount": 33,
         "correctCount": 33,
         "accuracy": 100,
-        "answeredQuestionIds": [
-          "stage4-question-010",
-          "stage4-question-003",
-          "stage4-question-001",
-          "stage4-question-007",
-          "stage4-question-002",
-          "stage4-question-008",
-          "stage4-question-011",
-          "stage4-question-009",
-          "stage4-question-004",
-          "stage4-question-006",
-          "stage4-question-012",
-          "stage4-question-005"
-        ],
+        "answeredQuestionIds": [],
         "unlocked": true,
         "achieved": true
       },
@@ -342,80 +235,9 @@
         "answerCount": 70,
         "correctCount": 70,
         "accuracy": 100,
-        "answeredQuestionIds": [
-          "stage5-question-030",
-          "stage5-question-028",
-          "stage5-question-008",
-          "stage5-question-060",
-          "stage5-question-019",
-          "stage5-question-014",
-          "stage5-question-034",
-          "stage5-question-065",
-          "stage5-question-058",
-          "stage5-question-044",
-          "stage5-question-024",
-          "stage5-question-002",
-          "stage5-question-046",
-          "stage5-question-020",
-          "stage5-question-023",
-          "stage5-question-026",
-          "stage5-question-053",
-          "stage5-question-048",
-          "stage5-question-068",
-          "stage5-question-033",
-          "stage5-question-067",
-          "stage5-question-050",
-          "stage5-question-040",
-          "stage5-question-022",
-          "stage5-question-041",
-          "stage5-question-070",
-          "stage5-question-049",
-          "stage5-question-056",
-          "stage5-question-043",
-          "stage5-question-059",
-          "stage5-question-031",
-          "stage5-question-062",
-          "stage5-question-054",
-          "stage5-question-015",
-          "stage5-question-052",
-          "stage5-question-004",
-          "stage5-question-016",
-          "stage5-question-018",
-          "stage5-question-009",
-          "stage5-question-027",
-          "stage5-question-032",
-          "stage5-question-017",
-          "stage5-question-013",
-          "stage5-question-055",
-          "stage5-question-006",
-          "stage5-question-038",
-          "stage5-question-057",
-          "stage5-question-010",
-          "stage5-question-047",
-          "stage5-question-061",
-          "stage5-question-063",
-          "stage5-question-066",
-          "stage5-question-021",
-          "stage5-question-003",
-          "stage5-question-037",
-          "stage5-question-025",
-          "stage5-question-045",
-          "stage5-question-005",
-          "stage5-question-012",
-          "stage5-question-069",
-          "stage5-question-029",
-          "stage5-question-011",
-          "stage5-question-036",
-          "stage5-question-001",
-          "stage5-question-035",
-          "stage5-question-007",
-          "stage5-question-064",
-          "stage5-question-039",
-          "stage5-question-042",
-          "stage5-question-051"
-        ],
+        "answeredQuestionIds": [],
         "unlocked": true,
-        "achieved": true
+        "achieved": false
       }
     },
     "wrongQuestionIds": [
@@ -443,10 +265,7 @@
       "stage5-question-021",
       "stage5-question-027",
       "stage5-question-058",
-      "stage5-question-039",
       "stage5-question-005",
-      "stage5-question-064",
-      "stage5-question-034",
       "stage5-question-069",
       "stage5-question-048",
       "stage5-question-035",
@@ -466,35 +285,34 @@
       "stage5-question-022",
       "stage5-question-050",
       "stage5-question-014",
-      "stage5-question-019"
+      "stage5-question-019",
+      "stage5-question-034",
+      "stage5-question-041",
+      "stage5-question-051",
+      "stage5-question-024",
+      "stage5-question-039",
+      "stage5-question-063",
+      "stage5-question-061",
+      "stage5-question-064",
+      "stage5-question-068"
     ],
     "guessedCorrectQuestionIds": [],
     "uncertainCorrectQuestionIds": [],
     "ambiguousQuestionIds": [],
     "weakQuestionIds": [],
     "weakCategories": {
-      "counts": {
-        "労働基準法": 2,
-        "年金": 2,
-        "選択式対策": 1,
-        "実戦総合演習": 1
-      },
-      "labels": [
-        "年金 2問",
-        "労働基準法 2問",
-        "実戦総合演習 1問",
-        "選択式対策 1問"
-      ]
+      "counts": {},
+      "labels": []
     },
-    "totalAnswered": 298,
-    "totalCorrect": 293,
-    "lastStudyDate": "2026-07-19",
-    "lastStudyAt": "2026-07-19T12:43:38.708Z",
+    "totalAnswered": 313,
+    "totalCorrect": 308,
+    "lastStudyDate": "2026-07-20",
+    "lastStudyAt": "2026-07-20T10:20:52.369Z",
     "firekeeper": {
       "lastShownDate": "2026-07-18",
       "lastShownAt": "2026-07-18T09:53:43.120Z",
-      "dismissedDate": "2026-07-19",
-      "lastDismissedAt": "2026-07-19T12:43:38.708Z",
+      "dismissedDate": "2026-07-20",
+      "lastDismissedAt": "2026-07-20T10:20:52.369Z",
       "lastDismissReason": "answer",
       "restRecords": []
     },
@@ -638,10 +456,7 @@
         "stage5-question-021",
         "stage5-question-027",
         "stage5-question-058",
-        "stage5-question-039",
         "stage5-question-005",
-        "stage5-question-064",
-        "stage5-question-034",
         "stage5-question-069",
         "stage5-question-048",
         "stage5-question-035",
@@ -661,7 +476,16 @@
         "stage5-question-022",
         "stage5-question-050",
         "stage5-question-014",
-        "stage5-question-019"
+        "stage5-question-019",
+        "stage5-question-034",
+        "stage5-question-041",
+        "stage5-question-051",
+        "stage5-question-024",
+        "stage5-question-039",
+        "stage5-question-063",
+        "stage5-question-061",
+        "stage5-question-064",
+        "stage5-question-068"
       ],
       "unsureCorrectQuestionIds": [],
       "guessedCorrectQuestionIds": [],
@@ -698,8 +522,8 @@
       }
     },
     "progress": {
-      "totalAnswers": 298,
-      "correctAnswers": 293,
+      "totalAnswers": 313,
+      "correctAnswers": 308,
       "wrongQuestionIds": [
         "question-013",
         "stage2-question-004",
@@ -707,18 +531,18 @@
         "stage3-question-026",
         "stage5-question-013"
       ],
-      "lastStudyDate": "2026-07-19",
-      "lastStudyAt": "2026-07-19T12:43:38.708Z",
-      "lastManualSyncAt": "2026-07-19T12:43:57.673Z",
-      "lastSavedAt": "2026-07-19T12:43:57.673Z",
-      "lastQuestionId": "stage5-question-019",
+      "lastStudyDate": "2026-07-20",
+      "lastStudyAt": "2026-07-20T10:20:52.369Z",
+      "lastManualSyncAt": "2026-07-20T23:02:36.694Z",
+      "lastSavedAt": "2026-07-20T23:02:36.694Z",
+      "lastQuestionId": "stage5-question-068",
       "recentQuestionIds": [
-        "stage4-question-005",
-        "stage4-question-006",
-        "stage4-question-008",
-        "stage4-question-001",
-        "stage5-question-014",
-        "stage5-question-019"
+        "stage5-question-024",
+        "stage5-question-039",
+        "stage5-question-063",
+        "stage5-question-061",
+        "stage5-question-064",
+        "stage5-question-068"
       ],
       "seenQuestionIds": [
         "question-027",
@@ -895,8 +719,8 @@
         "stage5-question-051"
       ],
       "daily": {
-        "date": "2026-07-19",
-        "answers": 42
+        "date": "2026-07-21",
+        "answers": 0
       },
       "wrongReview": {
         "question-013": {
@@ -1264,10 +1088,7 @@
           "stage5-question-021",
           "stage5-question-027",
           "stage5-question-058",
-          "stage5-question-039",
           "stage5-question-005",
-          "stage5-question-064",
-          "stage5-question-034",
           "stage5-question-069",
           "stage5-question-048",
           "stage5-question-035",
@@ -1287,7 +1108,16 @@
           "stage5-question-022",
           "stage5-question-050",
           "stage5-question-014",
-          "stage5-question-019"
+          "stage5-question-019",
+          "stage5-question-034",
+          "stage5-question-041",
+          "stage5-question-051",
+          "stage5-question-024",
+          "stage5-question-039",
+          "stage5-question-063",
+          "stage5-question-061",
+          "stage5-question-064",
+          "stage5-question-068"
         ],
         "unsureCorrectQuestionIds": [],
         "guessedCorrectQuestionIds": [],
@@ -1325,8 +1155,8 @@
       },
       "adaptiveDifficulty": {
         "version": 2,
-        "reasoningLevel": 4,
-        "perfectSetStreak": 1,
+        "reasoningLevel": 5,
+        "perfectSetStreak": 2,
         "recentSets": [
           {
             "mode": "daily",
@@ -1444,56 +1274,251 @@
             ],
             "perfect": true,
             "completedAt": "2026-07-19T12:43:41.119Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 4,
+            "answers": [
+              {
+                "questionId": "stage5-question-034",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 4
+              },
+              {
+                "questionId": "stage5-question-041",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 4
+              },
+              {
+                "questionId": "stage5-question-051",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 4
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-07-20T10:05:19.848Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "stage5-question-024",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-039",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-063",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-07-20T10:12:12.381Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "stage5-question-061",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-064",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-068",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-07-20T10:14:55.456Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "stage5-question-024",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-039",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-063",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-07-20T10:18:13.464Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "stage5-question-061",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-064",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "stage5-question-068",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-07-20T10:20:54.899Z"
           }
         ],
         "lastSet": {
           "mode": "daily",
           "stageLevel": 5,
-          "reasoningLevel": 4,
+          "reasoningLevel": 5,
           "answers": [
             {
-              "questionId": "stage4-question-001",
+              "questionId": "stage5-question-061",
               "correct": true,
               "understanding": "understood",
               "unsure": false,
               "guessed": false,
               "ambiguous": false,
               "weak": false,
-              "reasoningLevel": 4
+              "reasoningLevel": 5
             },
             {
-              "questionId": "stage5-question-014",
+              "questionId": "stage5-question-064",
               "correct": true,
               "understanding": "understood",
               "unsure": false,
               "guessed": false,
               "ambiguous": false,
               "weak": false,
-              "reasoningLevel": 4
+              "reasoningLevel": 5
             },
             {
-              "questionId": "stage5-question-019",
+              "questionId": "stage5-question-068",
               "correct": true,
               "understanding": "understood",
               "unsure": false,
               "guessed": false,
               "ambiguous": false,
               "weak": false,
-              "reasoningLevel": 4
+              "reasoningLevel": 5
             }
           ],
           "perfect": true,
-          "completedAt": "2026-07-19T12:43:41.119Z"
+          "completedAt": "2026-07-20T10:20:54.899Z"
         },
-        "lastIncreasedAt": "2026-07-19T12:38:35.220Z",
-        "lastEvaluatedAt": "2026-07-19T12:43:41.119Z",
+        "lastIncreasedAt": "2026-07-20T10:05:19.848Z",
+        "lastEvaluatedAt": "2026-07-20T10:20:54.899Z",
         "lastAdjustment": "perfect-set"
       },
       "firekeeper": {
         "lastShownDate": "2026-07-18",
         "lastShownAt": "2026-07-18T09:53:43.120Z",
-        "dismissedDate": "2026-07-19",
-        "lastDismissedAt": "2026-07-19T12:43:38.708Z",
+        "dismissedDate": "2026-07-20",
+        "lastDismissedAt": "2026-07-20T10:20:52.369Z",
         "lastDismissReason": "answer",
         "restRecords": []
       }
