@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-20T23:47:36.274Z",
+  "updatedAt": "2026-07-23T00:44:32.310Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -1529,7 +1529,7 @@
     "title": "第二種衛生管理者OS",
     "version": 2,
     "storageKey": "hygieneQualificationOSV2StateV1",
-    "exportedAt": "2026-07-20T23:47:36.274Z",
+    "exportedAt": "2026-07-23T00:44:32.310Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -1869,14 +1869,14 @@
     ],
     "totalAnswered": 257,
     "totalCorrect": 229,
-    "todayAnswers": 14,
+    "todayAnswers": 0,
     "lastStudyDate": "2026-07-21",
     "lastStudyAt": "2026-07-20T23:32:32.468Z",
     "firekeeper": {
-      "lastShownDate": "2026-07-21",
+      "lastShownDate": "2026-07-23",
       "dismissedDate": "2026-07-21",
       "restRecords": [],
-      "lastShownAt": "2026-07-20T23:01:29.946Z",
+      "lastShownAt": "2026-07-23T00:44:25.760Z",
       "lastDismissedAt": "2026-07-20T23:01:32.246Z",
       "lastDismissReason": "start"
     },
@@ -1899,9 +1899,9 @@
       "totalAnswered": 257,
       "lastStudyDate": "2026-07-21",
       "lastStudyAt": "2026-07-20T23:32:32.468Z",
-      "lastSavedAt": "2026-07-20T23:47:36.274Z",
-      "lastManualSyncAt": "2026-07-20T23:47:36.274Z",
-      "shownSequence": 304,
+      "lastSavedAt": "2026-07-23T00:44:32.309Z",
+      "lastManualSyncAt": "2026-07-23T00:44:32.309Z",
+      "shownSequence": 306,
       "recentQuestionIds": [
         "hm2-stage5-021",
         "hm2-stage5-022",
@@ -1909,7 +1909,6 @@
         "hm2-stage5-026",
         "hm2-stage5-027",
         "hm2-stage5-030",
-        "hm2-stage5-001",
         "hm2-stage5-002",
         "hm2-stage5-003",
         "hm2-stage5-004",
@@ -1922,27 +1921,14 @@
         "hm2-stage5-011",
         "hm2-stage5-012",
         "hm2-stage5-013",
-        "hm2-stage5-014"
-      ],
-      "dailyDate": "2026-07-21",
-      "dailyShownIds": [
         "hm2-stage5-014",
-        "hm2-stage5-030",
-        "hm2-stage5-001",
-        "hm2-stage5-002",
-        "hm2-stage5-003",
-        "hm2-stage5-004",
-        "hm2-stage5-005",
-        "hm2-stage5-006",
-        "hm2-stage5-007",
-        "hm2-stage5-008",
-        "hm2-stage5-009",
-        "hm2-stage5-010",
-        "hm2-stage5-011",
-        "hm2-stage5-012",
-        "hm2-stage5-013"
+        "hm2-stage5-001"
       ],
-      "dailyAnsweredCount": 14,
+      "dailyDate": "2026-07-23",
+      "dailyShownIds": [
+        "hm2-stage5-001"
+      ],
+      "dailyAnsweredCount": 0,
       "lastQueueByStage": {
         "1": [
           "hm2-hygiene-v01-06",
@@ -1996,12 +1982,12 @@
           "hm2-stage5-030"
         ]
       },
-      "lastQuestionId": "hm2-stage5-014",
+      "lastQuestionId": "hm2-stage5-001",
       "firekeeper": {
-        "lastShownDate": "2026-07-21",
+        "lastShownDate": "2026-07-23",
         "dismissedDate": "2026-07-21",
         "restRecords": [],
-        "lastShownAt": "2026-07-20T23:01:29.946Z",
+        "lastShownAt": "2026-07-23T00:44:25.760Z",
         "lastDismissedAt": "2026-07-20T23:01:32.246Z",
         "lastDismissReason": "start"
       },
@@ -3313,7 +3299,7 @@
           "lastUnderstandingDate": "2026-07-21",
           "lastOutcome": "understood",
           "lastAnsweredDate": "2026-07-21",
-          "lastShownOrder": 291,
+          "lastShownOrder": 306,
           "wrongActive": false,
           "reviewActive": false,
           "manualWeak": false
@@ -3818,8 +3804,8 @@
           "hm2-stage5-029",
           "hm2-stage5-030"
         ],
-        "index": 13,
-        "correct": 12,
+        "index": 0,
+        "correct": 0,
         "recorded": false
       }
     }
