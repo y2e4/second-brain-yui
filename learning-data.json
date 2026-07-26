@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-25T23:33:41.882Z",
+  "updatedAt": "2026-07-26T01:07:19.895Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,7 +10,7 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-07-25T23:33:41.882Z",
+    "exportedAt": "2026-07-26T01:07:19.895Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -729,16 +729,16 @@
       ],
       "lastStudyDate": "2026-07-25",
       "lastStudyAt": "2026-07-25T10:07:59.672Z",
-      "lastManualSyncAt": "2026-07-25T23:33:41.882Z",
-      "lastSavedAt": "2026-07-25T23:33:41.882Z",
-      "lastQuestionId": "adaptive-d5-leave-01",
+      "lastManualSyncAt": "2026-07-26T01:07:19.895Z",
+      "lastSavedAt": "2026-07-26T01:07:19.895Z",
+      "lastQuestionId": "adaptive-d5-leave-04",
       "recentQuestionIds": [
-        "stage5-question-061",
         "stage5-question-064",
         "stage5-question-068",
         "adaptive-d5-leave-02",
         "adaptive-d5-worktime-01",
-        "adaptive-d5-leave-01"
+        "adaptive-d5-leave-01",
+        "adaptive-d5-leave-04"
       ],
       "seenQuestionIds": [
         "question-027",
