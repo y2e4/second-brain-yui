@@ -1031,7 +1031,9 @@
                   <textarea class="sync-textarea" id="syncDataText" rows="8" spellcheck="false" placeholder="バックアップJSONをここに貼り付けます。"></textarea>
                   <div class="sync-actions">
                     <button class="secondary-button" type="button" id="importProgressButton">学習データをインポート</button>
+                    <button class="secondary-button" type="button" id="showLatestImportBackupButton">直前バックアップJSONを表示</button>
                   </div>
+                  <p class="sync-meta" id="importBackupInfo">インポート前バックアップ：未作成</p>
                 </div>
               </details>
             </div>
@@ -1195,6 +1197,8 @@
       var GITHUB_SYNC_CONFIG_KEY = "qualificationOSGithubSyncConfigV1";
       var LEGACY_SHAROSHI_GITHUB_SYNC_CONFIG_KEY = "sharoshiGithubSyncConfigV1";
       var GITHUB_SYNC_META_KEY = "eiseiGithubSyncMetaV1";
+      var IMPORT_BACKUP_KEY = "hygieneQualificationOSV2ImportBackupsV1";
+      var IMPORT_BACKUP_LIMIT = 5;
       var MIGRATION_BACKUP_KEY = "hygieneQualificationOSV2MigrationBackupV1";
       var MIGRATION_DONE_KEY = "hygieneQualificationOSV2MigrationDoneV1";
       var OLD_STATS_KEY = "hygieneManagerSecondTypeQuestionStatsV1";
@@ -1318,6 +1322,7 @@
       var lastSyncAt = document.getElementById("lastSyncAt");
       var syncStatus = document.getElementById("syncStatus");
       var syncDataText = document.getElementById("syncDataText");
+      var importBackupInfo = document.getElementById("importBackupInfo");
       var githubSyncStateCard = document.getElementById("githubSyncStateCard");
       var githubSyncStateTitle = document.getElementById("githubSyncStateTitle");
       var githubSyncStateDetail = document.getElementById("githubSyncStateDetail");
@@ -1342,6 +1347,7 @@
           lastStudyAt: "",
           lastSavedAt: "",
           lastManualSyncAt: "",
+          importedAt: "",
           shownSequence: 0,
           recentQuestionIds: [],
           dailyDate: getLocalDateKey(),
@@ -3190,15 +3196,168 @@
         return next;
       }
 
-      function applyImportedProgressPayload(payload) {
-        var syncAt = new Date().toISOString();
-        state = normalizeImportedProgressPayload(payload);
-        state.lastManualSyncAt = syncAt;
-        state.lastSavedAt = syncAt;
-        saveState({ savedAt: syncAt });
-        loadState();
-        renderAll();
-        return syncAt;
+      function readImportBackups(storage) {
+        var targetStorage = storage || localStorage;
+        var raw = targetStorage.getItem(IMPORT_BACKUP_KEY);
+        var parsed;
+        if (!raw) {
+          return [];
+        }
+        parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+          throw new Error("インポート前バックアップの保存形式を確認できません。");
+        }
+        return parsed;
+      }
+
+      function makeImportBackupLabel(createdAt) {
+        return "手動インポート前 " + formatDateTime(createdAt);
+      }
+
+      function createPreImportBackup(options) {
+        var settings = options || {};
+        var targetStorage = settings.storage || localStorage;
+        var createdAt = String(settings.createdAt || new Date().toISOString());
+        var backupId = "manual-import-" + createdAt.replace(/[^0-9A-Za-z]/g, "");
+        var entry;
+        var backups;
+        var verified;
+        try {
+          entry = {
+            schemaVersion: 1,
+            id: backupId,
+            label: makeImportBackupLabel(createdAt),
+            createdAt: createdAt,
+            storageKey: STATE_KEY,
+            payload: cloneJson(
+              settings.payload || wrapLearningPayload(null, buildProgressExportPayload())
+            )
+          };
+          backups = readImportBackups(targetStorage);
+          backups.push(entry);
+          backups = backups.slice(-IMPORT_BACKUP_LIMIT);
+          targetStorage.setItem(IMPORT_BACKUP_KEY, JSON.stringify(backups));
+          verified = readImportBackups(targetStorage);
+          if (!verified.length ||
+              verified[verified.length - 1].id !== backupId ||
+              !isPlainObject(verified[verified.length - 1].payload)) {
+            throw new Error("保存後の確認に失敗しました。");
+          }
+        } catch (error) {
+          throw new Error(
+            "インポート前バックアップを保存できないため、インポートを中止しました：" +
+            (error.message || "保存領域を確認してください。")
+          );
+        }
+        return entry;
+      }
+
+      function updateImportBackupInfo() {
+        var backups;
+        var latest;
+        if (!importBackupInfo) {
+          return;
+        }
+        try {
+          backups = readImportBackups();
+          latest = backups.length ? backups[backups.length - 1] : null;
+          importBackupInfo.textContent = latest
+            ? "インポート前バックアップ：" + latest.label +
+              " / 保存先：" + IMPORT_BACKUP_KEY
+            : "インポート前バックアップ：未作成 / 保存先：" + IMPORT_BACKUP_KEY;
+        } catch (error) {
+          importBackupInfo.textContent =
+            "インポート前バックアップを確認できません：" + error.message;
+        }
+      }
+
+      function showLatestImportBackup() {
+        var backups;
+        var latest;
+        try {
+          backups = readImportBackups();
+          latest = backups.length ? backups[backups.length - 1] : null;
+          if (!latest || !isPlainObject(latest.payload)) {
+            throw new Error("表示できるインポート前バックアップはまだありません。");
+          }
+          syncDataText.value = JSON.stringify(latest.payload, null, 2);
+          syncDataText.focus();
+          syncDataText.select();
+          showSyncStatus(
+            latest.label + " のバックアップJSONを表示しました。" +
+            "復旧する場合は内容を確認してからインポートしてください。",
+            false
+          );
+        } catch (error) {
+          showSyncStatus(error.message || "インポート前バックアップを表示できませんでした。", true);
+        }
+      }
+
+      function applyNormalizedProgressState(nextState, options) {
+        var settings = options || {};
+        var appliedAt = String(settings.appliedAt || new Date().toISOString());
+        var previousState = state;
+        var previousStoredState = localStorage.getItem(STATE_KEY);
+        try {
+          state = nextState;
+          if (settings.githubSync === true) {
+            state.lastManualSyncAt = appliedAt;
+          } else {
+            state.importedAt = appliedAt;
+          }
+          state.lastSavedAt = appliedAt;
+          saveState({ savedAt: appliedAt });
+          loadState();
+          hideTransientViews();
+          renderAll();
+          return appliedAt;
+        } catch (error) {
+          state = previousState;
+          try {
+            if (previousStoredState === null) {
+              localStorage.removeItem(STATE_KEY);
+            } else {
+              localStorage.setItem(STATE_KEY, previousStoredState);
+            }
+          } catch (rollbackError) {
+            throw new Error(
+              (error.message || "学習データを保存できませんでした。") +
+              " 元の状態の自動復旧にも失敗しました。インポート前バックアップから復旧してください。"
+            );
+          }
+          throw error;
+        }
+      }
+
+      function applyImportedProgressPayload(payload, options) {
+        return applyNormalizedProgressState(
+          normalizeImportedProgressPayload(payload),
+          options
+        );
+      }
+
+      function applyGitHubProgressPayload(payload) {
+        return applyImportedProgressPayload(payload, {
+          githubSync: true
+        });
+      }
+
+      function performManualImport(raw, options) {
+        var settings = options || {};
+        var parsed = JSON.parse(raw);
+        var nextState = normalizeImportedProgressPayload(parsed);
+        var backup = createPreImportBackup({
+          storage: settings.backupStorage,
+          createdAt: settings.createdAt
+        });
+        var importedAt = applyNormalizedProgressState(nextState, {
+          githubSync: false,
+          appliedAt: settings.importedAt
+        });
+        return {
+          backup: backup,
+          importedAt: importedAt
+        };
       }
 
       function wrapLearningPayload(remotePayload, localPayload) {
@@ -3305,7 +3464,7 @@
             if (localUnsynced) {
               throw new Error("ローカルとGitHubの両方に新しい変更があります。先に手動バックアップを取ってください。");
             }
-            applyImportedProgressPayload(remotePayload);
+            applyGitHubProgressPayload(remotePayload);
             markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote");
             return "GitHubと同期しました";
           }
@@ -3355,7 +3514,7 @@
           }
           decision = compareSyncScores(localScore, getPayloadSyncScore(remotePayload));
           if (decision === "remote" && !isLocalProgressNewerThanLastSync()) {
-            applyImportedProgressPayload(remotePayload);
+            applyGitHubProgressPayload(remotePayload);
             markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote");
             showSyncStatus("GitHubと同期しました", false, 2000);
           } else {
@@ -3377,17 +3536,26 @@
 
       function importProgressData() {
         var raw = syncDataText.value.trim();
-        var parsed;
+        var result;
         if (!raw) {
           showSyncStatus("インポートするJSONを貼り付けてください。", true);
           return;
         }
         try {
-          parsed = JSON.parse(raw);
-          applyImportedProgressPayload(parsed);
-          showSyncStatus("衛生管理者OSの学習データをインポートしました。", false);
+          result = performManualImport(raw);
+          updateImportBackupInfo();
+          showSyncStatus(
+            "衛生管理者OSの学習データをインポートしました。" +
+            "置換前の状態は「" + result.backup.label + "」として " +
+            IMPORT_BACKUP_KEY + " に保存しました。GitHub同期日時は更新していません。",
+            false
+          );
         } catch (error) {
-          showSyncStatus(error.message || "学習データの形式が正しくありません。", true);
+          showSyncStatus(
+            error.message ||
+              "学習データの形式が正しくないか、インポート前バックアップを保存できませんでした。インポートは中止しました。",
+            true
+          );
         }
       }
 
@@ -3436,6 +3604,7 @@
         githubSyncButton.addEventListener("click", syncProgressWithGitHub);
         document.getElementById("exportProgressButton").addEventListener("click", exportProgressData);
         document.getElementById("importProgressButton").addEventListener("click", importProgressData);
+        document.getElementById("showLatestImportBackupButton").addEventListener("click", showLatestImportBackup);
       }
 
       function validateData(rawData) {
@@ -3484,6 +3653,7 @@
         loadState();
         setGitHubSyncInputs(readGitHubSyncConfig());
         updateSyncInfo();
+        updateImportBackupInfo();
 
         if (COMMON.createDailyEmber) {
           COMMON.createDailyEmber({
