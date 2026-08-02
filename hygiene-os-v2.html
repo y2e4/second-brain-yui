@@ -1186,11 +1186,14 @@
   </main>
 
   <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
+  <script src="hygiene-os-v2-learning-data-migration.js?v=20260802-learning-data-migration-03"></script>
   <script>
     (function () {
       "use strict";
 
       var COMMON = window.QualificationOSCommon || {};
+      var LEARNING_DATA_ADAPTER =
+        window.HygieneOSV2LearningDataMigration || null;
       var DATA_URL = "hygiene-os-v2-questions.json?v=20260711-common-os-01";
       var STATE_KEY = "hygieneQualificationOSV2StateV1";
       var QUALIFICATION_NAMESPACE = "eisei";
@@ -1199,6 +1202,8 @@
       var GITHUB_SYNC_META_KEY = "eiseiGithubSyncMetaV1";
       var IMPORT_BACKUP_KEY = "hygieneQualificationOSV2ImportBackupsV1";
       var IMPORT_BACKUP_LIMIT = 5;
+      var LEARNING_DATA_MIGRATION_BACKUP_KEY =
+        "hygieneQualificationOSV2LearningDataMigrationBackupsV1";
       var MIGRATION_BACKUP_KEY = "hygieneQualificationOSV2MigrationBackupV1";
       var MIGRATION_DONE_KEY = "hygieneQualificationOSV2MigrationDoneV1";
       var OLD_STATS_KEY = "hygieneManagerSecondTypeQuestionStatsV1";
@@ -1242,6 +1247,7 @@
       var pendingAnswer = "";
       var syncStatusTimer = 0;
       var autoSyncStarted = false;
+      var learningDataMigrationResult = null;
       var firekeeperMode = null;
       var teacherMode = null;
 
@@ -1376,6 +1382,27 @@
 
       function loadState() {
         var saved = getStoredJson(STATE_KEY, null);
+        if (saved && LEARNING_DATA_ADAPTER &&
+            typeof LEARNING_DATA_ADAPTER.migrateOnce === "function") {
+          try {
+            learningDataMigrationResult = LEARNING_DATA_ADAPTER.migrateOnce({
+              storage: localStorage,
+              stateKey: STATE_KEY,
+              backupKey: LEARNING_DATA_MIGRATION_BACKUP_KEY,
+              skipExpectedMismatch: true
+            });
+            if (learningDataMigrationResult.state) {
+              saved = learningDataMigrationResult.state;
+            }
+          } catch (error) {
+            learningDataMigrationResult = {
+              migrated: false,
+              reason: "migration_failed",
+              error: String(error && error.message || error)
+            };
+            console.error("learningData移行を中止しました。旧データを維持します。", error);
+          }
+        }
         state = Object.assign(makeDefaultState(), saved || {});
         state.unlockedStages = Array.isArray(state.unlockedStages)
           ? state.unlockedStages.filter(function (stage) {
@@ -1429,6 +1456,13 @@
           state.lastSavedAt = settings.savedAt;
         } else if (!settings.preserveSavedAt || !state.lastSavedAt) {
           state.lastSavedAt = new Date().toISOString();
+        }
+        if (LEARNING_DATA_ADAPTER &&
+            typeof LEARNING_DATA_ADAPTER.reconcileState === "function" &&
+            state.learningData && typeof state.learningData === "object") {
+          state = LEARNING_DATA_ADAPTER.reconcileState(state, {
+            updatedAt: state.lastSavedAt
+          });
         }
         localStorage.setItem(STATE_KEY, JSON.stringify(state));
         updateSyncInfo();
@@ -1489,6 +1523,9 @@
           sourceTitle: String(raw.sourceTitle || ""),
           sourceQuestion: String(raw.sourceQuestion || ""),
           sourceUrl: String(raw.sourceUrl || ""),
+          reasoningLevel: Number.isInteger(raw.reasoningLevel)
+            ? raw.reasoningLevel
+            : null,
           correctIndex: Number.isInteger(raw.correctIndex) ? raw.correctIndex : null
         };
       }
@@ -2329,6 +2366,19 @@
         }
 
         session.recorded = true;
+        if (LEARNING_DATA_ADAPTER &&
+            typeof LEARNING_DATA_ADAPTER.recordAnswerAfterLegacyUpdate === "function" &&
+            state.learningData && typeof state.learningData === "object") {
+          state = LEARNING_DATA_ADAPTER.recordAnswerAfterLegacyUpdate(state, {
+            question: question,
+            outcome: outcome,
+            selectedAnswer: selectedAnswer,
+            correctAnswer: question.answer,
+            isCorrect: isCorrect,
+            mode: session.mode,
+            answeredAt: state.lastStudyAt
+          });
+        }
         pendingAnswer = "";
         confidencePanel.hidden = true;
         saveState();
@@ -2443,11 +2493,22 @@
 
       function toggleWeak() {
         var question = getCurrentQuestion();
+        var changedAt;
         if (!question) {
           return;
         }
         var stats = getQuestionStats(question.id);
         stats.manualWeak = !stats.manualWeak;
+        changedAt = new Date().toISOString();
+        if (LEARNING_DATA_ADAPTER &&
+            typeof LEARNING_DATA_ADAPTER.setWeakAfterLegacyUpdate === "function" &&
+            state.learningData && typeof state.learningData === "object") {
+          state = LEARNING_DATA_ADAPTER.setWeakAfterLegacyUpdate(state, {
+            questionId: question.id,
+            weak: stats.manualWeak,
+            changedAt: changedAt
+          });
+        }
         saveState();
         updateWeakButton();
         renderAll();
@@ -2872,6 +2933,18 @@
         var uncertainIds = [];
         var weakIds = [];
         var totalCorrect = 0;
+        var compatibilityFields = LEARNING_DATA_ADAPTER &&
+          typeof LEARNING_DATA_ADAPTER.buildExportFields === "function"
+          ? LEARNING_DATA_ADAPTER.buildExportFields(state)
+          : {
+            learningData: cloneJson(state.learningData || {}),
+            adaptiveSelection: cloneJson(state.adaptiveSelection || {}),
+            currentSession: cloneJson(state.currentSession),
+            selectionLog: state.currentSession &&
+              Array.isArray(state.currentSession.selectionLog)
+              ? cloneJson(state.currentSession.selectionLog)
+              : []
+          };
 
         questions.forEach(function (question) {
           var stats = getQuestionStats(question.id);
@@ -2911,6 +2984,10 @@
           todayAnswers: Number(state.dailyAnsweredCount || 0),
           lastStudyDate: state.lastStudyDate || "",
           lastStudyAt: state.lastStudyAt || "",
+          learningData: compatibilityFields.learningData,
+          adaptiveSelection: compatibilityFields.adaptiveSelection,
+          currentSession: compatibilityFields.currentSession,
+          selectionLog: compatibilityFields.selectionLog,
           firekeeper: cloneJson(state.firekeeper),
           progress: cloneJson(state)
         };
@@ -3193,6 +3270,31 @@
         next.lastStudyDate = String(source.lastStudyDate || extracted.lastStudyDate || "");
         next.lastStudyAt = String(source.lastStudyAt || extracted.lastStudyAt || "");
         next.questionStats = isPlainObject(source.questionStats) ? source.questionStats : {};
+        if (isPlainObject(source.learningData || extracted.learningData)) {
+          next.learningData = cloneJson(source.learningData || extracted.learningData);
+        }
+        if (isPlainObject(source.adaptiveSelection || extracted.adaptiveSelection)) {
+          next.adaptiveSelection = cloneJson(
+            source.adaptiveSelection || extracted.adaptiveSelection
+          );
+        }
+        if (Object.prototype.hasOwnProperty.call(source, "currentSession")) {
+          next.currentSession = cloneJson(source.currentSession);
+        } else if (Object.prototype.hasOwnProperty.call(extracted, "currentSession")) {
+          next.currentSession = cloneJson(extracted.currentSession);
+        }
+        if (next.currentSession && !Array.isArray(next.currentSession.selectionLog) &&
+            Array.isArray(source.selectionLog || extracted.selectionLog)) {
+          next.currentSession.selectionLog = cloneJson(
+            source.selectionLog || extracted.selectionLog
+          );
+        }
+        if (LEARNING_DATA_ADAPTER &&
+            typeof LEARNING_DATA_ADAPTER.prepareImportedState === "function") {
+          next = LEARNING_DATA_ADAPTER.prepareImportedState(next, {
+            stateKey: STATE_KEY
+          });
+        }
         return next;
       }
 
