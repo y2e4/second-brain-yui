@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-26T01:07:19.895Z",
+  "updatedAt": "2026-08-02T05:11:25.675Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,7 +10,7 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-07-26T01:07:19.895Z",
+    "exportedAt": "2026-08-02T05:11:25.675Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -503,8 +503,8 @@
     "lastStudyDate": "2026-07-25",
     "lastStudyAt": "2026-07-25T10:07:59.672Z",
     "firekeeper": {
-      "lastShownDate": "2026-07-25",
-      "lastShownAt": "2026-07-25T10:04:23.492Z",
+      "lastShownDate": "2026-08-02",
+      "lastShownAt": "2026-08-02T04:38:10.162Z",
       "dismissedDate": "2026-07-25",
       "lastDismissedAt": "2026-07-25T10:07:59.672Z",
       "lastDismissReason": "answer",
@@ -729,8 +729,8 @@
       ],
       "lastStudyDate": "2026-07-25",
       "lastStudyAt": "2026-07-25T10:07:59.672Z",
-      "lastManualSyncAt": "2026-07-26T01:07:19.895Z",
-      "lastSavedAt": "2026-07-26T01:07:19.895Z",
+      "lastManualSyncAt": "2026-08-02T05:11:25.674Z",
+      "lastSavedAt": "2026-08-02T05:11:25.674Z",
       "lastQuestionId": "adaptive-d5-leave-04",
       "recentQuestionIds": [
         "stage5-question-064",
@@ -917,7 +917,7 @@
         "adaptive-d5-worktime-01"
       ],
       "daily": {
-        "date": "2026-07-26",
+        "date": "2026-08-02",
         "answers": 0
       },
       "wrongReview": {
@@ -1723,8 +1723,8 @@
         "lastAdjustment": "perfect-set"
       },
       "firekeeper": {
-        "lastShownDate": "2026-07-25",
-        "lastShownAt": "2026-07-25T10:04:23.492Z",
+        "lastShownDate": "2026-08-02",
+        "lastShownAt": "2026-08-02T04:38:10.162Z",
         "dismissedDate": "2026-07-25",
         "lastDismissedAt": "2026-07-25T10:07:59.672Z",
         "lastDismissReason": "answer",
