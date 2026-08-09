@@ -698,6 +698,26 @@
       margin-top: 0;
     }
 
+    .review-route-panel {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border: 1px solid #766343;
+      border-radius: 16px;
+      background: rgba(141, 111, 56, 0.13);
+    }
+
+    .review-route-panel h3,
+    .review-route-panel p {
+      margin-top: 0;
+    }
+
+    .review-route-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
     .teacher-mode-card {
       margin-top: 14px;
       padding: 14px;
@@ -1131,8 +1151,19 @@
         <p class="status" id="answerStatus"></p>
       </div>
 
+      <section class="review-route-panel" id="reviewRoutePanel" aria-live="polite" hidden>
+        <h3 id="reviewRouteTitle">理解確認</h3>
+        <p id="reviewRouteText"></p>
+        <div class="review-route-actions">
+          <button class="primary-button" type="button" id="reviewFinalizeButton" hidden>理解確認を完了する</button>
+          <button class="secondary-button" type="button" id="reviewRetryButton" hidden>派生問題をもう一度確認する</button>
+          <button class="secondary-button" type="button" id="reviewResumeButton" hidden>通常学習へ戻る</button>
+        </div>
+      </section>
+
       <div class="question-actions">
         <button class="secondary-button" type="button" id="weakToggleButton" hidden>苦手にする</button>
+        <button class="secondary-button" type="button" id="reviewLeaveButton" hidden>補習から離れる</button>
         <button class="primary-button" type="button" id="nextQuestionButton" hidden>次の問題</button>
       </div>
     </section>
@@ -1187,6 +1218,8 @@
 
   <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
   <script src="hygiene-os-v2-learning-data-migration.js?v=20260802-learning-data-migration-03"></script>
+  <script src="hygiene-os-v2-knowledge-review-selector.js?v=20260802-knowledge-review-01"></script>
+  <script src="hygiene-os-v2-review-context.js?v=20260802-review-context-01"></script>
   <script>
     (function () {
       "use strict";
@@ -1194,7 +1227,13 @@
       var COMMON = window.QualificationOSCommon || {};
       var LEARNING_DATA_ADAPTER =
         window.HygieneOSV2LearningDataMigration || null;
-      var DATA_URL = "hygiene-os-v2-questions.json?v=20260711-common-os-01";
+      var KNOWLEDGE_REVIEW_SELECTOR =
+        window.HygieneOSV2KnowledgeReviewSelector || null;
+      var KNOWLEDGE_REVIEW_CONTEXT =
+        window.HygieneOSV2ReviewContext || null;
+      var KNOWLEDGE_REVIEW_KEY = "overtime-agreement-limits";
+      var KNOWLEDGE_REVIEW_QUESTION_IDS = ["hm2-law-v02-07", "hm2-law-v02-08"];
+      var DATA_URL = "hygiene-os-v2-questions.json?v=20260802-overtime-review-01";
       var STATE_KEY = "hygieneQualificationOSV2StateV1";
       var QUALIFICATION_NAMESPACE = "eisei";
       var GITHUB_SYNC_CONFIG_KEY = "qualificationOSGithubSyncConfigV1";
@@ -1245,6 +1284,7 @@
       var questionById = {};
       var state = makeDefaultState();
       var pendingAnswer = "";
+      var activeFeedbackQuestionId = "";
       var syncStatusTimer = 0;
       var autoSyncStarted = false;
       var learningDataMigrationResult = null;
@@ -1298,6 +1338,13 @@
       var answerStatus = document.getElementById("answerStatus");
       var weakToggleButton = document.getElementById("weakToggleButton");
       var nextQuestionButton = document.getElementById("nextQuestionButton");
+      var reviewLeaveButton = document.getElementById("reviewLeaveButton");
+      var reviewRoutePanel = document.getElementById("reviewRoutePanel");
+      var reviewRouteTitle = document.getElementById("reviewRouteTitle");
+      var reviewRouteText = document.getElementById("reviewRouteText");
+      var reviewFinalizeButton = document.getElementById("reviewFinalizeButton");
+      var reviewRetryButton = document.getElementById("reviewRetryButton");
+      var reviewResumeButton = document.getElementById("reviewResumeButton");
       var resultView = document.getElementById("resultView");
       var resultScore = document.getElementById("resultScore");
       var resultNote = document.getElementById("resultNote");
@@ -1523,9 +1570,16 @@
           sourceTitle: String(raw.sourceTitle || ""),
           sourceQuestion: String(raw.sourceQuestion || ""),
           sourceUrl: String(raw.sourceUrl || ""),
+          knowledgeKey: typeof raw.knowledgeKey === "string" ? raw.knowledgeKey : "",
+          variantOfQuestionIds: Array.isArray(raw.variantOfQuestionIds)
+            ? raw.variantOfQuestionIds.map(function (id) { return String(id || ""); }).filter(Boolean)
+            : [],
+          variantType: typeof raw.variantType === "string" ? raw.variantType : "",
           reasoningLevel: Number.isInteger(raw.reasoningLevel)
             ? raw.reasoningLevel
             : null,
+          equivalenceKey: typeof raw.equivalenceKey === "string" ? raw.equivalenceKey : "",
+          verifiedAt: typeof raw.verifiedAt === "string" ? raw.verifiedAt : "",
           correctIndex: Number.isInteger(raw.correctIndex) ? raw.correctIndex : null
         };
       }
@@ -2035,9 +2089,12 @@
         dismissFirekeeper(reason || "休む");
       }
 
-      function renderAll() {
+      function renderAll(options) {
+        var settings = options || {};
         refreshEarnedKeys();
-        saveState({ preserveSavedAt: true });
+        if (!settings.skipSave) {
+          saveState({ preserveSavedAt: true });
+        }
         renderCurrentLocation();
         renderDashboard();
         renderStages();
@@ -2048,6 +2105,9 @@
 
       function selectStage(stageId) {
         if (state.unlockedStages.indexOf(stageId) === -1) {
+          return;
+        }
+        if (hasReviewContext(state.currentSession) && !clearKnowledgeReview("stage_changed")) {
           return;
         }
         state.currentStage = stageId;
@@ -2142,6 +2202,9 @@
       }
 
       function startMode(mode) {
+        if (hasReviewContext(state.currentSession) && !clearKnowledgeReview("new_session_started")) {
+          return;
+        }
         var pool = getModePool(mode);
         if (!pool.length) {
           modeStatus.textContent = MODE_NAMES[mode] + "に出せる問題はまだありません。";
@@ -2191,10 +2254,136 @@
       }
 
       function getCurrentQuestion() {
+        var display;
         if (!state.currentSession) {
           return null;
         }
-        return questionById[state.currentSession.queue[state.currentSession.index]] || null;
+        display = getReviewDisplay(state.currentSession);
+        return display && display.question || null;
+      }
+
+      function isKnowledgeReviewApiAvailable() {
+        return Boolean(
+          KNOWLEDGE_REVIEW_SELECTOR &&
+          KNOWLEDGE_REVIEW_CONTEXT &&
+          typeof KNOWLEDGE_REVIEW_CONTEXT.selectAndApplyReviewVariant === "function" &&
+          typeof KNOWLEDGE_REVIEW_CONTEXT.resolveDisplayedQuestion === "function" &&
+          typeof KNOWLEDGE_REVIEW_CONTEXT.recordReviewOutcome === "function" &&
+          typeof KNOWLEDGE_REVIEW_CONTEXT.finalizeCompletedReview === "function" &&
+          typeof KNOWLEDGE_REVIEW_CONTEXT.clearReviewContext === "function"
+        );
+      }
+
+      function hasReviewContext(session) {
+        return Boolean(session && session.reviewContext && typeof session.reviewContext === "object");
+      }
+
+      function isEnabledKnowledgeReviewQuestion(question) {
+        return Boolean(question &&
+          question.knowledgeKey === KNOWLEDGE_REVIEW_KEY &&
+          KNOWLEDGE_REVIEW_QUESTION_IDS.indexOf(question.id) !== -1);
+      }
+
+      function getReviewAllowedStageIds(snapshot) {
+        var source = snapshot || state;
+        return Array.isArray(source.unlockedStages)
+          ? source.unlockedStages.filter(function (stageId) {
+            return Number.isInteger(stageId) && stageId >= 1 && stageId <= 5;
+          })
+          : [];
+      }
+
+      function getManualWeakQuestionIdsForKnowledgeKey(snapshot, knowledgeKey) {
+        var source = snapshot || state;
+        var statsById = source.questionStats && typeof source.questionStats === "object"
+          ? source.questionStats
+          : {};
+        return questions.filter(function (question) {
+          return question.knowledgeKey === knowledgeKey &&
+            statsById[question.id] && statsById[question.id].manualWeak === true;
+        }).map(function (question) {
+          return question.id;
+        });
+      }
+
+      function getReviewDisplay(session) {
+        var queueQuestionId;
+        var display;
+        if (!session || !Array.isArray(session.queue) ||
+            !Number.isInteger(session.index) || session.index < 0 ||
+            session.index >= session.queue.length) {
+          return { status: "invalid_current_session", question: null };
+        }
+        queueQuestionId = session.queue[session.index];
+        if (!hasReviewContext(session)) {
+          return {
+            status: "normal_queue",
+            questionId: queueQuestionId,
+            question: questionById[queueQuestionId] || null
+          };
+        }
+        if (!isKnowledgeReviewApiAvailable()) {
+          return { status: "review_unavailable", question: null };
+        }
+        try {
+          display = KNOWLEDGE_REVIEW_CONTEXT.resolveDisplayedQuestion({
+            currentSession: session,
+            questions: questions,
+            allowedStageIds: getReviewAllowedStageIds(state)
+          });
+        } catch (error) {
+          return {
+            status: "review_overlay_error",
+            question: null,
+            details: { message: String(error && error.message || error) }
+          };
+        }
+        display.question = display.questionId ? questionById[display.questionId] || null : null;
+        return display;
+      }
+
+      function hideReviewRoutePanel() {
+        reviewRoutePanel.hidden = true;
+        reviewFinalizeButton.hidden = true;
+        reviewRetryButton.hidden = true;
+        reviewResumeButton.hidden = true;
+      }
+
+      function reviewStatusText(status) {
+        var labels = {
+          blocked_no_verified_variant: "この論点には、確認済みの別角度問題がまだありません。理解済みとは扱わず、通常学習へ戻れます。",
+          no_eligible_variant: "確認済みの別角度問題はありますが、直近出題などの条件により今は出題できません。通常学習へ戻るか、条件が変わった後に再確認できます。",
+          review_unavailable: "理解確認モジュールを読み込めませんでした。通常学習は続けられますが、この補習は開始しません。",
+          invalid_review_context: "理解確認の保存状態を確認できません。学習データは変更せず停止しました。",
+          source_queue_mismatch: "理解確認と通常キューの位置が一致しません。学習データは変更せず停止しました。",
+          invalid_review_pending: "理解確認の次の問題を確認できません。学習データは変更せず停止しました。",
+          queue_question_missing: "通常キューの問題を確認できません。学習データは変更せず停止しました。",
+          review_overlay_error: "理解確認の表示を復元できません。学習データは変更せず停止しました。"
+        };
+        return labels[status] || "理解確認を安全に続けられません。学習データは変更せず停止しました。";
+      }
+
+      function renderReviewRoutePanel(display) {
+        var status = display && display.status;
+        hideReviewRoutePanel();
+        reviewRoutePanel.hidden = false;
+        reviewLeaveButton.hidden = true;
+        nextQuestionButton.hidden = true;
+        if (status === "completion_candidate") {
+          reviewRouteTitle.textContent = "理解確認を完了できます";
+          reviewRouteText.textContent = "元の問題と今回確認した別角度問題を、どちらも理解して正解できました。";
+          reviewFinalizeButton.hidden = false;
+          return;
+        }
+        if (status === "blocked_no_verified_variant" || status === "no_eligible_variant") {
+          reviewRouteTitle.textContent = "理解確認の次の経路";
+          reviewRouteText.textContent = reviewStatusText(status);
+          reviewResumeButton.hidden = false;
+          reviewRetryButton.hidden = status !== "no_eligible_variant";
+          return;
+        }
+        reviewRouteTitle.textContent = "理解確認を停止しました";
+        reviewRouteText.textContent = reviewStatusText(status);
       }
 
       function markQuestionShown(questionId) {
@@ -2218,17 +2407,47 @@
       }
 
       function renderQuestion() {
-        var question = getCurrentQuestion();
         var session = state.currentSession;
-        if (!question || !session) {
+        var display = getReviewDisplay(session);
+        var question = display.question;
+        var isReviewPending = display.status === "review_pending";
+        if (!session) {
           returnToStudy("セッションを復元できませんでした。");
+          return;
+        }
+
+        if (display.status === "completion_candidate" ||
+            display.status === "blocked_no_verified_variant" ||
+            display.status === "no_eligible_variant" ||
+            (display.status !== "normal_queue" && display.status !== "review_pending")) {
+          questionView.hidden = false;
+          questionMeta.textContent = "理解確認";
+          questionText.textContent = "";
+          choiceList.replaceChildren();
+          confidencePanel.hidden = true;
+          feedback.hidden = true;
+          weakToggleButton.hidden = true;
+          renderReviewRoutePanel(display);
+          return;
+        }
+
+        if (!question) {
+          questionView.hidden = false;
+          renderReviewRoutePanel({ status: "queue_question_missing" });
           return;
         }
 
         session.recorded = false;
         pendingAnswer = "";
-        sessionModeLabel.textContent = MODE_NAMES[session.mode];
-        questionProgressLabel.textContent = (session.index + 1) + " / " + session.queue.length;
+        activeFeedbackQuestionId = question.id;
+        hideReviewRoutePanel();
+        reviewLeaveButton.hidden = !isReviewPending;
+        sessionModeLabel.textContent = isReviewPending
+          ? "理解確認"
+          : MODE_NAMES[session.mode];
+        questionProgressLabel.textContent = isReviewPending
+          ? "補習 / " + (session.index + 1) + " / " + session.queue.length
+          : (session.index + 1) + " / " + session.queue.length;
         progressFill.style.width = ((session.index + 1) / session.queue.length * 100) + "%";
         questionMeta.textContent =
           "ステージ" + question.stage + " / " + question.category + " / " + question.theme +
@@ -2272,6 +2491,15 @@
         });
       }
 
+      function restoreAnswerUiAfterSaveFailure() {
+        pendingAnswer = "";
+        confidencePanel.hidden = true;
+        choiceList.querySelectorAll(".choice-button").forEach(function (button) {
+          button.disabled = false;
+          button.classList.remove("is-correct", "is-wrong");
+        });
+      }
+
       function chooseAnswer(selectedAnswer) {
         if (!state.currentSession || state.currentSession.recorded || pendingAnswer) {
           return;
@@ -2305,85 +2533,239 @@
         });
       }
 
+      function runWithCandidateState(candidateState, callback) {
+        var previousState = state;
+        state = candidateState;
+        try {
+          callback();
+          return state;
+        } finally {
+          state = previousState;
+        }
+      }
+
+      function commitCandidateState(candidateState, options) {
+        var previousState = state;
+        var previousStoredState;
+        try {
+          previousStoredState = localStorage.getItem(STATE_KEY);
+          state = candidateState;
+          saveState(options);
+          return { saved: true, state: state };
+        } catch (error) {
+          state = previousState;
+          try {
+            if (previousStoredState === null) {
+              localStorage.removeItem(STATE_KEY);
+            } else {
+              localStorage.setItem(STATE_KEY, previousStoredState);
+            }
+          } catch (rollbackError) {
+            error.rollbackError = rollbackError;
+          }
+          return { saved: false, error: error };
+        }
+      }
+
+      function applyOutcomeToCandidate(candidateState, question, outcome, selectedAnswer, options) {
+        var settings = options || {};
+        var candidate = candidateState;
+        var today = getLocalDateKey();
+        var isCorrect = outcome !== "incorrect";
+        var answeredAt = new Date().toISOString();
+        var stats;
+        var session;
+
+        try {
+          candidate = runWithCandidateState(candidate, function () {
+            session = state.currentSession;
+            if (!session) {
+              throw new Error("セッションを確認できませんでした。");
+            }
+            stats = getQuestionStats(question.id);
+            stats.attempts = Number(stats.attempts || 0) + 1;
+            state.totalAnswered = Number(state.totalAnswered || 0) + 1;
+            state.lastStudyDate = today;
+            state.lastStudyAt = answeredAt;
+            if (state.dailyDate !== today) {
+              state.dailyDate = today;
+              state.dailyShownIds = [];
+              state.dailyAnsweredCount = 0;
+            }
+            state.dailyAnsweredCount = Number(state.dailyAnsweredCount || 0) + 1;
+            stats.lastAnsweredDate = today;
+            stats.lastOutcome = outcome;
+
+            if (isCorrect) {
+              stats.correct = Number(stats.correct || 0) + 1;
+              if (settings.countSessionCorrect !== false) {
+                session.correct = Number(session.correct || 0) + 1;
+              }
+            } else {
+              stats.wrong = Number(stats.wrong || 0) + 1;
+            }
+
+            if (outcome === "understood") {
+              stats.understood = Number(stats.understood || 0) + 1;
+              if (stats.lastUnderstandingDate && stats.lastUnderstandingDate !== today) {
+                stats.understoodStreak = Number(stats.understoodStreak || 0) + 1;
+              } else if (!stats.lastUnderstandingDate) {
+                stats.understoodStreak = 1;
+              }
+              stats.lastUnderstandingDate = today;
+              if (stats.understoodStreak >= 2) {
+                stats.wrongActive = false;
+                stats.reviewActive = false;
+              }
+            } else {
+              stats.understoodStreak = 0;
+              stats.lastUnderstandingDate = "";
+              if (outcome === "unsure") {
+                stats.unsure = Number(stats.unsure || 0) + 1;
+                stats.reviewActive = true;
+              } else if (outcome === "guess") {
+                stats.guess = Number(stats.guess || 0) + 1;
+                stats.reviewActive = true;
+              } else {
+                stats.wrongActive = true;
+                stats.reviewActive = true;
+              }
+            }
+
+            session.recorded = true;
+            if (LEARNING_DATA_ADAPTER &&
+                typeof LEARNING_DATA_ADAPTER.recordAnswerAfterLegacyUpdate === "function" &&
+                state.learningData && typeof state.learningData === "object") {
+              state = LEARNING_DATA_ADAPTER.recordAnswerAfterLegacyUpdate(state, {
+                question: question,
+                outcome: outcome,
+                selectedAnswer: selectedAnswer,
+                correctAnswer: question.answer,
+                isCorrect: isCorrect,
+                mode: settings.mode || session.mode,
+                answeredAt: answeredAt
+              });
+            }
+          });
+          return { ok: true, state: candidate, answeredAt: answeredAt, isCorrect: isCorrect };
+        } catch (error) {
+          return { ok: false, error: error };
+        }
+      }
+
+      function getReviewTrigger(question, outcome, candidateState, answeredAt) {
+        var stats = candidateState.questionStats && candidateState.questionStats[question.id];
+        var reason = outcome;
+        if (outcome === "understood" && stats && stats.manualWeak === true) {
+          reason = "manualWeak";
+        }
+        if (["incorrect", "unsure", "guess", "ambiguous", "manualWeak"].indexOf(reason) === -1 ||
+            !isEnabledKnowledgeReviewQuestion(question)) {
+          return null;
+        }
+        return {
+          questionId: question.id,
+          knowledgeKey: question.knowledgeKey,
+          outcome: outcome,
+          fluctuationReason: reason,
+          triggeredAt: answeredAt
+        };
+      }
+
+      function selectReviewOnCandidate(candidateState, question, reviewTrigger) {
+        if (!isKnowledgeReviewApiAvailable() || !reviewTrigger ||
+            hasReviewContext(candidateState.currentSession)) {
+          return { status: "review_not_started", currentSession: candidateState.currentSession };
+        }
+        return KNOWLEDGE_REVIEW_CONTEXT.selectAndApplyReviewVariant({
+          currentSession: candidateState.currentSession,
+          questions: questions,
+          allowedStageIds: getReviewAllowedStageIds(candidateState),
+          sourceQuestion: question,
+          reviewTrigger: reviewTrigger,
+          reviewStagePolicy: "same",
+          targetReasoningLevel: question.reasoningLevel,
+          recentQuestionIds: candidateState.recentQuestionIds,
+          fixedQueueQuestionIds: candidateState.currentSession.queue,
+          excludeFixedQueueQuestionIds: true
+        });
+      }
+
       function recordOutcome(outcome, selectedAnswer) {
         var question = getCurrentQuestion();
         var session = state.currentSession;
+        var reviewWasActive;
+        var candidateState;
+        var answerResult;
+        var reviewResult;
+        var reviewTrigger;
+        var committed;
+        var notice = "";
         if (!question || !session || session.recorded) {
           return;
         }
 
-        var stats = getQuestionStats(question.id);
-        var today = getLocalDateKey();
-        var isCorrect = outcome !== "incorrect";
-
-        stats.attempts = Number(stats.attempts || 0) + 1;
-        state.totalAnswered = Number(state.totalAnswered || 0) + 1;
-        state.lastStudyDate = today;
-        state.lastStudyAt = new Date().toISOString();
-        if (state.dailyDate !== today) {
-          state.dailyDate = today;
-          state.dailyShownIds = [];
-          state.dailyAnsweredCount = 0;
+        reviewWasActive = hasReviewContext(session);
+        candidateState = cloneJson(state);
+        answerResult = applyOutcomeToCandidate(candidateState, question, outcome, selectedAnswer, {
+          countSessionCorrect: !reviewWasActive,
+          mode: reviewWasActive ? String(session.mode || "") + "-knowledge-review" : session.mode
+        });
+        if (!answerResult.ok) {
+          modeStatus.textContent = "回答を安全に記録できませんでした。";
+          return;
         }
-        state.dailyAnsweredCount = Number(state.dailyAnsweredCount || 0) + 1;
-        stats.lastAnsweredDate = today;
-        stats.lastOutcome = outcome;
+        candidateState = answerResult.state;
 
-        if (isCorrect) {
-          stats.correct = Number(stats.correct || 0) + 1;
-          session.correct = Number(session.correct || 0) + 1;
+        if (reviewWasActive) {
+          reviewResult = isKnowledgeReviewApiAvailable()
+            ? KNOWLEDGE_REVIEW_CONTEXT.recordReviewOutcome({
+              currentSession: candidateState.currentSession,
+              questions: questions,
+              allowedStageIds: getReviewAllowedStageIds(candidateState),
+              question: question,
+              outcome: outcome,
+              manualWeakQuestionIdsForKnowledgeKey: getManualWeakQuestionIdsForKnowledgeKey(
+                candidateState,
+                candidateState.currentSession.reviewContext.knowledgeKey
+              )
+            })
+            : { status: "review_unavailable" };
+          if (!reviewResult || reviewResult.status !== "recorded") {
+            modeStatus.textContent = "理解確認の回答を保存できませんでした。学習記録は変更していません。";
+            return;
+          }
+          candidateState.currentSession = reviewResult.currentSession;
         } else {
-          stats.wrong = Number(stats.wrong || 0) + 1;
-        }
-
-        if (outcome === "understood") {
-          stats.understood = Number(stats.understood || 0) + 1;
-          if (stats.lastUnderstandingDate && stats.lastUnderstandingDate !== today) {
-            stats.understoodStreak = Number(stats.understoodStreak || 0) + 1;
-          } else if (!stats.lastUnderstandingDate) {
-            stats.understoodStreak = 1;
-          }
-          stats.lastUnderstandingDate = today;
-
-          if (stats.understoodStreak >= 2) {
-            stats.wrongActive = false;
-            stats.reviewActive = false;
-          }
-        } else {
-          stats.understoodStreak = 0;
-          stats.lastUnderstandingDate = "";
-
-          if (outcome === "unsure") {
-            stats.unsure = Number(stats.unsure || 0) + 1;
-            stats.reviewActive = true;
-          } else if (outcome === "guess") {
-            stats.guess = Number(stats.guess || 0) + 1;
-            stats.reviewActive = true;
-          } else {
-            stats.wrongActive = true;
-            stats.reviewActive = true;
+          reviewTrigger = getReviewTrigger(question, outcome, candidateState, answerResult.answeredAt);
+          if (reviewTrigger) {
+            reviewResult = selectReviewOnCandidate(candidateState, question, reviewTrigger);
+            if (reviewResult && reviewResult.status === "started") {
+              candidateState.currentSession = reviewResult.currentSession;
+            } else if (!isKnowledgeReviewApiAvailable()) {
+              notice = "理解確認モジュールを読み込めないため、通常学習を続けます。";
+            } else if (reviewResult && reviewResult.status !== "review_not_started") {
+              notice = "理解確認を開始できなかったため、通常学習を続けます。";
+            }
           }
         }
 
-        session.recorded = true;
-        if (LEARNING_DATA_ADAPTER &&
-            typeof LEARNING_DATA_ADAPTER.recordAnswerAfterLegacyUpdate === "function" &&
-            state.learningData && typeof state.learningData === "object") {
-          state = LEARNING_DATA_ADAPTER.recordAnswerAfterLegacyUpdate(state, {
-            question: question,
-            outcome: outcome,
-            selectedAnswer: selectedAnswer,
-            correctAnswer: question.answer,
-            isCorrect: isCorrect,
-            mode: session.mode,
-            answeredAt: state.lastStudyAt
-          });
+        candidateState = runWithCandidateState(candidateState, refreshEarnedKeys);
+        committed = commitCandidateState(candidateState);
+        if (!committed.saved) {
+          restoreAnswerUiAfterSaveFailure();
+          modeStatus.textContent = "回答を保存できませんでした。学習記録は変更していません。";
+          return;
         }
+        modeStatus.textContent = "";
         pendingAnswer = "";
         confidencePanel.hidden = true;
-        saveState();
+        activeFeedbackQuestionId = question.id;
         showFeedback(question, outcome, selectedAnswer);
-        renderAll();
+        if (notice) {
+          answerStatus.textContent += "\n" + notice;
+        }
+        renderAll({ skipSave: true });
       }
 
       function outcomeLabel(outcome) {
@@ -2464,14 +2846,44 @@
             : "");
         renderTeacherSupport(question, outcome);
         feedback.hidden = false;
-        updateWeakButton();
+        updateWeakButton(question);
         weakToggleButton.hidden = false;
+        renderReviewFeedbackActions();
+        feedback.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function renderReviewFeedbackActions() {
+        var session = state.currentSession;
+        var display = getReviewDisplay(session);
+        var phase;
+        hideReviewRoutePanel();
+        reviewLeaveButton.hidden = true;
+        if (hasReviewContext(session)) {
+          if (display.status === "completion_candidate" ||
+              display.status === "blocked_no_verified_variant" ||
+              display.status === "no_eligible_variant") {
+            renderReviewRoutePanel(display);
+            return;
+          }
+          if (display.status === "review_pending") {
+            phase = display.details && display.details.phase;
+            reviewLeaveButton.hidden = false;
+            nextQuestionButton.textContent = phase === "source_retry_pending"
+              ? "元の問題を確認する"
+              : phase === "unresolved_variant_pending"
+                ? "もう一度確認する"
+                : "別角度の問題へ";
+            nextQuestionButton.hidden = false;
+            return;
+          }
+          renderReviewRoutePanel(display);
+          return;
+        }
         nextQuestionButton.textContent =
-          state.currentSession.index === state.currentSession.queue.length - 1
+          session.index === session.queue.length - 1
             ? "結果を見る"
             : "次の問題";
         nextQuestionButton.hidden = false;
-        feedback.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
 
       function formatAnswer(question, answerId) {
@@ -2481,8 +2893,8 @@
         return choice ? formatChoice(choice) : answerId;
       }
 
-      function updateWeakButton() {
-        var question = getCurrentQuestion();
+      function updateWeakButton(questionOverride) {
+        var question = questionOverride || getCurrentQuestion();
         if (!question) {
           return;
         }
@@ -2492,31 +2904,191 @@
       }
 
       function toggleWeak() {
-        var question = getCurrentQuestion();
+        var question = activeFeedbackQuestionId && !feedback.hidden
+          ? questionById[activeFeedbackQuestionId]
+          : getCurrentQuestion();
         var changedAt;
+        var candidateState;
+        var candidateStats;
+        var reviewTrigger;
+        var reviewResult;
+        var committed;
+        var notice = "";
         if (!question) {
           return;
         }
-        var stats = getQuestionStats(question.id);
-        stats.manualWeak = !stats.manualWeak;
         changedAt = new Date().toISOString();
-        if (LEARNING_DATA_ADAPTER &&
-            typeof LEARNING_DATA_ADAPTER.setWeakAfterLegacyUpdate === "function" &&
-            state.learningData && typeof state.learningData === "object") {
-          state = LEARNING_DATA_ADAPTER.setWeakAfterLegacyUpdate(state, {
-            questionId: question.id,
-            weak: stats.manualWeak,
-            changedAt: changedAt
-          });
+        candidateState = cloneJson(state);
+        candidateState = runWithCandidateState(candidateState, function () {
+          candidateStats = getQuestionStats(question.id);
+          candidateStats.manualWeak = !candidateStats.manualWeak;
+          if (LEARNING_DATA_ADAPTER &&
+              typeof LEARNING_DATA_ADAPTER.setWeakAfterLegacyUpdate === "function" &&
+              state.learningData && typeof state.learningData === "object") {
+            state = LEARNING_DATA_ADAPTER.setWeakAfterLegacyUpdate(state, {
+              questionId: question.id,
+              weak: candidateStats.manualWeak,
+              changedAt: changedAt
+            });
+          }
+        });
+
+        candidateStats = candidateState.questionStats[question.id] || makeDefaultQuestionStats();
+        if (candidateStats.manualWeak === true &&
+            candidateState.currentSession && candidateState.currentSession.recorded &&
+            !hasReviewContext(candidateState.currentSession) &&
+            candidateState.currentSession.queue[candidateState.currentSession.index] === question.id &&
+            candidateStats.lastOutcome === "understood" &&
+            isEnabledKnowledgeReviewQuestion(question)) {
+          reviewTrigger = getReviewTrigger(question, "understood", candidateState, changedAt);
+          reviewResult = selectReviewOnCandidate(candidateState, question, reviewTrigger);
+          if (reviewResult && reviewResult.status === "started") {
+            candidateState.currentSession = reviewResult.currentSession;
+          } else if (!isKnowledgeReviewApiAvailable()) {
+            notice = "理解確認モジュールを読み込めないため、苦手登録だけを保存しました。";
+          } else if (reviewResult && reviewResult.status !== "review_not_started") {
+            notice = "苦手登録は保存しましたが、理解確認は開始できませんでした。";
+          }
         }
-        saveState();
-        updateWeakButton();
-        renderAll();
+        candidateState = runWithCandidateState(candidateState, refreshEarnedKeys);
+        committed = commitCandidateState(candidateState);
+        if (!committed.saved) {
+          modeStatus.textContent = "苦手の変更を保存できませんでした。学習記録は変更していません。";
+          return;
+        }
+        activeFeedbackQuestionId = question.id;
+        updateWeakButton(question);
+        if (notice) {
+          answerStatus.textContent += "\n" + notice;
+        }
+        renderReviewFeedbackActions();
+        renderAll({ skipSave: true });
+      }
+
+      function clearKnowledgeReview(reason) {
+        var candidateState = cloneJson(state);
+        var beforeContext;
+        var sourceQuestion;
+        var sourceOutcome;
+        var clearResult;
+        var committed;
+        if (!hasReviewContext(candidateState.currentSession) || !isKnowledgeReviewApiAvailable()) {
+          return false;
+        }
+        beforeContext = candidateState.currentSession.reviewContext;
+        clearResult = KNOWLEDGE_REVIEW_CONTEXT.clearReviewContext({
+          currentSession: candidateState.currentSession,
+          reason: reason
+        });
+        if (!clearResult || clearResult.status !== "cleared") {
+          modeStatus.textContent = "理解確認を安全に終了できませんでした。";
+          return false;
+        }
+        candidateState.currentSession = clearResult.currentSession;
+        if (reason === "user_left_review" || reason === "blocked_route_selected") {
+          candidateState.currentSession.recorded = true;
+        }
+        committed = commitCandidateState(candidateState);
+        if (!committed.saved) {
+          modeStatus.textContent = "理解確認の終了を保存できませんでした。";
+          return false;
+        }
+        if (reason === "user_left_review" || reason === "blocked_route_selected") {
+          sourceQuestion = questionById[beforeContext.sourceQuestionId];
+          sourceOutcome = beforeContext.latestOutcomeByQuestionId &&
+            beforeContext.latestOutcomeByQuestionId[beforeContext.sourceQuestionId];
+          if (sourceQuestion) {
+            activeFeedbackQuestionId = sourceQuestion.id;
+            showFeedback(sourceQuestion, sourceOutcome || "incorrect", "");
+          }
+        }
+        return true;
+      }
+
+      function retryKnowledgeReviewSelection() {
+        var candidateState = cloneJson(state);
+        var context = candidateState.currentSession && candidateState.currentSession.reviewContext;
+        var result;
+        var committed;
+        if (!context || !isKnowledgeReviewApiAvailable()) {
+          return;
+        }
+        result = KNOWLEDGE_REVIEW_CONTEXT.selectAndApplyReviewVariant({
+          currentSession: candidateState.currentSession,
+          questions: questions,
+          allowedStageIds: getReviewAllowedStageIds(candidateState),
+          reviewStagePolicy: "same",
+          targetReasoningLevel: questionById[context.sourceQuestionId] &&
+            questionById[context.sourceQuestionId].reasoningLevel,
+          recentQuestionIds: candidateState.recentQuestionIds,
+          fixedQueueQuestionIds: candidateState.currentSession.queue,
+          excludeFixedQueueQuestionIds: true
+        });
+        if (!result || result.status !== "selection_applied") {
+          renderQuestion();
+          return;
+        }
+        candidateState.currentSession = result.currentSession;
+        committed = commitCandidateState(candidateState);
+        if (!committed.saved) {
+          modeStatus.textContent = "理解確認の再選択を保存できませんでした。";
+          return;
+        }
+        renderQuestion();
+      }
+
+      function finalizeKnowledgeReview() {
+        var candidateState = cloneJson(state);
+        var context = candidateState.currentSession && candidateState.currentSession.reviewContext;
+        var finalizeResult;
+        var committed;
+        if (!context || !isKnowledgeReviewApiAvailable()) {
+          return;
+        }
+        finalizeResult = KNOWLEDGE_REVIEW_CONTEXT.finalizeCompletedReview({
+          currentSession: candidateState.currentSession,
+          questions: questions,
+          allowedStageIds: getReviewAllowedStageIds(candidateState),
+          manualWeakQuestionIdsForKnowledgeKey: getManualWeakQuestionIdsForKnowledgeKey(
+            candidateState,
+            context.knowledgeKey
+          )
+        });
+        if (!finalizeResult || finalizeResult.status !== "finalized") {
+          modeStatus.textContent = "理解確認を完了できませんでした。状態を見直してください。";
+          return;
+        }
+        candidateState.currentSession = finalizeResult.currentSession;
+        committed = commitCandidateState(candidateState);
+        if (!committed.saved) {
+          modeStatus.textContent = "理解確認の完了を保存できませんでした。";
+          return;
+        }
+        hideReviewRoutePanel();
+        reviewLeaveButton.hidden = true;
+        if (state.currentSession.index >= state.currentSession.queue.length) {
+          showResult({ skipSave: true });
+        } else {
+          questionView.hidden = false;
+          renderQuestion();
+        }
       }
 
       function nextQuestion() {
         var session = state.currentSession;
+        var display;
         if (!session || !session.recorded) {
+          return;
+        }
+        display = getReviewDisplay(session);
+        if (hasReviewContext(session)) {
+          if (display.status === "review_pending") {
+            questionView.hidden = false;
+            renderQuestion();
+            questionView.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+          }
+          renderReviewRoutePanel(display);
           return;
         }
         if (session.index >= session.queue.length - 1) {
@@ -2529,7 +3101,8 @@
         questionView.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
-      function showResult() {
+      function showResult(options) {
+        var settings = options || {};
         var session = state.currentSession;
         questionView.hidden = true;
         resultView.hidden = false;
@@ -2547,7 +3120,9 @@
         document.querySelectorAll(".regular-result-mode").forEach(function (button) {
           button.hidden = session.stage === 5;
         });
-        saveState();
+        if (!settings.skipSave) {
+          saveState();
+        }
         resultView.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
@@ -2558,6 +3133,9 @@
       }
 
       function returnToStudy(message) {
+        if (hasReviewContext(state.currentSession) && !clearKnowledgeReview("session_discarded")) {
+          return;
+        }
         state.currentSession = null;
         saveState();
         hideTransientViews();
@@ -2572,6 +3150,9 @@
             state.unlockedStages.indexOf(next) !== -1) {
           return;
         }
+        if (hasReviewContext(state.currentSession) && !clearKnowledgeReview("stage_changed")) {
+          return;
+        }
         state.unlockedStages.push(next);
         state.unlockedStages.sort();
         state.currentStage = next;
@@ -2584,6 +3165,9 @@
 
       function unlockStage5() {
         if (!state.stage5Ready || state.unlockedStages.indexOf(5) !== -1) {
+          return;
+        }
+        if (hasReviewContext(state.currentSession) && !clearKnowledgeReview("stage_changed")) {
           return;
         }
         state.unlockedStages.push(5);
@@ -3412,6 +3996,9 @@
           loadState();
           hideTransientViews();
           renderAll();
+          if (questions.length) {
+            restoreCurrentSessionView();
+          }
           return appliedAt;
         } catch (error) {
           state = previousState;
@@ -3691,6 +4278,14 @@
         unlockButton.addEventListener("click", unlockNextStage);
         nextQuestionButton.addEventListener("click", nextQuestion);
         weakToggleButton.addEventListener("click", toggleWeak);
+        reviewLeaveButton.addEventListener("click", function () {
+          clearKnowledgeReview("user_left_review");
+        });
+        reviewFinalizeButton.addEventListener("click", finalizeKnowledgeReview);
+        reviewRetryButton.addEventListener("click", retryKnowledgeReviewSelection);
+        reviewResumeButton.addEventListener("click", function () {
+          clearKnowledgeReview("blocked_route_selected");
+        });
         document.getElementById("backToStudyButton").addEventListener("click", function () {
           returnToStudy("学習記録を保存しました。");
         });
@@ -3748,6 +4343,53 @@
         })) {
           throw new Error("ステージ5の分野別問題数が正しくありません。");
         }
+      }
+
+      function restoreCurrentSessionView() {
+        var session = state.currentSession;
+        var display;
+        if (!session || state.unlockedStages.indexOf(session.stage) === -1 ||
+            !Array.isArray(session.queue) || !session.queue.length ||
+            !session.queue.every(function (id) { return Boolean(questionById[id]); })) {
+          return false;
+        }
+        state.currentStage = session.stage;
+        if (hasReviewContext(session)) {
+          questionView.hidden = false;
+          display = getReviewDisplay(session);
+          if (display.status === "review_pending" ||
+              display.status === "completion_candidate" ||
+              display.status === "blocked_no_verified_variant" ||
+              display.status === "no_eligible_variant" ||
+              display.status === "review_unavailable" ||
+              display.status === "invalid_review_context" ||
+              display.status === "source_queue_mismatch" ||
+              display.status === "invalid_review_pending" ||
+              display.status === "review_overlay_error") {
+            renderQuestion();
+            return true;
+          }
+          return false;
+        }
+        if (session.index === session.queue.length) {
+          showResult({ skipSave: true });
+          return true;
+        }
+        if (session.recorded) {
+          if (session.index >= session.queue.length - 1) {
+            showResult();
+          } else {
+            session.index += 1;
+            session.recorded = false;
+            saveState();
+            questionView.hidden = false;
+            renderQuestion();
+          }
+        } else {
+          questionView.hidden = false;
+          renderQuestion();
+        }
+        return true;
       }
 
       function initialize() {
@@ -3808,28 +4450,7 @@
             counts[4] + "問を追加しました。";
           renderAll();
           autoFetchLatestFromGitHub();
-
-          if (state.currentSession &&
-              state.unlockedStages.indexOf(state.currentSession.stage) !== -1 &&
-              Array.isArray(state.currentSession.queue) &&
-              state.currentSession.queue.length &&
-              state.currentSession.queue.every(function (id) { return Boolean(questionById[id]); })) {
-            state.currentStage = state.currentSession.stage;
-            if (state.currentSession.recorded) {
-              if (state.currentSession.index >= state.currentSession.queue.length - 1) {
-                showResult();
-              } else {
-                state.currentSession.index += 1;
-                state.currentSession.recorded = false;
-                saveState();
-                questionView.hidden = false;
-                renderQuestion();
-              }
-            } else {
-              questionView.hidden = false;
-              renderQuestion();
-            }
-          }
+          restoreCurrentSessionView();
 
           window.hygieneOSV2Test = {
             getState: function () { return JSON.parse(JSON.stringify(state)); },
