@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-09T01:14:28.581Z",
+  "updatedAt": "2026-08-09T01:20:48.821Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,7 +10,7 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-08-09T01:14:28.581Z",
+    "exportedAt": "2026-08-09T01:20:48.821Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -195,8 +195,10 @@
       "stage5-question-051",
       "adaptive-d5-leave-02",
       "adaptive-d5-worktime-01",
+      "adaptive-d5-leave-01",
       "adaptive-d5-leave-04",
-      "adaptive-d5-worktime-02"
+      "adaptive-d5-worktime-02",
+      "adaptive-d5-leave-03"
     ],
     "stageResults": {
       "1": {
@@ -281,9 +283,9 @@
       },
       "3": {
         "total": 30,
-        "answerCount": 56,
-        "correctCount": 52,
-        "accuracy": 93,
+        "answerCount": 57,
+        "correctCount": 56,
+        "accuracy": 98,
         "answeredQuestionIds": [
           "stage3-question-016",
           "stage3-question-018",
@@ -427,20 +429,14 @@
       "stage2-question-004",
       "stage2-question-025",
       "stage3-question-026",
-      "stage5-question-013",
-      "adaptive-d5-leave-02",
-      "adaptive-d5-worktime-01",
-      "adaptive-d5-leave-04"
+      "stage5-question-013"
     ],
     "reviewQuestionIds": [
       "question-013",
       "stage2-question-004",
       "stage2-question-025",
       "stage3-question-026",
-      "stage5-question-013",
-      "adaptive-d5-leave-02",
-      "adaptive-d5-worktime-01",
-      "adaptive-d5-leave-04"
+      "stage5-question-013"
     ],
     "understoodCorrectQuestionIds": [
       "stage4-question-002",
@@ -502,15 +498,15 @@
         "選択式対策 1問"
       ]
     },
-    "totalAnswered": 318,
-    "totalCorrect": 310,
-    "lastStudyDate": "2026-08-02",
-    "lastStudyAt": "2026-08-02T09:58:03.355Z",
+    "totalAnswered": 319,
+    "totalCorrect": 314,
+    "lastStudyDate": "2026-07-26",
+    "lastStudyAt": "2026-07-25T23:24:22.483Z",
     "firekeeper": {
       "lastShownDate": "2026-08-09",
-      "lastShownAt": "2026-08-09T01:10:27.928Z",
-      "dismissedDate": "2026-08-02",
-      "lastDismissedAt": "2026-08-02T09:58:03.355Z",
+      "lastShownAt": "2026-08-09T01:20:08.691Z",
+      "dismissedDate": "2026-07-26",
+      "lastDismissedAt": "2026-07-25T23:24:22.483Z",
       "lastDismissReason": "answer",
       "restRecords": []
     },
@@ -720,29 +716,26 @@
       }
     },
     "progress": {
-      "totalAnswers": 318,
-      "correctAnswers": 310,
+      "totalAnswers": 319,
+      "correctAnswers": 314,
       "wrongQuestionIds": [
         "question-013",
         "stage2-question-004",
         "stage2-question-025",
         "stage3-question-026",
-        "stage5-question-013",
-        "adaptive-d5-leave-02",
-        "adaptive-d5-worktime-01",
-        "adaptive-d5-leave-04"
+        "stage5-question-013"
       ],
-      "lastStudyDate": "2026-08-02",
-      "lastStudyAt": "2026-08-02T09:58:03.355Z",
-      "lastManualSyncAt": "2026-08-09T01:14:28.581Z",
-      "lastSavedAt": "2026-08-09T01:14:28.581Z",
+      "lastStudyDate": "2026-07-26",
+      "lastStudyAt": "2026-07-25T23:24:22.483Z",
+      "lastManualSyncAt": "2026-08-09T01:20:48.821Z",
+      "lastSavedAt": "2026-08-09T01:20:48.821Z",
       "lastQuestionId": "adaptive-d5-leave-03",
       "recentQuestionIds": [
+        "adaptive-d5-leave-02",
         "adaptive-d5-worktime-01",
+        "adaptive-d5-leave-01",
         "adaptive-d5-leave-04",
         "adaptive-d5-worktime-02",
-        "adaptive-d5-leave-01",
-        "adaptive-d5-leave-02",
         "adaptive-d5-leave-03"
       ],
       "seenQuestionIds": [
@@ -920,8 +913,10 @@
         "stage5-question-051",
         "adaptive-d5-leave-02",
         "adaptive-d5-worktime-01",
+        "adaptive-d5-leave-01",
         "adaptive-d5-leave-04",
-        "adaptive-d5-worktime-02"
+        "adaptive-d5-worktime-02",
+        "adaptive-d5-leave-03"
       ],
       "daily": {
         "date": "2026-08-09",
@@ -945,18 +940,6 @@
           "lastCorrectDate": "2026-07-09"
         },
         "stage5-question-013": {
-          "consecutiveCorrectDays": 0,
-          "lastCorrectDate": ""
-        },
-        "adaptive-d5-leave-02": {
-          "consecutiveCorrectDays": 1,
-          "lastCorrectDate": "2026-08-02"
-        },
-        "adaptive-d5-worktime-01": {
-          "consecutiveCorrectDays": 0,
-          "lastCorrectDate": ""
-        },
-        "adaptive-d5-leave-04": {
           "consecutiveCorrectDays": 0,
           "lastCorrectDate": ""
         }
@@ -1035,8 +1018,8 @@
           ]
         },
         "3": {
-          "answerCount": 56,
-          "correctCount": 52,
+          "answerCount": 57,
+          "correctCount": 56,
           "answeredQuestionIds": [
             "stage3-question-016",
             "stage3-question-018",
@@ -1070,8 +1053,10 @@
             "stage3-question-007",
             "adaptive-d5-leave-02",
             "adaptive-d5-worktime-01",
+            "adaptive-d5-leave-01",
             "adaptive-d5-leave-04",
-            "adaptive-d5-worktime-02"
+            "adaptive-d5-worktime-02",
+            "adaptive-d5-leave-03"
           ]
         },
         "4": {
@@ -1690,6 +1675,84 @@
             ],
             "perfect": true,
             "completedAt": "2026-07-20T10:20:54.899Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "adaptive-d5-leave-02",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-worktime-01",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-leave-01",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-07-25T23:20:00.539Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "adaptive-d5-leave-04",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-worktime-02",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-leave-03",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-07-25T23:24:31.263Z"
           }
         ],
         "lastSet": {
@@ -1698,7 +1761,7 @@
           "reasoningLevel": 5,
           "answers": [
             {
-              "questionId": "stage5-question-061",
+              "questionId": "adaptive-d5-leave-04",
               "correct": true,
               "understanding": "understood",
               "unsure": false,
@@ -1708,7 +1771,7 @@
               "reasoningLevel": 5
             },
             {
-              "questionId": "stage5-question-064",
+              "questionId": "adaptive-d5-worktime-02",
               "correct": true,
               "understanding": "understood",
               "unsure": false,
@@ -1718,7 +1781,7 @@
               "reasoningLevel": 5
             },
             {
-              "questionId": "stage5-question-068",
+              "questionId": "adaptive-d5-leave-03",
               "correct": true,
               "understanding": "understood",
               "unsure": false,
@@ -1729,17 +1792,17 @@
             }
           ],
           "perfect": true,
-          "completedAt": "2026-07-20T10:20:54.899Z"
+          "completedAt": "2026-07-25T23:24:31.263Z"
         },
         "lastIncreasedAt": "2026-07-20T10:05:19.848Z",
-        "lastEvaluatedAt": "2026-07-20T10:20:54.899Z",
+        "lastEvaluatedAt": "2026-07-25T23:24:31.263Z",
         "lastAdjustment": "perfect-set"
       },
       "firekeeper": {
         "lastShownDate": "2026-08-09",
-        "lastShownAt": "2026-08-09T01:10:27.928Z",
-        "dismissedDate": "2026-08-02",
-        "lastDismissedAt": "2026-08-02T09:58:03.355Z",
+        "lastShownAt": "2026-08-09T01:20:08.691Z",
+        "dismissedDate": "2026-07-26",
+        "lastDismissedAt": "2026-07-25T23:24:22.483Z",
         "lastDismissReason": "answer",
         "restRecords": []
       }
