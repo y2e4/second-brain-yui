@@ -1083,7 +1083,7 @@
       </div>
       <div id="stage5StudyModes" hidden>
         <div class="button-grid">
-          <button class="primary-button" type="button" data-mode="final30">本番30問を開始</button>
+          <button class="primary-button" type="button" data-mode="final30">今日の3問</button>
           <button class="secondary-button" type="button" data-mode="weak">復習待ちを解く</button>
           <button class="secondary-button" type="button" id="stage5GlossaryButton">用語・解説を見る</button>
         </div>
@@ -1173,7 +1173,7 @@
       <p class="result-score" id="resultScore"></p>
       <p class="panel-note" id="resultNote"></p>
       <div class="button-grid">
-        <button class="primary-button regular-result-mode" type="button" data-result-mode="more3">さらに3問</button>
+        <button class="primary-button regular-result-mode" type="button" data-result-mode="more3">続けて次の3問へ</button>
         <button class="secondary-button regular-result-mode" type="button" data-result-mode="challenge10">10問チャレンジ</button>
         <button class="secondary-button" type="button" id="backToStudyButton">ステージ画面へ戻る</button>
       </div>
@@ -1261,11 +1261,12 @@
         "sessionIndex",
         "currentSessionQuestionIds"
       ];
+      var SESSION_QUESTION_LIMIT = 3;
       var MODE_LIMITS = {
-        today: 3,
-        more3: 3,
+        today: SESSION_QUESTION_LIMIT,
+        more3: SESSION_QUESTION_LIMIT,
         challenge10: 10,
-        final30: 30,
+        final30: SESSION_QUESTION_LIMIT,
         firekeeper: 1
       };
       var MODE_NAMES = {
@@ -1274,7 +1275,7 @@
         challenge10: "10問チャレンジ",
         wrong: "間違えた問題",
         weak: "苦手克服",
-        final30: "本番30問",
+        final30: "ステージ5・3問",
         firekeeper: "火守モード 1問だけ"
       };
       var STAGE5_CATEGORIES = ["関係法令", "労働衛生", "労働生理"];
@@ -2214,7 +2215,7 @@
         var limit = MODE_LIMITS[mode] || pool.length;
         var excluded = [];
 
-        if (mode === "today") {
+        if (mode === "today" || mode === "final30") {
           excluded = state.dailyShownIds.slice();
         } else if (mode === "more3") {
           excluded = (state.lastQueueByStage[state.currentStage] || []).slice();
@@ -2224,9 +2225,7 @@
           excluded.push(state.lastQuestionId);
         }
 
-        var queue = mode === "final30"
-          ? pool.map(function (question) { return question.id; })
-          : buildPriorityQueue(pool, limit, excluded);
+        var queue = buildPriorityQueue(pool, limit, excluded);
         state.currentSession = {
           stage: state.currentStage,
           mode: mode,
@@ -3118,7 +3117,8 @@
             "「迷ったが正解」「勘で正解」は正答率には含まれますが、理解済みにはせず復習候補へ残します。";
         }
         document.querySelectorAll(".regular-result-mode").forEach(function (button) {
-          button.hidden = session.stage === 5;
+          button.hidden = session.stage === 5 &&
+            button.getAttribute("data-result-mode") !== "more3";
         });
         if (!settings.skipSave) {
           saveState();
