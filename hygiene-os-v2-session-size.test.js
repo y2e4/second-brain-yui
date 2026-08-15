@@ -26,7 +26,10 @@ test("ステージ5の新規学習は3問単位で開始する", function () {
     HTML,
     /data-mode="final30">今日の3問<\/button>/
   );
-  assert.match(HTML, /var SESSION_QUESTION_LIMIT = 3;/);
+  assert.match(
+    HTML,
+    /var SESSION_QUESTION_LIMIT = Number\(COMMON\.DEFAULT_SESSION_QUESTION_LIMIT\) \|\| 3;/
+  );
   assert.match(HTML, /final30: SESSION_QUESTION_LIMIT/);
   assert.match(HTML, /final30: "ステージ5・3問"/);
 });

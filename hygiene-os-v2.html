@@ -1216,7 +1216,7 @@
     </section>
   </main>
 
-  <script src="qualification-os-common.js?v=20260711-common-os-01"></script>
+  <script src="qualification-os-common.js?v=20260816-common-session-01"></script>
   <script src="hygiene-os-v2-learning-data-migration.js?v=20260802-learning-data-migration-03"></script>
   <script src="hygiene-os-v2-knowledge-review-selector.js?v=20260802-knowledge-review-01"></script>
   <script src="hygiene-os-v2-review-context.js?v=20260802-review-context-01"></script>
@@ -1261,7 +1261,7 @@
         "sessionIndex",
         "currentSessionQuestionIds"
       ];
-      var SESSION_QUESTION_LIMIT = 3;
+      var SESSION_QUESTION_LIMIT = Number(COMMON.DEFAULT_SESSION_QUESTION_LIMIT) || 3;
       var MODE_LIMITS = {
         today: SESSION_QUESTION_LIMIT,
         more3: SESSION_QUESTION_LIMIT,

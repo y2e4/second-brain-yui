@@ -2298,7 +2298,7 @@ debug: loading</pre>
     <p class="build-version" id="buildVersionLabel">buildVersion: 2026-07-25-reasoning-depth-02</p>
   </main>
 
-  <script src="qualification-os-common.js?v=20260725-reasoning-depth-02"></script>
+  <script src="qualification-os-common.js?v=20260816-common-session-01"></script>
   <script src="sharoshi-teacher-mode.js?v=20260710-teacher-beta-01"></script>
   <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
   <script src="sharoshi-video-learning-beta.js?v=20260712-video-cleanup-01"></script>
@@ -2351,6 +2351,7 @@ debug: loading</pre>
       ];
       var CHOICE_LABELS = ["A", "B", "C", "D", "E"];
       var DEFAULT_CHOICE_IDS = ["a", "b", "c", "d", "e"];
+      var SESSION_QUESTION_LIMIT = Number(COMMON.DEFAULT_SESSION_QUESTION_LIMIT) || 3;
       var REASONING_DIFFICULTY_LEVELS = COMMON.REASONING_DIFFICULTY_LEVELS || [
         { id: 1, level: 1, name: "知識", label: "知識", description: "用語・数字・単一条件を直接確認します。" },
         { id: 2, level: 2, name: "比較", label: "比較", description: "似た制度や対象者、期間の違いを比べます。" },
@@ -6105,7 +6106,7 @@ debug: loading</pre>
       }
 
       function startSession(mode, requestedStageId, options) {
-        var limit = mode === "challenge" ? 10 : 3;
+        var limit = mode === "challenge" ? 10 : SESSION_QUESTION_LIMIT;
         var settings = options || {};
         if (mode !== "firekeeper" && firekeeperCard && !firekeeperCard.hidden) {
           dismissFirekeeperForToday("study_started", { save: true });

@@ -1124,7 +1124,7 @@ test("公開版基準HTMLへ互換接続だけが追加されている", functio
 
   assert.match(
     html,
-    /qualification-os-common\.js\?v=20260711-common-os-01/
+    /qualification-os-common\.js\?v=20260816-common-session-01/
   );
   assert.match(
     html,
