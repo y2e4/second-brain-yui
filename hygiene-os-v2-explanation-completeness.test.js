@@ -37,14 +37,16 @@ function sha256(value) {
     .digest("hex");
 }
 
-function withoutExplanations(value) {
+function withoutExplanationsOrMemories(value) {
   var copy = JSON.parse(JSON.stringify(value));
   (copy.questions || []).forEach(function (question) {
     delete question.explanation;
+    delete question.memory;
   });
   if (copy.stage5 && Array.isArray(copy.stage5.questions)) {
     copy.stage5.questions.forEach(function (question) {
       delete question.explanation;
+      delete question.memory;
     });
   }
   return copy;
@@ -58,8 +60,8 @@ test("解説改善で問題数、問題文、正答、ID、学習metadataを変�
     return question.id;
   })).size, 111);
   assert.equal(
-    sha256(withoutExplanations(DATA)),
-    "cee650999e48b313709e64f3fb12db78ec4c4dc7e2655b74fa6e729a166ac206"
+    sha256(withoutExplanationsOrMemories(DATA)),
+    "d8e2682f62d04e84e10b6ae428e1d9201244ca63e8f6c8e2912bef1b6e49fddf"
   );
 });
 
@@ -118,7 +120,7 @@ test("血液の誤文は血漿と血球の正しい体積割合まで示す", fu
 test("HTMLは改善版問題JSONの新しいキャッシュ識別子を参照する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260816-explanation-01/
+    /hygiene-os-v2-questions\.json\?v=20260816-memory-hooks-01/
   );
-  assert.doesNotMatch(HTML, /20260802-overtime-review-01/);
+  assert.doesNotMatch(HTML, /20260816-explanation-01/);
 });
