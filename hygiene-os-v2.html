@@ -3599,43 +3599,6 @@
           : String(payload && (payload.exportedAt || payload.lastSavedAt || "") || "");
       }
 
-      function getPayloadSyncScore(payload) {
-        var source = isPlainObject(payload) && isPlainObject(payload.progress) ? payload.progress : payload;
-        var answeredIds = Array.isArray(payload.answeredQuestionIds)
-          ? payload.answeredQuestionIds
-          : [];
-        return {
-          totalAnswered: Math.max(0, Number(payload.totalAnswered || source.totalAnswered) || 0),
-          totalCorrect: Math.max(0, Number(payload.totalCorrect) || 0),
-          answeredIdCount: answeredIds.length,
-          lastStudyDate: String(payload.lastStudyDate || source.lastStudyDate || ""),
-          exportedAtMs: getTimeValue(payload.exportedAt),
-          lastSavedAtMs: getTimeValue(source.lastSavedAt)
-        };
-      }
-
-      function compareSyncScores(localScore, remoteScore) {
-        if (remoteScore.totalAnswered !== localScore.totalAnswered) {
-          return remoteScore.totalAnswered > localScore.totalAnswered ? "remote" : "local";
-        }
-        if (remoteScore.answeredIdCount !== localScore.answeredIdCount) {
-          return remoteScore.answeredIdCount > localScore.answeredIdCount ? "remote" : "local";
-        }
-        if (remoteScore.totalCorrect !== localScore.totalCorrect) {
-          return remoteScore.totalCorrect > localScore.totalCorrect ? "remote" : "local";
-        }
-        if (remoteScore.lastStudyDate !== localScore.lastStudyDate) {
-          return remoteScore.lastStudyDate > localScore.lastStudyDate ? "remote" : "local";
-        }
-        if (remoteScore.exportedAtMs > localScore.lastSavedAtMs + 1000) {
-          return "remote";
-        }
-        if (localScore.lastSavedAtMs > remoteScore.exportedAtMs + 1000) {
-          return "local";
-        }
-        return "same";
-      }
-
       function readGitHubSyncMeta() {
         var stored = getStoredJson(GITHUB_SYNC_META_KEY, {});
         return isPlainObject(stored) ? stored : {};
@@ -3645,7 +3608,7 @@
         try {
           localStorage.setItem(GITHUB_SYNC_META_KEY, JSON.stringify(meta));
         } catch (error) {
-          // 表示用メタデータなので保存できなくても学習は続ける。
+          // 保存できない場合、次回同期はSHA未確認として安全側へ倒す。
         }
       }
 
@@ -3790,7 +3753,76 @@
       function isLocalProgressNewerThanLastSync() {
         var localSavedAt = getTimeValue(state.lastSavedAt);
         var lastSyncedAt = getTimeValue(state.lastManualSyncAt);
-        return Boolean(localSavedAt && (!lastSyncedAt || localSavedAt > lastSyncedAt + 1000));
+        return Boolean(localSavedAt && (!lastSyncedAt || localSavedAt > lastSyncedAt));
+      }
+
+      function normalizeGitHubSha(value) {
+        return typeof value === "string" ? value.trim() : "";
+      }
+
+      function hasMeaningfulLocalSyncData(payload) {
+        var safePayload = isPlainObject(payload) ? payload : {};
+        var source = isPlainObject(safePayload.progress) ? safePayload.progress : safePayload;
+        var learningData = isPlainObject(source.learningData || safePayload.learningData)
+          ? source.learningData || safePayload.learningData
+          : {};
+
+        return Number(safePayload.totalAnswered || source.totalAnswered || 0) > 0 ||
+          Number(safePayload.currentStage || source.currentStage || 1) > 1 ||
+          Number(safePayload.highestUnlockedStage || 1) > 1 ||
+          (Array.isArray(source.unlockedStages) && source.unlockedStages.length > 1) ||
+          (Array.isArray(safePayload.answeredQuestionIds) && safePayload.answeredQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.wrongQuestionIds) && safePayload.wrongQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.uncertainQuestionIds) && safePayload.uncertainQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.weakQuestionIds) && safePayload.weakQuestionIds.length > 0) ||
+          (Array.isArray(learningData.answerHistory) && learningData.answerHistory.length > 0) ||
+          isPlainObject(source.currentSession || safePayload.currentSession);
+      }
+
+      function getGitHubSyncChangeState(remote, localPayload, remotePayload) {
+        var meta = readGitHubSyncMeta();
+        var lastSyncedSha = normalizeGitHubSha(meta.lastSyncedSha);
+        var currentSha = normalizeGitHubSha(remote && remote.sha);
+        var hadPreviousSync = Boolean(state.lastManualSyncAt);
+        var baselineKnown = Boolean(lastSyncedSha);
+        var remoteNamespaceExists = Boolean(remote && remote.exists && remotePayload);
+        var localChanged = isLocalProgressNewerThanLastSync();
+        var githubChanged;
+
+        if (!hadPreviousSync && !hasMeaningfulLocalSyncData(localPayload)) {
+          localChanged = false;
+        }
+        if (baselineKnown) {
+          githubChanged = !remote || !remote.exists || !remoteNamespaceExists ||
+            !currentSha || currentSha !== lastSyncedSha;
+        } else {
+          // 既存端末にはSHAがないため、最初の成功までは安全側へ倒す。
+          githubChanged = remoteNamespaceExists || hadPreviousSync;
+        }
+        return {
+          localChanged: localChanged,
+          githubChanged: githubChanged,
+          baselineKnown: baselineKnown,
+          lastSyncedSha: lastSyncedSha,
+          currentSha: currentSha
+        };
+      }
+
+      function resolveGitHubSyncAction(remote, localPayload, remotePayload) {
+        var changes = getGitHubSyncChangeState(remote, localPayload, remotePayload);
+        var action;
+        if (changes.localChanged && changes.githubChanged) {
+          action = "conflict";
+        } else if (!remote || !remote.exists || !remotePayload) {
+          action = changes.githubChanged ? "remote_missing" : "push";
+        } else if (changes.githubChanged) {
+          action = "pull";
+        } else if (changes.localChanged) {
+          action = "push";
+        } else {
+          action = "same";
+        }
+        return { action: action, changes: changes };
       }
 
       function getSyncStateSnapshot() {
@@ -4073,9 +4105,12 @@
         state.lastSavedAt = syncAt;
         payload = buildProgressExportPayload();
         wrapped = wrapLearningPayload(remotePayload, payload);
-        return provider.write(wrapped, remoteSha).then(function () {
+        return provider.write(wrapped, remoteSha).then(function (response) {
           saveState({ savedAt: syncAt });
-          return payload;
+          return {
+            payload: payload,
+            sha: normalizeGitHubSha(response && response.content && response.content.sha)
+          };
         }).catch(function (error) {
           state.lastManualSyncAt = previousManualSyncAt;
           state.lastSavedAt = previousSavedAt;
@@ -4083,11 +4118,12 @@
         });
       }
 
-      function markSyncSuccess(remoteUpdatedAt, comparison) {
+      function markSyncSuccess(remoteUpdatedAt, comparison, remoteSha) {
         updateGitHubSyncMeta({
           lastStatus: "synced",
           lastSyncedAt: state.lastManualSyncAt || new Date().toISOString(),
           githubUpdatedAt: remoteUpdatedAt || state.lastManualSyncAt || "",
+          lastSyncedSha: normalizeGitHubSha(remoteSha),
           comparison: comparison || "same",
           lastError: "",
           lastErrorAt: ""
@@ -4108,7 +4144,8 @@
         var config = readGitHubSyncInputs();
         var provider;
         var localPayload;
-        var localScore;
+        var conflictMessage = "この端末とGitHubの両方に新しい変更があります。" +
+          "安全のため同期を停止しました。先にバックアップまたは統合確認をしてください。";
 
         try {
           validateGitHubSyncConfig(config);
@@ -4121,52 +4158,43 @@
         }
 
         localPayload = buildProgressExportPayload();
-        localScore = getPayloadSyncScore(localPayload);
         provider = createGitHubSyncProvider(config);
         githubSyncButton.disabled = true;
         showSyncStatus("GitHubと同期しています...", false);
 
-        provider.read().then(function (remote) {
-          var remotePayload;
-          var remoteScore;
-          var decision;
-          var localUnsynced = isLocalProgressNewerThanLastSync();
-          if (!remote.exists) {
-            return pushProgressToSyncProvider(provider, "", null).then(function (payload) {
-              markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-              return "GitHubと同期しました";
-            });
+        return provider.read().then(function (remote) {
+          var remotePayload = remote.exists ? extractLearningPayload(remote.payload) : null;
+          var syncAction = resolveGitHubSyncAction(remote, localPayload, remotePayload);
+          if (syncAction.action === "conflict") {
+            throw new Error(conflictMessage);
           }
-          remotePayload = extractLearningPayload(remote.payload);
-          if (!remotePayload) {
-            return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
-              markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+          if (syncAction.action === "remote_missing") {
+            throw new Error(
+              "前回同期したGitHub上の衛生管理者OSデータを確認できません。安全のため同期を停止しました。"
+            );
+          }
+          if (syncAction.action === "push") {
+            return pushProgressToSyncProvider(
+              provider,
+              remote.exists ? remote.sha : "",
+              remote.exists ? remote.payload : null
+            ).then(function (result) {
+              markSyncSuccess(getPayloadUpdatedAt(result.payload), "local", result.sha);
               return "GitHubと同期しました";
             });
           }
           if (!looksLikeLearningPayload(remotePayload)) {
             throw new Error("GitHub上のlearning-data.json内に衛生管理者OSの学習データを確認できませんでした。");
           }
-          remoteScore = getPayloadSyncScore(remotePayload);
-          decision = compareSyncScores(localScore, remoteScore);
-          if (decision === "remote") {
-            if (localUnsynced) {
-              throw new Error("ローカルとGitHubの両方に新しい変更があります。先に手動バックアップを取ってください。");
-            }
+          if (syncAction.action === "pull") {
             applyGitHubProgressPayload(remotePayload);
-            markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote");
+            markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote", remote.sha);
             return "GitHubと同期しました";
           }
-          if (decision === "same" && !localUnsynced) {
-            state.lastManualSyncAt = new Date().toISOString();
-            saveState({ savedAt: state.lastManualSyncAt });
-            markSyncSuccess(getPayloadUpdatedAt(remotePayload), "same");
-            return "GitHubと同期しました";
-          }
-          return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
-            markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-            return "GitHubと同期しました";
-          });
+          state.lastManualSyncAt = new Date().toISOString();
+          saveState({ savedAt: state.lastManualSyncAt });
+          markSyncSuccess(getPayloadUpdatedAt(remotePayload), "same", remote.sha);
+          return "GitHubと同期しました";
         }).then(function (message) {
           showSyncStatus(message, false, 2400);
         }).catch(function (error) {
@@ -4181,36 +4209,38 @@
       function autoFetchLatestFromGitHub() {
         var config = readGitHubSyncConfig();
         var provider;
-        var localScore;
+        var localPayload;
+        var conflictMessage = "この端末とGitHubの両方に新しい変更があります。" +
+          "安全のため同期を停止しました。先にバックアップまたは統合確認をしてください。";
         if (autoSyncStarted || !hasCompleteGitHubSyncConfig(config)) {
           updateSyncInfo();
           return;
         }
         autoSyncStarted = true;
         provider = createGitHubSyncProvider(config);
-        localScore = getPayloadSyncScore(buildProgressExportPayload());
-        provider.read().then(function (remote) {
-          var remotePayload;
-          var decision;
-          if (!remote.exists) {
+        localPayload = buildProgressExportPayload();
+        return provider.read().then(function (remote) {
+          var remotePayload = remote.exists ? extractLearningPayload(remote.payload) : null;
+          var syncAction = resolveGitHubSyncAction(remote, localPayload, remotePayload);
+          if (syncAction.action === "conflict") {
+            markSyncError(conflictMessage);
+            showSyncStatus(conflictMessage, true);
+            return;
+          }
+          if (syncAction.action === "remote_missing") {
             updateSyncInfo();
             return;
           }
-          remotePayload = extractLearningPayload(remote.payload);
-          if (!remotePayload || !looksLikeLearningPayload(remotePayload)) {
+          if (syncAction.action !== "pull" || !looksLikeLearningPayload(remotePayload)) {
             updateSyncInfo();
             return;
           }
-          decision = compareSyncScores(localScore, getPayloadSyncScore(remotePayload));
-          if (decision === "remote" && !isLocalProgressNewerThanLastSync()) {
-            applyGitHubProgressPayload(remotePayload);
-            markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote");
-            showSyncStatus("GitHubと同期しました", false, 2000);
-          } else {
-            updateSyncInfo();
-          }
+          applyGitHubProgressPayload(remotePayload);
+          markSyncSuccess(getPayloadUpdatedAt(remotePayload), "remote", remote.sha);
+          showSyncStatus("GitHubと同期しました", false, 2000);
         }).catch(function (error) {
           markSyncError(error.message || "GitHubへ接続できませんでした。");
+          showSyncStatus(error.message || "GitHubへ接続できませんでした。", true);
         });
       }
 
