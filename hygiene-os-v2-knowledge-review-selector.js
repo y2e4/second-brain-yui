@@ -233,6 +233,231 @@
     };
   }
 
+  function normalizeSupplementQuestion(raw) {
+    var question = isPlainObject(raw) ? raw : {};
+    var id = toId(question.id);
+    var stage = Number(question.stage);
+    var questionText = toId(question.question || question.statement);
+    var choices = Array.isArray(question.choices) ? question.choices : [];
+    var hasAnswer = toId(question.answer) || Number.isInteger(question.correctIndex);
+    var hasUsableChoices = choices.length >= 2 || typeof question.answer === "boolean";
+
+    return {
+      raw: question,
+      id: id,
+      stage: stage,
+      category: toId(question.category),
+      theme: toId(question.theme),
+      questionText: questionText,
+      knowledgeKey: toId(question.knowledgeKey),
+      variantOfQuestionIds: uniqueIds(question.variantOfQuestionIds),
+      variantType: toId(question.variantType),
+      reasoningLevel: normalizeLevel(question.reasoningLevel, 0),
+      equivalenceKey: getEquivalenceKey(question),
+      valid: Boolean(id && Number.isInteger(stage) && stage >= 1 && stage <= 5 &&
+        questionText && hasUsableChoices && hasAnswer)
+    };
+  }
+
+  function hasVerifiedVariantMetadata(question) {
+    return Boolean(question && question.knowledgeKey &&
+      VARIANT_TYPES.indexOf(question.variantType) !== -1 &&
+      question.reasoningLevel >= 1 && question.reasoningLevel <= 5);
+  }
+
+  function isRelatedSupplementTrigger(outcome, manualWeak) {
+    if (outcome === "understood") {
+      return manualWeak === true;
+    }
+    return ["incorrect", "unsure", "guess", "ambiguous"].indexOf(outcome) !== -1;
+  }
+
+  function getSupplementRelation(source, candidate) {
+    var directRelation;
+    var variantRank;
+
+    if (source.knowledgeKey) {
+      if (candidate.knowledgeKey !== source.knowledgeKey ||
+          !hasVerifiedVariantMetadata(source) ||
+          !hasVerifiedVariantMetadata(candidate)) {
+        return null;
+      }
+      directRelation = candidate.variantOfQuestionIds.indexOf(source.id) !== -1 ||
+        source.variantOfQuestionIds.indexOf(candidate.id) !== -1;
+      return {
+        rank: directRelation ? 0 : 1,
+        reason: directRelation ? "direct_knowledge_variant" : "knowledge_variant",
+        directRelation: directRelation
+      };
+    }
+
+    if (!source.theme || source.theme === "未設定" || candidate.theme !== source.theme) {
+      return null;
+    }
+    variantRank = {
+      comparison: 2,
+      condition: 3,
+      exception: 3,
+      case: 4,
+      rephrase: 5
+    }[candidate.variantType];
+    return {
+      rank: variantRank === undefined ? 6 : variantRank,
+      reason: variantRank === undefined
+        ? "same_theme"
+        : "same_theme_" + candidate.variantType,
+      directRelation: false
+    };
+  }
+
+  function selectRelatedSupplementQuestions(input) {
+    var settings = isPlainObject(input) ? input : {};
+    var rawQuestions = Array.isArray(settings.questions) ? settings.questions : [];
+    var idCounts = {};
+    var questions = [];
+    var questionById = {};
+    var duplicateIds;
+    var sourceQuestionId = toId(settings.sourceQuestionId ||
+      (settings.sourceQuestion && settings.sourceQuestion.id));
+    var source;
+    var outcome = toId(settings.outcome);
+    var allowedStageIds = normalizeStageIds(settings.allowedStageIds);
+    var hasExplicitStages = Array.isArray(settings.allowedStageIds);
+    var excludedIds = toIdSet(settings.excludedQuestionIds);
+    var limit = Number.isInteger(settings.limit) && settings.limit >= 1
+      ? Math.min(settings.limit, 2)
+      : 2;
+    var candidates;
+    var selected;
+
+    rawQuestions.forEach(function (raw) {
+      var question = normalizeSupplementQuestion(raw);
+      if (question.id) {
+        idCounts[question.id] = Number(idCounts[question.id] || 0) + 1;
+      }
+      if (question.valid) {
+        questions.push(question);
+      }
+    });
+    duplicateIds = Object.keys(idCounts).filter(function (id) {
+      return idCounts[id] > 1;
+    }).sort(compareIds);
+    if (duplicateIds.length) {
+      return {
+        status: "invalid_question_catalog",
+        questions: [],
+        questionIds: [],
+        selectionReasons: [],
+        fallback: "continue_normal_learning",
+        details: { duplicateIds: duplicateIds }
+      };
+    }
+    questions.forEach(function (question) {
+      questionById[question.id] = question;
+    });
+    source = questionById[sourceQuestionId];
+    if (!source) {
+      return {
+        status: "invalid_source_question",
+        questions: [],
+        questionIds: [],
+        selectionReasons: [],
+        fallback: "continue_normal_learning",
+        details: {}
+      };
+    }
+    if (!isRelatedSupplementTrigger(outcome, settings.manualWeak === true)) {
+      return {
+        status: "stable_understanding",
+        questions: [],
+        questionIds: [],
+        selectionReasons: [],
+        fallback: "continue_normal_learning",
+        details: {}
+      };
+    }
+    if (hasExplicitStages && !hasValues(allowedStageIds)) {
+      return {
+        status: "invalid_allowed_stages",
+        questions: [],
+        questionIds: [],
+        selectionReasons: [],
+        fallback: "continue_normal_learning",
+        details: {}
+      };
+    }
+    if (!hasExplicitStages) {
+      allowedStageIds[String(source.stage)] = true;
+    }
+    if (!allowedStageIds[String(source.stage)]) {
+      return {
+        status: "source_stage_not_allowed",
+        questions: [],
+        questionIds: [],
+        selectionReasons: [],
+        fallback: "continue_normal_learning",
+        details: {}
+      };
+    }
+
+    excludedIds[source.id] = true;
+    candidates = questions.map(function (candidate) {
+      var relation;
+      var reasoningDistance;
+      if (excludedIds[candidate.id] ||
+          !allowedStageIds[String(candidate.stage)] ||
+          candidate.questionText === source.questionText ||
+          candidate.equivalenceKey === source.equivalenceKey) {
+        return null;
+      }
+      relation = getSupplementRelation(source, candidate);
+      if (!relation) {
+        return null;
+      }
+      reasoningDistance = source.reasoningLevel && candidate.reasoningLevel
+        ? Math.abs(source.reasoningLevel - candidate.reasoningLevel)
+        : 0;
+      return {
+        question: candidate,
+        relation: relation,
+        reasoningDistance: reasoningDistance
+      };
+    }).filter(Boolean).sort(function (left, right) {
+      if (left.relation.rank !== right.relation.rank) {
+        return left.relation.rank - right.relation.rank;
+      }
+      if (left.reasoningDistance !== right.reasoningDistance) {
+        return left.reasoningDistance - right.reasoningDistance;
+      }
+      return compareIds(left.question.id, right.question.id);
+    });
+    selected = candidates.slice(0, limit);
+    if (!selected.length) {
+      return {
+        status: "no_related_supplement",
+        questions: [],
+        questionIds: [],
+        selectionReasons: [],
+        fallback: "continue_normal_learning",
+        details: { candidateCount: 0 }
+      };
+    }
+    return {
+      status: "selected",
+      questions: selected.map(function (item) {
+        return copyQuestionForResult(item.question.raw);
+      }),
+      questionIds: selected.map(function (item) {
+        return item.question.id;
+      }),
+      selectionReasons: selected.map(function (item) {
+        return item.relation.reason;
+      }),
+      fallback: "",
+      details: { candidateCount: candidates.length }
+    };
+  }
+
   function cloneJsonCompatible(value, ancestors) {
     var trail = Array.isArray(ancestors) ? ancestors : [];
     var nextTrail;
@@ -756,6 +981,7 @@
     SELECTION_PROOF_VERSION: SELECTION_PROOF_VERSION,
     verifySelectionProof: verifySelectionProof,
     selectKnowledgeReviewVariant: selectKnowledgeReviewVariant,
+    selectRelatedSupplementQuestions: selectRelatedSupplementQuestions,
     selectNormalLearningQuestion: selectNormalLearningQuestion
   };
 }));

@@ -95,7 +95,7 @@ test("HTMLは共通JS、移行アダプター、selector、reviewContextの順�
 });
 
 test("専用モジュールは個別のキャッシュ識別子を持つ", function () {
-  assert.match(HTML, /knowledge-review-selector\.js\?v=20260802-knowledge-review-01/);
+  assert.match(HTML, /knowledge-review-selector\.js\?v=20260816-related-remediation-01/);
   assert.match(HTML, /review-context\.js\?v=20260802-review-context-01/);
 });
 

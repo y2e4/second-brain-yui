@@ -1218,7 +1218,7 @@
 
   <script src="qualification-os-common.js?v=20260816-common-session-01"></script>
   <script src="hygiene-os-v2-learning-data-migration.js?v=20260802-learning-data-migration-03"></script>
-  <script src="hygiene-os-v2-knowledge-review-selector.js?v=20260802-knowledge-review-01"></script>
+  <script src="hygiene-os-v2-knowledge-review-selector.js?v=20260816-related-remediation-01"></script>
   <script src="hygiene-os-v2-review-context.js?v=20260802-review-context-01"></script>
   <script>
     (function () {
@@ -2777,29 +2777,35 @@
         return labels[outcome];
       }
 
-      function getMonsterChallengeQuestions(question) {
-        var sameTheme = questions.filter(function (item) {
-          return item.id !== question.id &&
-            item.stage <= state.currentStage &&
-            (item.theme === question.theme || item.category === question.category);
+      function getMonsterChallengeSelection(question, outcome, stats) {
+        if (!KNOWLEDGE_REVIEW_SELECTOR ||
+            typeof KNOWLEDGE_REVIEW_SELECTOR.selectRelatedSupplementQuestions !== "function") {
+          return { status: "selector_unavailable", questions: [] };
+        }
+        return KNOWLEDGE_REVIEW_SELECTOR.selectRelatedSupplementQuestions({
+          questions: questions,
+          sourceQuestionId: question.id,
+          outcome: outcome,
+          manualWeak: Boolean(stats && stats.manualWeak),
+          allowedStageIds: getReviewAllowedStageIds(state).filter(function (stageId) {
+            return stageId <= state.currentStage;
+          }),
+          excludedQuestionIds: [question.id],
+          limit: 2
         });
-        var selected = buildPriorityQueue(sameTheme.length >= 2 ? sameTheme : questions, 2, [question.id]);
-        return selected.map(function (id) {
-          return questionById[id];
-        }).filter(Boolean).slice(0, 2);
       }
 
       function renderTeacherSupport(question, outcome) {
         var stats = getQuestionStats(question.id);
+        var selection = getMonsterChallengeSelection(question, outcome, stats);
+        var challengeQuestions = Array.isArray(selection.questions) ? selection.questions : [];
+        var challengeButton;
+        var challengeText;
         var shouldShow = Boolean(teacherMode) &&
-          outcome !== "understood" &&
-          Number(stats.understoodStreak || 0) < 2 &&
-          (outcome === "incorrect" ||
-            outcome === "unsure" ||
-            outcome === "guess" ||
-            stats.reviewActive ||
-            stats.wrongActive ||
-            isWeakStats(stats));
+          !hasReviewContext(state.currentSession) &&
+          challengeQuestions.length > 0 &&
+          (stats.manualWeak === true || Number(stats.understoodStreak || 0) < 2) &&
+          selection.status === "selected";
 
         if (!teacherMode) {
           return;
@@ -2809,8 +2815,19 @@
           shouldShow: shouldShow,
           question: question,
           message: "ここは理解度が下がりやすいところ。対象・数字・時期だけ短く分けよう。",
-          challengeQuestions: getMonsterChallengeQuestions(question)
+          challengeQuestions: challengeQuestions
         });
+        if (shouldShow) {
+          challengeButton = teacherModeCard.querySelector(".teacher-monster .secondary-button");
+          challengeText = teacherModeCard.querySelector(".teacher-monster-text");
+          if (challengeButton) {
+            challengeButton.textContent = challengeQuestions.length + "問だけ挑戦";
+          }
+          if (challengeText) {
+            challengeText.textContent =
+              "今揺らいだ「" + question.theme + "」を、別の問題で確認します。";
+          }
+        }
       }
 
       function showFeedback(question, outcome, selectedAnswer) {
@@ -2962,6 +2979,9 @@
         }
         renderReviewFeedbackActions();
         renderAll({ skipSave: true });
+        if (teacherMode) {
+          renderTeacherSupport(question, candidateStats.lastOutcome || "understood");
+        }
       }
 
       function clearKnowledgeReview(reason) {
