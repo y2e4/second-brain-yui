@@ -20,6 +20,13 @@ var STAGE5_QUESTIONS = DATA.stage5 && Array.isArray(DATA.stage5.questions)
   : [];
 var ALL_QUESTIONS = BASE_QUESTIONS.concat(STAGE5_QUESTIONS);
 var GENERIC_MEMORY_PATTERN = /正解の理由を短く言い直して覚えます|短く言い直して覚え|理由を短く覚え/;
+var STAGE5_KNOWLEDGE_KEY_IDS = new Set([
+  "hm2-physiology-v01-02", "hm2-physiology-v01-05",
+  "hm2-hygiene-v02-03", "hm2-physiology-v02-05",
+  "hm2-physiology-v02-10", "hm2-stage5-018",
+  "hm2-stage5-022", "hm2-stage5-023",
+  "hm2-stage5-025", "hm2-stage5-029"
+]);
 
 var EXPECTED_HOOKS = {
   "hm2-stage5-001": "1,000人超〜2,000人以下は「4人」。1,200人を見たら、50人基準ではなく人数表の4人区分へ切り替える。",
@@ -78,14 +85,18 @@ function sha256(value) {
 
 function withoutMemories(value) {
   var copy = JSON.parse(JSON.stringify(value));
-  (copy.questions || []).forEach(function (question) {
+  var questions = (copy.questions || []).concat(
+    copy.stage5 && Array.isArray(copy.stage5.questions)
+      ? copy.stage5.questions
+      : []
+  );
+  questions.forEach(function (question) {
     delete question.memory;
+    if (STAGE5_KNOWLEDGE_KEY_IDS.has(question.id)) {
+      delete question.knowledgeKey;
+      delete question.variantType;
+    }
   });
-  if (copy.stage5 && Array.isArray(copy.stage5.questions)) {
-    copy.stage5.questions.forEach(function (question) {
-      delete question.memory;
-    });
-  }
   return copy;
 }
 
@@ -151,7 +162,7 @@ test("新しい覚え方は1〜2文で解説やひっかけポイントの複製
 test("問題JSONキャッシュ識別子を覚え方改善版へ更新する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260816-memory-hooks-01/
+    /hygiene-os-v2-questions\.json\?v=20260816-stage5-knowledge-keys-01/
   );
-  assert.doesNotMatch(HTML, /20260816-explanation-01/);
+  assert.doesNotMatch(HTML, /20260816-memory-hooks-01/);
 });

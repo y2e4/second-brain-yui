@@ -84,6 +84,23 @@ test("同じknowledgeKeyの確認済み派生が1問なら1問だけ返す", fun
   assert.deepEqual(result.questionIds, ["variant"]);
 });
 
+test("段階導入中のミニ補習はreasoningLevel未設定でもknowledgeKeyとvariantTypeを利用する", function () {
+  var source = question("source", {
+    knowledgeKey: "stage5-key",
+    variantType: "case"
+  });
+  var variant = question("variant", {
+    knowledgeKey: "stage5-key",
+    variantType: "comparison"
+  });
+  var result = select(source, [source, variant]);
+
+  assert.equal(source.reasoningLevel, undefined);
+  assert.equal(variant.reasoningLevel, undefined);
+  assert.deepEqual(result.questionIds, [variant.id]);
+  assert.deepEqual(result.selectionReasons, ["knowledge_variant"]);
+});
+
 test("同じknowledgeKeyも同じthemeもなければ無関係な同category問題を返さない", function () {
   var source = question("source", { theme: "対象テーマ" });
   var unrelated = question("unrelated", { theme: "別テーマ" });
@@ -213,7 +230,7 @@ test("公開中の36協定2問は07から08、08から07を確認済み派生と
   assert.equal(fromSpecial.selectionReasons[0], "direct_knowledge_variant");
 });
 
-test("Stage 5の食中毒は同一themeから2問、消化・肝臓・免疫は1問だけ選ぶ", function () {
+test("Stage 5の食中毒は同一theme、胆汁・肝臓・免疫はknowledgeKeyから選ぶ", function () {
   var expected = {
     "hm2-stage5-013": ["hm2-hygiene-v01-02", "hm2-hygiene-v02-06"],
     "hm2-stage5-022": ["hm2-physiology-v01-02"],
@@ -222,15 +239,25 @@ test("Stage 5の食中毒は同一themeから2問、消化・肝臓・免疫は1
   };
 
   Object.keys(expected).forEach(function (id) {
-    assert.deepEqual(select(realQuestion(id), QUESTIONS).questionIds, expected[id]);
+    var result = select(realQuestion(id), QUESTIONS);
+    assert.deepEqual(result.questionIds, expected[id]);
+    if (id !== "hm2-stage5-013") {
+      assert.deepEqual(result.selectionReasons, ["knowledge_variant"]);
+    }
   });
 });
 
-test("Stage 5の換気・二酸化炭素と消化酵素は候補不足でも無関係問題を出さない", function () {
-  ["hm2-stage5-018", "hm2-stage5-023"].forEach(function (id) {
+test("Stage 5の換気・二酸化炭素と消化酵素はknowledgeKeyの1問だけを選ぶ", function () {
+  var expected = {
+    "hm2-stage5-018": "hm2-hygiene-v02-03",
+    "hm2-stage5-023": "hm2-physiology-v02-05"
+  };
+
+  Object.keys(expected).forEach(function (id) {
     var result = select(realQuestion(id), QUESTIONS);
-    assert.equal(result.status, "no_related_supplement");
-    assert.deepEqual(result.questionIds, []);
+    assert.equal(result.status, "selected");
+    assert.deepEqual(result.questionIds, [expected[id]]);
+    assert.deepEqual(result.selectionReasons, ["knowledge_variant"]);
   });
 });
 

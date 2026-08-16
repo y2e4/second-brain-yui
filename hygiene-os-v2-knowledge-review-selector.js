@@ -259,10 +259,9 @@
     };
   }
 
-  function hasVerifiedVariantMetadata(question) {
+  function hasVerifiedSupplementMetadata(question) {
     return Boolean(question && question.knowledgeKey &&
-      VARIANT_TYPES.indexOf(question.variantType) !== -1 &&
-      question.reasoningLevel >= 1 && question.reasoningLevel <= 5);
+      VARIANT_TYPES.indexOf(question.variantType) !== -1);
   }
 
   function isRelatedSupplementTrigger(outcome, manualWeak) {
@@ -278,8 +277,8 @@
 
     if (source.knowledgeKey) {
       if (candidate.knowledgeKey !== source.knowledgeKey ||
-          !hasVerifiedVariantMetadata(source) ||
-          !hasVerifiedVariantMetadata(candidate)) {
+          !hasVerifiedSupplementMetadata(source) ||
+          !hasVerifiedSupplementMetadata(candidate)) {
         return null;
       }
       directRelation = candidate.variantOfQuestionIds.indexOf(source.id) !== -1 ||

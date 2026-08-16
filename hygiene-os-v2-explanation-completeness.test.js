@@ -30,6 +30,13 @@ var ALL_QUESTIONS = (DATA.questions || []).concat(
 var QUESTION_BY_ID = Object.fromEntries(ALL_QUESTIONS.map(function (question) {
   return [question.id, question];
 }));
+var STAGE5_KNOWLEDGE_KEY_IDS = new Set([
+  "hm2-physiology-v01-02", "hm2-physiology-v01-05",
+  "hm2-hygiene-v02-03", "hm2-physiology-v02-05",
+  "hm2-physiology-v02-10", "hm2-stage5-018",
+  "hm2-stage5-022", "hm2-stage5-023",
+  "hm2-stage5-025", "hm2-stage5-029"
+]);
 
 function sha256(value) {
   return crypto.createHash("sha256")
@@ -39,16 +46,19 @@ function sha256(value) {
 
 function withoutExplanationsOrMemories(value) {
   var copy = JSON.parse(JSON.stringify(value));
-  (copy.questions || []).forEach(function (question) {
+  var questions = (copy.questions || []).concat(
+    copy.stage5 && Array.isArray(copy.stage5.questions)
+      ? copy.stage5.questions
+      : []
+  );
+  questions.forEach(function (question) {
     delete question.explanation;
     delete question.memory;
+    if (STAGE5_KNOWLEDGE_KEY_IDS.has(question.id)) {
+      delete question.knowledgeKey;
+      delete question.variantType;
+    }
   });
-  if (copy.stage5 && Array.isArray(copy.stage5.questions)) {
-    copy.stage5.questions.forEach(function (question) {
-      delete question.explanation;
-      delete question.memory;
-    });
-  }
   return copy;
 }
 
@@ -120,7 +130,7 @@ test("血液の誤文は血漿と血球の正しい体積割合まで示す", fu
 test("HTMLは改善版問題JSONの新しいキャッシュ識別子を参照する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260816-memory-hooks-01/
+    /hygiene-os-v2-questions\.json\?v=20260816-stage5-knowledge-keys-01/
   );
-  assert.doesNotMatch(HTML, /20260816-explanation-01/);
+  assert.doesNotMatch(HTML, /20260816-memory-hooks-01/);
 });

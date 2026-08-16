@@ -68,10 +68,10 @@ function recordReview(currentSession, question, outcome) {
   });
 }
 
-test("36協定の初回knowledgeKeyは既存公開81問中の指定2問だけを注釈する", function () {
+test("36協定knowledgeKeyは既存公開81問中の指定2問だけを注釈する", function () {
   var ids = publicQuestions.map(function (question) { return question.id; });
   var annotatedIds = publicQuestions.filter(function (question) {
-    return typeof question.knowledgeKey === "string" && question.knowledgeKey;
+    return question.knowledgeKey === KNOWLEDGE_KEY;
   }).map(function (question) {
     return question.id;
   }).sort();
@@ -88,7 +88,7 @@ test("36協定の初回knowledgeKeyは既存公開81問中の指定2問だけを
   );
   assert.deepEqual(annotatedIds, [GENERAL_ID, SPECIAL_ID]);
   assert.equal(publicQuestions.filter(function (question) {
-    return !question.knowledgeKey;
+    return question.knowledgeKey !== KNOWLEDGE_KEY;
   }).length, 79);
 });
 
@@ -205,15 +205,15 @@ test("実問題2問だけで補習開始から再挑戦、完了、finalizeま�
   assert.equal(finalized.currentSession.recorded, false);
 });
 
-test("metadata未設定の他79問は補習候補外の通常問題として残る", function () {
-  var unannotated = publicQuestions.filter(function (question) {
-    return !question.knowledgeKey;
+test("36協定群以外の79問は36協定の正式補習候補外として残る", function () {
+  var outsideGroup = publicQuestions.filter(function (question) {
+    return question.knowledgeKey !== KNOWLEDGE_KEY;
   });
   var result = selectVariant(general, "incorrect");
 
-  assert.equal(unannotated.length, 79);
+  assert.equal(outsideGroup.length, 79);
   assert.equal(result.questionId, SPECIAL_ID);
-  assert.ok(unannotated.every(function (question) {
-    return question.id !== result.questionId && !question.knowledgeKey;
+  assert.ok(outsideGroup.every(function (question) {
+    return question.id !== result.questionId && question.knowledgeKey !== KNOWLEDGE_KEY;
   }));
 });

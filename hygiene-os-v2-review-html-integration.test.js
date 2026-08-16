@@ -95,7 +95,7 @@ test("HTMLは共通JS、移行アダプター、selector、reviewContextの順�
 });
 
 test("専用モジュールは個別のキャッシュ識別子を持つ", function () {
-  assert.match(HTML, /knowledge-review-selector\.js\?v=20260816-related-remediation-01/);
+  assert.match(HTML, /knowledge-review-selector\.js\?v=20260816-stage5-knowledge-keys-01/);
   assert.match(HTML, /review-context\.js\?v=20260802-review-context-01/);
 });
 
@@ -308,9 +308,16 @@ test("session_discardedはpending補習をclearできる", function () {
   }).status, "cleared");
 });
 
-test("他79問はmetadata未設定の通常問題として残る", function () {
+test("正式reviewContext対象は36協定2問のままで未注釈74問も通常問題として残る", function () {
   var unannotated = CORE_QUESTIONS.filter(function (item) { return !item.knowledgeKey; });
-  assert.equal(unannotated.length, 79);
+  var formalReviewTargets = CORE_QUESTIONS.filter(function (item) {
+    return item.knowledgeKey === KEY;
+  });
+
+  assert.equal(unannotated.length, 74);
+  assert.deepEqual(formalReviewTargets.map(function (item) {
+    return item.id;
+  }).sort(), [GENERAL_ID, SPECIAL_ID]);
   assert.ok(unannotated.every(function (item) { return item.id !== GENERAL_ID && item.id !== SPECIAL_ID; }));
 });
 
