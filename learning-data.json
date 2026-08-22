@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-22T23:07:42.134Z",
+  "updatedAt": "2026-08-22T23:27:24.283Z",
   "namespaces": [
     "sharoshi",
     "eisei"
@@ -10,7 +10,7 @@
     "title": "社労士クイズOS",
     "version": 1,
     "storageKey": "sharoshiIntroProgressV1",
-    "exportedAt": "2026-08-22T23:07:42.134Z",
+    "exportedAt": "2026-08-22T23:27:24.283Z",
     "currentStage": 5,
     "highestUnlockedStage": 5,
     "completedStages": [
@@ -283,9 +283,9 @@
       },
       "3": {
         "total": 30,
-        "answerCount": 67,
-        "correctCount": 60,
-        "accuracy": 90,
+        "answerCount": 79,
+        "correctCount": 72,
+        "accuracy": 91,
         "answeredQuestionIds": [
           "stage3-question-016",
           "stage3-question-018",
@@ -506,15 +506,15 @@
         "選択式対策 1問"
       ]
     },
-    "totalAnswered": 329,
-    "totalCorrect": 318,
+    "totalAnswered": 341,
+    "totalCorrect": 330,
     "lastStudyDate": "2026-08-23",
-    "lastStudyAt": "2026-08-22T23:07:26.566Z",
+    "lastStudyAt": "2026-08-22T23:27:09.740Z",
     "firekeeper": {
       "lastShownDate": "2026-08-23",
       "lastShownAt": "2026-08-22T22:25:43.468Z",
       "dismissedDate": "2026-08-23",
-      "lastDismissedAt": "2026-08-22T23:07:26.566Z",
+      "lastDismissedAt": "2026-08-22T23:27:09.740Z",
       "lastDismissReason": "answer",
       "restRecords": []
     },
@@ -724,8 +724,8 @@
       }
     },
     "progress": {
-      "totalAnswers": 329,
-      "correctAnswers": 318,
+      "totalAnswers": 341,
+      "correctAnswers": 330,
       "wrongQuestionIds": [
         "question-013",
         "stage2-question-004",
@@ -738,17 +738,17 @@
         "adaptive-d5-leave-01"
       ],
       "lastStudyDate": "2026-08-23",
-      "lastStudyAt": "2026-08-22T23:07:26.566Z",
-      "lastManualSyncAt": "2026-08-22T23:07:42.133Z",
-      "lastSavedAt": "2026-08-22T23:07:42.133Z",
-      "lastQuestionId": "adaptive-d5-leave-01",
+      "lastStudyAt": "2026-08-22T23:27:09.740Z",
+      "lastManualSyncAt": "2026-08-22T23:27:24.283Z",
+      "lastSavedAt": "2026-08-22T23:27:24.283Z",
+      "lastQuestionId": "adaptive-d5-leave-04",
       "recentQuestionIds": [
-        "adaptive-d5-leave-04",
         "adaptive-d5-worktime-01",
         "adaptive-d5-worktime-02",
         "adaptive-d5-leave-02",
         "adaptive-d5-leave-03",
-        "adaptive-d5-leave-01"
+        "adaptive-d5-leave-01",
+        "adaptive-d5-leave-04"
       ],
       "seenQuestionIds": [
         "question-027",
@@ -932,7 +932,7 @@
       ],
       "daily": {
         "date": "2026-08-23",
-        "answers": 11
+        "answers": 23
       },
       "wrongReview": {
         "question-013": {
@@ -1046,8 +1046,8 @@
           ]
         },
         "3": {
-          "answerCount": 67,
-          "correctCount": 60,
+          "answerCount": 79,
+          "correctCount": 72,
           "answeredQuestionIds": [
             "stage3-question-016",
             "stage3-question-018",
@@ -1395,162 +1395,6 @@
           {
             "mode": "daily",
             "stageLevel": 5,
-            "reasoningLevel": 3,
-            "answers": [
-              {
-                "questionId": "stage4-question-005",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 3
-              },
-              {
-                "questionId": "stage4-question-006",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 3
-              },
-              {
-                "questionId": "stage4-question-008",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 3
-              }
-            ],
-            "perfect": true,
-            "completedAt": "2026-07-19T12:38:35.220Z"
-          },
-          {
-            "mode": "daily",
-            "stageLevel": 5,
-            "reasoningLevel": 4,
-            "answers": [
-              {
-                "questionId": "stage4-question-001",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 4
-              },
-              {
-                "questionId": "stage5-question-014",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 4
-              },
-              {
-                "questionId": "stage5-question-019",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 4
-              }
-            ],
-            "perfect": true,
-            "completedAt": "2026-07-19T12:43:41.119Z"
-          },
-          {
-            "mode": "daily",
-            "stageLevel": 5,
-            "reasoningLevel": 4,
-            "answers": [
-              {
-                "questionId": "stage5-question-034",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 4
-              },
-              {
-                "questionId": "stage5-question-041",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 4
-              },
-              {
-                "questionId": "stage5-question-051",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 4
-              }
-            ],
-            "perfect": true,
-            "completedAt": "2026-07-20T10:05:19.848Z"
-          },
-          {
-            "mode": "daily",
-            "stageLevel": 5,
-            "reasoningLevel": 5,
-            "answers": [
-              {
-                "questionId": "stage5-question-024",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 5
-              },
-              {
-                "questionId": "stage5-question-039",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 5
-              },
-              {
-                "questionId": "stage5-question-063",
-                "correct": true,
-                "understanding": "understood",
-                "unsure": false,
-                "guessed": false,
-                "ambiguous": false,
-                "weak": false,
-                "reasoningLevel": 5
-              }
-            ],
-            "perfect": true,
-            "completedAt": "2026-07-20T10:12:12.381Z"
-          },
-          {
-            "mode": "daily",
-            "stageLevel": 5,
             "reasoningLevel": 5,
             "answers": [
               {
@@ -1781,6 +1625,162 @@
             ],
             "perfect": true,
             "completedAt": "2026-08-22T23:07:31.904Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "adaptive-d5-leave-04",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-worktime-01",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-worktime-02",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-08-22T23:12:40.013Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "adaptive-d5-leave-02",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-leave-03",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-leave-01",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-08-22T23:15:13.281Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "adaptive-d5-leave-04",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-worktime-01",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-worktime-02",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-08-22T23:17:44.397Z"
+          },
+          {
+            "mode": "daily",
+            "stageLevel": 5,
+            "reasoningLevel": 5,
+            "answers": [
+              {
+                "questionId": "adaptive-d5-leave-02",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-leave-03",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              },
+              {
+                "questionId": "adaptive-d5-leave-01",
+                "correct": true,
+                "understanding": "understood",
+                "unsure": false,
+                "guessed": false,
+                "ambiguous": false,
+                "weak": false,
+                "reasoningLevel": 5
+              }
+            ],
+            "perfect": true,
+            "completedAt": "2026-08-22T23:27:13.042Z"
           }
         ],
         "lastSet": {
@@ -1820,17 +1820,17 @@
             }
           ],
           "perfect": true,
-          "completedAt": "2026-08-22T23:07:31.904Z"
+          "completedAt": "2026-08-22T23:27:13.042Z"
         },
         "lastIncreasedAt": "2026-07-20T10:05:19.848Z",
-        "lastEvaluatedAt": "2026-08-22T23:07:31.904Z",
+        "lastEvaluatedAt": "2026-08-22T23:27:13.042Z",
         "lastAdjustment": "perfect-set"
       },
       "firekeeper": {
         "lastShownDate": "2026-08-23",
         "lastShownAt": "2026-08-22T22:25:43.468Z",
         "dismissedDate": "2026-08-23",
-        "lastDismissedAt": "2026-08-22T23:07:26.566Z",
+        "lastDismissedAt": "2026-08-22T23:27:09.740Z",
         "lastDismissReason": "answer",
         "restRecords": []
       }
