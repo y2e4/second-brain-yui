@@ -1218,7 +1218,7 @@
 
   <script src="qualification-os-common.js?v=20260816-common-session-01"></script>
   <script src="hygiene-os-v2-learning-data-migration.js?v=20260802-learning-data-migration-03"></script>
-  <script src="hygiene-os-v2-knowledge-review-selector.js?v=20260816-stage5-knowledge-keys-01"></script>
+  <script src="hygiene-os-v2-knowledge-review-selector.js?v=20260823-question-cooldown-01"></script>
   <script src="hygiene-os-v2-review-context.js?v=20260802-review-context-01"></script>
   <script>
     (function () {
@@ -2152,6 +2152,28 @@
         var preferred = pool.filter(function (question) {
           return excluded.indexOf(question.id) === -1;
         });
+        var expectedLimit = Math.min(limit, pool.length);
+        var normalSelection;
+
+        if (KNOWLEDGE_REVIEW_SELECTOR &&
+            typeof KNOWLEDGE_REVIEW_SELECTOR.selectNormalLearningQueue === "function") {
+          try {
+            normalSelection = KNOWLEDGE_REVIEW_SELECTOR.selectNormalLearningQueue({
+              questions: pool,
+              questionStats: state.questionStats,
+              recentQuestionIds: state.recentQuestionIds,
+              excludedQuestionIds: excluded,
+              limit: limit
+            });
+            if (normalSelection && normalSelection.status === "selected" &&
+                Array.isArray(normalSelection.questionIds) &&
+                normalSelection.questionIds.length === expectedLimit) {
+              return normalSelection.questionIds.slice();
+            }
+          } catch (error) {
+            console.warn("直近出題を考慮した選択を利用できないため、従来選択へ戻します。", error);
+          }
+        }
 
         function appendPriorityGroups(source) {
           var unseen = shuffle(source.filter(function (question) {

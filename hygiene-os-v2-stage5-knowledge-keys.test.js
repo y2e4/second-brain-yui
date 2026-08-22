@@ -205,10 +205,10 @@ test("換気と消化酵素は旧候補0から無関係問題なしの候補1へ
   });
 });
 
-test("HTMLはknowledgeKey整備版のselectorと問題JSONを同じ識別子で読む", function () {
+test("HTMLはknowledgeKey整備版のselectorと問題JSONを明示的な識別子で読む", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-knowledge-review-selector\.js\?v=20260816-stage5-knowledge-keys-01/
+    /hygiene-os-v2-knowledge-review-selector\.js\?v=20260823-question-cooldown-01/
   );
   assert.match(
     HTML,

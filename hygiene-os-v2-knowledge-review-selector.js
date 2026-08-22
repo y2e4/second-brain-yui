@@ -975,12 +975,161 @@
     };
   }
 
+  function toNormalQueueNumber(value) {
+    var number = Number(value);
+    return Number.isFinite(number) ? Math.max(0, number) : 0;
+  }
+
+  function getNormalQueuePriority(rawStats) {
+    var stats = isPlainObject(rawStats) ? rawStats : {};
+    var attempts = toNormalQueueNumber(stats.attempts);
+    var wrong = toNormalQueueNumber(stats.wrong);
+    var unsure = toNormalQueueNumber(stats.unsure);
+    var guess = toNormalQueueNumber(stats.guess);
+    var understoodStreak = toNormalQueueNumber(stats.understoodStreak);
+    var lastOutcome = toId(stats.lastOutcome);
+    var activeFluctuation = stats.manualWeak === true ||
+      stats.wrongActive === true || stats.reviewActive === true ||
+      ["incorrect", "unsure", "guess", "ambiguous"].indexOf(lastOutcome) !== -1;
+
+    if (activeFluctuation) {
+      return { rank: 0, reason: "weak" };
+    }
+    if (attempts === 0) {
+      return { rank: 1, reason: "unseen" };
+    }
+    if (understoodStreak >= 2) {
+      return { rank: 3, reason: "stable" };
+    }
+    if (wrong >= 2 || unsure + guess >= 2) {
+      return { rank: 0, reason: "weak" };
+    }
+    return { rank: 2, reason: "developing" };
+  }
+
+  function selectNormalLearningQueue(input) {
+    var settings = isPlainObject(input) ? input : {};
+    var rawQuestions = Array.isArray(settings.questions) ? settings.questions : [];
+    var statsById = isPlainObject(settings.questionStats) ? settings.questionStats : {};
+    var idCounts = {};
+    var questions = [];
+    var duplicateIds;
+    var requestedLimit = Number.isInteger(settings.limit) && settings.limit >= 1
+      ? settings.limit
+      : 1;
+    var recentIds = latestUniqueIds(settings.recentQuestionIds, RECENT_QUESTION_LIMIT);
+    var cooldownIds = toIdSet(recentIds.concat(uniqueIds(settings.excludedQuestionIds)));
+    var selected = [];
+    var selectedIds = {};
+    var selectedKnowledgeKeys = {};
+    var random = typeof settings.random === "function" ? settings.random : Math.random;
+    var preferred;
+    var deferred;
+    var targetLimit;
+
+    rawQuestions.forEach(function (rawQuestion) {
+      var question = isPlainObject(rawQuestion) ? rawQuestion : {};
+      var id = toId(question.id);
+      var priority;
+      if (!id) {
+        return;
+      }
+      idCounts[id] = Number(idCounts[id] || 0) + 1;
+      priority = getNormalQueuePriority(statsById[id]);
+      questions.push({
+        id: id,
+        knowledgeKey: toId(question.knowledgeKey),
+        lastShownOrder: toNormalQueueNumber(statsById[id] &&
+          statsById[id].lastShownOrder),
+        tieBreaker: random(),
+        priorityRank: priority.rank,
+        priorityReason: priority.reason,
+        cooldown: Boolean(cooldownIds[id])
+      });
+    });
+    duplicateIds = Object.keys(idCounts).filter(function (id) {
+      return idCounts[id] > 1;
+    }).sort(compareIds);
+    if (duplicateIds.length) {
+      return {
+        status: "invalid_question_catalog",
+        questionIds: [],
+        selectionReasons: [],
+        details: { duplicateIds: duplicateIds }
+      };
+    }
+    if (!questions.length) {
+      return {
+        status: "no_normal_learning_candidate",
+        questionIds: [],
+        selectionReasons: [],
+        details: { reusedCooldownQuestionIds: [] }
+      };
+    }
+
+    questions.sort(function (left, right) {
+      if (left.priorityRank !== right.priorityRank) {
+        return left.priorityRank - right.priorityRank;
+      }
+      if (left.lastShownOrder !== right.lastShownOrder) {
+        return left.lastShownOrder - right.lastShownOrder;
+      }
+      if (left.tieBreaker !== right.tieBreaker) {
+        return left.tieBreaker - right.tieBreaker;
+      }
+      return compareIds(left.id, right.id);
+    });
+    preferred = questions.filter(function (question) { return !question.cooldown; });
+    deferred = questions.filter(function (question) { return question.cooldown; });
+    targetLimit = Math.min(requestedLimit, questions.length);
+
+    function appendCandidates(candidates, allowRepeatedKnowledgeKey) {
+      candidates.forEach(function (candidate) {
+        var knowledgeIdentity = candidate.knowledgeKey
+          ? "knowledge:" + candidate.knowledgeKey
+          : "question:" + candidate.id;
+        if (selected.length >= targetLimit || selectedIds[candidate.id]) {
+          return;
+        }
+        if (!allowRepeatedKnowledgeKey && selectedKnowledgeKeys[knowledgeIdentity]) {
+          return;
+        }
+        selected.push(candidate);
+        selectedIds[candidate.id] = true;
+        selectedKnowledgeKeys[knowledgeIdentity] = true;
+      });
+    }
+
+    appendCandidates(preferred, false);
+    appendCandidates(deferred, false);
+    appendCandidates(preferred, true);
+    appendCandidates(deferred, true);
+
+    return {
+      status: "selected",
+      questionIds: selected.map(function (question) { return question.id; }),
+      selectionReasons: selected.map(function (question) {
+        return question.priorityReason;
+      }),
+      details: {
+        preferredCandidateCount: preferred.length,
+        cooldownCandidateCount: deferred.length,
+        reusedCooldownQuestionIds: selected.filter(function (question) {
+          return question.cooldown;
+        }).map(function (question) {
+          return question.id;
+        })
+      }
+    };
+  }
+
   return {
     VARIANT_TYPES: VARIANT_TYPES.slice(),
     SELECTION_PROOF_VERSION: SELECTION_PROOF_VERSION,
     verifySelectionProof: verifySelectionProof,
     selectKnowledgeReviewVariant: selectKnowledgeReviewVariant,
     selectRelatedSupplementQuestions: selectRelatedSupplementQuestions,
-    selectNormalLearningQuestion: selectNormalLearningQuestion
+    selectNormalLearningQuestion: selectNormalLearningQuestion,
+    selectNormalLearningQueue: selectNormalLearningQueue
   };
 }));
