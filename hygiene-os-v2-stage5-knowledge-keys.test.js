@@ -113,13 +113,13 @@ test("追加対象10問の問題本体、正答、難易度、Stage、解説、�
   });
 });
 
-test("既存36協定2問を含む注釈済みは12問で未設定99問を維持する", function () {
+test("第2段階3組を含む注釈済みは18問で未設定93問を維持する", function () {
   var annotated = QUESTIONS.filter(function (question) {
     return typeof question.knowledgeKey === "string" && question.knowledgeKey;
   });
 
-  assert.equal(annotated.length, 12);
-  assert.equal(QUESTIONS.length - annotated.length, 99);
+  assert.equal(annotated.length, 18);
+  assert.equal(QUESTIONS.length - annotated.length, 93);
   assert.deepEqual(
     annotated.filter(function (question) {
       return question.knowledgeKey === "overtime-agreement-limits";
@@ -212,6 +212,6 @@ test("HTMLはknowledgeKey整備版のselectorと問題JSONを明示的な識別�
   );
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260816-stage5-knowledge-keys-01/
+    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
   );
 });

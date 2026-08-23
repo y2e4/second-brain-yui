@@ -311,13 +311,13 @@ test("session_discardedはpending補習をclearできる", function () {
   }).status, "cleared");
 });
 
-test("正式reviewContext対象は36協定2問のままで未注釈74問も通常問題として残る", function () {
+test("正式reviewContext対象は36協定2問のままで未注釈71問も通常問題として残る", function () {
   var unannotated = CORE_QUESTIONS.filter(function (item) { return !item.knowledgeKey; });
   var formalReviewTargets = CORE_QUESTIONS.filter(function (item) {
     return item.knowledgeKey === KEY;
   });
 
-  assert.equal(unannotated.length, 74);
+  assert.equal(unannotated.length, 71);
   assert.deepEqual(formalReviewTargets.map(function (item) {
     return item.id;
   }).sort(), [GENERAL_ID, SPECIAL_ID]);

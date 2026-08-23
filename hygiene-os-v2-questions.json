@@ -754,6 +754,8 @@
       "month": 4,
       "category": "労働生理",
       "theme": "感覚器",
+      "knowledgeKey": "retinal-photoreceptor-color-light-functions",
+      "variantType": "rephrase",
       "question": "網膜の錐状体は主に色を感じ、杆状体は主に明暗を感じる。",
       "answer": true,
       "explanation": "錐状体は明るい場所での色覚、杆状体は暗い場所での明暗の感覚に関係します。",
@@ -1512,6 +1514,8 @@
       "month": 10,
       "category": "労働生理",
       "theme": "呼吸・循環",
+      "knowledgeKey": "pulmonary-circulation-route",
+      "variantType": "case",
       "stage": 4,
       "question": "新人が肺循環を「右心室から肺静脈で肺へ行き、肺動脈で左心房へ戻る」と説明した。正しい訂正はどちらか。",
       "choices": [
@@ -1604,6 +1608,8 @@
       "month": 10,
       "category": "労働生理",
       "theme": "内分泌",
+      "knowledgeKey": "cortisol-adrenal-cortex-blood-glucose-effect",
+      "variantType": "condition",
       "stage": 4,
       "question": "ストレス時に分泌が増えるコルチゾールの作用について、正しい説明はどちらか。",
       "choices": [
@@ -2238,6 +2244,8 @@
         "stage": 5,
         "category": "労働生理",
         "theme": "感覚器・視覚",
+        "knowledgeKey": "retinal-photoreceptor-color-light-functions",
+        "variantType": "comparison",
         "question": "感覚又は感覚器に関する説明として、正しいものはどれか。",
         "choices": [
           "網膜の錐状体は明暗を感じ、杆状体は色を感じる",
@@ -2384,6 +2392,8 @@
         "stage": 5,
         "category": "労働生理",
         "theme": "内分泌",
+        "knowledgeKey": "cortisol-adrenal-cortex-blood-glucose-effect",
+        "variantType": "comparison",
         "question": "ホルモンと分泌部位・作用の組合せとして、正しいものはどれか。",
         "choices": [
           "コルチゾール — 副腎皮質 — 血糖値を上げる方向に働く",
@@ -2426,6 +2436,8 @@
         "stage": 5,
         "category": "労働生理",
         "theme": "循環器・肺循環",
+        "knowledgeKey": "pulmonary-circulation-route",
+        "variantType": "comparison",
         "question": "肺循環の流れとして、正しいものはどれか。",
         "choices": [
           "左心室 → 肺動脈 → 肺 → 肺静脈 → 右心房",

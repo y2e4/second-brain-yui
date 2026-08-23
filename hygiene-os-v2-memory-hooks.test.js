@@ -25,7 +25,10 @@ var STAGE5_KNOWLEDGE_KEY_IDS = new Set([
   "hm2-hygiene-v02-03", "hm2-physiology-v02-05",
   "hm2-physiology-v02-10", "hm2-stage5-018",
   "hm2-stage5-022", "hm2-stage5-023",
-  "hm2-stage5-025", "hm2-stage5-029"
+  "hm2-stage5-025", "hm2-stage5-029",
+  "hm2-physiology-v01-01", "hm2-physiology-v02-01",
+  "hm2-physiology-v02-04", "hm2-stage5-021",
+  "hm2-stage5-028", "hm2-stage5-030"
 ]);
 
 var EXPECTED_HOOKS = {
@@ -162,7 +165,7 @@ test("新しい覚え方は1〜2文で解説やひっかけポイントの複製
 test("問題JSONキャッシュ識別子を覚え方改善版へ更新する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260816-stage5-knowledge-keys-01/
+    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
   );
   assert.doesNotMatch(HTML, /20260816-memory-hooks-01/);
 });

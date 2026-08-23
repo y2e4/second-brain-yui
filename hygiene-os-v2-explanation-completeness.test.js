@@ -35,7 +35,10 @@ var STAGE5_KNOWLEDGE_KEY_IDS = new Set([
   "hm2-hygiene-v02-03", "hm2-physiology-v02-05",
   "hm2-physiology-v02-10", "hm2-stage5-018",
   "hm2-stage5-022", "hm2-stage5-023",
-  "hm2-stage5-025", "hm2-stage5-029"
+  "hm2-stage5-025", "hm2-stage5-029",
+  "hm2-physiology-v01-01", "hm2-physiology-v02-01",
+  "hm2-physiology-v02-04", "hm2-stage5-021",
+  "hm2-stage5-028", "hm2-stage5-030"
 ]);
 
 function sha256(value) {
@@ -130,7 +133,7 @@ test("血液の誤文は血漿と血球の正しい体積割合まで示す", fu
 test("HTMLは改善版問題JSONの新しいキャッシュ識別子を参照する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260816-stage5-knowledge-keys-01/
+    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
   );
   assert.doesNotMatch(HTML, /20260816-memory-hooks-01/);
 });

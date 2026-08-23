@@ -261,6 +261,26 @@ test("Stage 5の換気・二酸化炭素と消化酵素はknowledgeKeyの1問だ
   });
 });
 
+test("視覚、コルチゾール、肺循環はtheme名が違ってもknowledgeKeyで1問へつながる", function () {
+  var expected = {
+    "hm2-stage5-021": "hm2-physiology-v01-01",
+    "hm2-stage5-028": "hm2-physiology-v02-04",
+    "hm2-stage5-030": "hm2-physiology-v02-01"
+  };
+
+  Object.keys(expected).forEach(function (id) {
+    var result = select(realQuestion(id), QUESTIONS);
+    assert.equal(result.status, "selected", id);
+    assert.deepEqual(result.questionIds, [expected[id]], id);
+    assert.deepEqual(result.selectionReasons, ["knowledge_variant"], id);
+    assert.equal(
+      result.questions[0].knowledgeKey,
+      realQuestion(id).knowledgeKey,
+      id
+    );
+  });
+});
+
 test("HTMLは関連補習selectorだけを使い正式reviewContext中のミニ補習を抑止する", function () {
   assert.match(HTML, /selectRelatedSupplementQuestions\(\{/);
   assert.match(HTML, /!hasReviewContext\(state\.currentSession\)/);

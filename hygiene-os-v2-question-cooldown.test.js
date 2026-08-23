@@ -232,6 +232,6 @@ test("selector JSだけに専用キャッシュ識別子を付ける", function 
   );
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260816-stage5-knowledge-keys-01/
+    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
   );
 });
