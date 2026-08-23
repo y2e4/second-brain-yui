@@ -1240,6 +1240,21 @@
       border-color: rgba(255, 130, 87, 0.72);
     }
 
+    .teacher-topic-exit-button {
+      width: auto;
+      min-height: 38px;
+      padding: 8px 12px;
+      justify-self: start;
+      font-size: 12px;
+    }
+
+    .teacher-topic-exit-note {
+      margin: -4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
     .video-learning-card {
       display: grid;
       gap: 13px;
@@ -2299,7 +2314,7 @@ debug: loading</pre>
   </main>
 
   <script src="qualification-os-common.js?v=20260816-common-session-01"></script>
-  <script src="sharoshi-teacher-mode.js?v=20260823-remediation-exit-01"></script>
+  <script src="sharoshi-teacher-mode.js?v=20260823-manual-topic-exit-01"></script>
   <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
   <script src="sharoshi-video-learning-beta.js?v=20260712-video-cleanup-01"></script>
   <script>
@@ -2613,6 +2628,9 @@ debug: loading</pre>
               sessionIndex,
               result.topicKey
             );
+            if (result.reason === "manual_topic_exit") {
+              advanceSessionQuestion();
+            }
           }
         })
         : null;
@@ -7482,9 +7500,9 @@ debug: loading</pre>
         recordStage4Reflection(question, button.getAttribute("data-reflection"));
       });
 
-      nextButton.addEventListener("click", function () {
+      function advanceSessionQuestion() {
         if (!answered) {
-          return;
+          return false;
         }
         sessionIndex += 1;
         if (sessionIndex >= sessionQuestions.length) {
@@ -7492,6 +7510,11 @@ debug: loading</pre>
         } else {
           renderQuestion();
         }
+        return true;
+      }
+
+      nextButton.addEventListener("click", function () {
+        advanceSessionQuestion();
       });
 
       dailyButton.addEventListener("click", function () {

@@ -92,7 +92,7 @@ test("別論点候補がなければ通常キューを壊さずそのまま進�
 });
 
 test("HTMLは補習完了を通常キューの別論点繰り上げへ接続する", function () {
-  assert.match(HTML_SOURCE, /sharoshi-teacher-mode\.js\?v=20260823-remediation-exit-01/);
+  assert.match(HTML_SOURCE, /sharoshi-teacher-mode\.js\?v=20260823-manual-topic-exit-01/);
   assert.match(HTML_SOURCE, /onChallengeComplete:\s*function \(result\)/);
   assert.match(HTML_SOURCE, /prioritizeNextDifferentTopic\(\s*sessionQuestions,\s*sessionIndex,\s*result\.topicKey/);
   assert.match(HTML_SOURCE, /teacherMode\.noteMainQuestion\(topicKey\)/);

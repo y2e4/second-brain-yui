@@ -280,6 +280,7 @@
     var status;
     var choices;
     var choicesBox;
+    var exitButton;
 
     box.textContent = "";
     box.appendChild(createElement(
@@ -336,27 +337,70 @@
     });
     box.appendChild(status);
     box.appendChild(challenge.nextButton);
+
+    exitButton = createElement(
+      "button",
+      "secondary-button teacher-topic-exit-button",
+      "別の論点へ進む"
+    );
+    exitButton.type = "button";
+    exitButton.addEventListener("click", function () {
+      controller.exitToDifferentTopic();
+    });
+    box.appendChild(exitButton);
+    box.appendChild(createElement(
+      "p",
+      "teacher-topic-exit-note",
+      "苦手は残したまま、いったん別の問題へ進みます。"
+    ));
+  }
+
+  function markChallengeCompleted(controller, challenge, reason) {
+    if (!challenge || challenge.completed) {
+      return null;
+    }
+    challenge.completed = true;
+    controller.remediationGate.markCompleted(challenge.topicKey);
+    return {
+      topicKey: challenge.topicKey,
+      questionIds: challenge.questions.map(function (question) {
+        return question.id;
+      }),
+      correct: challenge.correct,
+      total: challenge.questions.length,
+      reason: reason || "completed"
+    };
+  }
+
+  function notifyChallengeComplete(controller, result) {
+    if (result && typeof controller.onChallengeComplete === "function") {
+      controller.onChallengeComplete(result);
+    }
+  }
+
+  function exitChallengeToDifferentTopic(controller) {
+    var challenge = controller.challenge;
+    var result = markChallengeCompleted(controller, challenge, "manual_topic_exit");
+
+    if (!result) {
+      return false;
+    }
+    if (challenge.box && challenge.box.parentNode) {
+      challenge.box.parentNode.removeChild(challenge.box);
+    }
+    controller.challenge = null;
+    renderCooldownCard(controller);
+    notifyChallengeComplete(controller, result);
+    return true;
   }
 
   function renderChallengeResult(controller) {
     var challenge = controller.challenge;
     var defeated = challenge.correct === challenge.questions.length;
     var closeButton = createElement("button", "secondary-button", "通常の問題へ戻る");
+    var result = markChallengeCompleted(controller, challenge, "completed");
 
-    if (!challenge.completed) {
-      challenge.completed = true;
-      controller.remediationGate.markCompleted(challenge.topicKey);
-      if (typeof controller.onChallengeComplete === "function") {
-        controller.onChallengeComplete({
-          topicKey: challenge.topicKey,
-          questionIds: challenge.questions.map(function (question) {
-            return question.id;
-          }),
-          correct: challenge.correct,
-          total: challenge.questions.length
-        });
-      }
-    }
+    notifyChallengeComplete(controller, result);
 
     challenge.box.textContent = "";
     challenge.box.appendChild(createElement(
@@ -414,6 +458,9 @@
       },
       isRemediationBlocked: function (topicKey) {
         return controller.remediationGate.isBlocked(topicKey);
+      },
+      exitToDifferentTopic: function () {
+        return exitChallengeToDifferentTopic(controller);
       },
       reset: function () {
         if (!controller.container) {
