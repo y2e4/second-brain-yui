@@ -2,6 +2,96 @@
   "use strict";
 
   var CHOICE_LABELS = ["A", "B", "C", "D", "E"];
+  var MAX_REMEDIATION_QUESTIONS = 2;
+
+  function normalizeTopicValue(value) {
+    return String(value || "").trim();
+  }
+
+  function getQuestionTopicKey(question) {
+    var categories;
+    var knowledgeKey = normalizeTopicValue(question && question.knowledgeKey);
+    var theme = normalizeTopicValue(question && question.theme);
+    var adaptiveTopic = normalizeTopicValue(question && question.adaptiveTopic);
+
+    if (knowledgeKey) {
+      return "knowledge:" + knowledgeKey;
+    }
+    if (theme) {
+      return "theme:" + theme;
+    }
+    if (adaptiveTopic) {
+      return "adaptive:" + adaptiveTopic;
+    }
+
+    categories = Array.isArray(question && question.category)
+      ? question.category.map(normalizeTopicValue).filter(Boolean)
+      : normalizeTopicValue(question && question.category).split(",").map(function (item) {
+        return item.trim();
+      }).filter(Boolean);
+    if (categories.indexOf("雇用保険") !== -1) {
+      return "category:雇用保険";
+    }
+    if (categories.length) {
+      return "category:" + categories[0];
+    }
+    return "question:" + normalizeTopicValue(question && question.id);
+  }
+
+  function getChallengeQuestions(relatedQuestions) {
+    var usedIds = {};
+    return (Array.isArray(relatedQuestions) ? relatedQuestions : []).filter(function (question) {
+      var id = normalizeTopicValue(question && question.id);
+      if (!id || usedIds[id]) {
+        return false;
+      }
+      usedIds[id] = true;
+      return true;
+    }).slice(0, MAX_REMEDIATION_QUESTIONS);
+  }
+
+  function prioritizeNextDifferentTopic(questions, currentIndex, topicKey) {
+    var output = Array.isArray(questions) ? questions.slice() : [];
+    var nextIndex = Number(currentIndex) + 1;
+    var replacementIndex;
+    var temporary;
+
+    if (!topicKey || nextIndex < 0 || nextIndex >= output.length ||
+        getQuestionTopicKey(output[nextIndex]) !== topicKey) {
+      return output;
+    }
+    replacementIndex = output.findIndex(function (question, index) {
+      return index > nextIndex && getQuestionTopicKey(question) !== topicKey;
+    });
+    if (replacementIndex === -1) {
+      return output;
+    }
+    temporary = output[nextIndex];
+    output[nextIndex] = output[replacementIndex];
+    output[replacementIndex] = temporary;
+    return output;
+  }
+
+  function createRemediationGate() {
+    var blockedTopicKey = "";
+    return {
+      noteMainQuestion: function (topicKey) {
+        var normalized = normalizeTopicValue(topicKey);
+        if (blockedTopicKey && normalized && normalized !== blockedTopicKey) {
+          blockedTopicKey = "";
+        }
+      },
+      markCompleted: function (topicKey) {
+        blockedTopicKey = normalizeTopicValue(topicKey);
+      },
+      isBlocked: function (topicKey) {
+        return Boolean(blockedTopicKey) && blockedTopicKey === normalizeTopicValue(topicKey);
+      },
+      getBlockedTopicKey: function () {
+        return blockedTopicKey;
+      }
+    };
+  }
 
   function createElement(tagName, className, text) {
     var element = document.createElement(tagName);
@@ -143,12 +233,25 @@
     challengeButton.addEventListener("click", function () {
       startMonsterChallenge(controller, context);
     });
+    controller.challengeButton = challengeButton;
     monster.appendChild(challengeButton);
 
     controller.container.appendChild(title);
     controller.container.appendChild(text);
     controller.container.appendChild(step);
     controller.container.appendChild(monster);
+  }
+
+  function renderCooldownCard(controller) {
+    controller.container.className = "teacher-mode-card";
+    controller.container.hidden = false;
+    controller.container.textContent = "";
+    controller.container.appendChild(createElement("p", "teacher-mode-title", "🎓 ユイ先生"));
+    controller.container.appendChild(createElement(
+      "p",
+      "teacher-mode-text",
+      "この論点は関連2問まで確認しました。\n苦手は残したまま、いったん別の論点へ進みます。"
+    ));
   }
 
   function createAnswerButton(question, choice, index, onAnswer) {
@@ -240,6 +343,21 @@
     var defeated = challenge.correct === challenge.questions.length;
     var closeButton = createElement("button", "secondary-button", "通常の問題へ戻る");
 
+    if (!challenge.completed) {
+      challenge.completed = true;
+      controller.remediationGate.markCompleted(challenge.topicKey);
+      if (typeof controller.onChallengeComplete === "function") {
+        controller.onChallengeComplete({
+          topicKey: challenge.topicKey,
+          questionIds: challenge.questions.map(function (question) {
+            return question.id;
+          }),
+          correct: challenge.correct,
+          total: challenge.questions.length
+        });
+      }
+    }
+
     challenge.box.textContent = "";
     challenge.box.appendChild(createElement(
       "p",
@@ -254,21 +372,28 @@
         challenge.box.parentNode.removeChild(challenge.box);
       }
       controller.challenge = null;
+      renderCooldownCard(controller);
     });
     challenge.box.appendChild(closeButton);
   }
 
   function startMonsterChallenge(controller, context) {
-    var questions = Array.isArray(context.relatedQuestions) ? context.relatedQuestions.slice(0, 2) : [];
+    var questions = getChallengeQuestions(context.relatedQuestions);
 
-    if (questions.length < 2) {
+    if (controller.remediationGate.isBlocked(context.topicKey) ||
+        questions.length < MAX_REMEDIATION_QUESTIONS) {
       return;
+    }
+    if (controller.challengeButton) {
+      controller.challengeButton.hidden = true;
     }
 
     controller.challenge = {
       questions: questions,
       index: 0,
       correct: 0,
+      topicKey: normalizeTopicValue(context.topicKey),
+      completed: false,
       box: createElement("div", "teacher-challenge-box"),
       nextButton: null
     };
@@ -280,7 +405,16 @@
     var controller = {
       container: options && options.container,
       onSupplementAnswer: options && options.onSupplementAnswer,
+      onChallengeComplete: options && options.onChallengeComplete,
+      remediationGate: createRemediationGate(),
       challenge: null,
+      challengeButton: null,
+      noteMainQuestion: function (topicKey) {
+        controller.remediationGate.noteMainQuestion(topicKey);
+      },
+      isRemediationBlocked: function (topicKey) {
+        return controller.remediationGate.isBlocked(topicKey);
+      },
       reset: function () {
         if (!controller.container) {
           return;
@@ -289,6 +423,7 @@
         controller.container.textContent = "";
         controller.container.className = "teacher-mode-card";
         controller.challenge = null;
+        controller.challengeButton = null;
       },
       render: function (context) {
         if (!controller.container) {
@@ -302,6 +437,10 @@
           renderMastered(controller.container);
           return;
         }
+        if (controller.remediationGate.isBlocked(context.topicKey)) {
+          renderCooldownCard(controller);
+          return;
+        }
         renderTeacherCard(controller, context);
       }
     };
@@ -310,6 +449,11 @@
   }
 
   global.SharoshiTeacherModeBeta = {
-    create: create
+    MAX_REMEDIATION_QUESTIONS: MAX_REMEDIATION_QUESTIONS,
+    create: create,
+    createRemediationGate: createRemediationGate,
+    getChallengeQuestions: getChallengeQuestions,
+    getQuestionTopicKey: getQuestionTopicKey,
+    prioritizeNextDifferentTopic: prioritizeNextDifferentTopic
   };
 }(window));

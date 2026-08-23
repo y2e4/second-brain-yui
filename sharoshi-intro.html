@@ -2299,7 +2299,7 @@ debug: loading</pre>
   </main>
 
   <script src="qualification-os-common.js?v=20260816-common-session-01"></script>
-  <script src="sharoshi-teacher-mode.js?v=20260710-teacher-beta-01"></script>
+  <script src="sharoshi-teacher-mode.js?v=20260823-remediation-exit-01"></script>
   <script src="sharoshi-firekeeper-mode.js?v=20260711-firekeeper-beta-01"></script>
   <script src="sharoshi-video-learning-beta.js?v=20260712-video-cleanup-01"></script>
   <script>
@@ -2601,6 +2601,18 @@ debug: loading</pre>
           container: teacherModeCard,
           onSupplementAnswer: function () {
             markLearningActivity("teacher_monster", { save: true, update: true });
+          },
+          onChallengeComplete: function (result) {
+            if (!result || !result.topicKey ||
+                !window.SharoshiTeacherModeBeta ||
+                typeof window.SharoshiTeacherModeBeta.prioritizeNextDifferentTopic !== "function") {
+              return;
+            }
+            sessionQuestions = window.SharoshiTeacherModeBeta.prioritizeNextDifferentTopic(
+              sessionQuestions,
+              sessionIndex,
+              result.topicKey
+            );
           }
         })
         : null;
@@ -3253,13 +3265,27 @@ debug: loading</pre>
         return shuffled(related).slice(0, 2);
       }
 
+      function getTeacherTopicKey(question) {
+        if (window.SharoshiTeacherModeBeta &&
+            typeof window.SharoshiTeacherModeBeta.getQuestionTopicKey === "function") {
+          return window.SharoshiTeacherModeBeta.getQuestionTopicKey(question);
+        }
+        return isEmploymentInsuranceQuestion(question) ? "category:雇用保険" : "question:" + question.id;
+      }
+
       function renderTeacherMode(question, options) {
         var settings = options || {};
+        var topicKey;
         if (!teacherMode || !question) {
           return;
         }
+        topicKey = getTeacherTopicKey(question);
+        if (typeof teacherMode.noteMainQuestion === "function") {
+          teacherMode.noteMainQuestion(topicKey);
+        }
         teacherMode.render({
           question: question,
+          topicKey: topicKey,
           trigger: settings.trigger || "",
           isCorrect: settings.isCorrect === true,
           repeatedWrong: settings.repeatedWrong === true,
