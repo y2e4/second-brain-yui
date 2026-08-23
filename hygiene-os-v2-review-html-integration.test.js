@@ -83,19 +83,22 @@ function completedSession() {
   return completion.currentSession;
 }
 
-test("HTMLは共通JS、移行アダプター、selector、reviewContextの順に読み込む", function () {
+test("HTMLは共通JS、移行アダプター、selector、選択肢表示、reviewContextの順に読み込む", function () {
   var common = HTML.indexOf("qualification-os-common.js?v=");
   var migration = HTML.indexOf("hygiene-os-v2-learning-data-migration.js?v=");
   var selector = HTML.indexOf("hygiene-os-v2-knowledge-review-selector.js?v=");
+  var choiceShuffle = HTML.indexOf("hygiene-os-v2-choice-shuffle.js?v=");
   var context = HTML.indexOf("hygiene-os-v2-review-context.js?v=");
   var inline = HTML.indexOf("<script>", context);
 
-  assert.ok(common >= 0 && common < migration && migration < selector && selector < context);
+  assert.ok(common >= 0 && common < migration && migration < selector &&
+    selector < choiceShuffle && choiceShuffle < context);
   assert.ok(context < inline);
 });
 
 test("専用モジュールは個別のキャッシュ識別子を持つ", function () {
   assert.match(HTML, /knowledge-review-selector\.js\?v=20260823-question-cooldown-01/);
+  assert.match(HTML, /choice-shuffle\.js\?v=20260823-stage5-choice-shuffle-01/);
   assert.match(HTML, /review-context\.js\?v=20260802-review-context-01/);
 });
 

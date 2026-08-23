@@ -1219,6 +1219,7 @@
   <script src="qualification-os-common.js?v=20260816-common-session-01"></script>
   <script src="hygiene-os-v2-learning-data-migration.js?v=20260802-learning-data-migration-03"></script>
   <script src="hygiene-os-v2-knowledge-review-selector.js?v=20260823-question-cooldown-01"></script>
+  <script src="hygiene-os-v2-choice-shuffle.js?v=20260823-stage5-choice-shuffle-01"></script>
   <script src="hygiene-os-v2-review-context.js?v=20260802-review-context-01"></script>
   <script>
     (function () {
@@ -1229,6 +1230,7 @@
         window.HygieneOSV2LearningDataMigration || null;
       var KNOWLEDGE_REVIEW_SELECTOR =
         window.HygieneOSV2KnowledgeReviewSelector || null;
+      var CHOICE_SHUFFLE = window.HygieneOSV2ChoiceShuffle || null;
       var KNOWLEDGE_REVIEW_CONTEXT =
         window.HygieneOSV2ReviewContext || null;
       var KNOWLEDGE_REVIEW_KEY = "overtime-agreement-limits";
@@ -1286,6 +1288,7 @@
       var state = makeDefaultState();
       var pendingAnswer = "";
       var activeFeedbackQuestionId = "";
+      var activeChoiceDisplayLabelsById = {};
       var syncStatusTimer = 0;
       var autoSyncStarted = false;
       var learningDataMigrationResult = null;
@@ -1581,7 +1584,8 @@
             : null,
           equivalenceKey: typeof raw.equivalenceKey === "string" ? raw.equivalenceKey : "",
           verifiedAt: typeof raw.verifiedAt === "string" ? raw.verifiedAt : "",
-          correctIndex: Number.isInteger(raw.correctIndex) ? raw.correctIndex : null
+          correctIndex: Number.isInteger(raw.correctIndex) ? raw.correctIndex : null,
+          shuffleChoicesAllowed: raw.shuffleChoicesAllowed !== false
         };
       }
 
@@ -2266,12 +2270,48 @@
         questionView.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
-      function formatChoice(choice) {
+      function getDisplayChoices(question) {
+        var source = question && Array.isArray(question.choices) ? question.choices : [];
+        if (CHOICE_SHUFFLE && typeof CHOICE_SHUFFLE.getDisplayChoices === "function") {
+          try {
+            return CHOICE_SHUFFLE.getDisplayChoices(question);
+          } catch (error) {
+            console.warn("選択肢の表示順を変更できないため、登録順で表示します。", error);
+          }
+        }
+        return source.map(function (choice) {
+          return {
+            id: choice.id,
+            text: choice.text,
+            displayLabel: choice.id
+          };
+        });
+      }
+
+      function formatChoice(choice, displayLabel) {
         if ((choice.id === "O" && choice.text === "〇") ||
             (choice.id === "X" && choice.text === "×")) {
           return choice.text;
         }
-        return choice.id + ". " + choice.text;
+        return (displayLabel || choice.id) + ". " + choice.text;
+      }
+
+      function copyChallengeQuestionForDisplay(question) {
+        var choices;
+        if (!CHOICE_SHUFFLE ||
+            typeof CHOICE_SHUFFLE.isShuffleAllowed !== "function" ||
+            !CHOICE_SHUFFLE.isShuffleAllowed(question)) {
+          return question;
+        }
+        choices = getDisplayChoices(question);
+        return Object.assign({}, question, {
+          choices: choices.map(function (choice) {
+            return {
+              id: choice.id,
+              text: formatChoice(choice, choice.displayLabel)
+            };
+          })
+        });
       }
 
       function getCurrentQuestion() {
@@ -2432,6 +2472,8 @@
         var display = getReviewDisplay(session);
         var question = display.question;
         var isReviewPending = display.status === "review_pending";
+        var displayChoices;
+        activeChoiceDisplayLabelsById = {};
         if (!session) {
           returnToStudy("セッションを復元できませんでした。");
           return;
@@ -2485,12 +2527,15 @@
         weakToggleButton.hidden = true;
         nextQuestionButton.hidden = true;
 
-        question.choices.forEach(function (choice) {
+        displayChoices = getDisplayChoices(question);
+        displayChoices.forEach(function (choice) {
           var button = document.createElement("button");
           button.className = "choice-button";
           button.type = "button";
           button.setAttribute("data-answer", choice.id);
-          button.textContent = formatChoice(choice);
+          button.setAttribute("data-display-label", choice.displayLabel);
+          button.textContent = formatChoice(choice, choice.displayLabel);
+          activeChoiceDisplayLabelsById[choice.id] = choice.displayLabel;
           button.addEventListener("click", function () {
             chooseAnswer(choice.id);
           });
@@ -2820,7 +2865,9 @@
       function renderTeacherSupport(question, outcome) {
         var stats = getQuestionStats(question.id);
         var selection = getMonsterChallengeSelection(question, outcome, stats);
-        var challengeQuestions = Array.isArray(selection.questions) ? selection.questions : [];
+        var challengeQuestions = Array.isArray(selection.questions)
+          ? selection.questions.map(copyChallengeQuestionForDisplay)
+          : [];
         var challengeButton;
         var challengeText;
         var shouldShow = Boolean(teacherMode) &&
@@ -2928,7 +2975,10 @@
         var choice = question.choices.find(function (item) {
           return item.id === answerId;
         });
-        return choice ? formatChoice(choice) : answerId;
+        var displayLabel = activeFeedbackQuestionId === question.id
+          ? activeChoiceDisplayLabelsById[answerId]
+          : "";
+        return choice ? formatChoice(choice, displayLabel) : answerId;
       }
 
       function updateWeakButton(questionOverride) {
