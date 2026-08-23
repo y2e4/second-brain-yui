@@ -3,9 +3,9 @@
   "title": "第二種衛生管理者 資格OS v2",
   "sourceDataset": "hygiene-questions.json 81問をID維持で再分類",
   "auditDate": "2026-06-27",
-  "newQuestionCount": 30,
+  "newQuestionCount": 31,
   "targetPerStage": 30,
-  "verifiedShortageCount": 39,
+  "verifiedShortageCount": 38,
   "stages": [
     {
       "id": 1,
@@ -33,7 +33,7 @@
       "name": "判断",
       "objective": "事例問題・判断問題で、誰が・いつ・何を行うか判断する",
       "unlockAccuracy": 85,
-      "questionCount": 18
+      "questionCount": 19
     },
     {
       "id": 5,
@@ -1825,6 +1825,43 @@
       "lastAnsweredAt": null,
       "weak": false,
       "legacyStage": 2
+    },
+    {
+      "id": "hm2-hygiene-v03-01",
+      "year": 2026,
+      "month": 8,
+      "category": "労働衛生",
+      "theme": "食中毒・感染型と食物内毒素型",
+      "knowledgeKey": "food-poisoning-infection-vs-preformed-toxin-type",
+      "variantType": "case",
+      "variantOfQuestionIds": [
+        "hm2-stage5-013"
+      ],
+      "stage": 4,
+      "question": "加熱不十分な鶏肉を食べた後にカンピロバクター食中毒が発生した事例Aと、食品中で黄色ブドウ球菌が産生したエンテロトキシンを摂取して発症した事例Bがある。分類として適切なのはどちらか。",
+      "choices": [
+        {
+          "id": "O",
+          "text": "Aは感染型、Bは食物内毒素型である"
+        },
+        {
+          "id": "X",
+          "text": "Aは食物内毒素型、Bは感染型である"
+        }
+      ],
+      "answer": true,
+      "explanation": "Aは原因菌を摂取して発症する感染型です。Bは食品中であらかじめ産生されたエンテロトキシンを摂取して発症する食物内毒素型です。",
+      "trap": "細菌名だけで決めず、原因菌を摂取するのか、食品中で作られた毒素を摂取するのかで分けます。",
+      "memory": "カンピロバクターは菌を摂って感染型。黄色ブドウ球菌は食品中でできた毒素を摂って食物内毒素型。",
+      "sourceType": "official_reference_based",
+      "sourceTitle": "厚生労働省 食中毒原因物質の分類・カンピロバクター食中毒予防Q&A・黄色ブドウ球菌資料",
+      "sourceUrl": "https://www.mhlw.go.jp/topics/bukyoku/iyaku/syoku-anzen/iken/dl/070713-2b_0003.pdf",
+      "originality": "independently_rewritten",
+      "verifiedAt": "2026-08-23",
+      "wrongCount": 0,
+      "correctCount": 0,
+      "lastAnsweredAt": null,
+      "weak": false
     }
   ],
   "stage5": {
@@ -2082,6 +2119,8 @@
         "stage": 5,
         "category": "労働衛生",
         "theme": "食中毒",
+        "knowledgeKey": "food-poisoning-infection-vs-preformed-toxin-type",
+        "variantType": "comparison",
         "question": "食中毒に関する説明として、誤っているものはどれか。",
         "choices": [
           "ボツリヌス菌による毒素は神経毒である",

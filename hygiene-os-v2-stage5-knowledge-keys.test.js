@@ -54,6 +54,12 @@ function sha256(value) {
 
 function withoutNewMetadata(value) {
   var copy = JSON.parse(JSON.stringify(value));
+  copy.newQuestionCount = 30;
+  copy.verifiedShortageCount = 39;
+  copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
+  copy.questions = copy.questions.filter(function (question) {
+    return question.id !== "hm2-hygiene-v03-01";
+  });
   var questions = (copy.questions || []).concat(
     copy.stage5 && Array.isArray(copy.stage5.questions)
       ? copy.stage5.questions
@@ -81,10 +87,10 @@ function select(sourceId) {
 }
 
 test("Stage 5の安全な5組だけへknowledgeKeyとvariantTypeを追加する", function () {
-  assert.equal(QUESTIONS.length, 111);
+  assert.equal(QUESTIONS.length, 112);
   assert.equal(new Set(QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 111);
+  })).size, 112);
   assert.equal(Object.keys(EXPECTED_GROUPS).length, 5);
   assert.equal(new Set(NEWLY_ANNOTATED_IDS).size, 10);
 
@@ -113,13 +119,13 @@ test("追加対象10問の問題本体、正答、難易度、Stage、解説、�
   });
 });
 
-test("第2段階3組を含む注釈済みは18問で未設定93問を維持する", function () {
+test("第3段階を含む注釈済みは20問で未設定92問となる", function () {
   var annotated = QUESTIONS.filter(function (question) {
     return typeof question.knowledgeKey === "string" && question.knowledgeKey;
   });
 
-  assert.equal(annotated.length, 18);
-  assert.equal(QUESTIONS.length - annotated.length, 93);
+  assert.equal(annotated.length, 20);
+  assert.equal(QUESTIONS.length - annotated.length, 92);
   assert.deepEqual(
     annotated.filter(function (question) {
       return question.knowledgeKey === "overtime-agreement-limits";
@@ -171,21 +177,21 @@ test("reasoningLevel未設定の5組は正式reviewContext選択へは昇格し�
   assert.equal(result.selectionReason, "invalid_review_trigger");
 });
 
-test("B/C分類の食中毒群は異なる核知識を無理にknowledgeKeyで結ばない", function () {
-  var foodPoisoningIds = [
-    "hm2-stage5-013",
+test("食中毒は感染型対食物内毒素型だけを結び、別機序は接続しない", function () {
+  var unrelatedFoodPoisoningIds = [
     "hm2-hygiene-v01-02",
     "hm2-hygiene-v02-06",
     "hm2-hygiene-v02-07"
   ];
 
-  foodPoisoningIds.forEach(function (id) {
+  unrelatedFoodPoisoningIds.forEach(function (id) {
     assert.equal(QUESTION_BY_ID[id].knowledgeKey, undefined, id);
   });
-  assert.deepEqual(select("hm2-stage5-013").questionIds, [
-    "hm2-hygiene-v01-02",
-    "hm2-hygiene-v02-06"
-  ]);
+  assert.equal(
+    QUESTION_BY_ID["hm2-stage5-013"].knowledgeKey,
+    "food-poisoning-infection-vs-preformed-toxin-type"
+  );
+  assert.deepEqual(select("hm2-stage5-013").questionIds, ["hm2-hygiene-v03-01"]);
 });
 
 test("換気と消化酵素は旧候補0から無関係問題なしの候補1へ改善する", function () {
@@ -212,6 +218,6 @@ test("HTMLはknowledgeKey整備版のselectorと問題JSONを明示的な識別�
   );
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
+    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
   );
 });

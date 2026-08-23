@@ -20,6 +20,7 @@ var STAGE5_QUESTIONS = DATA.stage5 && Array.isArray(DATA.stage5.questions)
   : [];
 var ALL_QUESTIONS = BASE_QUESTIONS.concat(STAGE5_QUESTIONS);
 var GENERIC_MEMORY_PATTERN = /正解の理由を短く言い直して覚えます|短く言い直して覚え|理由を短く覚え/;
+var FOOD_POISONING_CASE_ID = "hm2-hygiene-v03-01";
 var STAGE5_KNOWLEDGE_KEY_IDS = new Set([
   "hm2-physiology-v01-02", "hm2-physiology-v01-05",
   "hm2-hygiene-v02-03", "hm2-physiology-v02-05",
@@ -28,7 +29,8 @@ var STAGE5_KNOWLEDGE_KEY_IDS = new Set([
   "hm2-stage5-025", "hm2-stage5-029",
   "hm2-physiology-v01-01", "hm2-physiology-v02-01",
   "hm2-physiology-v02-04", "hm2-stage5-021",
-  "hm2-stage5-028", "hm2-stage5-030"
+  "hm2-stage5-028", "hm2-stage5-030",
+  "hm2-stage5-013"
 ]);
 
 var EXPECTED_HOOKS = {
@@ -88,6 +90,12 @@ function sha256(value) {
 
 function withoutMemories(value) {
   var copy = JSON.parse(JSON.stringify(value));
+  copy.newQuestionCount = 30;
+  copy.verifiedShortageCount = 39;
+  copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
+  copy.questions = copy.questions.filter(function (question) {
+    return question.id !== FOOD_POISONING_CASE_ID;
+  });
   var questions = (copy.questions || []).concat(
     copy.stage5 && Array.isArray(copy.stage5.questions)
       ? copy.stage5.questions
@@ -103,13 +111,13 @@ function withoutMemories(value) {
   return copy;
 }
 
-test("覚え方改善でも111問の問題本体と構造を変更しない", function () {
-  assert.equal(BASE_QUESTIONS.length, 81);
+test("覚え方改善後の既存111問と追加事例1問を維持する", function () {
+  assert.equal(BASE_QUESTIONS.length, 82);
   assert.equal(STAGE5_QUESTIONS.length, 30);
-  assert.equal(ALL_QUESTIONS.length, 111);
+  assert.equal(ALL_QUESTIONS.length, 112);
   assert.equal(new Set(ALL_QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 111);
+  })).size, 112);
   assert.equal(
     sha256(withoutMemories(DATA)),
     "7661aa8a08dfeb8f8c13848bd86e4023f901b6c8758eb06ce82cbf501ba29cb4"
@@ -118,7 +126,9 @@ test("覚え方改善でも111問の問題本体と構造を変更しない", fu
 
 test("既存81問の覚え方は変更しない", function () {
   assert.equal(
-    sha256(BASE_QUESTIONS.map(function (question) {
+    sha256(BASE_QUESTIONS.filter(function (question) {
+      return question.id !== FOOD_POISONING_CASE_ID;
+    }).map(function (question) {
       return { id: question.id, memory: question.memory };
     })),
     "894281699aa50ae07c1c505fbae23fa7c7a2b2ae5bd7b9609132fb57da224d8d"
@@ -145,7 +155,7 @@ test("A 13問と根拠確認済みB 17問だけでStage 5の30問を網羅する
   );
 });
 
-test("全111問に表示可能な覚え方があり汎用文は残らない", function () {
+test("全112問に表示可能な覚え方があり汎用文は残らない", function () {
   ALL_QUESTIONS.forEach(function (question) {
     assert.equal(typeof question.memory, "string", question.id);
     assert.ok(question.memory.trim(), question.id);
@@ -165,7 +175,7 @@ test("新しい覚え方は1〜2文で解説やひっかけポイントの複製
 test("問題JSONキャッシュ識別子を覚え方改善版へ更新する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
+    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
   );
   assert.doesNotMatch(HTML, /20260816-memory-hooks-01/);
 });

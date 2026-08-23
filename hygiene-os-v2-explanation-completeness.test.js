@@ -22,6 +22,7 @@ var TARGET_IDS = [
   "hm2-stage5-027"
 ];
 var TARGET_ID_SET = new Set(TARGET_IDS);
+var FOOD_POISONING_CASE_ID = "hm2-hygiene-v03-01";
 var ALL_QUESTIONS = (DATA.questions || []).concat(
   DATA.stage5 && Array.isArray(DATA.stage5.questions)
     ? DATA.stage5.questions
@@ -38,7 +39,8 @@ var STAGE5_KNOWLEDGE_KEY_IDS = new Set([
   "hm2-stage5-025", "hm2-stage5-029",
   "hm2-physiology-v01-01", "hm2-physiology-v02-01",
   "hm2-physiology-v02-04", "hm2-stage5-021",
-  "hm2-stage5-028", "hm2-stage5-030"
+  "hm2-stage5-028", "hm2-stage5-030",
+  "hm2-stage5-013"
 ]);
 
 function sha256(value) {
@@ -49,6 +51,12 @@ function sha256(value) {
 
 function withoutExplanationsOrMemories(value) {
   var copy = JSON.parse(JSON.stringify(value));
+  copy.newQuestionCount = 30;
+  copy.verifiedShortageCount = 39;
+  copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
+  copy.questions = copy.questions.filter(function (question) {
+    return question.id !== FOOD_POISONING_CASE_ID;
+  });
   var questions = (copy.questions || []).concat(
     copy.stage5 && Array.isArray(copy.stage5.questions)
       ? copy.stage5.questions
@@ -66,21 +74,21 @@ function withoutExplanationsOrMemories(value) {
 }
 
 test("解説改善で問題数、問題文、正答、ID、学習metadataを変更しない", function () {
-  assert.equal((DATA.questions || []).length, 81);
+  assert.equal((DATA.questions || []).length, 82);
   assert.equal((DATA.stage5.questions || []).length, 30);
-  assert.equal(ALL_QUESTIONS.length, 111);
+  assert.equal(ALL_QUESTIONS.length, 112);
   assert.equal(new Set(ALL_QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 111);
+  })).size, 112);
   assert.equal(
     sha256(withoutExplanationsOrMemories(DATA)),
     "d8e2682f62d04e84e10b6ae428e1d9201244ca63e8f6c8e2912bef1b6e49fddf"
   );
 });
 
-test("改善対象外106問の解説を変更しない", function () {
+test("既存の改善対象外106問の解説を変更しない", function () {
   var untouchedExplanations = ALL_QUESTIONS.filter(function (question) {
-    return !TARGET_ID_SET.has(question.id);
+    return !TARGET_ID_SET.has(question.id) && question.id !== FOOD_POISONING_CASE_ID;
   }).map(function (question) {
     return { id: question.id, explanation: question.explanation };
   });
@@ -133,7 +141,7 @@ test("血液の誤文は血漿と血球の正しい体積割合まで示す", fu
 test("HTMLは改善版問題JSONの新しいキャッシュ識別子を参照する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
+    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
   );
   assert.doesNotMatch(HTML, /20260816-memory-hooks-01/);
 });

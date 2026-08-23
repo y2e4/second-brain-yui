@@ -46,6 +46,12 @@ function sha256(value) {
 
 function withoutStage2Metadata(value) {
   var copy = JSON.parse(JSON.stringify(value));
+  copy.newQuestionCount = 30;
+  copy.verifiedShortageCount = 39;
+  copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
+  copy.questions = copy.questions.filter(function (question) {
+    return question.id !== "hm2-hygiene-v03-01";
+  });
   var questions = (copy.questions || []).concat(
     copy.stage5 && Array.isArray(copy.stage5.questions)
       ? copy.stage5.questions
@@ -54,6 +60,10 @@ function withoutStage2Metadata(value) {
 
   questions.forEach(function (question) {
     if (TARGET_IDS.indexOf(question.id) !== -1) {
+      delete question.knowledgeKey;
+      delete question.variantType;
+    }
+    if (question.id === "hm2-stage5-013") {
       delete question.knowledgeKey;
       delete question.variantType;
     }
@@ -96,12 +106,12 @@ test("第2段階は安全な既存3組6問だけへknowledgeKeyとvariantTypeを
 });
 
 test("問題本文、正答、Stage、難易度、解説、覚え方と問題数は変更しない", function () {
-  assert.equal((DATA.questions || []).length, 81);
+  assert.equal((DATA.questions || []).length, 82);
   assert.equal((DATA.stage5.questions || []).length, 30);
-  assert.equal(QUESTIONS.length, 111);
+  assert.equal(QUESTIONS.length, 112);
   assert.equal(new Set(QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 111);
+  })).size, 112);
   assert.equal(
     sha256(withoutStage2Metadata(DATA)),
     "039e8453cbb67a98ac8d4450b4e3b1867c71c4275fd6874502b4833f0c324d0f"
@@ -114,16 +124,16 @@ test("問題本文、正答、Stage、難易度、解説、覚え方と問題数
   });
 });
 
-test("注釈済み18問、未設定93問となり既存knowledgeKey群を維持する", function () {
+test("第3段階を含む注釈済み20問、未設定92問となる", function () {
   var annotated = QUESTIONS.filter(function (question) {
     return typeof question.knowledgeKey === "string" && question.knowledgeKey;
   });
 
-  assert.equal(annotated.length, 18);
-  assert.equal(QUESTIONS.length - annotated.length, 93);
+  assert.equal(annotated.length, 20);
+  assert.equal(QUESTIONS.length - annotated.length, 92);
   assert.equal(new Set(annotated.map(function (question) {
     return question.knowledgeKey;
-  })).size, 9);
+  })).size, 10);
 });
 
 test("視覚、コルチゾール、肺循環は両方向とも別IDの1問へ補習接続する", function () {
@@ -179,21 +189,24 @@ test("近見調節と他ホルモンは関連テーマでも別の核知識と�
   });
 });
 
-test("食中毒群は同じthemeだけで一つのknowledgeKeyへまとめない", function () {
+test("食中毒群は感染型対食物内毒素型以外を同じknowledgeKeyへまとめない", function () {
   [
-    "hm2-stage5-013",
     "hm2-hygiene-v01-02",
     "hm2-hygiene-v02-06",
     "hm2-hygiene-v02-07"
   ].forEach(function (id) {
     assert.equal(QUESTION_BY_ID[id].knowledgeKey, undefined, id);
   });
+  assert.equal(
+    QUESTION_BY_ID["hm2-stage5-013"].knowledgeKey,
+    "food-poisoning-infection-vs-preformed-toxin-type"
+  );
 });
 
 test("HTMLは新しい問題JSONだけを第2段階キャッシュ識別子で読む", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-weak-knowledge-variants-02/
+    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
   );
   assert.match(
     HTML,
