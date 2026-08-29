@@ -2618,16 +2618,19 @@ debug: loading</pre>
             markLearningActivity("teacher_monster", { save: true, update: true });
           },
           onChallengeComplete: function (result) {
+            var sourceQuestion;
             if (!result || !result.topicKey ||
                 !window.SharoshiTeacherModeBeta ||
                 typeof window.SharoshiTeacherModeBeta.prioritizeNextDifferentTopic !== "function") {
               return;
             }
+            sourceQuestion = sessionQuestions[sessionIndex];
             sessionQuestions = window.SharoshiTeacherModeBeta.prioritizeNextDifferentTopic(
               sessionQuestions,
               sessionIndex,
               result.topicKey
             );
+            applySessionTopicCooldownAfterChallenge(sourceQuestion);
             if (result.reason === "manual_topic_exit") {
               advanceSessionQuestion();
             }
@@ -3167,6 +3170,201 @@ debug: loading</pre>
         }
         return question.category ? [String(question.category)] : [];
       }
+
+      // SESSION_TOPIC_COOLDOWN_START
+      function normalizeSessionTopicValue(value) {
+        return typeof value === "string" ? value.trim().toLowerCase() : "";
+      }
+
+      function getSessionEquivalenceFamilyValues(question) {
+        var ignored = {
+          adaptive: true,
+          basic: true,
+          definition: true,
+          duty: true,
+          manager: true,
+          rule: true,
+          scheduled: true,
+          statutory: true,
+          target: true,
+          worker: true
+        };
+        var equivalenceKey = normalizeSessionTopicValue(question && question.equivalenceKey);
+
+        if (!equivalenceKey) {
+          return [];
+        }
+        return equivalenceKey.split(/[^a-z0-9]+/).filter(function (token) {
+          return token.length >= 4 && !ignored[token] && !/^d\d+$/.test(token) && !/^\d+$/.test(token);
+        }).map(function (token) {
+          return "equivalence-family:" + token;
+        });
+      }
+
+      function getSessionTopicFamilyValues(question) {
+        var source = question || {};
+        var values = [
+          source.knowledgeKey,
+          source.equivalenceKey,
+          source.theme,
+          source.adaptiveTopic
+        ].concat(Array.isArray(source.conceptIds) ? source.conceptIds : [])
+          .map(normalizeSessionTopicValue)
+          .filter(Boolean)
+          .concat(getSessionEquivalenceFamilyValues(source));
+
+        return values.filter(function (value, index) {
+          return values.indexOf(value) === index;
+        });
+      }
+
+      function getSessionTopicCategoryValues(question) {
+        var source = question || {};
+        var categories = Array.isArray(source.category)
+          ? source.category
+          : source.category ? [source.category] : [];
+
+        return categories.map(normalizeSessionTopicValue).filter(function (value) {
+          return value && value !== "適応難易度";
+        });
+      }
+
+      function sharesSessionTopicFamily(question, blockedValues) {
+        return getSessionTopicFamilyValues(question).some(function (value) {
+          return blockedValues.indexOf(value) !== -1;
+        });
+      }
+
+      function prioritizeNextSessionTopicFamilies(questions, currentIndex, sourceQuestion, candidatePool, options) {
+        var output = Array.isArray(questions) ? questions.slice() : [];
+        var settings = options || {};
+        var nextIndex = Number(currentIndex) + 1;
+        var limit = Math.min(
+          output.length,
+          nextIndex + Math.max(1, Math.min(2, Number(settings.maxQuestions) || 2))
+        );
+        var blockedValues = getSessionTopicFamilyValues(sourceQuestion);
+        var blockedCategories = getSessionTopicCategoryValues(sourceQuestion);
+        var recentIds = Array.isArray(settings.recentQuestionIds) ? settings.recentQuestionIds : [];
+        var seenIds = Array.isArray(settings.seenQuestionIds) ? settings.seenQuestionIds : [];
+
+        if (!sourceQuestion || nextIndex < 1 || nextIndex >= output.length ||
+            (!blockedValues.length && !blockedCategories.length)) {
+          return output;
+        }
+
+        for (var index = nextIndex; index < limit; index += 1) {
+          var currentQuestion = output[index];
+          var currentLevel = Number(currentQuestion && currentQuestion.adaptiveReasoningLevel) ||
+            Number(settings.reasoningLevel) || 0;
+          var currentBucket = currentQuestion && currentQuestion.selectionBucket
+            ? String(currentQuestion.selectionBucket)
+            : "";
+          var usedIds = output.filter(function (_, outputIndex) {
+            return outputIndex !== index;
+          }).map(function (question) {
+            return question && question.id;
+          }).filter(Boolean);
+          var sharesTopic = sharesSessionTopicFamily(currentQuestion, blockedValues);
+          var sharesCategory = getSessionTopicCategoryValues(currentQuestion).some(function (value) {
+            return blockedCategories.indexOf(value) !== -1;
+          });
+          var replacements;
+
+          if (!sharesTopic && !sharesCategory) {
+            blockedValues = blockedValues.concat(getSessionTopicFamilyValues(currentQuestion));
+            blockedCategories = blockedCategories.concat(getSessionTopicCategoryValues(currentQuestion));
+            continue;
+          }
+
+          replacements = (Array.isArray(candidatePool) ? candidatePool : []).map(function (candidate) {
+            return {
+              question: candidate,
+              queueIndex: output.findIndex(function (queued) {
+                return queued && candidate && queued.id === candidate.id;
+              })
+            };
+          }).filter(function (entry) {
+            var candidate = entry.question;
+            if (!candidate || !candidate.id ||
+                (entry.queueIndex >= 0 && entry.queueIndex < index) ||
+                (entry.queueIndex < 0 && usedIds.indexOf(candidate.id) !== -1)) {
+              return false;
+            }
+            if (currentLevel && Number(candidate.adaptiveReasoningLevel) !== currentLevel) {
+              return false;
+            }
+            if (currentBucket && String(candidate.selectionBucket || "") !== currentBucket) {
+              return false;
+            }
+            if (Number(settings.currentStageId) > 0 &&
+                Number(candidate.adaptiveSourceStage) > Number(settings.currentStageId)) {
+              return false;
+            }
+            return !sharesSessionTopicFamily(candidate, blockedValues);
+          }).sort(function (leftEntry, rightEntry) {
+            var left = leftEntry.question;
+            var right = rightEntry.question;
+            var leftCategory = getSessionTopicCategoryValues(left).some(function (value) {
+              return blockedCategories.indexOf(value) !== -1;
+            }) ? 1 : 0;
+            var rightCategory = getSessionTopicCategoryValues(right).some(function (value) {
+              return blockedCategories.indexOf(value) !== -1;
+            }) ? 1 : 0;
+            var leftRecent = recentIds.indexOf(left.id) === -1 ? 0 : 1;
+            var rightRecent = recentIds.indexOf(right.id) === -1 ? 0 : 1;
+            var leftSeen = seenIds.indexOf(left.id) === -1 ? 0 : 1;
+            var rightSeen = seenIds.indexOf(right.id) === -1 ? 0 : 1;
+
+            return leftCategory - rightCategory || leftRecent - rightRecent || leftSeen - rightSeen ||
+              String(left.adaptiveOrder || left.id).localeCompare(String(right.adaptiveOrder || right.id));
+          });
+
+          if (!sharesTopic) {
+            replacements = replacements.filter(function (entry) {
+              return !getSessionTopicCategoryValues(entry.question).some(function (value) {
+                return blockedCategories.indexOf(value) !== -1;
+              });
+            });
+          }
+
+          if (replacements.length) {
+            var replacement = replacements[0];
+            if (replacement.queueIndex >= 0) {
+              output[replacement.queueIndex] = currentQuestion;
+            }
+            output[index] = replacement.question;
+            blockedValues = blockedValues.concat(getSessionTopicFamilyValues(replacement.question));
+            blockedCategories = blockedCategories.concat(getSessionTopicCategoryValues(replacement.question));
+          } else {
+            blockedValues = blockedValues.concat(getSessionTopicFamilyValues(currentQuestion));
+            blockedCategories = blockedCategories.concat(getSessionTopicCategoryValues(currentQuestion));
+          }
+        }
+
+        return output;
+      }
+
+      function applySessionTopicCooldownAfterChallenge(sourceQuestion) {
+        var adaptiveDaily = sessionMode === "daily" && sessionAdaptiveEligible;
+        if (!sourceQuestion) {
+          return;
+        }
+        sessionQuestions = prioritizeNextSessionTopicFamilies(
+          sessionQuestions,
+          sessionIndex,
+          sourceQuestion,
+          adaptiveDaily ? adaptiveQuestionBank : sessionQuestions.slice(sessionIndex + 1),
+          {
+            maxQuestions: 2,
+            currentStageId: getCurrentStageId(),
+            reasoningLevel: adaptiveDaily ? sessionRequestedReasoningLevel : null,
+            recentQuestionIds: progress.recentQuestionIds,
+            seenQuestionIds: progress.seenQuestionIds
+          }
+        );
+      }
+      // SESSION_TOPIC_COOLDOWN_END
 
       function getCategoryText(question) {
         var categories = getQuestionCategories(question);
