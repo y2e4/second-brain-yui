@@ -58,7 +58,8 @@ function withoutNewMetadata(value) {
   copy.verifiedShortageCount = 39;
   copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
   copy.questions = copy.questions.filter(function (question) {
-    return question.id !== "hm2-hygiene-v03-01";
+    return question.id !== "hm2-hygiene-v03-01" &&
+      question.id !== "hm2-hygiene-v03-02";
   });
   var questions = (copy.questions || []).concat(
     copy.stage5 && Array.isArray(copy.stage5.questions)
@@ -87,10 +88,10 @@ function select(sourceId) {
 }
 
 test("Stage 5の安全な5組だけへknowledgeKeyとvariantTypeを追加する", function () {
-  assert.equal(QUESTIONS.length, 112);
+  assert.equal(QUESTIONS.length, 113);
   assert.equal(new Set(QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 112);
+  })).size, 113);
   assert.equal(Object.keys(EXPECTED_GROUPS).length, 5);
   assert.equal(new Set(NEWLY_ANNOTATED_IDS).size, 10);
 
@@ -119,12 +120,12 @@ test("追加対象10問の問題本体、正答、難易度、Stage、解説、�
   });
 });
 
-test("第3段階を含む注釈済みは20問で未設定92問となる", function () {
+test("食中毒条件variantを含む注釈済みは21問で未設定92問となる", function () {
   var annotated = QUESTIONS.filter(function (question) {
     return typeof question.knowledgeKey === "string" && question.knowledgeKey;
   });
 
-  assert.equal(annotated.length, 20);
+  assert.equal(annotated.length, 21);
   assert.equal(QUESTIONS.length - annotated.length, 92);
   assert.deepEqual(
     annotated.filter(function (question) {
@@ -191,7 +192,10 @@ test("食中毒は感染型対食物内毒素型だけを結び、別機序は�
     QUESTION_BY_ID["hm2-stage5-013"].knowledgeKey,
     "food-poisoning-infection-vs-preformed-toxin-type"
   );
-  assert.deepEqual(select("hm2-stage5-013").questionIds, ["hm2-hygiene-v03-01"]);
+  assert.deepEqual(select("hm2-stage5-013").questionIds, [
+    "hm2-hygiene-v03-01",
+    "hm2-hygiene-v03-02"
+  ]);
 });
 
 test("換気と消化酵素は旧候補0から無関係問題なしの候補1へ改善する", function () {
@@ -218,6 +222,6 @@ test("HTMLはknowledgeKey整備版のselectorと問題JSONを明示的な識別�
   );
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
+    /hygiene-os-v2-questions\.json\?v=20260830-staphylococcus-toxin-01/
   );
 });

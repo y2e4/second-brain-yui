@@ -416,13 +416,13 @@ test("通常キューの終了画面はfinalize後のindex === queue.lengthを�
   assert.match(HTML, /showResult\(\{ skipSave: true \}\)/);
 });
 
-test("既存81問と追加事例1問、Stage5追加30問の配分を維持する", function () {
+test("既存81問と追加食中毒variant2問、Stage5追加30問の配分を維持する", function () {
   var counts = [1, 2, 3, 4, 5].map(function (stage) {
     return QUESTIONS.filter(function (item) { return item.stage === stage; }).length;
   });
-  assert.equal(CORE_QUESTIONS.length, 82);
-  assert.equal(QUESTIONS.length, 112);
-  assert.deepEqual(counts, [30, 19, 14, 19, 30]);
+  assert.equal(CORE_QUESTIONS.length, 83);
+  assert.equal(QUESTIONS.length, 113);
+  assert.deepEqual(counts, [30, 19, 14, 20, 30]);
 });
 
 test("初回対象はovertime-agreement-limitsの2問に限定される", function () {

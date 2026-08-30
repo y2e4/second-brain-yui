@@ -24,6 +24,7 @@ var QUESTION_BY_ID = Object.fromEntries(QUESTIONS.map(function (question) {
 var KNOWLEDGE_KEY = "food-poisoning-infection-vs-preformed-toxin-type";
 var SOURCE_ID = "hm2-stage5-013";
 var CASE_ID = "hm2-hygiene-v03-01";
+var CONDITION_ID = "hm2-hygiene-v03-02";
 var OTHER_FOOD_POISONING_IDS = [
   "hm2-hygiene-v01-02",
   "hm2-hygiene-v02-06",
@@ -44,7 +45,7 @@ function beforeStage3Data(value) {
   copy.verifiedShortageCount = 39;
   copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
   copy.questions = copy.questions.filter(function (question) {
-    return question.id !== CASE_ID;
+    return question.id !== CASE_ID && question.id !== CONDITION_ID;
   });
   source = copy.stage5.questions.find(function (question) {
     return question.id === SOURCE_ID;
@@ -66,36 +67,39 @@ function selectRelated(sourceId, allowedStageIds) {
   });
 }
 
-test("既存111問は変更せず、Stage 4の事例variantを1問だけ追加する", function () {
-  assert.equal(CORE_QUESTIONS.length, 82);
+test("既存111問は変更せず、Stage 4の食中毒variantを2問だけ追加する", function () {
+  assert.equal(CORE_QUESTIONS.length, 83);
   assert.equal(STAGE5_QUESTIONS.length, 30);
-  assert.equal(QUESTIONS.length, 112);
+  assert.equal(QUESTIONS.length, 113);
   assert.equal(new Set(QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 112);
+  })).size, 113);
   assert.equal(
     sha256(beforeStage3Data(DATA)),
     "117c0cd2313b199d0d47f248725314fed7304495454686414d2070ebab89feb8"
   );
-  assert.equal(DATA.newQuestionCount, 31);
-  assert.equal(DATA.verifiedShortageCount, 38);
+  assert.equal(DATA.newQuestionCount, 32);
+  assert.equal(DATA.verifiedShortageCount, 37);
   assert.deepEqual(DATA.stages.map(function (stage) {
     return stage.questionCount;
-  }), [30, 19, 14, 19, 30]);
+  }), [30, 19, 14, 20, 30]);
 });
 
-test("感染型と食物内毒素型の核知識は比較問と事例問の2問だけで共有する", function () {
+test("感染型と食物内毒素型の核知識は比較・事例・条件の3問だけで共有する", function () {
   var group = QUESTIONS.filter(function (question) {
     return question.knowledgeKey === KNOWLEDGE_KEY;
   });
 
   assert.deepEqual(group.map(function (question) {
     return question.id;
-  }).sort(), [CASE_ID, SOURCE_ID].sort());
+  }).sort(), [CASE_ID, CONDITION_ID, SOURCE_ID].sort());
   assert.equal(QUESTION_BY_ID[SOURCE_ID].variantType, "comparison");
   assert.equal(QUESTION_BY_ID[CASE_ID].variantType, "case");
+  assert.equal(QUESTION_BY_ID[CONDITION_ID].variantType, "condition");
   assert.deepEqual(QUESTION_BY_ID[CASE_ID].variantOfQuestionIds, [SOURCE_ID]);
+  assert.deepEqual(QUESTION_BY_ID[CONDITION_ID].variantOfQuestionIds, [SOURCE_ID, CASE_ID]);
   assert.notEqual(QUESTION_BY_ID[SOURCE_ID].question, QUESTION_BY_ID[CASE_ID].question);
+  assert.notEqual(QUESTION_BY_ID[CASE_ID].question, QUESTION_BY_ID[CONDITION_ID].question);
 });
 
 test("カンピロバクターと黄色ブドウ球菌を判断軸に沿って正確に区別する", function () {
@@ -114,6 +118,20 @@ test("カンピロバクターと黄色ブドウ球菌を判断軸に沿って�
   assert.match(caseQuestion.sourceUrl, /^https:\/\/www\.mhlw\.go\.jp\//);
 });
 
+test("黄色ブドウ球菌の菌と産生済みエンテロトキシンの加熱条件を区別する", function () {
+  var conditionQuestion = QUESTION_BY_ID[CONDITION_ID];
+
+  assert.equal(conditionQuestion.answer, false);
+  assert.match(conditionQuestion.question, /菌そのものを死滅/);
+  assert.match(conditionQuestion.question, /すでに産生されていたエンテロトキシン/);
+  assert.match(conditionQuestion.explanation, /部分が誤り/);
+  assert.match(conditionQuestion.explanation, /黄色ブドウ球菌自体は熱に強くありません/);
+  assert.match(conditionQuestion.explanation, /通常の加熱調理では無毒化できません/);
+  assert.match(conditionQuestion.explanation, /混同しない/);
+  assert.match(conditionQuestion.sourceTitle, /農林水産省/);
+  assert.match(conditionQuestion.sourceUrl, /^https:\/\/www\.maff\.go\.jp\//);
+});
+
 test("ボツリヌス神経毒、ノロ対策、ヒスタミンは別の核知識として接続しない", function () {
   OTHER_FOOD_POISONING_IDS.forEach(function (id) {
     assert.equal(QUESTION_BY_ID[id].knowledgeKey, undefined, id);
@@ -121,37 +139,47 @@ test("ボツリヌス神経毒、ノロ対策、ヒスタミンは別の核知�
   });
 });
 
-test("Stage 5の比較問から別IDの事例問だけを補習として選ぶ", function () {
+test("Stage 5の比較問から別IDの事例問と条件問だけを補習として選ぶ", function () {
   var result = selectRelated(SOURCE_ID);
 
   assert.equal(result.status, "selected");
-  assert.deepEqual(result.questionIds, [CASE_ID]);
-  assert.deepEqual(result.selectionReasons, ["direct_knowledge_variant"]);
-  assert.equal(result.questions[0].knowledgeKey, KNOWLEDGE_KEY);
+  assert.deepEqual(result.questionIds, [CASE_ID, CONDITION_ID]);
+  assert.deepEqual(result.selectionReasons, [
+    "direct_knowledge_variant",
+    "direct_knowledge_variant"
+  ]);
+  assert.ok(result.questions.every(function (question) {
+    return question.knowledgeKey === KNOWLEDGE_KEY;
+  }));
   assert.ok(OTHER_FOOD_POISONING_IDS.every(function (id) {
     return result.questionIds.indexOf(id) === -1;
   }));
 });
 
-test("事例問からも比較問へ戻れ、未解放Stageや無関係themeへは広がらない", function () {
+test("事例問から条件問と比較問へ進め、Stage 4内でも条件問へつながる", function () {
   var allowed = selectRelated(CASE_ID);
   var stage4Only = selectRelated(CASE_ID, [1, 2, 3, 4]);
 
-  assert.deepEqual(allowed.questionIds, [SOURCE_ID]);
-  assert.deepEqual(allowed.selectionReasons, ["direct_knowledge_variant"]);
-  assert.equal(stage4Only.status, "no_related_supplement");
-  assert.deepEqual(stage4Only.questionIds, []);
-  assert.equal(stage4Only.fallback, "continue_normal_learning");
+  assert.deepEqual(allowed.questionIds, [CONDITION_ID, SOURCE_ID]);
+  assert.deepEqual(allowed.selectionReasons, [
+    "direct_knowledge_variant",
+    "direct_knowledge_variant"
+  ]);
+  assert.equal(stage4Only.status, "selected");
+  assert.deepEqual(stage4Only.questionIds, [CONDITION_ID]);
+  assert.deepEqual(stage4Only.selectionReasons, ["direct_knowledge_variant"]);
 });
 
 test("Stage 5通常キューは30問内に留まり、新規Stage 4問はシャッフル対象外", function () {
   var caseQuestion = QUESTION_BY_ID[CASE_ID];
+  var conditionQuestion = QUESTION_BY_ID[CONDITION_ID];
 
   assert.equal(STAGE5_QUESTIONS.length, 30);
   assert.ok(STAGE5_QUESTIONS.every(function (question) {
     return question.stage === 5 && question.id !== CASE_ID;
   }));
   assert.equal(SHUFFLE.isShuffleAllowed(caseQuestion), false);
+  assert.equal(SHUFFLE.isShuffleAllowed(conditionQuestion), false);
   assert.equal(QUESTION_BY_ID[SOURCE_ID].stage, 5);
 });
 
@@ -160,7 +188,7 @@ test("正式reviewContextへ昇格せず、問題JSONだけ新キャッシュ識
   assert.equal(QUESTION_BY_ID[CASE_ID].reasoningLevel, undefined);
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
+    /hygiene-os-v2-questions\.json\?v=20260830-staphylococcus-toxin-01/
   );
   assert.match(
     HTML,

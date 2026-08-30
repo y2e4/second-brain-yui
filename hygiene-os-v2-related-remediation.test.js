@@ -232,7 +232,7 @@ test("公開中の36協定2問は07から08、08から07を確認済み派生と
 
 test("Stage 5の食中毒、胆汁、肝臓、免疫はknowledgeKeyから選ぶ", function () {
   var expected = {
-    "hm2-stage5-013": ["hm2-hygiene-v03-01"],
+    "hm2-stage5-013": ["hm2-hygiene-v03-01", "hm2-hygiene-v03-02"],
     "hm2-stage5-022": ["hm2-physiology-v01-02"],
     "hm2-stage5-025": ["hm2-physiology-v01-05"],
     "hm2-stage5-029": ["hm2-physiology-v02-10"]
@@ -242,7 +242,10 @@ test("Stage 5の食中毒、胆汁、肝臓、免疫はknowledgeKeyから選ぶ"
     var result = select(realQuestion(id), QUESTIONS);
     assert.deepEqual(result.questionIds, expected[id]);
     if (id === "hm2-stage5-013") {
-      assert.deepEqual(result.selectionReasons, ["direct_knowledge_variant"]);
+      assert.deepEqual(result.selectionReasons, [
+        "direct_knowledge_variant",
+        "direct_knowledge_variant"
+      ]);
     } else {
       assert.deepEqual(result.selectionReasons, ["knowledge_variant"]);
     }

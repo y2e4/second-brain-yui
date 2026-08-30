@@ -232,6 +232,6 @@ test("selector JSだけに専用キャッシュ識別子を付ける", function 
   );
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
+    /hygiene-os-v2-questions\.json\?v=20260830-staphylococcus-toxin-01/
   );
 });

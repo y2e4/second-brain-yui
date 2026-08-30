@@ -68,7 +68,7 @@ function recordReview(currentSession, question, outcome) {
   });
 }
 
-test("36協定knowledgeKeyは公開82問中の指定2問だけを注釈する", function () {
+test("36協定knowledgeKeyは公開83問中の指定2問だけを注釈する", function () {
   var ids = publicQuestions.map(function (question) { return question.id; });
   var annotatedIds = publicQuestions.filter(function (question) {
     return question.knowledgeKey === KNOWLEDGE_KEY;
@@ -76,7 +76,7 @@ test("36協定knowledgeKeyは公開82問中の指定2問だけを注釈する", 
     return question.id;
   }).sort();
 
-  assert.equal(publicQuestions.length, 82);
+  assert.equal(publicQuestions.length, 83);
   assert.equal(new Set(ids).size, ids.length);
   assert.deepEqual(
     [1, 2, 3, 4].map(function (stage) {
@@ -84,12 +84,12 @@ test("36協定knowledgeKeyは公開82問中の指定2問だけを注釈する", 
         return question.stage === stage;
       }).length;
     }),
-    [30, 19, 14, 19]
+    [30, 19, 14, 20]
   );
   assert.deepEqual(annotatedIds, [GENERAL_ID, SPECIAL_ID]);
   assert.equal(publicQuestions.filter(function (question) {
     return question.knowledgeKey !== KNOWLEDGE_KEY;
-  }).length, 80);
+  }).length, 81);
 });
 
 test("原則上限と特別条項のmetadata、Stage、出典、正答を固定する", function () {
@@ -205,13 +205,13 @@ test("実問題2問だけで補習開始から再挑戦、完了、finalizeま�
   assert.equal(finalized.currentSession.recorded, false);
 });
 
-test("36協定群以外の80問は36協定の正式補習候補外として残る", function () {
+test("36協定群以外の81問は36協定の正式補習候補外として残る", function () {
   var outsideGroup = publicQuestions.filter(function (question) {
     return question.knowledgeKey !== KNOWLEDGE_KEY;
   });
   var result = selectVariant(general, "incorrect");
 
-  assert.equal(outsideGroup.length, 80);
+  assert.equal(outsideGroup.length, 81);
   assert.equal(result.questionId, SPECIAL_ID);
   assert.ok(outsideGroup.every(function (question) {
     return question.id !== result.questionId && question.knowledgeKey !== KNOWLEDGE_KEY;

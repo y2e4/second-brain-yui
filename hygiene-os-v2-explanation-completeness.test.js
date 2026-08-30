@@ -23,6 +23,7 @@ var TARGET_IDS = [
 ];
 var TARGET_ID_SET = new Set(TARGET_IDS);
 var FOOD_POISONING_CASE_ID = "hm2-hygiene-v03-01";
+var FOOD_POISONING_CONDITION_ID = "hm2-hygiene-v03-02";
 var ALL_QUESTIONS = (DATA.questions || []).concat(
   DATA.stage5 && Array.isArray(DATA.stage5.questions)
     ? DATA.stage5.questions
@@ -55,7 +56,8 @@ function withoutExplanationsOrMemories(value) {
   copy.verifiedShortageCount = 39;
   copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
   copy.questions = copy.questions.filter(function (question) {
-    return question.id !== FOOD_POISONING_CASE_ID;
+    return question.id !== FOOD_POISONING_CASE_ID &&
+      question.id !== FOOD_POISONING_CONDITION_ID;
   });
   var questions = (copy.questions || []).concat(
     copy.stage5 && Array.isArray(copy.stage5.questions)
@@ -74,12 +76,12 @@ function withoutExplanationsOrMemories(value) {
 }
 
 test("解説改善で問題数、問題文、正答、ID、学習metadataを変更しない", function () {
-  assert.equal((DATA.questions || []).length, 82);
+  assert.equal((DATA.questions || []).length, 83);
   assert.equal((DATA.stage5.questions || []).length, 30);
-  assert.equal(ALL_QUESTIONS.length, 112);
+  assert.equal(ALL_QUESTIONS.length, 113);
   assert.equal(new Set(ALL_QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 112);
+  })).size, 113);
   assert.equal(
     sha256(withoutExplanationsOrMemories(DATA)),
     "d8e2682f62d04e84e10b6ae428e1d9201244ca63e8f6c8e2912bef1b6e49fddf"
@@ -88,7 +90,9 @@ test("解説改善で問題数、問題文、正答、ID、学習metadataを変�
 
 test("既存の改善対象外106問の解説を変更しない", function () {
   var untouchedExplanations = ALL_QUESTIONS.filter(function (question) {
-    return !TARGET_ID_SET.has(question.id) && question.id !== FOOD_POISONING_CASE_ID;
+    return !TARGET_ID_SET.has(question.id) &&
+      question.id !== FOOD_POISONING_CASE_ID &&
+      question.id !== FOOD_POISONING_CONDITION_ID;
   }).map(function (question) {
     return { id: question.id, explanation: question.explanation };
   });
@@ -141,7 +145,7 @@ test("血液の誤文は血漿と血球の正しい体積割合まで示す", fu
 test("HTMLは改善版問題JSONの新しいキャッシュ識別子を参照する", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
+    /hygiene-os-v2-questions\.json\?v=20260830-staphylococcus-toxin-01/
   );
   assert.doesNotMatch(HTML, /20260816-memory-hooks-01/);
 });

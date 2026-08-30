@@ -50,7 +50,8 @@ function withoutStage2Metadata(value) {
   copy.verifiedShortageCount = 39;
   copy.stages.find(function (stage) { return stage.id === 4; }).questionCount = 18;
   copy.questions = copy.questions.filter(function (question) {
-    return question.id !== "hm2-hygiene-v03-01";
+    return question.id !== "hm2-hygiene-v03-01" &&
+      question.id !== "hm2-hygiene-v03-02";
   });
   var questions = (copy.questions || []).concat(
     copy.stage5 && Array.isArray(copy.stage5.questions)
@@ -106,12 +107,12 @@ test("第2段階は安全な既存3組6問だけへknowledgeKeyとvariantTypeを
 });
 
 test("問題本文、正答、Stage、難易度、解説、覚え方と問題数は変更しない", function () {
-  assert.equal((DATA.questions || []).length, 82);
+  assert.equal((DATA.questions || []).length, 83);
   assert.equal((DATA.stage5.questions || []).length, 30);
-  assert.equal(QUESTIONS.length, 112);
+  assert.equal(QUESTIONS.length, 113);
   assert.equal(new Set(QUESTIONS.map(function (question) {
     return question.id;
-  })).size, 112);
+  })).size, 113);
   assert.equal(
     sha256(withoutStage2Metadata(DATA)),
     "039e8453cbb67a98ac8d4450b4e3b1867c71c4275fd6874502b4833f0c324d0f"
@@ -124,12 +125,12 @@ test("問題本文、正答、Stage、難易度、解説、覚え方と問題数
   });
 });
 
-test("第3段階を含む注釈済み20問、未設定92問となる", function () {
+test("食中毒条件variantを含む注釈済み21問、未設定92問となる", function () {
   var annotated = QUESTIONS.filter(function (question) {
     return typeof question.knowledgeKey === "string" && question.knowledgeKey;
   });
 
-  assert.equal(annotated.length, 20);
+  assert.equal(annotated.length, 21);
   assert.equal(QUESTIONS.length - annotated.length, 92);
   assert.equal(new Set(annotated.map(function (question) {
     return question.knowledgeKey;
@@ -206,7 +207,7 @@ test("食中毒群は感染型対食物内毒素型以外を同じknowledgeKey�
 test("HTMLは新しい問題JSONだけを第2段階キャッシュ識別子で読む", function () {
   assert.match(
     HTML,
-    /hygiene-os-v2-questions\.json\?v=20260823-food-poisoning-variants-03/
+    /hygiene-os-v2-questions\.json\?v=20260830-staphylococcus-toxin-01/
   );
   assert.match(
     HTML,

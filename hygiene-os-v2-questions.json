@@ -3,9 +3,9 @@
   "title": "第二種衛生管理者 資格OS v2",
   "sourceDataset": "hygiene-questions.json 81問をID維持で再分類",
   "auditDate": "2026-06-27",
-  "newQuestionCount": 31,
+  "newQuestionCount": 32,
   "targetPerStage": 30,
-  "verifiedShortageCount": 38,
+  "verifiedShortageCount": 37,
   "stages": [
     {
       "id": 1,
@@ -33,7 +33,7 @@
       "name": "判断",
       "objective": "事例問題・判断問題で、誰が・いつ・何を行うか判断する",
       "unlockAccuracy": 85,
-      "questionCount": 19
+      "questionCount": 20
     },
     {
       "id": 5,
@@ -1858,6 +1858,44 @@
       "sourceUrl": "https://www.mhlw.go.jp/topics/bukyoku/iyaku/syoku-anzen/iken/dl/070713-2b_0003.pdf",
       "originality": "independently_rewritten",
       "verifiedAt": "2026-08-23",
+      "wrongCount": 0,
+      "correctCount": 0,
+      "lastAnsweredAt": null,
+      "weak": false
+    },
+    {
+      "id": "hm2-hygiene-v03-02",
+      "year": 2026,
+      "month": 8,
+      "category": "労働衛生",
+      "theme": "食中毒・黄色ブドウ球菌の菌と毒素",
+      "knowledgeKey": "food-poisoning-infection-vs-preformed-toxin-type",
+      "variantType": "condition",
+      "variantOfQuestionIds": [
+        "hm2-stage5-013",
+        "hm2-hygiene-v03-01"
+      ],
+      "stage": 4,
+      "question": "黄色ブドウ球菌に汚染された食品について、十分に加熱して菌そのものを死滅させれば、加熱前に食品中ですでに産生されていたエンテロトキシンも無毒化できる。",
+      "choices": [
+        {
+          "id": "O",
+          "text": "正しい"
+        },
+        {
+          "id": "X",
+          "text": "誤っている"
+        }
+      ],
+      "answer": false,
+      "explanation": "「菌そのものを死滅させれば、すでに産生されたエンテロトキシンも無毒化できる」という部分が誤りです。黄色ブドウ球菌自体は熱に強くありませんが、食品中ですでに産生されたエンテロトキシンは熱に強く、通常の加熱調理では無毒化できません。菌への加熱効果と、すでに作られた毒素の耐熱性を混同しないことが判断点です。",
+      "trap": "加熱で菌が死滅することと、食品中に残る産生済み毒素が無毒化されることを同一視しない。",
+      "memory": "菌は熱に弱いが、産生済み毒素は熱に強い。加熱前に毒素を作らせない。",
+      "sourceType": "official_reference_based",
+      "sourceTitle": "農林水産省 黄色ブドウ球菌（細菌）",
+      "sourceUrl": "https://www.maff.go.jp/j/syouan/seisaku/foodpoisoning/f_encyclopedia/staphylococcus.aureus.html",
+      "originality": "independently_rewritten",
+      "verifiedAt": "2026-08-30",
       "wrongCount": 0,
       "correctCount": 0,
       "lastAnsweredAt": null,
