@@ -45,7 +45,7 @@
       "name": "実戦総合演習",
       "objective": "ステージ5では、社労士試験に向けて、公式情報確認・選択式対策・択一式対策・苦手補強・科目横断事例をまとめて演習します。これまでの基礎学習を、実戦で使える判断力に変える最終ステージです。",
       "unlocked": false,
-      "questionCount": 70,
+      "questionCount": 71,
       "unlockFromStage": 4,
       "unlockAnswerCount": 12,
       "unlockAccuracy": 90,
@@ -6300,6 +6300,54 @@
       "sourceTitle": "厚生労働省",
       "sourceUrl": "https://www.mhlw.go.jp/",
       "verifiedAt": "2026-07-07"
+    },
+    {
+      "id": "stage5-question-071",
+      "stage": 5,
+      "title": "労基弱点：割増賃金の算定基礎",
+      "category": [
+        "苦手補強",
+        "労働基準法"
+      ],
+      "type": "single_choice",
+      "term": "割増賃金の算定基礎から除外される手当",
+      "question": "会社は、扶養家族の有無や人数にかかわらず全従業員へ月1万円を「家族手当」として支給し、通勤手当は各人の通勤距離に応じた実費相当額を支給している。時間外労働の割増賃金の算定基礎について、最も適切な整理はどれか。",
+      "choices": [
+        {
+          "id": "a",
+          "text": "どちらも手当の名称が法定の除外賃金と同じなので、算定基礎から除外する"
+        },
+        {
+          "id": "b",
+          "text": "一律支給の家族手当は算定基礎に含め、通勤距離に応じた実費相当の通勤手当は除外する"
+        },
+        {
+          "id": "c",
+          "text": "一律支給の家族手当は除外し、通勤距離に応じた実費相当の通勤手当は算定基礎に含める"
+        },
+        {
+          "id": "d",
+          "text": "どちらも毎月支払われるため、支給条件にかかわらず算定基礎に含める"
+        }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "判断軸は手当の名称ではなく、実際の支給条件です。家族手当として除外できるのは、扶養家族数などを基礎に算定するものです。本問のように扶養家族の有無や人数にかかわらず一律に支給する手当は算定基礎に含めます。一方、通勤距離に応じた実費相当額として支給する通勤手当は除外できます。「家族手当」「通勤手当」という名称だけで決めず、何を基準に金額が決まるかを確認します。",
+      "trap": "法定の除外賃金と同じ名称なら必ず除外できる、と判断しない。",
+      "memory": "手当名ではなく算定方法を見る。家族数や通勤距離など、支給額を決める実質が基準。",
+      "tags": [
+        "苦手補強",
+        "労基法",
+        "労働基準法",
+        "割増賃金",
+        "算定基礎"
+      ],
+      "stage5Section": "苦手補強",
+      "knowledgeKey": "overtime-premium-base-allowance-exclusions",
+      "variantType": "condition",
+      "sourceType": "official",
+      "sourceTitle": "割増賃金を計算する際の基礎となる賃金は何か。｜厚生労働省",
+      "sourceUrl": "https://www.mhlw.go.jp/bunya/roudoukijun/faq_kijyunhou_24.html",
+      "verifiedAt": "2026-09-06"
     }
   ],
   "adaptiveReasoningQuestions": [
