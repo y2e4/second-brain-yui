@@ -5820,7 +5820,7 @@ debug: loading</pre>
 
           playableTitle.textContent = "挑戦可能：ステージ" + stage.id + "「" + stage.name + "」";
           playableDetail.textContent = stage.id === STAGE_FIVE_ID
-            ? "10問ずつ分割、または70問通し演習で実戦総合演習に進めます。"
+            ? "10問ずつ分割、または" + STAGE_FIVE_FULL_LIMIT + "問通し演習で実戦総合演習に進めます。"
             : "「ステージ" + stage.id + "を開始する」から、事例問題に進めます。";
           playableItem.appendChild(playableTitle);
           playableItem.appendChild(playableDetail);
@@ -5883,7 +5883,7 @@ debug: loading</pre>
           "正答率 " + formatStageAccuracy(stats);
         if (currentStageId === STAGE_FIVE_ID) {
           locationKeyValue.textContent =
-            "70問中 正答率70%以上\n" +
+            STAGE_FIVE_FULL_LIMIT + "問中 正答率70%以上\n" +
             "年金カテゴリ 正答率70%以上\n" +
             "労働基準法カテゴリ 正答率70%以上\n" +
             "公式確認カテゴリ 3問以上正解\n" +
@@ -5914,7 +5914,8 @@ debug: loading</pre>
           stageKeyStatus.textContent = earned
             ? "ステージ" + currentStageId + "を達成しました。"
             : currentStageId === STAGE_FIVE_ID
-              ? "ステージ5が解放済みです。10問ずつ分割または70問通し演習で実戦総合演習に取り組めます。"
+              ? "ステージ5が解放済みです。10問ずつ分割または" +
+                STAGE_FIVE_FULL_LIMIT + "問通し演習で実戦総合演習に取り組めます。"
               : "ステージ4が解放済みです。12問チャレンジで事例判断を練習できます。";
         } else if (getStage4Available() && currentStageId === STAGE_THREE_ID) {
           stageKeyStatus.textContent = "ステージ4が解放済みです。ステージ4に挑戦できます。";
@@ -6037,6 +6038,8 @@ debug: loading</pre>
             isStageUnlocked(challengeStage) &&
             getStageQuestions(STAGE_FIVE_ID).length >= STAGE_FIVE_FULL_LIMIT &&
             !getStageAchieved(STAGE_FIVE_ID)) {
+          stageFullChallengeButton.textContent =
+            "ステージ5 " + STAGE_FIVE_FULL_LIMIT + "問通し演習";
           stageFullChallengeButton.hidden = false;
           stageFullChallengeButton.disabled = false;
         } else {
@@ -6567,7 +6570,9 @@ debug: loading</pre>
           modeText = "10問チャレンジ";
         } else if (sessionMode === "stageChallenge") {
           modeText = getQuestionStage(question) === STAGE_FIVE_ID
-            ? "ステージ5 " + (sessionStageFullMode ? "70問通し演習" : "10問ずつ分割")
+            ? "ステージ5 " + (sessionStageFullMode
+              ? STAGE_FIVE_FULL_LIMIT + "問通し演習"
+              : "10問ずつ分割")
             : "ステージ" + getQuestionStage(question) + "チャレンジ";
         }
         modeLabel.textContent = modeText;
@@ -7535,19 +7540,26 @@ debug: loading</pre>
             !Array.isArray(data.stages)) {
           throw new Error("用語、問題、ステージのデータ形式が正しくありません。");
         }
-        if (data.terms.length !== 30 || data.questions.length !== 172) {
-          throw new Error("用語30件、問題172件が必要です。");
+        if (data.terms.length !== 30) {
+          throw new Error("用語30件が必要です。");
         }
         if (data.stages.length !== STAGE_TOTAL) {
           throw new Error("ステージ定義は5件必要です。");
         }
         validateAdaptiveDifficultyData(data);
 
+        var declaredQuestionCount = 0;
+        var stageFiveQuestionCount = 0;
         data.stages.forEach(function (stage) {
           if (typeof stage.id !== "number" || stage.id < 1 || stage.id > STAGE_TOTAL ||
               !stage.name || !stage.objective) {
             throw new Error("ステージデータの必須項目が不足しています。");
           }
+          var questionCount = Number(stage.questionCount);
+          if (!Number.isInteger(questionCount) || questionCount < 1) {
+            throw new Error("ステージごとの問題数は1以上の整数で指定してください。");
+          }
+          declaredQuestionCount += questionCount;
           if (stage.id === STAGE_ONE_ID && stage.unlocked !== true) {
             throw new Error("ステージ1は最初から解放済みにしてください。");
           }
@@ -7563,12 +7575,18 @@ debug: loading</pre>
             throw new Error("ステージ4は条件達成で動的解放する12問ステージにしてください。");
           }
           if (stage.id === STAGE_FIVE_ID &&
-              (stage.unlocked !== false || Number(stage.questionCount) !== STAGE_FIVE_FULL_LIMIT ||
-                Number(stage.unlockAnswerCount) !== 12 || Number(stage.unlockAccuracy) !== 90 ||
+              (stage.unlocked !== false || Number(stage.unlockAnswerCount) !== 12 ||
+                Number(stage.unlockAccuracy) !== 90 ||
                 Number(stage.unlockFromStage) !== STAGE_FOUR_ID)) {
-            throw new Error("ステージ5はステージ4達成後に動的解放する70問ステージにしてください。");
+            throw new Error("ステージ5はステージ4達成後に動的解放する問題ステージにしてください。");
+          }
+          if (stage.id === STAGE_FIVE_ID) {
+            stageFiveQuestionCount = questionCount;
           }
         });
+        if (data.questions.length !== declaredQuestionCount) {
+          throw new Error("問題数は各ステージのquestionCount合計と一致させてください。");
+        }
 
         var termIds = {};
         data.terms.forEach(function (term) {
@@ -7646,9 +7664,10 @@ debug: loading</pre>
 
         if (stageCounts[STAGE_ONE_ID] !== 30 || stageCounts[STAGE_TWO_ID] !== 30 ||
             stageCounts[STAGE_THREE_ID] !== 30 || stageCounts[STAGE_FOUR_ID] !== 12 ||
-            stageCounts[STAGE_FIVE_ID] !== STAGE_FIVE_FULL_LIMIT) {
-          throw new Error("ステージ1から3は各30問、ステージ4は12問、ステージ5は70問必要です。");
+            stageCounts[STAGE_FIVE_ID] !== stageFiveQuestionCount) {
+          throw new Error("ステージ1から3は各30問、ステージ4は12問、ステージ5は定義した問題数が必要です。");
         }
+        STAGE_FIVE_FULL_LIMIT = stageFiveQuestionCount;
       }
 
       setupDebugVisibility();
