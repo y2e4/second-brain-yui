@@ -52,16 +52,16 @@ function buildValidator() {
   return context;
 }
 
-test("173問をStage定義と照合して正常に読み込む", function () {
+test("174問をStage定義と照合して正常に読み込む", function () {
   var context = buildValidator();
-  assert.equal(DATA.questions.length, 173);
-  assert.equal(context.runValidation(), 71);
+  assert.equal(DATA.questions.length, 174);
+  assert.equal(context.runValidation(), 72);
 });
 
 test("既存の70問Stage 5フォールバックも同じ検証で維持する", function () {
   var fallbackData = JSON.parse(JSON.stringify(DATA));
   fallbackData.questions = fallbackData.questions.filter(function (question) {
-    return question.id !== "stage5-question-071";
+    return question.id !== "stage5-question-071" && question.id !== "stage5-question-072";
   });
   fallbackData.stages.find(function (stage) {
     return stage.id === 5;
