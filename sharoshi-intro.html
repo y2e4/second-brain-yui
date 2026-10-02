@@ -4141,6 +4141,7 @@ debug: loading</pre>
         return {
           lastStatus: typeof stored.lastStatus === "string" ? stored.lastStatus : "",
           lastSyncedAt: typeof stored.lastSyncedAt === "string" ? stored.lastSyncedAt : "",
+          lastSyncedSha: normalizeGitHubSha(stored.lastSyncedSha),
           lastSyncedScore: isPlainObject(stored.lastSyncedScore) ? stored.lastSyncedScore : null,
           githubUpdatedAt: typeof stored.githubUpdatedAt === "string" ? stored.githubUpdatedAt : "",
           comparison: typeof stored.comparison === "string" ? stored.comparison : "unknown",
@@ -4190,7 +4191,112 @@ debug: loading</pre>
         var localSavedAt = getTimeValue(progress.lastSavedAt);
         var lastSyncedAt = getTimeValue(progress.lastManualSyncAt);
 
-        return Boolean(localSavedAt && (!lastSyncedAt || localSavedAt > lastSyncedAt + 1000));
+        return Boolean(localSavedAt && (!lastSyncedAt || localSavedAt > lastSyncedAt));
+      }
+
+      function normalizeGitHubSha(value) {
+        return typeof value === "string" ? value.trim() : "";
+      }
+
+      function hasMeaningfulLocalSyncData(payload) {
+        var safePayload = isPlainObject(payload) ? payload : {};
+        var source = isPlainObject(safePayload.progress) ? safePayload.progress : safePayload;
+        var stageProgress = isPlainObject(source.stageProgress) ? source.stageProgress : {};
+        var stageResults = isPlainObject(safePayload.stageResults) ? safePayload.stageResults : {};
+        var stageDetails = [source.stage4, source.stage5, safePayload.stage4Result, safePayload.stage5Result];
+        var hasStageProgress = Object.keys(stageProgress).some(function (stageId) {
+          var item = isPlainObject(stageProgress[stageId]) ? stageProgress[stageId] : {};
+          return Number(item.answerCount || item.answered || 0) > 0 ||
+            (Array.isArray(item.answeredQuestionIds) && item.answeredQuestionIds.length > 0);
+        });
+        var hasStageResults = Object.keys(stageResults).some(function (stageId) {
+          var item = isPlainObject(stageResults[stageId]) ? stageResults[stageId] : {};
+          return Number(item.answerCount || item.answered || 0) > 0 ||
+            (Array.isArray(item.answeredQuestionIds) && item.answeredQuestionIds.length > 0);
+        });
+        var hasStageDetail = stageDetails.some(function (detail) {
+          if (!isPlainObject(detail)) {
+            return false;
+          }
+          return [
+            "correctQuestionIds",
+            "wrongQuestionIds",
+            "understoodCorrectQuestionIds",
+            "unsureCorrectQuestionIds",
+            "guessedCorrectQuestionIds",
+            "ambiguousQuestionIds",
+            "weakQuestionIds"
+          ].some(function (key) {
+            return Array.isArray(detail[key]) && detail[key].length > 0;
+          }) || Boolean(detail.achieved || detail.lastRun);
+        });
+
+        return Number(safePayload.totalAnswered || source.totalAnswers || 0) > 0 ||
+          Number(safePayload.totalCorrect || source.correctAnswers || 0) > 0 ||
+          (Array.isArray(safePayload.answeredQuestionIds) && safePayload.answeredQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.wrongQuestionIds) && safePayload.wrongQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.reviewQuestionIds) && safePayload.reviewQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.uncertainCorrectQuestionIds) && safePayload.uncertainCorrectQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.guessedCorrectQuestionIds) && safePayload.guessedCorrectQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.ambiguousQuestionIds) && safePayload.ambiguousQuestionIds.length > 0) ||
+          (Array.isArray(safePayload.weakQuestionIds) && safePayload.weakQuestionIds.length > 0) ||
+          (Array.isArray(source.seenQuestionIds) && source.seenQuestionIds.length > 0) ||
+          (Array.isArray(source.wrongQuestionIds) && source.wrongQuestionIds.length > 0) ||
+          (Array.isArray(source.recentQuestionIds) && source.recentQuestionIds.length > 0) ||
+          (isPlainObject(source.wrongReview) && Object.keys(source.wrongReview).length > 0) ||
+          hasStageProgress || hasStageResults || hasStageDetail;
+      }
+
+      function getGitHubSyncChangeState(remote, localPayload, remotePayload) {
+        var meta = readGitHubSyncMeta();
+        var lastSyncedSha = normalizeGitHubSha(meta.lastSyncedSha);
+        var currentSha = normalizeGitHubSha(remote && remote.sha);
+        var baselineKnown = Boolean(lastSyncedSha);
+        var remoteNamespaceExists = Boolean(remote && remote.exists && remotePayload);
+        var localHasMeaningfulData = hasMeaningfulLocalSyncData(localPayload);
+        var localChanged = isLocalProgressNewerThanLastSync();
+        var githubChanged;
+
+        if (!baselineKnown && !localHasMeaningfulData) {
+          localChanged = false;
+        }
+        if (baselineKnown) {
+          githubChanged = !remote || !remote.exists || !remoteNamespaceExists ||
+            !currentSha || currentSha !== lastSyncedSha;
+        } else {
+          githubChanged = remoteNamespaceExists;
+        }
+
+        return {
+          localChanged: localChanged,
+          githubChanged: githubChanged,
+          baselineKnown: baselineKnown,
+          baselineMissingWithLocalData: !baselineKnown && localHasMeaningfulData,
+          remoteNamespaceExists: remoteNamespaceExists,
+          lastSyncedSha: lastSyncedSha,
+          currentSha: currentSha
+        };
+      }
+
+      function resolveGitHubSyncAction(remote, localPayload, remotePayload) {
+        var changes = getGitHubSyncChangeState(remote, localPayload, remotePayload);
+        var action;
+
+        if (changes.baselineMissingWithLocalData) {
+          action = changes.remoteNamespaceExists ? "conflict" : "remote_missing";
+        } else if (changes.localChanged && changes.githubChanged) {
+          action = "conflict";
+        } else if (!remote || !remote.exists || !remotePayload) {
+          action = changes.githubChanged ? "remote_missing" : "push";
+        } else if (changes.githubChanged) {
+          action = "pull";
+        } else if (changes.localChanged) {
+          action = "push";
+        } else {
+          action = "same";
+        }
+
+        return { action: action, changes: changes };
       }
 
       function getUnsyncedAnswerCount(meta) {
@@ -4650,11 +4756,12 @@ debug: loading</pre>
         renderDebugInfo();
       }
 
-      function markSyncSuccess(remoteUpdatedAt, comparison) {
+      function markSyncSuccess(remoteUpdatedAt, comparison, remoteSha) {
         hideSyncConflictPanel();
         updateGitHubSyncMeta({
           lastStatus: "synced",
           lastSyncedAt: progress.lastManualSyncAt || new Date().toISOString(),
+          lastSyncedSha: normalizeGitHubSha(remoteSha),
           lastSyncedScore: getPayloadSyncScore(buildProgressExportPayload()),
           githubUpdatedAt: remoteUpdatedAt || progress.lastManualSyncAt || "",
           comparison: comparison || "same",
@@ -5291,10 +5398,13 @@ debug: loading</pre>
         progress.lastSavedAt = syncAt;
         payload = buildProgressExportPayload();
         wrappedPayload = wrapLearningPayload(remotePayload, payload);
-        return provider.write(wrappedPayload, remoteSha).then(function () {
+        return provider.write(wrappedPayload, remoteSha).then(function (response) {
           saveProgress({ savedAt: syncAt });
           updateStats();
-          return payload;
+          return {
+            payload: payload,
+            sha: normalizeGitHubSha(response && response.content && response.content.sha)
+          };
         }).catch(function (error) {
           progress.lastManualSyncAt = previousManualSyncAt;
           progress.lastSavedAt = previousSavedAt;
@@ -5335,8 +5445,8 @@ debug: loading</pre>
         showSyncConflictStatus("バックアップを作成しました。保存先へ反映しています。", false);
 
         pushProgressToSyncProvider(provider, conflict.remoteSha, conflict.remoteRawPayload)
-          .then(function (payload) {
-            markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+          .then(function (result) {
+            markSyncSuccess(getPayloadUpdatedAt(result.payload), "local", result.sha);
             showSyncStatus("この端末の記録を保存しました。", false, 2000);
           })
           .catch(function (error) {
@@ -5371,7 +5481,7 @@ debug: loading</pre>
         setSyncConflictButtonsDisabled(true);
         try {
           applyImportedProgressPayload(conflict.remotePayload, "github conflict remote import");
-          markSyncSuccess(conflict.remoteUpdatedAt, "remote");
+          markSyncSuccess(conflict.remoteUpdatedAt, "remote", conflict.remoteSha);
           showSyncStatus("保存済みの記録をこの端末へ反映しました。", false, 2000);
         } catch (error) {
           markSyncError(error.message || "保存済みの記録の反映に失敗しました。");
@@ -5405,7 +5515,10 @@ debug: loading</pre>
         var config = readGitHubSyncInputs();
         var provider;
         var localPayload;
-        var localScore;
+        var conflictMessage = "この端末とGitHubの両方に新しい変更があります。" +
+          "安全のため同期を停止しました。先にバックアップまたは統合確認をしてください。";
+        var remoteMissingMessage = "前回同期したGitHub上の社労士OSデータを確認できません。" +
+          "安全のため同期を停止しました。";
 
         try {
           validateGitHubSyncConfig(config);
@@ -5422,73 +5535,55 @@ debug: loading</pre>
 
         normalizeStageProgress();
         localPayload = buildProgressExportPayload();
-        localScore = getPayloadSyncScore(localPayload);
         provider = createGitHubSyncProvider(config);
         githubSyncButton.disabled = true;
         showSyncStatus("保存済みの記録を確認しています...", false);
 
-        provider.read()
+        return provider.read()
           .then(function (remote) {
-            var remotePayload;
-            var remoteScore;
-            var remoteUpdatedAt = "";
-            var decision;
-            var localUnsynced = isLocalProgressNewerThanLastSync();
+            var remotePayload = remote.exists ? extractLearningPayload(remote.payload) : null;
+            var remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
+            var syncAction = resolveGitHubSyncAction(remote, localPayload, remotePayload);
 
-            if (!remote.exists) {
-              return pushProgressToSyncProvider(provider, "", null).then(function (payload) {
-                markSyncSuccess(getPayloadUpdatedAt(payload), "local");
+            if (syncAction.action === "conflict") {
+              showGitHubSyncConflict({
+                config: cloneJson(config),
+                remoteSha: remote.sha || "",
+                remoteRawPayload: cloneJson(remote.payload),
+                remotePayload: cloneJson(remotePayload),
+                remoteUpdatedAt: remoteUpdatedAt,
+                localPayload: cloneJson(localPayload)
+              });
+              showSyncStatus(conflictMessage, true);
+              return "";
+            }
+            if (syncAction.action === "remote_missing") {
+              throw new Error(remoteMissingMessage);
+            }
+            if (syncAction.action === "push") {
+              return pushProgressToSyncProvider(
+                provider,
+                remote.exists ? remote.sha : "",
+                remote.exists ? remote.payload : null
+              ).then(function (result) {
+                markSyncSuccess(getPayloadUpdatedAt(result.payload), "local", result.sha);
                 return "同期しました";
               });
             }
-
-            remotePayload = extractLearningPayload(remote.payload);
-            if (!remotePayload) {
-              return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
-                markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-                return "同期しました";
-              });
-            }
-
             if (!looksLikeProgressPayload(remotePayload)) {
               throw new Error("保存済みの記録は社労士クイズOSの学習データではありません。");
             }
-
-            remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
-            remoteScore = getPayloadSyncScore(remotePayload);
-            decision = compareSyncScores(localScore, remoteScore);
-            updateGitHubSyncMeta({
-              githubUpdatedAt: remoteUpdatedAt,
-              comparison: localUnsynced && decision === "remote" ? "conflict" : decision
-            });
-
-            if (decision === "remote") {
-              if (localUnsynced) {
-                showGitHubSyncConflict({
-                  config: cloneJson(config),
-                  remoteSha: remote.sha || "",
-                  remoteRawPayload: cloneJson(remote.payload),
-                  remotePayload: cloneJson(remotePayload),
-                  remoteUpdatedAt: remoteUpdatedAt,
-                  localPayload: cloneJson(localPayload)
-                });
-                return "";
-              }
+            if (syncAction.action === "pull") {
               applyImportedProgressPayload(remotePayload, "github sync import");
-              markSyncSuccess(remoteUpdatedAt, "remote");
+              markSyncSuccess(remoteUpdatedAt, "remote", remote.sha);
               return "同期しました";
             }
-
-            if (decision === "same" && !localUnsynced) {
+            if (syncAction.action === "same") {
               markProgressSyncedNow("github sync check");
-              markSyncSuccess(remoteUpdatedAt, "same");
+              markSyncSuccess(remoteUpdatedAt, "same", remote.sha);
               return "同期しました";
             }
-
-            return pushProgressToSyncProvider(provider, remote.sha, remote.payload).then(function (payload) {
-              markSyncSuccess(getPayloadUpdatedAt(payload), "local");
-              return "同期しました";
-            });
+            throw new Error("同期状態を安全に判定できませんでした。");
           })
           .then(function (message) {
             if (message) {
@@ -5509,7 +5604,10 @@ debug: loading</pre>
         var config = readGitHubSyncConfig();
         var provider;
         var localPayload;
-        var localScore;
+        var conflictMessage = "この端末とGitHubの両方に新しい変更があります。" +
+          "安全のため同期を停止しました。先にバックアップまたは統合確認をしてください。";
+        var remoteMissingMessage = "前回同期したGitHub上の社労士OSデータを確認できません。" +
+          "安全のため同期を停止しました。";
 
         if (autoSyncStarted || !hasCompleteGitHubSyncConfig(config)) {
           updateSyncInfo();
@@ -5520,62 +5618,16 @@ debug: loading</pre>
         provider = createGitHubSyncProvider(config);
         normalizeStageProgress();
         localPayload = buildProgressExportPayload();
-        localScore = getPayloadSyncScore(localPayload);
         showSyncStatus("保存済みの記録を確認しています...", false);
 
-        provider.read()
+        return provider.read()
           .then(function (remote) {
-            var remotePayload;
-            var remoteUpdatedAt = "";
-            var remoteScore;
-            var decision;
-            var localUnsynced = isLocalProgressNewerThanLastSync();
+            var remotePayload = remote.exists ? extractLearningPayload(remote.payload) : null;
+            var remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
+            var syncAction = resolveGitHubSyncAction(remote, localPayload, remotePayload);
             var now = new Date().toISOString();
 
-            if (!remote.exists) {
-              updateGitHubSyncMeta({
-                lastStatus: localUnsynced ? "unsynced" : "",
-                lastAutoFetchAt: now,
-                comparison: localUnsynced ? "local" : "unknown",
-                githubUpdatedAt: ""
-              });
-              updateSyncInfo();
-              showSyncStatus("", false);
-              return;
-            }
-
-            remotePayload = extractLearningPayload(remote.payload);
-            if (!remotePayload) {
-              updateGitHubSyncMeta({
-                lastStatus: localUnsynced ? "unsynced" : "synced",
-                lastAutoFetchAt: now,
-                comparison: localUnsynced ? "local" : "unknown",
-                githubUpdatedAt: ""
-              });
-              updateSyncInfo();
-              showSyncStatus("", false);
-              return;
-            }
-
-            if (!looksLikeProgressPayload(remotePayload)) {
-              throw new Error("保存済みの記録は社労士クイズOSの学習データではありません。");
-            }
-
-            remoteUpdatedAt = getPayloadUpdatedAt(remotePayload);
-            remoteScore = getPayloadSyncScore(remotePayload);
-            decision = compareSyncScores(localScore, remoteScore);
-
-            if (decision === "remote" && !localUnsynced) {
-              applyImportedProgressPayload(remotePayload, "github auto import");
-              updateGitHubSyncMeta({
-                lastAutoFetchAt: now
-              });
-              markSyncSuccess(remoteUpdatedAt, "remote");
-              showSyncStatus("同期しました", false, 2000);
-              return;
-            }
-
-            if (decision === "remote" && localUnsynced) {
+            if (syncAction.action === "conflict") {
               showGitHubSyncConflict({
                 config: cloneJson(config),
                 remoteSha: remote.sha || "",
@@ -5584,14 +5636,37 @@ debug: loading</pre>
                 remoteUpdatedAt: remoteUpdatedAt,
                 localPayload: cloneJson(localPayload)
               });
+              showSyncStatus(conflictMessage, true);
               return;
             }
-
+            if (syncAction.action === "remote_missing") {
+              markSyncError(remoteMissingMessage);
+              showSyncStatus(remoteMissingMessage, true);
+              return;
+            }
+            if (syncAction.action === "pull") {
+              if (!looksLikeProgressPayload(remotePayload)) {
+                throw new Error("保存済みの記録は社労士クイズOSの学習データではありません。");
+              }
+              applyImportedProgressPayload(remotePayload, "github auto import");
+              updateGitHubSyncMeta({
+                lastAutoFetchAt: now
+              });
+              markSyncSuccess(remoteUpdatedAt, "remote", remote.sha);
+              showSyncStatus("同期しました", false, 2000);
+              return;
+            }
+            if (syncAction.action === "same") {
+              updateGitHubSyncMeta({ lastAutoFetchAt: now });
+              markSyncSuccess(remoteUpdatedAt, "same", remote.sha);
+              showSyncStatus("", false);
+              return;
+            }
             updateGitHubSyncMeta({
-              lastStatus: localUnsynced ? "unsynced" : "synced",
+              lastStatus: "unsynced",
               lastAutoFetchAt: now,
               githubUpdatedAt: remoteUpdatedAt,
-              comparison: localUnsynced && decision === "remote" ? "conflict" : decision,
+              comparison: "local",
               lastError: "",
               lastErrorAt: ""
             });
