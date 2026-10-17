@@ -6163,6 +6163,242 @@ debug: loading</pre>
         });
       }
 
+      // DAILY_SUBJECT_DIVERSITY_START
+      var DAILY_DIVERSITY_MAX_REASONING_LEVEL = 5;
+      var DAILY_DIVERSITY_GENERIC_CATEGORIES = {
+        "公式確認": true,
+        "実戦総合演習": true,
+        "選択式対策": true,
+        "択一式ミニ演習": true,
+        "苦手補強": true,
+        "横断事例": true,
+        "横断比較": true,
+        "適応難易度": true
+      };
+
+      function normalizeDailyDiversityValue(value) {
+        return typeof value === "string" ? value.trim().toLowerCase() : "";
+      }
+
+      function getDailyDiversitySearchText(question) {
+        var source = question || {};
+        var categories = Array.isArray(source.category)
+          ? source.category
+          : source.category ? [source.category] : [];
+
+        return categories.concat([
+          source.title,
+          source.term,
+          source.theme,
+          source.adaptiveTopic,
+          source.question
+        ]).filter(Boolean).join(" ");
+      }
+
+      function getDailyDiversitySubjectKey(question) {
+        var source = question || {};
+        var categories = Array.isArray(source.category)
+          ? source.category
+          : source.category ? [source.category] : [];
+        var text = getDailyDiversitySearchText(source);
+        var specificCategory;
+
+        if (/労働基準法|労基|労働時間|時間外|36協定|割増賃金|年次有給休暇|年休|休憩|休日|就業規則|労働契約/.test(text)) {
+          return "labor-standards";
+        }
+        if (/労働安全衛生|安衛|安全衛生|衛生管理/.test(text)) {
+          return "occupational-safety";
+        }
+        if (/労災|業務災害|通勤災害|複数事業労働者/.test(text)) {
+          return "workers-compensation";
+        }
+        if (/雇用保険|雇用・徴収|基本手当|育児休業給付|失業等給付/.test(text)) {
+          return "employment-insurance";
+        }
+        if (/健康保険|傷病手当金|被扶養者|標準報酬月額/.test(text)) {
+          return "health-insurance";
+        }
+        if (/厚生年金|国民年金|基礎年金|年金/.test(text)) {
+          return "pension";
+        }
+        if (/労一|社一|社会保険一般|一般常識|白書|統計/.test(text)) {
+          return "general-knowledge";
+        }
+
+        specificCategory = categories.map(normalizeDailyDiversityValue).find(function (category) {
+          return category && !DAILY_DIVERSITY_GENERIC_CATEGORIES[category];
+        });
+        return specificCategory ? "category:" + specificCategory : "cross-disciplinary";
+      }
+
+      function getDailyDiversityTopicKeys(question) {
+        var source = question || {};
+        var text = getDailyDiversitySearchText(source);
+        var values = [
+          source.knowledgeKey ? "knowledge:" + source.knowledgeKey : "",
+          source.equivalenceKey ? "equivalence:" + source.equivalenceKey : "",
+          source.theme ? "theme:" + source.theme : "",
+          source.adaptiveTopic ? "adaptive-topic:" + source.adaptiveTopic : ""
+        ].concat((Array.isArray(source.conceptIds) ? source.conceptIds : []).map(function (value) {
+          return "concept:" + value;
+        }));
+
+        if (/年次有給休暇|年休|比例付与|時季指定/.test(text)) {
+          values.push("family:annual-leave");
+        }
+        if (/労働時間|時間外|36協定|割増賃金/.test(text)) {
+          values.push("family:working-time");
+        }
+
+        return values.map(normalizeDailyDiversityValue).filter(function (value, index, list) {
+          return value && list.indexOf(value) === index;
+        });
+      }
+
+      function hasDailyDiversityTopicOverlap(question, topicKeys) {
+        return getDailyDiversityTopicKeys(question).some(function (value) {
+          return topicKeys.indexOf(value) !== -1;
+        });
+      }
+
+      function selectDiverseDailyQuestions(pool, options) {
+        var settings = options || {};
+        var count = Math.max(1, Number(settings.count) || 3);
+        var recentIds = Array.isArray(settings.recentQuestionIds) ? settings.recentQuestionIds : [];
+        var seenIds = Array.isArray(settings.seenQuestionIds) ? settings.seenQuestionIds : [];
+        var weakIds = Array.isArray(settings.weakQuestionIds) ? settings.weakQuestionIds : [];
+        var weakKnowledgeKeys = Array.isArray(settings.weakKnowledgeKeys)
+          ? settings.weakKnowledgeKeys.map(normalizeDailyDiversityValue)
+          : [];
+        var weakTopicKeys = Array.isArray(settings.weakTopicKeys)
+          ? settings.weakTopicKeys.map(normalizeDailyDiversityValue)
+          : [];
+        var random = typeof settings.random === "function" ? settings.random : Math.random;
+        var unique = [];
+        var randomRanks = {};
+        var selected = [];
+        var selectedSubjects = [];
+        var selectedTopics = [];
+        var weakSelected = false;
+
+        (Array.isArray(pool) ? pool : []).forEach(function (question) {
+          if (!question || !question.id || unique.some(function (candidate) {
+            return candidate.id === question.id;
+          })) {
+            return;
+          }
+          unique.push(question);
+          randomRanks[question.id] = random();
+        });
+
+        function isRecent(question) {
+          return recentIds.indexOf(question.id) !== -1 || question.id === settings.lastQuestionId;
+        }
+
+        function isWeak(question) {
+          var knowledgeKey = normalizeDailyDiversityValue(question.knowledgeKey);
+          return weakIds.indexOf(question.id) !== -1 ||
+            (knowledgeKey && weakKnowledgeKeys.indexOf(knowledgeKey) !== -1) ||
+            hasDailyDiversityTopicOverlap(question, weakTopicKeys);
+        }
+
+        function score(question) {
+          var subject = getDailyDiversitySubjectKey(question);
+          var topics = getDailyDiversityTopicKeys(question);
+          var overlapsTopic = topics.some(function (value) {
+            return selectedTopics.indexOf(value) !== -1;
+          });
+          var value = 0;
+
+          if (selectedSubjects.indexOf(subject) === -1) {
+            value += 1000;
+          }
+          if (!overlapsTopic) {
+            value += 300;
+          }
+          if (seenIds.indexOf(question.id) === -1) {
+            value += 30;
+          }
+          if (isWeak(question) && !weakSelected) {
+            value += 120;
+          }
+          if (isWeak(question) && weakSelected) {
+            value -= 120;
+          }
+          return value + randomRanks[question.id];
+        }
+
+        function addQuestion(question) {
+          selected.push(question);
+          selectedSubjects.push(getDailyDiversitySubjectKey(question));
+          selectedTopics = selectedTopics.concat(getDailyDiversityTopicKeys(question));
+          if (isWeak(question)) {
+            weakSelected = true;
+          }
+        }
+
+        function pickBest(candidates) {
+          return candidates.slice().sort(function (left, right) {
+            return score(right) - score(left) || String(left.id).localeCompare(String(right.id));
+          })[0];
+        }
+
+        var nonRecentWeak = unique.filter(function (question) {
+          return isWeak(question) && !isRecent(question);
+        });
+        if (nonRecentWeak.length) {
+          addQuestion(pickBest(nonRecentWeak));
+        }
+
+        while (selected.length < count) {
+          var remaining = unique.filter(function (question) {
+            return !selected.some(function (item) {
+              return item.id === question.id;
+            });
+          });
+          var preferred = remaining.filter(function (question) {
+            return !isRecent(question);
+          });
+          var candidates = preferred.length ? preferred : remaining;
+          var nonWeakCandidates;
+          var next;
+
+          if (!candidates.length) {
+            break;
+          }
+          if (weakSelected) {
+            nonWeakCandidates = candidates.filter(function (question) {
+              return !isWeak(question);
+            });
+            if (nonWeakCandidates.length) {
+              candidates = nonWeakCandidates;
+            }
+          }
+          next = pickBest(candidates);
+          addQuestion(next);
+        }
+
+        return {
+          questions: selected.slice(0, count),
+          reusedCooldownQuestionIds: selected.filter(isRecent).map(function (question) {
+            return question.id;
+          })
+        };
+      }
+
+      function shouldUseDailySubjectDiversity(state, currentStageId, eligibleQuestions) {
+        var subjects = (Array.isArray(eligibleQuestions) ? eligibleQuestions : [])
+          .filter(function (question) {
+            return Number(question.adaptiveReasoningLevel) === Number(state.reasoningLevel);
+          }).map(getDailyDiversitySubjectKey).filter(function (subject, index, list) {
+            return subject && list.indexOf(subject) === index;
+          });
+
+        return Number(state.reasoningLevel) === DAILY_DIVERSITY_MAX_REASONING_LEVEL &&
+          Number(currentStageId) === STAGE_FIVE_ID && subjects.length < 2;
+      }
+      // DAILY_SUBJECT_DIVERSITY_END
+
       function buildAdaptiveQuestionBank(data) {
         var output = [];
         var usedIds = {};
@@ -6234,6 +6470,47 @@ debug: loading</pre>
         var eligible = adaptiveQuestionBank.filter(function (question) {
           return Number(question.adaptiveSourceStage) <= currentStageId;
         });
+        var diverseSelection;
+        var weakIds;
+        var weakQuestions;
+        var combinedRecentIds;
+
+        if (shouldUseDailySubjectDiversity(state, currentStageId, eligible)) {
+          weakIds = getReviewFocusQuestionIds();
+          weakQuestions = questionBank.concat(adaptiveQuestionBank).filter(function (question) {
+            return weakIds.indexOf(question.id) !== -1;
+          });
+          combinedRecentIds = uniqueStrings(progress.recentQuestionIds.concat(recentIds));
+          diverseSelection = selectDiverseDailyQuestions(
+            getStageQuestions(STAGE_FIVE_ID).concat(eligible),
+            {
+              count: limit,
+              recentQuestionIds: combinedRecentIds,
+              lastQuestionId: progress.lastQuestionId,
+              seenQuestionIds: progress.seenQuestionIds,
+              weakQuestionIds: weakIds,
+              weakKnowledgeKeys: weakQuestions.map(function (question) {
+                return question.knowledgeKey;
+              }).filter(Boolean),
+              weakTopicKeys: weakQuestions.reduce(function (values, question) {
+                return values.concat(getDailyDiversityTopicKeys(question));
+              }, [])
+            }
+          );
+          sessionRequestedReasoningLevel = state.reasoningLevel;
+          return {
+            questions: diverseSelection.questions,
+            shortage: diverseSelection.questions.length < limit ? {
+              requestedLevel: state.reasoningLevel,
+              requestedCount: limit,
+              availableCount: diverseSelection.questions.length,
+              missingCount: limit - diverseSelection.questions.length
+            } : null,
+            requestedLevel: state.reasoningLevel,
+            selectionMode: "stage5-subject-diversity",
+            reusedCooldownQuestionIds: diverseSelection.reusedCooldownQuestionIds
+          };
+        }
         var selection = COMMON.selectAdaptiveReasoningQuestions
           ? COMMON.selectAdaptiveReasoningQuestions(eligible, {
             reasoningLevel: state.reasoningLevel,
